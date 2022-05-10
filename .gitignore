@@ -1,0 +1,4 @@
+AIM.egg-info/**
+GEMAIM.egg-info/**
+env_GEMAIM/**
+**.pyc
