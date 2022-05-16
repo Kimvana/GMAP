@@ -8,9 +8,9 @@
 #     "GEM": GEMmain
 # }
 
-from . import help
-from . import AIM
-from . import GEM
+from .src.programs import help
+from .src.programs import AIM
+from .src.programs import GEM
 
 alltools = {
     "help": help,
