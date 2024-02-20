@@ -104,17 +104,17 @@ extern "C" {
     }
 
     float potential_linear(float dist, float charge, float min_dist, float max_dist, float smooth_domain){
-        if (dist < min_dist){
+        if (dist <= min_dist){
             return charge / dist; 
         }   // If the function is outside of smoothing domain, simply return the potential
         else {
-            printf("%f %f %f %f\n", dist, min_dist, smooth_domain, max_dist);
+            // printf("%f %f %f %f\n", dist, min_dist, smooth_domain, max_dist);
             return charge * (1 - (dist - min_dist) / smooth_domain) / dist;
         }   // Returns a linear slope, starting at min_dist and ending at max_dist with 0
      }
 
      float potential_quadratic(float dist, float charge, float min_dist, float max_dist, float smooth_domain){
-        if (dist < min_dist){
+        if (dist <= min_dist){
             return charge / dist;
         } else { // This function uses a parabola centered on the y - axis.
             float factor =  1 / (min_dist * min_dist - max_dist * max_dist); 
@@ -124,7 +124,7 @@ extern "C" {
 
     // float potential_quadratic_centered(float dist, float charge, float max_dist, float smooth_domain){
     //     float min_dist = max_dist - smooth_domain;
-    //     if (dist < min_dist){
+    //     if (dist <= min_dist){
     //         return charge / dist;
     //     } else { // quadratic centered on min_dist, fuction is very much not optimized
     //         float b_quadratic = ((min_dist-max_dist) - (pow(min_dist, 2) - pow(max_dist, 2)) / (2 * min_dist)); // a_ * dist^2 + b * dist + c = 0
@@ -355,11 +355,7 @@ extern "C" {
         // delete [] refpos;
         }
         free(refpos);
-    }
-
-    // void compute_pot_difference(float *out1, float *out2, float *out){
-    //     *out = *out1 - *out2; 
-    // }   
+    } 
 
     void calcPot_subbox_aa(float *positions, float *charges, int Natoms, int *tocalc, int nOscAts, int *n_subbox, float *subboxdims, int *nat_psbox, int *atix_psbox, float *halfbox, float *boxdims, float maxdist, int smoothing, float smooth_domain, float *out) {
         // printf("start!\n");
@@ -392,6 +388,17 @@ extern "C" {
         // printf("4maxdist : %f\n", maxdist);
         maxdist2 = maxdist * maxdist;
         float diff[3];
+
+        // float *temp_charge;
+        
+        float *temp_charge; 
+        temp_charge = (float *)calloc(nOscAts, sizeof(float));
+
+        // = new float[nOscAts]();
+        // for (int idx = 0; idx < nOscAts; idx++) {
+        //     temp_charge[idx] = 0;
+        // }
+
         // float refpos[3*nOscAts];
         // int subbox[3*nOscAts];
         // int check[nOscAts];
@@ -411,7 +418,8 @@ extern "C" {
         // }
         minix = tocalc[0];
         maxix = tocalc[0];
-        for (int subix = 0; subix < nOscAts; subix++) { 
+        for (int subix = 0; subix < nOscAts; subix++) {
+            
             // 27675 is the number of residues
             // printf("Hello!\n");
             
@@ -449,6 +457,7 @@ extern "C" {
         int smallest;
         int boxchoice[3];
         while (checksum < nOscAts) {
+            float temp_potential = 0;
             // printf("started new loop iter\n");
             // find lowest relJ that hasn't been considered yet
             smallest = nOscAts;
@@ -626,8 +635,15 @@ extern "C" {
                                     // printf("out!\n");
 
                                     out[usesub] += (potentialPtr)(dist, charge, min_dist, maxdist, smooth_domain);
-                                    // }
+                                    if (dist <= min_dist || smooth_domain == 0){
+                                    temp_charge[subix] += charge;
+                                } else {
+                                    temp_charge[subix] += (1 - (dist - min_dist) / smooth_domain) * charge;
                                 }
+                                    // }
+
+                                }
+
                             }
                         
                         // if the box is somewhere in between, all must be checked!
@@ -657,6 +673,12 @@ extern "C" {
                                         continue;
                                     }
                                     out[usesub] += (potentialPtr)(dist, charge, min_dist, maxdist, smooth_domain);
+                                    if (dist <= min_dist || smooth_domain == 0){
+                                    temp_charge[subix] += charge;
+                                } else {
+                                    temp_charge[subix] += (1 - (dist - min_dist) / smooth_domain) * charge;
+                                    // printf("%f\n",temp_charge[subix]);
+                                }
                                     // printf("out : %f\n", *out);
                                     }
                                 }
@@ -670,7 +692,14 @@ extern "C" {
                 checksum += check[subix];
             }
         }
+        float contra_charge_dist = maxdist- smooth_domain/2;
+
+        for (int usesub = 0; usesub < nOscAts; usesub++){
+            out[usesub] += (potentialPtr)(maxdist, temp_charge[usesub], maxdist, maxdist, smooth_domain);
+        }
+
         free(refpos), free(subbox), free(check), free(tots);
+
     }
 
     void calcPot_residues_aa(float *positions, float *charges, int *resnums, int Natoms, int *tocalc, int nOscAts, int *reslens, int Nres, float *COMs, float *ressize, float *halfbox, float *boxdims, float maxdist, int smoothing, float smooth_domain, float *out) {
@@ -691,8 +720,14 @@ extern "C" {
         float diff[3];
         float dist2, dist;
         float findist;
-
         float maxdist2;
+
+        // float *temp_charge = new float[nOscAts]();
+        // for (int idx = 0; idx < nOscAts; idx++) {
+        //     temp_charge[idx] = 0;
+        // }
+        float *temp_charge;
+        temp_charge = (float *)calloc(nOscAts, sizeof(float));
 
         int checksum;
 
@@ -790,21 +825,31 @@ extern "C" {
                         if (dist > maxdist) {
                            continue;
                         }
-
+                        
                         out[subix] += (potentialPtr)(dist, charge, min_dist, maxdist, smooth_domain);
+                        if (dist <= min_dist || smooth_domain == 0){
+                            temp_charge[subix] += charge;
+                        } else {
+                            temp_charge[subix] += (1 - (dist - min_dist) / smooth_domain) * charge;
+                            // printf("%f\n",temp_charge[subix]);
+                        }
+                        // printf("%f \n", temp_charge[subix]);
                     }
 
                 }
             }
         
         checksum = 0;
+
+        } // end of while loop
         for (int subix = 0; subix < nOscAts; subix++) {
             checksum += check[subix];
         }
+        for (int usesub = 0; usesub < nOscAts; usesub++){
+            out[usesub] += (potentialPtr)(maxdist, temp_charge[usesub], maxdist, maxdist, smooth_domain);
+        }
 
-        } // end of while loop
-        
-        free(refpos), free(refres), free(check), free(tots);
+        free(refpos), free(refres), free(check), free(tots), free(temp_charge);
 
     }
 
@@ -837,6 +882,13 @@ extern "C" {
         using func = void(*)(float *, float *, float *, float *, float *);
         func use_PBCdiff = PBC_diff;
 
+        // float *temp_charge = new float[nOscAts]();
+        // for (int idx = 0; idx < nOscAts; idx++) {
+        //     temp_charge[idx] = 0;
+        // }
+
+        float *temp_charge;
+        temp_charge = (float *)calloc(nOscAts, sizeof(float));
 
         float *refpos;
         refpos = (float *)calloc(3*nOscAts, sizeof(float));
@@ -916,6 +968,13 @@ extern "C" {
                                 }
 
                                 out[subix] += (potentialPtr)(dist, charge, min_dist, maxdist, smooth_domain);
+                                if (dist <= min_dist || smooth_domain == 0){
+                                    temp_charge[subix] += charge;
+                                } else {
+                                    temp_charge[subix] += (1 - (dist - min_dist) / smooth_domain) * charge;
+                                // printf("%f\n",temp_charge[subix]);
+                                }
+                                // printf("%f \n", temp_charge[subix]);
                             }
                         }
                     }
@@ -952,6 +1011,13 @@ extern "C" {
 
                                 // printf("subbox_ma %f \n", dist);
                                 out[subix] += (potentialPtr)(dist, charge, min_dist, maxdist, smooth_domain);
+                                if (dist <= min_dist || smooth_domain == 0){
+                                    temp_charge[subix] += charge;
+                                } else {
+                                    temp_charge[subix] += (1 - (dist - min_dist) / smooth_domain) * charge;
+                                    // printf("%f\n",temp_charge[subix]);
+                                }
+                                // printf("%f \n", temp_charge[subix]);
                             }
                         }
                     }
@@ -959,7 +1025,11 @@ extern "C" {
                 }
             }
         }
-        free(refpos);
+        for (int subix = 0; subix < nOscAts; subix++) {
+            out[subix] -= (potentialPtr)(maxdist, temp_charge[subix], maxdist, maxdist, smooth_domain);
+        }
+
+        free(refpos), free(temp_charge);
     }
 
     void calcPot_perres_mm(float *positions, float *charges, int *resnums, int *tocalc, int nOscAts, int *reslens, int Nres, float *COMs, float *halfbox, float *boxdims, float maxdist, int smoothing, float smooth_domain, float *out) {
@@ -981,8 +1051,17 @@ extern "C" {
 
         float dist2, dist;
         float maxdist2 = maxdist * maxdist;
+        float comp_smoothing;
 
         int resnum;
+
+        // float *temp_charge = new float[nOscAts]();
+        // for (int idx = 0; idx < nOscAts; idx++) {
+        //     temp_charge[idx] = 0;
+        // }
+
+        float *temp_charge;
+        temp_charge = (float *)calloc(nOscAts, sizeof(float));
 
         for (int subix = 0; subix < nOscAts; subix++) {
             int mainix = tocalc[subix];
@@ -1005,9 +1084,9 @@ extern "C" {
             // find distance to residue
             PBC_diff(&COMs[resnum * 3], &COMs[resix * 3], halfbox, boxdims, diff);
             dist2 = veclen2(diff);
-
+            dist = sqrt(dist2);
             // if the residue is too far away, skip it
-            if (dist2 > maxdist2) {
+            if (dist2 >= maxdist2) {
                 continue;
             }
 
@@ -1016,32 +1095,54 @@ extern "C" {
                 continue;
             }
 
+            if (dist >= min_dist){
+                comp_smoothing = (1 - (dist - min_dist) / smooth_domain);
+            }
+            else {
+                comp_smoothing = 1;
+            }
+            // printf("%f \n", comp_smoothing);
+
 
             // otherwise, all pairs between that and this molecule should be taken into account
 
             for (int atnum = curat; atnum < curat + atsinres; atnum++) {
+                // printf("Comparing each atom \n");
                 charge = charges[atnum];
                 for (int subix = 0; subix < nOscAts; subix++) {
+                    // printf("With each other atom \n");
                     PBC_diff(&refpos[subix * 3], &positions[atnum * 3], halfbox, boxdims, diff);
                     dist2 = veclen2(diff); // Redefining of dist2 and running PBC_diff is not an accident!!! 
                     dist = sqrt(dist2);
-
-
-                    if (dist > maxdist) {
-                        continue;
-                    }
-
+                    
                     // printf("perres %f \n", dist);
                     // printf("mm is being processed");
-                    // printf("%f", (potentialPtr)(dist, charge, maxdist, smooth_domain));
-                    out[subix] += (potentialPtr)(dist, charge, min_dist, maxdist, smooth_domain);
+                    // printf("%f", (potentialPtr)(dist, charge, min_dist, maxdist, 0) * comp_smoothing);
+                    
+                    float float_temp = charge / dist * comp_smoothing;
+                    // printf("smoothing: %f\n", comp_smoothing);
+                    // printf("out: %f\n", float_temp);
+                    // printf("%f", float_temp);
+                    out[subix] += float_temp; // This way of computing smoothing is very scuffed!
+                    temp_charge[subix] += comp_smoothing * charge;
+                    // if (dist <= min_dist){
+                    //     temp_charge[subix] += charge;
+                    // } else {
+                    //     float temp_modifier = (1 - (dist - min_dist) / smooth_domain);
+                    //     temp_charge[subix] += temp_modifier * charge;
+                        // printf("%f\n",temp_charge[subix]);
+                    // }
+                    // printf("%f \n", temp_charge[subix]);
                 }
             }
-
+        }
+        for (int subix = 0; subix < nOscAts; subix++) {
+            out[subix] -= (potentialPtr)(maxdist, temp_charge[subix], maxdist, maxdist, smooth_domain);
+            // printf("%f \n", out[subix]);
         }
 
 
-        free(refpos);
+        free(refpos), free(temp_charge);
 
     }
 }

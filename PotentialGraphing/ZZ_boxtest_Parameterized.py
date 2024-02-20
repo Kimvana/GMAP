@@ -49,12 +49,13 @@ class Universe():
         self.calc_ressize(clib)
         self.make_boxes()
 
-        allradii = [r for r in range(10, 50)]  # VesTube
+        allradii = [out_name]  # VesTube
         # allradii = [r/10 for r in range(1, 600)]  # PsbS dimer
-        do_aa = True
-        do_ma = False
-        do_mm = False
+        do_aa = False
+        do_ma = True
+        do_mm = True
 
+        start = time.time()
         if do_aa:
             print("doing aa")
             t0 = time.perf_counter()
@@ -68,7 +69,7 @@ class Universe():
                 collector.append(pot_sb_aa)
             t01 = time.perf_counter()
             # print(collector)
-            print(self.out_name)
+            # print(self.out_name)
             with open(f"subbox_aa_{self.out_name}.txt", "w") as file:
                 for radius, lst in zip(allradii, collector):
                     file.write(str(radius) + " ")
@@ -90,6 +91,7 @@ class Universe():
                     print(step)
                 # get potential per radius
                 pot_sb_ma = self.calcallpots_subbox_ma(clib, radius)
+                # print(f"collector: {pot_sb_ma}")
                 collector.append(pot_sb_ma)
             t11 = time.perf_counter()
 
@@ -134,6 +136,8 @@ class Universe():
         #     plt.legend()
         #     plt.show()
         #     plt.close()
+        end = time.time()
+        print(f"time it took: {end - start} \n for radii: {allradii} \n aa:{do_aa} \n ma:{do_ma} \n perres:{do_mm}")
 
     def fast_compare_atat(self, clib):
         t0 = time.perf_counter()
@@ -263,11 +267,12 @@ class Universe():
         self.element_name = self.universe.atoms.elements
 
         atom = 0
-        res = 1
-        while (res <= 3):
-            print(self.atnames[atom], self.element_name[atom], self.atnums[atom], self.resnames[atom], self.resnums[atom])
-            atom += 1
-            res = self.resnums[atom]
+            # print(self.atnames[atom], self.element_name[atom], self.atnums[atom], self.resnames[atom], self.resnums[atom])
+        res_list = []
+        for res in self.resnames:
+            if res not in res_list:
+                res_list.append(res)
+        print(res_list)
 
         print(f"Number of residues is: {self.resnums[-1]}")
 
@@ -295,15 +300,17 @@ class Universe():
             prevresnum = resnum
 
     def def_system(self):
-        # resnames_Protein = [
-        #     "ARG", "HIS", "LYS", "ASP", "GLU", "SER", "THR", "ASN", "GLN",
-        #     "CYS", "GLY", "PRO", "ALA", "VAL", "ILE", "LEU", "MET", "PHE",
-        #     "TYR", "TRP"
-        # ]
-
         resnames_Protein = [
-            "MOL"
+            "ARG", "HIS", "LYS", "ASP", "GLU", "SER", "THR", "ASN", "GLN",
+            "CYS", "GLY", "PRO", "ALA", "VAL", "ILE", "LEU", "MET", "PHE",
+            "TYR", "TRP",
+
+            "SOL", "NA"
         ]
+
+        # resnames_Protein = [
+        #     "MOL"
+        # ]
 
         prevresnum = -1
         allats = []
@@ -533,6 +540,7 @@ class Universe():
             #     print(oscgroup)
             relJ = self.relJ[oscgroup]
             nOscAts = np.int32(len(relJ))
+            # print(nOscAts)
 
             tocalc = [self.allats[oscgroup, x] for x in relJ]
             tocalc_c = np.ctypeslib.as_ctypes(np.array(tocalc, dtype='int32'))
@@ -712,10 +720,10 @@ def main(topfile, trjfile, clibfname, outfiles, out_name, smoothing_domain, smoo
     print(WS)
 
 if __name__ == "__main__":
-    tutfol = "D:\\VesnaTube\\VesnaTube"
+    tutfol = "D:\\VesnaTube\\VesnaTube\\2n0a_files"
 
     if len(sys.argv) != 4:
-        raise Exception(f"To use this file, you should type: '{sys.argv[0]} out_name smoothing_domain smoothing'")
+        raise Exception(f"To use this file, you should type: 'ZZ_boxtest_Parameterized.py out_name smoothing_domain smoothing'")
     # topfile = tutfol + "PsbS-Mneq/PsbS_01.tpr"
     # trjfile = tutfol + "PsbS-Mneq/PsbS_01.xtc"
 
@@ -728,14 +736,14 @@ if __name__ == "__main__":
     # topfile = "/Users/kim/Documents/PhD/Data/md_0_1.tpr"
     # trjfile = "/Users/kim/Documents/PhD/Data/md_0_1_med.xtc"
 
-    topfile = tutfol + "\\mix_nvt_new.tpr"
-    trjfile = tutfol + "\\traj_comp_5_frames.xtc"
+    topfile = "2n0a.tpr"
+    trjfile = "2n0a.xtc"
 
     out_name = str(sys.argv[1])
     
     # topfile = "D:\\Data\\PhD\\Tutorials\\PsbS-Mneq\\PsbS_01.tpr"
     # trjfile = "D:\\Data\\PhD\\Tutorials\\PsbS-Mneq\\PsbS_01.xtc"
-    checkthis = 10
+    checkthis = 527490
 
     clibfname = tutfol + "\\ZZ_testclib.dll"
     # clibfname = "ZZ_testclib.dll"

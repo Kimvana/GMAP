@@ -28,25 +28,28 @@ class graphBuilder():
 
         # print(len(to_plot))
 
-        type_list = ["aa_short/subbox_aa_linear_", "ma_short/subbox_ma_linear_", "perres_short/perres_mm_linear_"] # This list contains all the names of folders that contain data
-        distance_list = np.arange(0, 10, 1)
+        # type_list = ["ma_1.1/subbox_ma_linear_", "perres_1.1/perres_mm_linear_"] # This list contains all the names of folders that contain data
+        type_list = ["perres_1000/perres_mm_linear_", "ma_1000/subbox_ma_linear_"]
+        # type_list = ["aa_1.1/subbox_aa_linear_"]
+        # distance_list = np.arange(0, 11, 1)
         # distance_list = [0, 1, 2, 5, 9]
+        distance_list = [0, 2, 5, 8]
 
         # print(distance_list)
-        radii = [spheresize for spheresize in range(10, 50)]
+        radii = [spheresize for spheresize in range(10, 1000)][:50]
 
         N_pairs = [[2,10],[2,16],[2,21],[10,16],[10,21],[16,21]]
 
         # Calculates per smoothing distance
 
-        # for atom_of_interest in range(1): 
+        # for atom_of_interest in range(11): 
         #     for folder in type_list:
         #         match folder:
-        #             case "aa_short/subbox_aa_linear_":
+        #             case "aa_1.1/subbox_aa_linear_":
         #                 method = "aa"
-        #             case "ma_short/subbox_ma_linear_":
+        #             case "ma_1000/subbox_ma_linear_":
         #                 method = "ma"
-        #             case "perres_short/perres_mm_linear_":
+        #             case "perres_1000/perres_mm_linear_":
         #                 method = "perres"
                 
         #         for pair in N_pairs:
@@ -55,6 +58,7 @@ class graphBuilder():
         #                 N1_list = graphBuilder.extract_N(matrix_data, pair[0])
         #                 N2_list = graphBuilder.extract_N(matrix_data, pair[1])
         #                 to_plot = graphBuilder.potential_plotter(N1_list, N2_list, True, atom_of_interest)
+        #                 # to_plot_sliced = to_plot[790:]
         #                 plt.plot(radii, to_plot, label=f"{distance}")
         #             plt.legend()
         #             plt.xlabel("Distance (A)")
@@ -65,40 +69,47 @@ class graphBuilder():
 
         # Calculates per method
 
-        for atom_of_interest in range(1):
-            for pair in N_pairs:
-                for distance in distance_list:
-                    for folder in type_list:
+        for folder in type_list:
+            for distance in distance_list:
+                to_plot_temp = []
+                for pair in N_pairs:
+                    for atom_of_interest in range(11):
                         matrix_data = graphBuilder.read_files(folder, distance)
                         N1_list = graphBuilder.extract_N(matrix_data, pair[0])
                         N2_list = graphBuilder.extract_N(matrix_data, pair[1])
-                        to_plot = graphBuilder.potential_plotter(N1_list, N2_list, True, atom_of_interest)
-                        plt.plot(radii, to_plot, label=f"{folder}{distance}")
-                    plt.legend()
-                    plt.xlabel("Distance (A)")
-                    plt.ylabel("Potential(V)")
-                    plt.savefig(f"atom_{atom_of_interest}_dist_{distance}_pairing_{pair[0]}_{pair[1]}")
-                    plt.clf()
+                        to_plot_temp.append(graphBuilder.potential_plotter(N1_list, N2_list, False, atom_of_interest)[:50])
+                
+                to_plot = np.zeros(len(to_plot_temp[0]))
+                for sublist in to_plot_temp:
+                    for idx, potential in enumerate(sublist):
+                        to_plot[idx] += abs(potential)
 
+                plt.plot(radii, to_plot, label=f"{folder}{distance}") 
+        plt.legend()
+        plt.xlabel("Distance (A)")
+        plt.ylabel("Potential(V)")
+        plt.savefig("AveragedVesnaTube")
+        plt.clf()
+ 
         # Graphs the potential vs. smoothing distance
 
-        # for atom_of_interest in range(1):
+        # for atom_of_interest in range(11):
         #     for pair in N_pairs:
         #         for folder in type_list:
         #             match folder:
-        #                 case "aa_short/subbox_aa_linear_":
+        #                 case "aa_1.1/subbox_aa_linear_":
         #                     method = "aa"
-        #                 case "ma_short/subbox_ma_linear_":
+        #                 case "ma_1.1/subbox_ma_linear_":
         #                     method = "ma"
-        #                 case "perres_short/perres_mm_linear_":
+        #                 case "perres_1.1/perres_mm_linear_":
         #                     method = "perres"
-        #             for spheresize_index in [0, 2, 5, 10, 15, 20, 30]: # Each of these numbers refer to an index in radii
+        #             for spheresize_index in [0, 10, 20, 30, 40, 50, 80, 109]: # Each of these numbers refer to an index in radii
         #                 potential_list = []
         #                 for distance in distance_list:
         #                     matrix_data = graphBuilder.read_files(folder, distance)
         #                     N1_list = graphBuilder.extract_N(matrix_data, pair[0])
         #                     N2_list = graphBuilder.extract_N(matrix_data, pair[1])
-        #                     to_plot = graphBuilder.potential_plotter(N1_list, N2_list, True, atom_of_interest)
+        #                     to_plot = graphBuilder.potential_plotter(N1_list, N2_list, False, atom_of_interest)
         #                     potential_list.append(to_plot[spheresize_index])
         #                 plt.plot(distance_list, potential_list, label=f"spheresize {spheresize_index + 10}")
         #             plt.legend()
@@ -131,7 +142,7 @@ class graphBuilder():
                 sublist += 1
             list_ += 1
         return N_list
-    
+   
     def potential_plotter(first_list, second_list, average, atom_of_interest = 0):
         # Takes two output lists, averages the differences of the items. Each item on the output list is the average potential difference.
 
@@ -141,6 +152,10 @@ class graphBuilder():
         else:
             return list(map(lambda pot_diff_list: pot_diff_list[atom_of_interest] , difference_list)) #This returns one of the differences
     
+    
+    # def deviation_plotter(to_plot)
+
+
 
 if __name__ == "__main__":
     graphBuilder()
