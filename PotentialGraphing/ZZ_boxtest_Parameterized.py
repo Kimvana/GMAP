@@ -8,37 +8,24 @@ import sys
 
 
 class Universe():
-    def __init__(self, univ, clibfname, outfiles, smoothing_domain, smoothing, out_name):
-        print("start __init__")
+    def __init__(self, univ, clibfname, outfiles, smoothing_domain, 
+                 smoothing, out_name):
         self.universe = univ
         self.get_properties()
         print(smoothing_domain, smoothing)
         self.smooth_domain = np.float32(smoothing_domain)
         self.out_name = out_name
 
-        match smoothing: # Convert the smoothing type to an integer to pass it to C more easily
+        match smoothing:  # Convert the smoothing type to an integer to pass it to C more easily
             case "hard":
                 self.smoothing = np.int32(0)
             case "linear":
                 self.smoothing = np.int32(1)
             case "quadratic":
                 self.smoothing = np.int32(2)
-        # for i in range(50):
-        #     print(
-        #         self.atnums[i], self.atnames[i], self.resnums[i],
-        #         self.resnames[i]
-        #     )
 
         self.def_system()
         clib = get_clib(clibfname)
-        # self.calcall(outfiles, clib)
-        # self.fast_compare_atat(clib)
-
-        # self.make_residues()
-        # self.calc_COM(clib)
-        # self.make_boxes()
-        # self.calcallpots_subbox_ma(clib)
-
         print("compare with sphereradius")
 
         self.compare_with_sphererad(clib)
@@ -52,8 +39,8 @@ class Universe():
         allradii = [out_name]  # VesTube
         # allradii = [r/10 for r in range(1, 600)]  # PsbS dimer
         do_aa = False
-        do_ma = True
-        do_mm = True
+        do_ma = False
+        do_mm = False
 
         start = time.time()
         if do_aa:
@@ -275,7 +262,7 @@ class Universe():
         print(res_list)
 
         print(f"Number of residues is: {self.resnums[-1]}")
-
+        print(self.universe.dimensions)
         # print(self.boxdims)
         # print(self.positions[[3906, 4529, 5062,
         # 063, 5161, 5320, 5781, 5828, 5830], :])
@@ -712,45 +699,35 @@ def get_universe(topfile, trjfile):
     print(universe.dimensions)
     return universe
 
-def main(topfile, trjfile, clibfname, outfiles, out_name, smoothing_domain, smoothing):
+
+def main(topfile, trjfile, clibfname, outfiles, out_name,
+         smoothing_domain, smoothing):
 
     univ = get_universe(topfile, trjfile)
-    print("start universe")
-    WS = Universe(univ, clibfname, outfiles, smoothing_domain, smoothing, out_name)
-    print(WS)
+    WS = Universe(univ, clibfname, outfiles, smoothing_domain,
+                  smoothing, out_name)
+
 
 if __name__ == "__main__":
-    tutfol = "D:\\VesnaTube\\VesnaTube\\2n0a_files"
+    tutfol = "C:/Users/Tim/Documents/GitHub/GEMAIM-dev/PotentialGraphing"
 
-    if len(sys.argv) != 4:
-        raise Exception(f"To use this file, you should type: 'ZZ_boxtest_Parameterized.py out_name smoothing_domain smoothing'")
-    # topfile = tutfol + "PsbS-Mneq/PsbS_01.tpr"
-    # trjfile = tutfol + "PsbS-Mneq/PsbS_01.xtc"
+    # if len(sys.argv) != 4:
+    #     raise Exception("To use this file, you should type:
+    # \n ZZ_boxtest_Parameterized.py out_name smoothing_domain smoothing")
 
-    # topfile = tutfol + "PsbS-Deq/PsbS_Deq_A_200.tpr"
-    # trjfile = tutfol + "PsbS-Deq/PsbS_Deq_A_200_short.xtc"
-
-    # topfile = tutfol + "VesnaTube/mix_nvt_new.tpr"
-    # trjfile = tutfol + "VesnaTube/traj_comp_5_frames.xtc"
-
-    # topfile = "/Users/kim/Documents/PhD/Data/md_0_1.tpr"
-    # trjfile = "/Users/kim/Documents/PhD/Data/md_0_1_med.xtc"
-
-    topfile = "2n0a.tpr"
-    trjfile = "2n0a.xtc"
+    topfile = "Data/2n0a.tpr"
+    trjfile = "Data/2n0a.xtc"
 
     out_name = str(sys.argv[1])
-    
-    # topfile = "D:\\Data\\PhD\\Tutorials\\PsbS-Mneq\\PsbS_01.tpr"
-    # trjfile = "D:\\Data\\PhD\\Tutorials\\PsbS-Mneq\\PsbS_01.xtc"
+
     checkthis = 527490
 
-    clibfname = tutfol + "\\ZZ_testclib.dll"
-    # clibfname = "ZZ_testclib.dll"
-    outfiles=["aa", "ma", "mm"]
+    clibfname = tutfol + "//ZZ_testclib.dll"
+    outfiles = ["aa", "ma", "mm"]
     print(clibfname)
 
     smoothing_domain = int(sys.argv[2])
-    smoothing  = str(sys.argv[3])
+    smoothing = str(sys.argv[3])
 
-    main(topfile, trjfile, clibfname, outfiles, out_name, smoothing_domain, smoothing)
+    main(topfile, trjfile, clibfname, outfiles, out_name,
+         smoothing_domain, smoothing)
