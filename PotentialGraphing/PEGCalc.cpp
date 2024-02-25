@@ -2,14 +2,12 @@
 #include <stdio.h>
 #include <algorithm>
 
+// None of this code is tested, it might not even compile!
+
 extern "C" {
-
-    float charge_hard(){return 0};
-    float charge_linear(){return 0};
-
-
     // Generates a positions list in boxdim space from a normal positions list.
-    void tric_positions(float *positions, int Natoms, float inverse_matrix[3][3], float *tric_positions){
+    void tric_positions(float *positions, int Natoms,
+                        float inverse_matrix[3][3], float *tric_positions){
         for (int i = 0; i < Natoms; i++){
             for (int row = 0; row < 3; row++){
                 for (int col = 0; col < 3; col++){
@@ -18,14 +16,15 @@ extern "C" {
             }
         }
     }
-    
-    // Based on boxdim space input vectors and PBC, returns distance 
-    // vector in Cartesian coordinates .
-    void tric_PBC_diff(float *tric_vect1, float *tric_vect2, float matrix[3][3], float *vectout){
+
+
+    // Uses vectors in space defined by boxvectors, returns distance 
+    // vector in Cartesian coordinates accounting for PBC.
+    void tric_PBC_diff(float *tric_vect1, float *tric_vect2,
+                       float matrix[3][3], float *vectout){
         float temp_vect[3];
         for (int i = 0; i < 3; i++) {
             vectout[i] = 0;
-
             temp_vect[i] = tric_vect1[i] - tric_vect2[i];
             if (temp_vect[i] > 0.5){
                 temp_vect[i] -= 1;
@@ -41,9 +40,32 @@ extern "C" {
             }
     }
 
-    void calc(int smoothing_type, int distance_type, 
-    float smoothing_distance){
-        typedef float (*charge_weight)(float, float);
+    // this function has the same signature as the 'smart' one for aliassing 
+    // purposes, but the halfbox and boxdims arguments are not actually used!
+    void PBC_diff_dumb(float *vect1, float *vect2,
+                       float matrix[3][3], float *vectout) {
+        for (int i = 0; i < 3; i++) {
+            vectout[i] = vect1[i] - vect2[i];
+        }
     }
+
+    float 
+
+    float distance2(float *vect){
+        return vect[0] * vect[0] + vect[1] * vect[1] + vect[2] * vect[2];
+    }
+
+    float distance(float *vect){
+        float distance2 = vect[0] * vect[0] + vect[1] * vect[1]
+        + vect[2] * vect[2];
+        return sqrt(distance2);
+    }
+
+    float potential(float *vect, float charge){
+        return (charge / distance(vect));
+    }
+
+
+
 
 }

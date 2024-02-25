@@ -133,19 +133,20 @@ def potential_difference_grapher(topfile, trjfile, potential_folders,
         plt.plot(radii, pot_out)
         plt.xlabel("Spheresize (A)")
         plt.ylabel("Potential (V)")
-    plt.legend(["ma", "mm"])
+    plt.legend(potential_folders)
     plt.savefig("2N0A Graph")
     plt.clf
 
 
 if __name__ == "__main__":
 
-    topfile = "2n0a.tpr"
-    trjfile = "2n0a.xtc"
+    topfile = "Data/2n0a.tpr"
+    trjfile = "Data/2n0a.xtc"
 
-    potential_folders = ["2n0a_ma/subbox_ma_", "2n0a_perres/perres_mm_"]
+    potentialfolders = ["Data/2n0a_perres/perres_mm_",
+                        "Data/2n0a_perres_2/perres_mm_"]
     radii = np.arange(10, 59)  # Used spheresizes
     relevant_atoms = ["O", "N"]
 
-    potential_difference_grapher(topfile, trjfile, potential_folders,
+    potential_difference_grapher(topfile, trjfile, potentialfolders,
                                  radii, relevant_atoms)
