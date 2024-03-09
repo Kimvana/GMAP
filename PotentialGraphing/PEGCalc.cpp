@@ -49,8 +49,6 @@ extern "C" {
         }
     }
 
-    float 
-
     float distance2(float *vect){
         return vect[0] * vect[0] + vect[1] * vect[1] + vect[2] * vect[2];
     }
@@ -61,11 +59,18 @@ extern "C" {
         return sqrt(distance2);
     }
 
-    float potential(float *vect, float charge){
-        return (charge / distance(vect));
+    void potential(float *vect, float distance, float charge, float potential){
+        potential += (charge / distance);
     }
 
+    void E_vect(float *vect, float distance, float charge, float E_vect[3]){
+        float E_vect_base = charge / distance * distance * distance;
+        
+        E_vect[0] = E_vect_base * vect[0];
+        E_vect[1] = E_vect_base * vect[1];
+        E_vect[2] = E_vect_base * vect[2];
+    }
 
-
+    void G_vect(){}
 
 }
