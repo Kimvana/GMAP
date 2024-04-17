@@ -362,83 +362,53 @@ document.write(`
                   
   <section id="hamiltionians">
 <span id="userguide-page-hamiltonians"></span><h1>Hamiltionians<a class="headerlink" href="#hamiltionians" title="Link to this heading">#</a></h1>
-<p>The Hamiltonian is given by[cite thomas]:</p>
+<section id="use-case">
+<h2>Use Case<a class="headerlink" href="#use-case" title="Link to this heading">#</a></h2>
+<p>The main reason to use GMAP is to obtain the strange creatures known as Hamiltionians.
+They are an important input for programs like NISE that compute absorption spectra.
+The Hamiltonian contains the frequency at which a an oscillator absorbs light and
+how strongly each of these oscillators talk to each other and thus influence each
+others absorption frequency.</p>
+</section>
+<section id="physical-description">
+<h2>Physical description<a class="headerlink" href="#physical-description" title="Link to this heading">#</a></h2>
+<p>The Hamiltonian is given by[1]:</p>
 <div class="math notranslate nohighlight">
 \[H(t) = \sum_n \epsilon_n(t)B_n^\dagger B_n - \frac{1}{2}\sum_n \Delta_n(t)B_n^\dagger B_n^\dagger B_nB_n+
-\sum_{nm} J_{nm}(t)B_n^\dagger B_m - \sum_n \vec{E}(t)\cdot \vec{\mu}_n(t)[B_n^\dagger + B_n] .\]</div>
-<p>where <span class="math notranslate nohighlight">\(B_n^\dagger\)</span> and <span class="math notranslate nohighlight">\(B_n\)</span> are the creation and annihilation operators respectively.  $epsilon_n(t)$ represents the energy gap between the ground state and the first excited states on amide group $n$. The coupling strength of amide group $n$ with the external electric field <span class="math notranslate nohighlight">\(\vec{E}(t)\)</span> is controlled by the transition dipole <span class="math notranslate nohighlight">\(\mu_n\)</span>. The anharmonicity <span class="math notranslate nohighlight">\(\Delta_n(t)\)</span> defines the difference in energy energy gap between the ground and first excited state and the first excited and second excited state, where a positive anharmonicity indicates that the latter is smaller than the former. <span class="math notranslate nohighlight">\(J_{nm}\)</span> represents the transition dipole coupling. The reason why <span class="math notranslate nohighlight">\(\vec{E}(t)\)</span>, <span class="math notranslate nohighlight">\(J_{nm}(t)\)</span> and <span class="math notranslate nohighlight">\(\vec{\mu}_n(t)\)</span> are dependent on time is because the investigated structure is not necessarily completely static and constantly shifts ever so slightly, and will thus be examined at discrete frames.</p>
-<p>Obtaining this file is one of the main reasons to run the program. It contains the time-dependent
-Hamiltonian, in the following format:
-A Hamiltonian is computed for every single frame. In the txt format, the entire Hamiltonian lives on
+\sum_{nm} J_{nm}(t)B_n^\dagger B_m - \sum_n \vec{E}(t)\cdot \vec{\mu}_n(t)[B_n^\dagger + B_n] ,\]</div>
+<p>where <span class="math notranslate nohighlight">\(B_n^\dagger\)</span> and <span class="math notranslate nohighlight">\(B_n\)</span> are the creation and annihilation operators respectively.
+<span class="math notranslate nohighlight">\(\epsilon_n(t)\)</span> represents the energy gap between the ground state and the first excited states on
+amide group <span class="math notranslate nohighlight">\(n\)</span> . The coupling strength of amide group <span class="math notranslate nohighlight">\(n\)</span> with the external electric field <span class="math notranslate nohighlight">\(\vec{E}(t)\)</span>
+is controlled by the transition dipole <span class="math notranslate nohighlight">\(\mu_n\)</span>. The anharmonicity <span class="math notranslate nohighlight">\(\Delta_n(t)\)</span> defines the
+difference in energy energy gap between the ground and first excited state and the first excited and second
+excited state, where a positive anharmonicity indicates that the latter is smaller than the former.
+<span class="math notranslate nohighlight">\(J_{nm}\)</span> represents the transition dipole coupling. The reason why <span class="math notranslate nohighlight">\(\vec{E}(t)\)</span>, <span class="math notranslate nohighlight">\(J_{nm}(t)\)</span>
+and <span class="math notranslate nohighlight">\(\vec{\mu}_n(t)\)</span> are dependent on time is because the investigated structure is not necessarily
+completely static and constantly shifts ever so slightly, and is thus examined at discrete frames.</p>
+<p>This formula is impressive, however, it is not used directly. The program works by using maps which use physical
+characteristics of the system to compute the values inside the Hamiltionians.</p>
+</section>
+<section id="file-layout">
+<h2>File layout<a class="headerlink" href="#file-layout" title="Link to this heading">#</a></h2>
+<p>A Hamiltonian is computed for every single frame. In the txt format, the entire Hamiltonian lives on
 a single line. Therefore, the file contains a line for each frame. On a single line, the first number is the
 number of the frame, followed by a space. Then, the Hamiltonian itself follows. As the Hamiltonian is a
 diagonal matrix, only roughly half of the entries need to be written. The Hamiltonian is written row by
 row, starting at the diagonal entry. Therefore, after the frame number, the entry at 0,0 is written to the
 output file, followed by the one at 0,1, etc. For the next line, the first item is 1,1 (1,0 is skipped as it is
-identical to the value at 0,1), the second is 1,2, etc.
-The values at the diagonal of the Hamiltonian are the expected vibrational frequencies in wavenum-
-bers. These include electrostatic effects from the environment, but exclude any influences from coupling
-with neighbouring amide groups. The values are usually around 1600. The off-diagonal elements of the
-Hamiltonian list the coupling between amide groups. The coupling can be both positive and negative,
-and occasionally reach values of 30. However, virtually all values are smaller than 5, with most of them
-being smaller than 0.1.
-The binary file is very similar, with half the hamiltonian per frame. It contains no spaces, only float
+identical to the value at 0,1), the second is 1,2, etc. The number of entries total in the Hamiltonian stored
+this way is the triangular number of the width of the Hamiltonian. The values at the diagonal of the Hamiltonian
+are the expected vibrational frequencies in wavenumbers. These include electrostatic effects from the
+environment, but exclude any influences from coupling with neighbouring amide groups. The values are usually
+around 1600. The off-diagonal elements of the Hamiltonian list the coupling between amide groups. The coupling
+can be both positive and negative, and occasionally reach values of 30. However, virtually all values are smaller
+than 5, with most of them being smaller than 0.1.</p>
+<p>The binary file is very similar. It contains no spaces, only float
 (32 bit) characters. The first one indicates the frame number, and is followed by the hamiltonian entries
 in the same order as the text file. After one hamiltonian has been written, no spacer is used: the next
 float is the number of the next frame.</p>
-<p>Here, an overview of the different available parameters is given. If you want to know how exactly to specify your choice, <a class="reference internal" href="specifying_parameters.html#userguide-page-specifying-parameters"><span class="std std-ref">this page</span></a> is for you.</p>
-<p>Parameters can be specified in multiple places (here referred to as the ‘source’) - the command line, the input parameter file, and the default parameter file. A handful of parameters is not allowed to be present in the default parameter file, wherever this is the case, this is mentioned.</p>
-<p>When multiple sources are used, the choices in the command line take precedence above the choices in the input file, which take precedence over those in the default parameter file.</p>
-<p>Please note that when paths are supplied, they should either be absolute, or specified relative to the source.</p>
-<p>Some parameters store paths that can be relative to a directory stored in a different parameter. Where this is the case, this is denoted. Please note that when a file path and a directory path are given, the file path is assumed relative to the directory path. If only the file path is given, it is assumed relative to the source. If only the directory is given, file paths from lower-precedence sources are assumed relative to it.</p>
-<section id="source-directory">
-<h2>source_directory<a class="headerlink" href="#source-directory" title="Link to this heading">#</a></h2>
-<p>(shorthand: -sd)</p>
-<p>The location of the sourcefiles directory. This directory stores all data required for the program to run. The parameter default_parameter_filename will be assumed relative to this directory when applicable.</p>
-</section>
-<section id="default-parameter-filename">
-<h2>default_parameter_filename<a class="headerlink" href="#default-parameter-filename" title="Link to this heading">#</a></h2>
-<p>(shorthand: -dpf)</p>
-<p>The filename of the default parameter file. This parameter is not allowed to be present in the default parameter file. This file must contain all possible parameters (except those it cannot). It does not need to contain any parameters from maps, but if it contains any from any map, it must contain all of that specific map. The path stored here will be assumed to be relative to the directory given in the parameter source_directory when applicable.</p>
-</section>
-<section id="log-directory">
-<h2>log_directory<a class="headerlink" href="#log-directory" title="Link to this heading">#</a></h2>
-<p>(no shorthand available)</p>
-<p>The location of the log directory. In this directory, all files relating to logging the program flow are located. The parameter log_filename will be assumed relative to this directory when applicable.</p>
-</section>
-<section id="log-filename">
-<h2>log_filename<a class="headerlink" href="#log-filename" title="Link to this heading">#</a></h2>
-<p>(no shorthand available)</p>
-<p>The filename of the log file. This file contains the same, or similar information as the prints to the command line, depending on the choice for the parameters verbose and verbose_logfile. The path stored here will be assumed to be relative to the directory given in the parameter log_directory when applicable.</p>
-</section>
-<section id="map-directory">
-<h2>map_directory<a class="headerlink" href="#map-directory" title="Link to this heading">#</a></h2>
-<p>(shorthand: -md)</p>
-<p>The location of the maps directory. Multiple directories are allowed to be given. Within a maps directory, the maps that can be used are stored. See <a class="reference internal" href="../Adding_a_new_map/index.html#userguide-page-adding-map"><span class="std std-ref">adding a new map</span></a> for more information on what maps are and how to make one.</p>
-</section>
-<section id="verbose">
-<h2>verbose<a class="headerlink" href="#verbose" title="Link to this heading">#</a></h2>
-<div class="line-block">
-<div class="line">(no shorthand available)</div>
-<div class="line">(options: 0, 1, 2, 3, 4)</div>
-</div>
-<p>How verbose the prints to the command line should be. When 0 is chosen, nothing but errors will be reported.</p>
-</section>
-<section id="verbose-logfile">
-<h2>verbose_logfile<a class="headerlink" href="#verbose-logfile" title="Link to this heading">#</a></h2>
-<div class="line-block">
-<div class="line">(no shorthand available)</div>
-<div class="line">(options: 0, 1, 2, 3, 4)</div>
-</div>
-<p>How verbose the prints to the log file should be.</p>
-</section>
-<section id="prevent-overwrite">
-<h2>prevent_overwrite<a class="headerlink" href="#prevent-overwrite" title="Link to this heading">#</a></h2>
-<div class="line-block">
-<div class="line">(no shorthand available)</div>
-<div class="line">(options: true, t, false, f)</div>
-</div>
-<p>Whether the files created by the program should or shouldn’t overwrite existing files. When set to True, the existing file will be renamed, and the requested name will be used for the new file. When set to False, the old file will be overwritten, and the data inside lost forever.</p>
+<p>[1]: Thomas L.C. Jansen. “Computational Spectroscopy of Complex Systems”. In: The Journal of Chemical
+Physics 155 (170901 2021)</p>
 </section>
 </section>
 
@@ -488,14 +458,9 @@ float is the number of the next frame.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#source-directory">source_directory</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#default-parameter-filename">default_parameter_filename</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#log-directory">log_directory</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#log-filename">log_filename</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#map-directory">map_directory</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verbose">verbose</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verbose-logfile">verbose_logfile</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prevent-overwrite">prevent_overwrite</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#use-case">Use Case</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-description">Physical description</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#file-layout">File layout</a></li>
 </ul>
   </nav></div>
 

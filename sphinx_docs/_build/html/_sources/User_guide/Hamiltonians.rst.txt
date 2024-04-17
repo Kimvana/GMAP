@@ -4,102 +4,57 @@
 Hamiltionians
 =============
 
-The Hamiltonian is given by[cite thomas]:
+Use Case
+--------
+The main reason to use GMAP is to obtain the strange creatures known as Hamiltionians.
+They are an important input for programs like NISE that compute absorption spectra.
+The Hamiltonian contains the frequency at which a an oscillator absorbs light and
+how strongly each of these oscillators talk to each other and thus influence each
+others absorption frequency.
 
+Physical description
+--------------------
+
+The Hamiltonian is given by[1]:
 
 .. math::
     H(t) = \sum_n \epsilon_n(t)B_n^\dagger B_n - \frac{1}{2}\sum_n \Delta_n(t)B_n^\dagger B_n^\dagger B_nB_n+
-    \sum_{nm} J_{nm}(t)B_n^\dagger B_m - \sum_n \vec{E}(t)\cdot \vec{\mu}_n(t)[B_n^\dagger + B_n] .
+    \sum_{nm} J_{nm}(t)B_n^\dagger B_m - \sum_n \vec{E}(t)\cdot \vec{\mu}_n(t)[B_n^\dagger + B_n] ,
 
-where :math:`B_n^\dagger` and :math:`B_n` are the creation and annihilation operators respectively.  $\epsilon_n(t)$ represents the energy gap between the ground state and the first excited states on amide group $n$. The coupling strength of amide group $n$ with the external electric field :math:`\vec{E}(t)` is controlled by the transition dipole :math:`\mu_n`. The anharmonicity :math:`\Delta_n(t)` defines the difference in energy energy gap between the ground and first excited state and the first excited and second excited state, where a positive anharmonicity indicates that the latter is smaller than the former. :math:`J_{nm}` represents the transition dipole coupling. The reason why :math:`\vec{E}(t)`, :math:`J_{nm}(t)` and :math:`\vec{\mu}_n(t)` are dependent on time is because the investigated structure is not necessarily completely static and constantly shifts ever so slightly, and will thus be examined at discrete frames.
+where :math:`B_n^\dagger` and :math:`B_n` are the creation and annihilation operators respectively.
+:math:`\epsilon_n(t)` represents the energy gap between the ground state and the first excited states on
+amide group :math:`n` . The coupling strength of amide group :math:`n` with the external electric field :math:`\vec{E}(t)`
+is controlled by the transition dipole :math:`\mu_n`. The anharmonicity :math:`\Delta_n(t)` defines the
+difference in energy energy gap between the ground and first excited state and the first excited and second
+excited state, where a positive anharmonicity indicates that the latter is smaller than the former. 
+:math:`J_{nm}` represents the transition dipole coupling. The reason why :math:`\vec{E}(t)`, :math:`J_{nm}(t)`
+and :math:`\vec{\mu}_n(t)` are dependent on time is because the investigated structure is not necessarily
+completely static and constantly shifts ever so slightly, and is thus examined at discrete frames.
 
-Obtaining this file is one of the main reasons to run the program. It contains the time-dependent
-Hamiltonian, in the following format:
+This formula is impressive, however, it is not used directly. The program works by using maps which use physical 
+characteristics of the system to compute the values inside the Hamiltionians.
+
+File layout
+-----------
+
 A Hamiltonian is computed for every single frame. In the txt format, the entire Hamiltonian lives on
 a single line. Therefore, the file contains a line for each frame. On a single line, the first number is the
 number of the frame, followed by a space. Then, the Hamiltonian itself follows. As the Hamiltonian is a
 diagonal matrix, only roughly half of the entries need to be written. The Hamiltonian is written row by
 row, starting at the diagonal entry. Therefore, after the frame number, the entry at 0,0 is written to the
 output file, followed by the one at 0,1, etc. For the next line, the first item is 1,1 (1,0 is skipped as it is
-identical to the value at 0,1), the second is 1,2, etc.
-The values at the diagonal of the Hamiltonian are the expected vibrational frequencies in wavenum-
-bers. These include electrostatic effects from the environment, but exclude any influences from coupling
-with neighbouring amide groups. The values are usually around 1600. The off-diagonal elements of the
-Hamiltonian list the coupling between amide groups. The coupling can be both positive and negative,
-and occasionally reach values of 30. However, virtually all values are smaller than 5, with most of them
-being smaller than 0.1.
-The binary file is very similar, with half the hamiltonian per frame. It contains no spaces, only float
+identical to the value at 0,1), the second is 1,2, etc. The number of entries total in the Hamiltonian stored
+this way is the triangular number of the width of the Hamiltonian. The values at the diagonal of the Hamiltonian
+are the expected vibrational frequencies in wavenumbers. These include electrostatic effects from the 
+environment, but exclude any influences from coupling with neighbouring amide groups. The values are usually 
+around 1600. The off-diagonal elements of the Hamiltonian list the coupling between amide groups. The coupling 
+can be both positive and negative, and occasionally reach values of 30. However, virtually all values are smaller
+than 5, with most of them being smaller than 0.1.
+
+The binary file is very similar. It contains no spaces, only float
 (32 bit) characters. The first one indicates the frame number, and is followed by the hamiltonian entries
 in the same order as the text file. After one hamiltonian has been written, no spacer is used: the next
 float is the number of the next frame.
 
-
-Here, an overview of the different available parameters is given. If you want to know how exactly to specify your choice, :ref:`this page<UserGuide_page_specifying_parameters>` is for you.
-
-Parameters can be specified in multiple places (here referred to as the 'source') - the command line, the input parameter file, and the default parameter file. A handful of parameters is not allowed to be present in the default parameter file, wherever this is the case, this is mentioned.
-
-When multiple sources are used, the choices in the command line take precedence above the choices in the input file, which take precedence over those in the default parameter file.
-
-Please note that when paths are supplied, they should either be absolute, or specified relative to the source.
-
-Some parameters store paths that can be relative to a directory stored in a different parameter. Where this is the case, this is denoted. Please note that when a file path and a directory path are given, the file path is assumed relative to the directory path. If only the file path is given, it is assumed relative to the source. If only the directory is given, file paths from lower-precedence sources are assumed relative to it.
-
-
-source_directory
-----------------
-(shorthand: -sd)
-
-The location of the sourcefiles directory. This directory stores all data required for the program to run. The parameter default_parameter_filename will be assumed relative to this directory when applicable.
-
-
-default_parameter_filename
---------------------------
-(shorthand: -dpf)
-
-The filename of the default parameter file. This parameter is not allowed to be present in the default parameter file. This file must contain all possible parameters (except those it cannot). It does not need to contain any parameters from maps, but if it contains any from any map, it must contain all of that specific map. The path stored here will be assumed to be relative to the directory given in the parameter source_directory when applicable. 
-
-
-log_directory
--------------
-(no shorthand available)
-
-The location of the log directory. In this directory, all files relating to logging the program flow are located. The parameter log_filename will be assumed relative to this directory when applicable.
-
-
-log_filename
-------------
-(no shorthand available)
-
-The filename of the log file. This file contains the same, or similar information as the prints to the command line, depending on the choice for the parameters verbose and verbose_logfile. The path stored here will be assumed to be relative to the directory given in the parameter log_directory when applicable.
-
-
-map_directory
--------------
-(shorthand: -md)
-
-The location of the maps directory. Multiple directories are allowed to be given. Within a maps directory, the maps that can be used are stored. See :ref:`adding a new map<UserGuide_page_adding_map>` for more information on what maps are and how to make one.
-
-
-verbose
--------
-| (no shorthand available)
-| (options: 0, 1, 2, 3, 4)
-
-How verbose the prints to the command line should be. When 0 is chosen, nothing but errors will be reported.
-
-
-verbose_logfile
----------------
-| (no shorthand available)
-| (options: 0, 1, 2, 3, 4)
-
-How verbose the prints to the log file should be.
-
-
-prevent_overwrite
------------------
-| (no shorthand available)
-| (options: true, t, false, f)
-
-Whether the files created by the program should or shouldn't overwrite existing files. When set to True, the existing file will be renamed, and the requested name will be used for the new file. When set to False, the old file will be overwritten, and the data inside lost forever.
-
+[1]: Thomas L.C. Jansen. “Computational Spectroscopy of Complex Systems”. In: The Journal of Chemical
+Physics 155 (170901 2021)
