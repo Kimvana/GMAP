@@ -1,7 +1,7 @@
 .. _UserGuide_page_Hamiltonians:
 
 =============
-Hamiltionians
+Hamiltonians
 =============
 
 Use Case
@@ -55,6 +55,22 @@ The binary file is very similar. It contains no spaces, only float
 (32 bit) characters. The first one indicates the frame number, and is followed by the hamiltonian entries
 in the same order as the text file. After one hamiltonian has been written, no spacer is used: the next
 float is the number of the next frame.
+
+Below is an example Hamiltonian:
+
+.. list-table:: Title
+   :widths: 25 25 50
+   :header-rows: 1
+
+   * - Heading row 1, column 1
+     - Heading row 1, column 2
+     - Heading row 1, column 3
+   * - Row 1, column 1
+     -
+     - Row 1, column 3
+   * - Row 2, column 1
+     - Row 2, column 2
+     - Row 2, column 3
 
 [1]: Thomas L.C. Jansen. “Computational Spectroscopy of Complex Systems”. In: The Journal of Chemical
 Physics 155 (170901 2021)

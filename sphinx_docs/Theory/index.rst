@@ -8,3 +8,4 @@ These pages will contain an overview of the theory used in GMAP.
     :maxdepth: 2
     
     PBC
+    Hamiltonians
