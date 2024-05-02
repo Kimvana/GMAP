@@ -3,12 +3,13 @@
 import importlib
 import sys
 
+# 3rd party lib imports
+import numpy as np
+
 # local imports
 import GMAP.src.tools.DefaultMapFunctions as GM_DMF
 import GMAP.src.tools.FileHandler as GM_FH
 import GMAP.src.tools.ParameterParser as GM_PP
-from GMAP.src.tools.PrintTools import devprint as dpr
-dpr("", end="")  # to disable error of dpr unused
 
 
 class Map():
@@ -296,8 +297,16 @@ class Map():
         if not self.success:
             return
 
+        self.complete_code(("get_VEG_ref",), ({
+            "map_": self,
+            "Printer": Printer
+        },))
+
+        self.complete_code(("get_dipole",), ({"map_": self},))
+
         # Add in the remaining code
         self.complete_code((
+            "get_dipole_mag",
             "post_init",
             "pre_run",
             "pre_frame",
@@ -446,7 +455,7 @@ class Map():
         # build remaining functions (i.e. do something with the contents
         # of core.txt)
         functs_to_build = [
-            "get_dipole"
+            "get_dipole_dir"
         ]
         kwargs_for_build = [{
             "map_": self,
@@ -455,7 +464,7 @@ class Map():
 
         # If the code doesn't contain a function for getting the dipole, make
         # sure the two necessary keywords are there.
-        if not hasattr(self.code, "GM_get_dipole"):
+        if not hasattr(self.code, "get_dipole_dir"):
             if not all(
                 keyword in self.rawcore for keyword in ("r_vec", "r_pos")
             ):
@@ -708,27 +717,41 @@ class Core():
             return
 
         self.used_atoms = self.parse_used_atoms(
-            Printer, rawcore, Map.directory
-        )
+            Printer, rawcore, Map.directory)
         if not self.success:
             return
 
         self.electrostatic_atoms = self.parse_estatic_atoms(
-            Printer, rawcore, Map.directory
-        )
+            Printer, rawcore, Map.directory)
         if not self.success:
             return
 
         if self.electrostatic_atoms:
             self.electrostatic_choice = self.parse_estatic_choice(
-                Printer, rawcore, Map.directory
-            )
+                Printer, rawcore, Map.directory)
         else:
             self.electrostatic_choice = None
         if not self.success:
             return
 
+        self.local_atoms = self.parse_local_atoms(
+            Printer, rawcore, Map.directory)
+        if not self.success:
+            return
+
         self.type = self.parse_type(Printer, rawcore, Map.directory)
+        if not self.success:
+            return
+
+        # If there is no custom function for defining an oscillators VEG
+        # reference point, a default is needed. Make sure core.txt is valid.
+        if not hasattr(Map.code, "GM_get_VEG_ref"):
+            self.check_VEG_reference(Printer, rawcore, Map.directory)
+            if not self.success:
+                return
+
+        self.dipole_gas_phase, self.dipole_data_array = self.parse_dipoles(
+            Printer, rawcore, Map.directory)
         if not self.success:
             return
 
@@ -817,6 +840,11 @@ class Core():
             )
             self.success = False
             return
+        n_bonds = sum([len(bonds) for bonds in self.bonds])
+        if n_bonds:
+            self.requires_bonds = True
+        else:
+            self.requires_bonds = False
 
         if "functional_group_bonds" in rawcore:
             self.parse_fg_bonds(
@@ -832,10 +860,6 @@ class Core():
         if "requires_bonds" in rawcore:
             if rawcore["requires_bonds"][0].lower() in ("t", "true"):
                 self.requires_bonds = True
-            else:
-                self.requires_bonds = False
-        else:
-            self.requires_bonds = False
 
         self.functional_group = [
             Structure(struct, bonds) for struct, bonds in zip(
@@ -1296,6 +1320,74 @@ class Core():
             return
         return choice.upper()
 
+    def parse_local_atoms(self, Printer, rawcore, mapdir):
+        """Parse the choice for the parameter electrostatic_atoms
+
+        Parameters
+        ----------
+        Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
+            The object that allows to cleanly log and print during runtime,
+            and handle errors.
+        rawcore : dict of str - list of str pairs
+            The raw contents of the file core.txt
+        mapdir : pathlib.Path
+            The path to the directory in which the map is defined.
+
+        Returns
+        -------
+        local_atoms : list of int
+            The indices of the atoms in used_atoms that should actually
+            be used in electrostatic calculations. The indices are the
+            positions of the atoms in used_atoms, starting counting at 0.
+        """
+
+        # see if it exists
+        if "local_atoms" not in rawcore:
+            Printer.warning(
+                "\nCould not find the parameter 'local_atoms' in the "
+                f"file {mapdir / 'core.txt'}. Without it, the map cannot "
+                "function. Please make sure it is present.",
+                "MI_MC_6"
+            )
+            self.success = False
+            return
+
+        # convert to ints
+        try:
+            local_atoms = [
+                int(num) for num in rawcore["local_atoms"]
+            ]
+        except Exception as ex:
+            if rawcore["local_atoms"][0].lower() == "none":
+                local_atoms = []
+            else:
+                Printer.warning(
+                    "\nCould not interpret the choice for the parameter "
+                    "'local_atoms'"
+                    f" in the file {mapdir / 'core.txt'}. Please make sure "
+                    "the choice consists of nothing but numbers separated by "
+                    "spaces.",
+                    "MI_MC_7", exception=ex
+                )
+                self.success = False
+                return
+
+        # now, see if choice is valid
+        maxlen = len(self.used_atoms)
+        if any(ix >= maxlen for ix in local_atoms):
+            Printer.warning(
+                "\nCould not interpret the choice for the parameter "
+                "'local_atoms'"
+                f" in the file {mapdir / 'core.txt'}. Please make sure the "
+                "indices don't exceed the amount of atoms given for the "
+                "parameter used_atoms.",
+                "MI_MC_8"
+            )
+            self.success = False
+            return
+
+        return local_atoms
+
     def parse_type(self, Printer, rawcore, mapdir):
         """Parse the choice for the parameter type
 
@@ -1344,6 +1436,341 @@ class Core():
             self.success = False
             return
         return choice.lower()
+
+    def check_VEG_reference(self, Printer, rawcore, mapdir):
+        """Check the choice for the parameter VEG_reference.
+
+        Confirms the validity of the choice for VEG_reference. Does the
+        chosen method exist? Is the type of the rest of the arguments
+        correct?
+
+        Parameters
+        ----------
+        Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
+            The object that allows to cleanly log and print during runtime,
+            and handle errors.
+        rawcore : dict of str - list of str pairs
+            The raw contents of the file core.txt
+        mapdir : pathlib.Path
+            The path to the directory in which the map is defined.
+        """
+
+        def tryint(x):
+            try:
+                int(x)
+            except Exception:
+                return False
+            else:
+                return True
+
+        if "VEG_reference" not in rawcore:
+            Printer.warning(
+                "\nCould not find the parameter 'VEG_reference' in the "
+                f"file {mapdir / 'core.txt'}. Without it, the map cannot "
+                "function. Please make sure it is present.",
+                "MI_MC_6"
+            )
+            self.success = False
+            return
+
+        # We need a valid keyword
+        choice = rawcore["VEG_reference"][0]
+        if choice.lower() not in ("residues", "position", "com"):
+            Printer.warning(
+                "\nCould not interpret the choice for the parameter "
+                "'VEG_reference'"
+                f" in the file {mapdir / 'core.txt'}. Please make sure the "
+                "choice is 'residues', 'position', or 'CoM'.",
+                "MI_MC_8"
+            )
+            self.success = False
+            return
+
+        # we need a valid definition after. Firstly, it must be present.
+        # For residues and CoM, we also need just integers.
+        if (
+            len(rawcore["VEG_reference"]) < 2
+            or
+            (choice.lower() in ("residues", "com") and not all(
+                tryint(val) for val in rawcore["VEG_reference"][1:]
+            ))
+        ):
+            Printer.warning(
+                "\nCould not interpret the choice for the parameter "
+                "'VEG_reference'"
+                f" in the file {mapdir / 'core.txt'}. Please make sure the "
+                "choice of method 'residues', 'position', or 'CoM' is also "
+                "followed with a choice for this method. ",
+                "MI_MC_8"
+            )
+            self.success = False
+            return
+
+    def parse_dipoles(self, Printer, rawcore, mapdir):
+        """Parse the information for dipole magnitude.
+
+        Parameters
+        ----------
+        Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
+            The object that allows to cleanly log and print during runtime,
+            and handle errors.
+        rawcore : dict of str - list of str pairs
+            The raw contents of the file core.txt
+        mapdir : pathlib.Path
+            The path to the directory in which the map is defined.
+
+        Returns
+        -------
+        dipole_gas_phase : `np.float32`
+            What the base magnitude for the dipole should be. The program
+            can either use this as-is, or in combination with the contents
+            from a given file.
+        fdata : `np.ndarray` or None
+            An array of shape (n_estatic_ats, 10) or (3, n_estatic_ats, 10),
+            with padded zeros for any columns that are not required.
+            The 2D array is returned when the file is for magnitude, the 3D
+            when the file is for xyz separately.
+            If the parameter 'dipole_data_file' does not occur in the file
+            core.txt, None is returned instead.
+        """
+
+        # First, get the (gas phase) magnitude of the dipole, this must
+        # always be given.
+
+        if "dipole_gas_phase" not in rawcore:
+            Printer.warning(
+                "\nCould not find the parameter 'dipole_gas_phase' in the "
+                f"file {mapdir / 'core.txt'}. Without it, the map cannot "
+                "function. Please make sure it is present.",
+                "MI_MC_6"
+            )
+            self.success = False
+            return None, None
+
+        try:
+            dipole_gas_phase = [
+                np.float32(num) for num in rawcore["dipole_gas_phase"]
+            ]
+        except Exception as ex:  # no 0th entry, not floatable
+            Printer.warning(
+                "\nCould not interpret the choice for the parameter "
+                "'dipole_gas_phase'"
+                f" in the file {mapdir / 'core.txt'}. Please make sure "
+                "the choice consists of a single decimal number.",
+                "MI_MC_7", exception=ex
+            )
+            self.success = False
+            return None, None
+
+        # how many we need, depends on the other parameter, dipole_data_file.
+        # it can either give a single VEG matrix (for magnitude), or three,
+        # one for each of the XYZ components.
+        if "dipole_data_file" not in rawcore:
+            # This is actually completely fine. The dipole moment does not
+            # need to depend on the electrostatics, even if the frequency
+            # does. In that case, we only need a single value.
+            return dipole_gas_phase[0], None
+
+        # ---------------------------------------------------------------------
+
+        # Then, look for the optional dependency of the dipole on the
+        # electrostatics from the environment.
+
+        warntext = (
+            f"\nThe file {mapdir / 'core.txt'} contains an invalid choice for "
+            "the parameter 'dipole_data_file'. The expected format requires "
+            "both a specification of type of file (magnitude or xyz), and the "
+            "file name."
+        )
+
+        # now, the parameter  "dipole_data_file" exists.
+        match rawcore["dipole_data_file"][0]:
+            case "[N/A]":
+                return dipole_gas_phase[0], None
+            case "magnitude":
+                dipole_gas_phase = dipole_gas_phase[0]
+                choice = "mag"
+            case "xyz":
+                if len(dipole_gas_phase) != 3:
+                    Printer.warning(
+                        "\nInvalid choice for the parameter 'dipole_gas_phase'"
+                        f" in the file {mapdir / 'core.txt'}. Please make "
+                        "sure the choice consists of three decimal numbers.",
+                        "MI_MC_8"
+                    )
+                    self.success = False
+                    return None, None
+                choice = "xyz"
+            case _:
+                Printer.warning(warntext, "MI_MC_8")
+                self.success = False
+                return None, None
+
+        if len(rawcore["dipole_data_file"]) != 2:
+            Printer.warning(warntext, "MI_MC_8")
+            self.success = False
+            return None, None
+
+        # if the parameter exists, but the specified file does not:
+        fname = (mapdir / rawcore["dipole_data_file"][1]).resolve()
+        if not fname.is_file():
+            Printer.warning(
+                f"\nThe file {mapdir / 'core.txt'} wants to use the file "
+                f"{fname}"
+                " to define the dependency of the dipole moment on the "
+                "electrostatics. "
+                "However, this file does not exist.",
+                "MI_MC_3"
+            )
+            self.success = False
+            return None, None
+
+        try:
+            fdata = np.genfromtxt(
+                fname, "float32", missing_values=0, ndmin=2)
+        except Exception as ex:  # numpy had some issue
+            Printer.warning(
+                "\nNumpy could not interpret the contents of the file "
+                f"{fname}. Please make sure the file contains only decimal "
+                "numbers in a grid.",
+                "MI_MC_7", exception=ex
+            )
+            self.success = False
+            return dipole_gas_phase, None
+
+        # numpy read was succesfull, now to see whether the dimensions of the
+        # array from the file are correct.
+
+        # required (minimum) width of array:
+        deswidth = 1
+        if self.electrostatic_choice == "E":
+            deswidth = 4
+        elif self.electrostatic_choice == "G":
+            deswidth = 10
+
+        if choice == "mag":
+            desheight = len(self.electrostatic_atoms)
+        elif choice == "xyz":
+            desheight = len(self.electrostatic_atoms) * 3
+
+        array = self.confirm_array_size(
+            Printer, fdata, deswidth, desheight, fname)
+        if not self.success:
+            return dipole_gas_phase, None
+
+        if choice == "xyz":
+            array = array.reshape((3, -1, 10))
+
+        return dipole_gas_phase, array
+
+    def confirm_array_size(self, Printer, array, deswidth, desheight, fname):
+        """Makes sure that the array from the file is of the correct shape.
+
+        If not, self.success is set to false and None is immediately
+        returned, kicking of the abortion all the way up the call chain.
+
+        Parameters
+        ----------
+        Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
+            The object that allows to cleanly log and print during runtime,
+            and handle errors.
+        array : `np.ndarray`
+            The array that was read from file, and whose shape/size must
+            be confirmed.
+        deswidth : int
+            The desired amount of columns in the array.
+        desheight : int
+            The desired amount of rows in the array
+        fname : `pathlib.Path`
+            The filename of the file the array is from.
+
+        Returns
+        -------
+        array : `np.ndarray` or None
+            None is returned if the input array was too small along at
+            least one dimension. If the array is larger in any dimension,
+            it is cropped to fit the dimensions exactly.
+            Finally, if the desired width was smaller than 10, the width
+            (after any possible cropping) is extended to 10, by padding
+            extra zeros.
+        """
+
+        # actual dimensions of array
+        foundheight, foundwidth = array.shape
+
+        success, array = self.report_array_size(
+            Printer, foundwidth, deswidth, "columns", fname, array)
+        success2, array = self.report_array_size(
+            Printer, foundheight, desheight, "rows", fname, array)
+        if not success or not success2:
+            self.success = False
+            return None
+
+        if foundwidth != 10:
+            toadd = np.zeros(
+                (array.shape[0], 10-array.shape[1]), dtype="float32")
+            array = np.concatenate((array, toadd), axis=1)
+        return array
+
+    @staticmethod
+    def report_array_size(Printer, foundlen, deslen, dir_, fname, fdata):
+        """Reports on the size of the array, and cuts when necessary.
+
+        This is a helper function for the method :meth:`confirm_array_size`.
+
+        Parameters
+        ----------
+        Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
+            The object that allows to cleanly log and print during runtime,
+            and handle errors.
+        foundlen : int
+            The actual size in a single dimension.
+        deslen : int
+            The desired size in that same dimension.
+        dir_ : str
+            What dimension we are looking at, in a human-readable format.
+            Must be either 'rows' or 'columns'.
+        fname : `pathlib.Path`
+            The filename of the file the array is from.
+        fdata : `np.ndarray`
+            The array that was read from file, and whose shape/size must
+            be confirmed.
+
+        Returns
+        -------
+        success : bool
+            False if foundlen < deslen, True otherwise.
+        fdata : `np.ndarray`
+            The input fdata array, but cropped in case foundlen > deslen.
+        """
+
+        if foundlen < deslen:
+            Printer.warning(
+                f"\nThere was a problem with the contents of the file {fname}"
+                ". Please make sure the file has the correct amount of "
+                f"{dir_}.\n"
+                f"Amount of {dir_} found: {foundlen}\n"
+                f"Amount of {dir_} needed: {deslen}\n",
+                "MI_MC_8"
+            )
+            return False, fdata
+
+        elif foundlen > deslen:
+            Printer.warning(
+                f"Found unexpected contents for the file {fname}. There were "
+                f"{foundlen} {dir_} found, but only {deslen} {dir_} are "
+                f"needed. The first {deslen} {dir_} will be used for the "
+                "calculation. If this is not what you want, please terminate "
+                "the process manually.",
+                "MI_MC_8"
+            )
+            if dir_ == "columns":
+                return True, fdata[:, :deslen]
+            elif dir_ == "rows":
+                return True, fdata[:deslen, :]
+
+        else:
+            return True, fdata
 
 
 class Structure():
@@ -1400,7 +1827,6 @@ class Structure():
     """
 
     def __init__(self, struct, bonds):
-        # dpr(struct)
         self.residues = [Residue(res) for res in struct]
         self.bonds = bonds
 
@@ -1442,15 +1868,12 @@ class Structure():
         # now, see if the bonds couple the multiple residues.
 
         resnums = [set([ix]) for ix in range(len(self.residues))]
-        # dpr(resnums)
         for bond in self.bonds:
             res1 = self.indices[bond[0]][0]
             res2 = self.indices[bond[1]][0]
             newset = resnums[res1] | resnums[res2]
             resnums[res1] = newset
             resnums[res2] = newset
-            # dpr(resnums)
-        # dpr(len(resnums), len(resnums[0]))
         if len(resnums) != len(resnums[0]):
             self.success = False
         else:
@@ -1484,6 +1907,51 @@ class Residue():
     def __repr__(self):
         mylist = [self.resnames, self.atoms]
         return f"{self.__class__.__name__}({repr(mylist)})"
+
+
+def manage_maps(Files, Printer, RunPars, mapdict):
+    """Initializes and manages the detected maps.
+
+    Parameters
+    ----------
+    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
+        Contains all currently known paths and other file-related properties.
+        Has to be updated after RunPars is finalized.
+    Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
+        The object that allows to cleanly log and print during runtime,
+        and handle errors.
+    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        The 'main' RunPars instance containing all the basic run-defining
+        parameters.
+    mapdict : dict of str: :class:`~GMAP.src.tools.MapReader.Map` pairs
+        Stores all the :class:`~GMAP.src.tools.MapReader.Map` objects for
+        each map supplied. The keys are the Map.name attributes corresponding
+        to the maps stored as values.
+    """
+
+    for map_ in mapdict.values():
+        map_.initialize(Files, Printer)
+
+    mapdict = {map_.name: map_ for map_ in mapdict.values() if map_.success}
+
+    for map_choice in RunPars.maps_to_use:
+        if map_choice not in mapdict:
+            Printer.warning(
+                f"The map {map_choice} was requested for use. However, it "
+                "either does not exist, or the map was loaded unsuccessfully "
+                "due to issues with its definition.",
+                "MI_GEM_1", True
+            )
+
+    requested_mapdict = {
+        map_.name: map_ for map_ in mapdict.values()
+        if map_.name in RunPars.maps_to_use
+    }
+    RunPars.requested_mapdict = requested_mapdict
+    if any(map_.Core.requires_bonds for map_ in requested_mapdict.values()):
+        RunPars.detected_requires_bonds = True
+    else:
+        RunPars.detected_requires_bonds = False
 
 
 def scan_mapdirs(mapdirs):
