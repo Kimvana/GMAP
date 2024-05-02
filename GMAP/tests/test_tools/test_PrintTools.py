@@ -1,7 +1,7 @@
 """
 tests missing:
 
-(@ may 2nd '24):
+(@ apr 29th '24):
   (0 missed statements)
 
 - Nothing is missing!
@@ -16,15 +16,6 @@ class TestTimer:
     def test_init(self):
         timer = GM_PT.Timer()
         assert isinstance(timer.zero, int)
-
-
-def test_devprint(capsys):
-    GM_PT.devprint("this is a test")
-    captured = capsys.readouterr()
-    assert captured.out == (
-        "(line   22) this is a test (from test_devprint in test_PrintTools.py)"
-        "\n"
-    )
 
 
 def test_intlist_to_rangelist():

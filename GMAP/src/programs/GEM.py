@@ -3,7 +3,7 @@ Usage:
 
     GMAP GEM
     GMAP GEM help
-Prints this help.
+prints this help
 
     GMAP GEM demo
 Launches GEM in demo-mode. Performs a basic calculation to demonstrate basic
@@ -28,7 +28,7 @@ For more information, check the manual on N/A.
 import sys
 
 # 3rd party lib imports
-# import numpy as np
+import numpy as np
 
 # local imports
 import GMAP.src.tools.CLibLoader as GM_CL
@@ -129,7 +129,8 @@ def trj_loop(Printer, RunPars, System):
         # (only if needed) recalc COM
 
         # initialize output structures (like Ham)
-        outputs = GM_PF.generate_output_structures(RunPars, System)
+        hamiltonian = np.zeros((System.nosc, System.nosc), dtype="float32")
+        dipoles = np.zeros((System.nosc, 3), dtype="float32")
 
         Printer.add_time(4, "initialize done. next: map init", "ms")
 
@@ -141,8 +142,8 @@ def trj_loop(Printer, RunPars, System):
         Printer.add_time(4, "map init done. next: calculation", "ms")
 
         # perform the actual calculations
-        outputs = GM_PF.calc_frame(
-            Printer, RunPars, System, outputs)
+        hamiltonian, dipoles = GM_PF.calc_frame(
+            Printer, RunPars, System, dipoles, hamiltonian)
 
         Printer.add_time(4, "calculation done. next: map final", "ms")
 
@@ -154,7 +155,7 @@ def trj_loop(Printer, RunPars, System):
         Printer.add_time(4, "map final done. next: write output", "ms")
 
         # write calculated data to files
-        GM_FH.write_output(RunPars, frame.frame, outputs)
+        GM_FH.write_output(RunPars, frame.frame, hamiltonian, dipoles)
 
     # lastly, do postcalc:
     for mapname in System.oscillators_ordered.keys():

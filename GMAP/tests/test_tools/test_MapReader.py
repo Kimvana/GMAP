@@ -4,16 +4,16 @@ src/tools/PhysicsFunctions.py.
 
 Missing tests:
 
-(@ may 2nd '24):
-361-369, 744, 1126 (6 missed statements)
+(@ apr 29th '24):
+357-365, 740, 1117 (6 missed statements)
 
 (CUHTAT - currently unknown how to access this )
-- Map.append_core() - there was some issue with the corefile (CUHTAT) (361-369)
+- Map.append_core() - there was some issue with the corefile (CUHTAT) (357-365)
   Any stuff wrong with the corefile will have its own warning call (and not
   use raise) - MI_MC_5
-- Map.parse_type was not successful, so we stop map reading  (744)
+- Map.parse_type was not successful, so we stop map reading  (740)
 - The structure of the map has no bonds (but the parameter giving bonds has
-  been used) (1126)
+  been used) (1117)
 """
 
 
@@ -264,8 +264,7 @@ class TestCode:
 
     def test_code_add_builds_1(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;",
-            "--verbose", "4", "--verbose_logfile", "4"
+            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
         ]
         inpardict = {}
         mapname = "test_code_build_1"
@@ -295,11 +294,10 @@ class TestCode:
         )
 
         map_.code_add_builds(Printer)
-        r_vec, r_pos = map_.code.GM_get_dipole_dir(
+        r_vec, r_pos = map_.code.GM_get_dipole(
             Printer, map_, Syst, osc
         )
-        r_vec_dir = np.array([-1.5, 1, 0])  # not normalized
-        r_vec_dir /= np.linalg.norm(r_vec_dir)
+        r_vec_dir = np.array([-1.5, 1, 0])
         assert (np.round(r_vec, 4) == np.round(r_vec_dir, 4)).all()
 
         assert (
@@ -335,8 +333,7 @@ class TestCode:
         )
         map_ = mapdict[mapname]
 
-        boxvects = np.array(
-            [[5, 0, 0], [4, 3, 0], [2, 2, 4]], dtype="float32")
+        boxvects = np.array([[5, 0, 0], [4, 3, 0], [2, 2, 4]])
         Syst = Custom(
             ["boxvects", boxvects],
             ["boxvects_inv", np.linalg.inv(boxvects)]
@@ -355,11 +352,10 @@ class TestCode:
         )
 
         map_.code_add_builds(Printer)
-        r_vec, r_pos = map_.code.GM_get_dipole_dir(
+        r_vec, r_pos = map_.code.GM_get_dipole(
             Printer, map_, Syst, osc
         )
-        r_vec_dir = np.array([1.125, 1.25, 0])  # not normalized
-        r_vec_dir /= np.linalg.norm(r_vec_dir)
+        r_vec_dir = np.array([1.125, 1.25, 0])
         assert (np.round(r_vec, 4) == np.round(r_vec_dir, 4)).all()
 
         # answer should be (2.5, 2.3333, 0), but because yvec is quite short
@@ -399,8 +395,7 @@ class TestCode:
         )
         map_ = mapdict[mapname]
 
-        boxvects = np.array(
-            [[5, 0, 0], [4, 3, 0], [2, 2, 4]], dtype="float32")
+        boxvects = np.array([[5, 0, 0], [4, 3, 0], [2, 2, 4]])
         Syst = Custom(
             ["boxvects", boxvects],
             ["boxvects_inv", np.linalg.inv(boxvects)]
@@ -410,22 +405,16 @@ class TestCode:
             [0, 0, 0],
             [1, 1, 1],
             [2, 2, 2]
-        ], dtype="float32")
+        ])
         osc = Custom(
             ["positions_box", positions @ Syst.boxvects_inv]
         )
 
         map_.code_add_builds(Printer)
-        r_vec, r_pos = map_.code.GM_get_dipole_dir(
+        r_vec, r_pos = map_.code.GM_get_dipole(
             Printer, map_, Syst, osc
         )
-
-        # this answer is wrong, as we correct for pbc.
-        # r_vec_dir = np.array([2, 2, 2], dtype="float32")  # not_normalized
-        # r_vec_dir /= np.linalg.norm(r_vec_dir)
-
-        r_vec_dir = np.array([0, 0, -2], dtype="float32")  # not_normalized
-        r_vec_dir /= np.linalg.norm(r_vec_dir)
+        r_vec_dir = np.array([2, 2, 2])
         assert (np.round(r_vec, 4) == np.round(r_vec_dir, 4)).all()
 
         assert (
@@ -1103,100 +1092,6 @@ class TestCore:
         ))
         assert CoreBase.local_atoms == []
 
-    def test_parse_dipoles(self):
-        cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
-        ]
-        inpardict = {}
-        mapname = "test_dipoles_datafile_maglong"
-
-        (
-            Files, Printer, RunPars, RefPars, DefPars, InPars, CmdPars, mapdict
-        ) = basic_setup(
-            cmdline, inpardict, finish_before="Core", mapname=mapname
-        )
-        map_ = mapdict[mapname]
-        CoreBase = basic_setup_core(
-            Printer, map_, finish_before="dipoles")
-        dip_gas, dip_arr = CoreBase.parse_dipoles(
-            Printer, map_.rawcore, map_.directory)
-        assert dip_gas == np.float32(0.3)
-        assert np.all(dip_arr == np.array([
-            [0, 1, 2, 3, 0, 0, 0, 0, 0, 0],
-            [5, 6, 7, 8, 0, 0, 0, 0, 0, 0]]))
-
-        # -------------------------
-
-        cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
-        ]
-        inpardict = {}
-        mapname = "test_dipoles_datafile_xyzgood"
-
-        (
-            Files, Printer, RunPars, RefPars, DefPars, InPars, CmdPars, mapdict
-        ) = basic_setup(
-            cmdline, inpardict, finish_before="Core", mapname=mapname
-        )
-        map_ = mapdict[mapname]
-        CoreBase = basic_setup_core(
-            Printer, map_, finish_before="dipoles")
-        dip_gas, dip_arr = CoreBase.parse_dipoles(
-            Printer, map_.rawcore, map_.directory)
-        assert np.all(dip_gas == np.array([0.3, 0.2, 0.1], dtype="float32"))
-        assert np.all(dip_arr == np.array([
-            [
-                [0, 1, 2, 3, 0, 0, 0, 0, 0, 0],
-                [4, 5, 6, 7, 0, 0, 0, 0, 0, 0]
-            ], [
-                [1, 2, 3, 4, 0, 0, 0, 0, 0, 0],
-                [5, 6, 7, 8, 0, 0, 0, 0, 0, 0]
-            ], [
-                [2, 3, 4, 5, 0, 0, 0, 0, 0, 0],
-                [6, 7, 8, 9, 0, 0, 0, 0, 0, 0]]]))
-
-        # ------------
-
-        cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
-        ]
-        inpardict = {}
-        mapname = "test_dipoles_datafile_NA"
-
-        (
-            Files, Printer, RunPars, RefPars, DefPars, InPars, CmdPars, mapdict
-        ) = basic_setup(
-            cmdline, inpardict, finish_before="Core", mapname=mapname
-        )
-        map_ = mapdict[mapname]
-        CoreBase = basic_setup_core(
-            Printer, map_, finish_before="dipoles")
-        dip_gas, dip_arr = CoreBase.parse_dipoles(
-            Printer, map_.rawcore, map_.directory)
-        assert dip_gas == np.float32(0.3)
-        assert dip_arr is None
-
-        # ------------
-
-        cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
-        ]
-        inpardict = {}
-        mapname = "test_dipoles_datafile_magG"
-
-        (
-            Files, Printer, RunPars, RefPars, DefPars, InPars, CmdPars, mapdict
-        ) = basic_setup(
-            cmdline, inpardict, finish_before="Core", mapname=mapname
-        )
-        map_ = mapdict[mapname]
-        CoreBase = basic_setup_core(
-            Printer, map_, finish_before="dipoles")
-        dip_gas, dip_arr = CoreBase.parse_dipoles(
-            Printer, map_.rawcore, map_.directory)
-        assert dip_gas == np.float32(0.3)
-        assert np.all(dip_arr == np.arange(10, dtype="float32"))
-
     def test_MI_MC_1(self, capfd):
         self.basis_test_MI_MC("MI_MC_1", capfd, finish_before="used_atoms")
 
@@ -1204,10 +1099,7 @@ class TestCore:
         self.basis_test_MI_MC("MI_MC_2", capfd, finish_before="used_atoms")
 
     def test_MI_MC_3(self, capfd):
-        self.basis_test_MI_MC(
-            "MI_MC_3", capfd, "test_MI_MC_3_1", "used_atoms")
-        self.basis_test_MI_MC(
-            "MI_MC_3", capfd, "test_MI_MC_3_2", "end")
+        self.basis_test_MI_MC("MI_MC_3", capfd, finish_before="used_atoms")
 
     def test_MI_MC_4(self, capfd):
         self.basis_test_MI_MC("MI_MC_4", capfd, "test_MI_MC_4_1", "used_atoms")
@@ -1235,9 +1127,7 @@ class TestCore:
         self.basis_test_MI_MC(
             "MI_MC_6", capfd, "test_MI_MC_6_6", "VEG_reference")
         self.basis_test_MI_MC(
-            "MI_MC_6", capfd, "test_MI_MC_6_7", "dipoles")
-        self.basis_test_MI_MC(
-            "MI_MC_6", capfd, "test_MI_MC_6_8", "end")
+            "MI_MC_6", capfd, "test_MI_MC_6_7", "end")
 
     def test_MI_MC_7(self, capfd):
         self.basis_test_MI_MC(
@@ -1246,10 +1136,6 @@ class TestCore:
             "MI_MC_7", capfd, "test_MI_MC_7_2", "estatic_choice")
         self.basis_test_MI_MC(
             "MI_MC_7", capfd, "test_MI_MC_7_3", "VEG_reference")
-        self.basis_test_MI_MC(
-            "MI_MC_7", capfd, "test_MI_MC_7_4", "end")
-        self.basis_test_MI_MC(
-            "MI_MC_7", capfd, "test_MI_MC_7_5", "end")
 
     def test_MI_MC_8(self, capfd):
         self.basis_test_MI_MC(
@@ -1263,17 +1149,9 @@ class TestCore:
         self.basis_test_MI_MC(
             "MI_MC_8", capfd, "test_MI_MC_8_5", "VEG_reference")
         self.basis_test_MI_MC(
-            "MI_MC_8", capfd, "test_MI_MC_8_6", "dipoles")
+            "MI_MC_8", capfd, "test_MI_MC_8_6", "end")
         self.basis_test_MI_MC(
-            "MI_MC_8", capfd, "test_MI_MC_8_7", "dipoles")
-        self.basis_test_MI_MC(
-            "MI_MC_8", capfd, "test_MI_MC_8_8", "end")
-        self.basis_test_MI_MC(
-            "MI_MC_8", capfd, "test_MI_MC_8_9", "end")
-        self.basis_test_MI_MC(
-            "MI_MC_8", capfd, "test_MI_MC_8_10", "end")
-        self.basis_test_MI_MC(
-            "MI_MC_8", capfd, "test_MI_MC_8_11", "end")
+            "MI_MC_8", capfd, "test_MI_MC_8_7", "end")
 
     def test_MI_MC_9(self, capfd):
         self.basis_test_MI_MC("MI_MC_9", capfd, finish_before="used_atoms")
@@ -1521,13 +1399,6 @@ def basic_setup_core(Printer, map_, finish_before=None):
     CoreBase.check_VEG_reference(
         Printer, map_.rawcore, map_.directory
     )
-
-    if finish_before == "dipoles":
-        return CoreBase
-
-    dipgas, arr = CoreBase.parse_dipoles(Printer, map_.rawcore, map_.directory)
-    setattr(CoreBase, "dipole_gas_phase", dipgas)
-    setattr(CoreBase, "dipole_data_array", arr)
 
     if finish_before == "end":  # so we can ctrl+F later
         return CoreBase
