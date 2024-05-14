@@ -85,7 +85,6 @@ def cmd_interface(callcommand):
 def main(callcommand=None):
     if callcommand is None:
         callcommand = sys.argv
-
     cmd_interface(callcommand)
 
 

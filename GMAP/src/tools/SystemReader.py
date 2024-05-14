@@ -7,9 +7,8 @@ import numpy as np
 
 # local imports
 import GMAP.src.tools.ParameterParser as GM_PP
+import GMAP.src.tools.PhysicsFunctions as GM_PF
 import GMAP.src.tools.PrintTools as GM_PT
-from GMAP.src.tools.PrintTools import devprint as dpr
-dpr("", end="")  # to disable error of dpr unused
 
 
 class System:
@@ -179,21 +178,13 @@ class System:
         self.atnames = self.universe.atoms.names
         self.resnums = self.universe.atoms.resnums
         self.resnames = self.universe.atoms.resnames
-        self.positions = self.universe.atoms.positions
-        self.masses = self.universe.atoms.masses
-        self.charges = self.universe.atoms.charges
+        self.positions = self.universe.atoms.positions.astype('float32')
+        self.masses = self.universe.atoms.masses.astype('float32')
+        self.charges = self.universe.atoms.charges.astype('float32')
         self.types = self.universe.atoms.types
         self.segids = self.universe.atoms.segids
 
         self.natoms = np.int32(self.resnums.shape[0])
-
-        # dpr(set(self.masses))
-        # for name, mass, type1, type2 in zip(
-        #     self.atnames, self.masses, self.types,
-        #     self.universe.atoms.elements
-        # ):
-        #     if int(mass) == 14:
-        #         dpr(name, mass, type1, type2)
 
         # make sure resums always follow AIM-convention (regardless of MD input
         # used)
@@ -219,6 +210,8 @@ class System:
         #         whether OPLS is being used?
 
         # TO DO - C support?
+        self.positions_c = np.ctypeslib.as_ctypes(np.ravel(self.positions))
+        self.charges_c = np.ctypeslib.as_ctypes(self.charges)
         # if RunPar.use_c_lib:
         #     self.charges = self.charges.astype('float32')
         #     self.charges_c = np.ctypeslib.as_ctypes(self.charges)
@@ -264,9 +257,12 @@ class System:
         self.angles = self.universe.dimensions[3:].astype('float32')
         self.boxvects = MDA.lib.mdamath.triclinic_vectors(
             self.universe.dimensions
-        )
+        ).astype('float32')
         self.safesphere = 0.5 * self.boxvects.diagonal().min()
-        self.boxvects_inv = np.linalg.inv(self.boxvects)
+        self.boxvects_inv = np.linalg.inv(self.boxvects).astype('float32')
+
+        self.boxdims_c = np.ctypeslib.as_ctypes(self.boxdims)
+        self.halfbox_c = np.ctypeslib.as_ctypes(self.halfbox)
 
     def find_influencers(self, Printer, RunPars):
         """Find the indices of all atoms that are influencers
@@ -298,9 +294,6 @@ class System:
                 groupdict[name] = GM_PP.parse_influencerfile_line(
                     Printer, group_def, groupdict, map_.corepath
                 )
-
-        for key, val in groupdict.items():
-            dpr(key, val)
 
         Printer.print(1, f"\n{GM_PT.make_header('Influencers', '-')}\n\n")
 
@@ -425,30 +418,6 @@ class System:
             )
             if checked:
                 checked_oscillators.append(checked)
-
-        # PRINTS!!!!
-
-        # PRINT FOUND OSCILLATORS
-        # for oscillators in checked_oscillators:
-        #     if not oscillators:
-        #         continue
-        #     dpr(oscillators[0].Map.name, len(oscillators))
-        #     for oscillator in oscillators:
-        #         dpr(
-        #             self.resnames[oscillator.used_atoms[0]],
-        #             [(ix, self.atnames[ix]) for ix in oscillator.used_atoms]
-        #         )
-
-        # PRINT ATOMS OF CERTAIN GROUP FOR SCANNING PURPOSES
-        # for ix, name in enumerate(self.residues.resnames):
-        #     if name == "CYS":
-        #         for atix in range(
-        #             self.residues.first_ix[ix],
-        #             self.residues.last_ix[ix] + 1
-        #         ):
-        #             dpr(atix, self.atnames[atix])
-        #             if self.atnames[atix] == "SG":
-        #                 dpr(self.universe.atoms[atix].bonded_atoms)
 
         self.oscillators = [
             oscillator for oscillators in checked_oscillators
@@ -780,9 +749,34 @@ class System:
             else:
                 self.oscillators_ordered[mapname].append(oscillator)
 
-    def update_properties(self):
-        self.positions = self.universe.atoms.positions
+    def update_properties(self, Printer):
+        """Reloads the frame-dependent properties of the system.
+
+        This function is supposed to be called at the beginning of every
+        frame to ensure that the properties stored inside are up to date.
+
+        Parameters
+        ----------
+        Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
+            The object that allows to cleanly log and print during runtime,
+            and handle errors.
+        """
+
+        Printer.add_time(4, "positions:", "ms")
+        self.positions = self.universe.atoms.positions.astype('float32')
+        Printer.add_time(4, "positions_c:", "ms")
+        self.positions_c = np.ctypeslib.as_ctypes(np.ravel(self.positions))
+        Printer.add_time(4, "box:", "ms")
         self.determine_box()
+        Printer.add_time(4, "COM:", "ms")
+        self.residues.CoM = GM_PF.system_CoM(
+            self.positions, self.masses, self.boxvects_inv,
+            self.boxvects, self.residues.first_ix, self.residues.last_ix,
+            self.nres
+        )
+        Printer.add_time(4, "COM_c:", "ms")
+        self.residues.CoM_c = np.ctypeslib.as_ctypes(
+            np.ravel(self.residues.CoM))
 
 
 class Residues:
@@ -799,11 +793,11 @@ class Residues:
 
     Attributes
     ----------
-    first_ix : list of int
-        A list as long as there are residues in the MD system. For each
+    first_ix : np.ndarray
+        An array as long as there are residues in the MD system. For each
         residue, it stores the index of the first atom.
-    last_ix : list of int
-        A list as long as there are residues in the MD system. For each
+    last_ix : np.ndarray
+        An array as long as there are residues in the MD system. For each
         residue, it stores the index of the last atom.
     resnames : list of str
         A list as long as there are residues in the MD system. For each
@@ -812,6 +806,9 @@ class Residues:
         All residue names that are considered influencers this run.
     influencer_ix : list of int
         The indices of all residues that are influencers.
+    CoM : np.ndarray
+        An array as long as there are residues in the MD system. For each
+        residue, it stores its center of mass.
     """
 
     def __init__(self, syst):
@@ -858,6 +855,8 @@ class Residues:
 
         self.first_ix = np.array(self.first_ix)
         self.last_ix = np.array(self.last_ix)
+        self.first_ix_c = np.ctypeslib.as_ctypes(self.first_ix)
+        self.last_ix_c = np.ctypeslib.as_ctypes(self.last_ix)
 
     def manage_influencers(self, influencerset):
         """Return all atom indices with one of the given residue names
@@ -905,9 +904,30 @@ class Oscillator:
     electrostatic_atoms : list of int
         The system indices of all atoms that the map should calculate
         the electrostatic properties for.
+    local_atoms : list of int
+        The system indices of all atoms that the map should calculate
+        the electrostatic properties for.
+    electrostatic_atoms_c : `ctypes.Array`
+        The c-friendly variant of self.electrostatic_atoms
+    local_atoms_c : `ctypes.Array`
+        The c-friendly variant of self.local_atoms
+    n_estatic_atoms : `np.int32`
+        The c-friendly form for the length of self.electrostatic_atoms
+    n_local_atoms : `np.int32`
+        The c-friendly form for the length of self.local_atoms
+    VEGout : `np.ndarray`
+        The array to which the output of the VEG calculations will be
+        written
+    VEGout_c : `ctypes.Array`
+        The c-friendly variant of self.VEGout
     positions_box : `np.ndarray`
         The positions of all atoms given in used_atoms, in box
         coordinates.
+    VEG_refpos = `np.ndarray`
+        The position on which the sphere defining the electrostatics
+        should be centered.
+    VEG_refpos_c = `ctypes.Array`
+        The c-friendly variant of self.VEG_refpos_c
     """
 
     def __init__(self, atoms, map_):
@@ -917,8 +937,27 @@ class Oscillator:
             self.used_atoms[index]
             for index in self.Map.Core.electrostatic_atoms
         ]
+        self.local_atoms = [
+            self.used_atoms[index] for index in self.Map.Core.local_atoms
+        ]
 
-    def frame_update(self, Syst):
+        # for c integration - here, or should this part be called later?
+        self.electrostatic_atoms_c = np.ctypeslib.as_ctypes(np.array(
+            self.electrostatic_atoms, dtype="int32"))
+        self.local_atoms_c = np.ctypeslib.as_ctypes(np.array(
+            self.local_atoms, dtype="int32"
+        ))
+        self.n_estatic_atoms = np.int32(len(self.electrostatic_atoms))
+        self.n_local_atoms = np.int32(len(self.local_atoms))
+        estat_choice_dir = {None: 0, "V": 1, "E": 4, "G": 10}
+        self.VEGout = np.zeros(
+            (self.n_estatic_atoms, estat_choice_dir[
+                self.Map.Core.electrostatic_choice]),
+            dtype="float32"
+        )
+        self.VEGout_c = np.ctypeslib.as_ctypes(np.ravel(self.VEGout))
+
+    def frame_update(self, Printer, Syst):
         """Update the frame-specific attributes of the instance.
 
         When a new frame starts, the system positions array is updated,
@@ -932,6 +971,13 @@ class Oscillator:
         """
         self.positions_box = (
             Syst.positions[self.used_atoms] @ Syst.boxvects_inv)
+        self.VEG_refpos = self.get_VEG_ref(Printer, Syst)
+        self.VEG_refpos_c = np.ctypeslib.as_ctypes(self.VEG_refpos)
+
+    def get_VEG_ref(self, Printer, System):
+        return self.Map.code.GM_get_VEG_ref(
+            Printer, self.Map, System, self
+        )
 
 
 def gen_universe(Printer, RunPars):

@@ -7,8 +7,6 @@ import sys
 import GMAP.src.tools.DefaultMapFunctions as GM_DMF
 import GMAP.src.tools.FileHandler as GM_FH
 import GMAP.src.tools.ParameterParser as GM_PP
-from GMAP.src.tools.PrintTools import devprint as dpr
-dpr("", end="")  # to disable error of dpr unused
 
 
 class Map():
@@ -295,6 +293,11 @@ class Map():
         self.code_add_builds(Printer)
         if not self.success:
             return
+
+        self.complete_code(("get_VEG_ref",), ({
+            "map_": self,
+            "Printer": Printer
+        },))
 
         # Add in the remaining code
         self.complete_code((
@@ -708,29 +711,38 @@ class Core():
             return
 
         self.used_atoms = self.parse_used_atoms(
-            Printer, rawcore, Map.directory
-        )
+            Printer, rawcore, Map.directory)
         if not self.success:
             return
 
         self.electrostatic_atoms = self.parse_estatic_atoms(
-            Printer, rawcore, Map.directory
-        )
+            Printer, rawcore, Map.directory)
         if not self.success:
             return
 
         if self.electrostatic_atoms:
             self.electrostatic_choice = self.parse_estatic_choice(
-                Printer, rawcore, Map.directory
-            )
+                Printer, rawcore, Map.directory)
         else:
             self.electrostatic_choice = None
+        if not self.success:
+            return
+
+        self.local_atoms = self.parse_local_atoms(
+            Printer, rawcore, Map.directory)
         if not self.success:
             return
 
         self.type = self.parse_type(Printer, rawcore, Map.directory)
         if not self.success:
             return
+
+        # If there is no custom function for defining an oscillators VEG
+        # reference point, a default is needed. Make sure core.txt is valid.
+        if not hasattr(Map.code, "GM_get_VEG_ref"):
+            self.check_VEG_reference(Printer, rawcore, Map.directory)
+            if not self.success:
+                return
 
     def parse_functional_group(self, Printer, rawcore, mapdir):
         """Parses the input for keywords functional_group(_file) in core.txt
@@ -817,6 +829,11 @@ class Core():
             )
             self.success = False
             return
+        n_bonds = sum([len(bonds) for bonds in self.bonds])
+        if n_bonds == 0:
+            self.requires_bonds = True
+        else:
+            self.requires_bonds = False
 
         if "functional_group_bonds" in rawcore:
             self.parse_fg_bonds(
@@ -832,10 +849,6 @@ class Core():
         if "requires_bonds" in rawcore:
             if rawcore["requires_bonds"][0].lower() in ("t", "true"):
                 self.requires_bonds = True
-            else:
-                self.requires_bonds = False
-        else:
-            self.requires_bonds = False
 
         self.functional_group = [
             Structure(struct, bonds) for struct, bonds in zip(
@@ -1296,6 +1309,74 @@ class Core():
             return
         return choice.upper()
 
+    def parse_local_atoms(self, Printer, rawcore, mapdir):
+        """Parse the choice for the parameter electrostatic_atoms
+
+        Parameters
+        ----------
+        Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
+            The object that allows to cleanly log and print during runtime,
+            and handle errors.
+        rawcore : dict of str - list of str pairs
+            The raw contents of the file core.txt
+        mapdir : pathlib.Path
+            The path to the directory in which the map is defined.
+
+        Returns
+        -------
+        local_atoms : list of int
+            The indices of the atoms in used_atoms that should actually
+            be used in electrostatic calculations. The indices are the
+            positions of the atoms in used_atoms, starting counting at 0.
+        """
+
+        # see if it exists
+        if "local_atoms" not in rawcore:
+            Printer.warning(
+                "\nCould not find the parameter 'local_atoms' in the "
+                f"file {mapdir / 'core.txt'}. Without it, the map cannot "
+                "function. Please make sure it is present.",
+                "MI_MC_6"
+            )
+            self.success = False
+            return
+
+        # convert to ints
+        try:
+            local_atoms = [
+                int(num) for num in rawcore["local_atoms"]
+            ]
+        except Exception as ex:
+            if rawcore["local_atoms"][0].lower() == "none":
+                local_atoms = []
+            else:
+                Printer.warning(
+                    "\nCould not interpret the choice for the parameter "
+                    "'local_atoms'"
+                    f" in the file {mapdir / 'core.txt'}. Please make sure "
+                    "the choice consists of nothing but numbers separated by "
+                    "spaces.",
+                    "MI_MC_7", exception=ex
+                )
+                self.success = False
+                return
+
+        # now, see if choice is valid
+        maxlen = len(self.used_atoms)
+        if any(ix >= maxlen for ix in local_atoms):
+            Printer.warning(
+                "\nCould not interpret the choice for the parameter "
+                "'local_atoms'"
+                f" in the file {mapdir / 'core.txt'}. Please make sure the "
+                "indices don't exceed the amount of atoms given for the "
+                "parameter used_atoms.",
+                "MI_MC_8"
+            )
+            self.success = False
+            return
+
+        return local_atoms
+
     def parse_type(self, Printer, rawcore, mapdir):
         """Parse the choice for the parameter type
 
@@ -1344,6 +1425,75 @@ class Core():
             self.success = False
             return
         return choice.lower()
+
+    def check_VEG_reference(self, Printer, rawcore, mapdir):
+        """Check the choice for the parameter VEG_reference.
+
+        Confirms the validity of the choice for VEG_reference. Does the
+        chosen method exist? Is the type of the rest of the arguments
+        correct?
+
+        Parameters
+        ----------
+        Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
+            The object that allows to cleanly log and print during runtime,
+            and handle errors.
+        rawcore : dict of str - list of str pairs
+            The raw contents of the file core.txt
+        mapdir : pathlib.Path
+            The path to the directory in which the map is defined.
+        """
+
+        def tryint(x):
+            try:
+                int(x)
+            except Exception:
+                return False
+            else:
+                return True
+
+        if "VEG_reference" not in rawcore:
+            Printer.warning(
+                "\nCould not find the parameter 'VEG_reference' in the "
+                f"file {mapdir / 'core.txt'}. Without it, the map cannot "
+                "function. Please make sure it is present.",
+                "MI_MC_6"
+            )
+            self.success = False
+            return
+
+        # We need a valid keyword
+        choice = rawcore["VEG_reference"][0]
+        if choice.lower() not in ("residues", "position", "com"):
+            Printer.warning(
+                "\nCould not interpret the choice for the parameter "
+                "'VEG_reference'"
+                f" in the file {mapdir / 'core.txt'}. Please make sure the "
+                "choice is 'residues', 'position', or 'CoM'.",
+                "MI_MC_8"
+            )
+            self.success = False
+            return
+
+        # we need a valid definition after. Firstly, it must be present.
+        # For residues and CoM, we also need just integers.
+        if (
+            len(rawcore["VEG_reference"]) < 2
+            or
+            (choice.lower() in ("residues", "com") and not all(
+                tryint(val) for val in rawcore["VEG_reference"][1:]
+            ))
+        ):
+            Printer.warning(
+                "\nCould not interpret the choice for the parameter "
+                "'VEG_reference'"
+                f" in the file {mapdir / 'core.txt'}. Please make sure the "
+                "choice of method 'residues', 'position', or 'CoM' is also "
+                "followed with a choice for this method. ",
+                "MI_MC_8"
+            )
+            self.success = False
+            return
 
 
 class Structure():
@@ -1400,7 +1550,6 @@ class Structure():
     """
 
     def __init__(self, struct, bonds):
-        # dpr(struct)
         self.residues = [Residue(res) for res in struct]
         self.bonds = bonds
 
@@ -1442,15 +1591,12 @@ class Structure():
         # now, see if the bonds couple the multiple residues.
 
         resnums = [set([ix]) for ix in range(len(self.residues))]
-        # dpr(resnums)
         for bond in self.bonds:
             res1 = self.indices[bond[0]][0]
             res2 = self.indices[bond[1]][0]
             newset = resnums[res1] | resnums[res2]
             resnums[res1] = newset
             resnums[res2] = newset
-            # dpr(resnums)
-        # dpr(len(resnums), len(resnums[0]))
         if len(resnums) != len(resnums[0]):
             self.success = False
         else:
@@ -1484,6 +1630,51 @@ class Residue():
     def __repr__(self):
         mylist = [self.resnames, self.atoms]
         return f"{self.__class__.__name__}({repr(mylist)})"
+
+
+def manage_maps(Files, Printer, RunPars, mapdict):
+    """Initializes and manages the detected maps.
+
+    Parameters
+    ----------
+    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
+        Contains all currently known paths and other file-related properties.
+        Has to be updated after RunPars is finalized.
+    Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
+        The object that allows to cleanly log and print during runtime,
+        and handle errors.
+    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        The 'main' RunPars instance containing all the basic run-defining
+        parameters.
+    mapdict : dict of str: :class:`~GMAP.src.tools.MapReader.Map` pairs
+        Stores all the :class:`~GMAP.src.tools.MapReader.Map` objects for
+        each map supplied. The keys are the Map.name attributes corresponding
+        to the maps stored as values.
+    """
+
+    for map_ in mapdict.values():
+        map_.initialize(Files, Printer)
+
+    mapdict = {map_.name: map_ for map_ in mapdict.values() if map_.success}
+
+    for map_choice in RunPars.maps_to_use:
+        if map_choice not in mapdict:
+            Printer.warning(
+                f"The map {map_choice} was requested for use. However, it "
+                "either does not exist, or the map was loaded unsuccessfully "
+                "due to issues with its definition.",
+                "MI_GEM_1", True
+            )
+
+    requested_mapdict = {
+        map_.name: map_ for map_ in mapdict.values()
+        if map_.name in RunPars.maps_to_use
+    }
+    RunPars.requested_mapdict = requested_mapdict
+    if any(map_.Core.requires_bonds for map_ in requested_mapdict.values()):
+        RunPars.detected_requires_bonds = True
+    else:
+        RunPars.detected_requires_bonds = False
 
 
 def scan_mapdirs(mapdirs):

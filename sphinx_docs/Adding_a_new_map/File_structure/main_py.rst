@@ -238,7 +238,7 @@ oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
 GM_post_init(Files, Printer, Map, Syst)
 =======================================
 
-Allows the user to do some final initialization steps. These can include building lookup-tables, or computing some basic properties for later use.
+Allows the user to do some final initialization steps. These can include building lookup-tables, or computing some basic properties for later use. This function is called when all initialization is done (maps, MD system, etc).
 
 Is expected to not return anything.
 
@@ -253,6 +253,11 @@ The map requires further information on the system
 Some mappings require further information. One example are the backbone amides - these live in a covalently bound chain, which makes it important to know which other oscillators are (closely) bound. It is easiest (and fastest) if this information is readily available during the calculation. Furthermore, this property will not change during the calculation / between frames.
 
 This kind of information should be collected as part of the initialization. This function should be used to look this information up, and store it as an attribute of the Map object that is passed to this function.
+
+
+Setting different values for certain parameters
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Some parameters are only set simply. Like local_ix. If a more complex selection of local_ix is desired, it can be enforced here.
 
 
 Available attributes of Map
@@ -514,7 +519,7 @@ Syst : :class:`~GMAP.src.tools.SystemReader.System`
 
 
 
-GM_get_rotation_matrix(Files, Printer, Map, Syst, osc)
+GM_get_rotation_matrix(Printer, Map, Syst, osc)
 =================================================================
 
 Returns the rotation matrix for the provided oscillator osc.
@@ -562,9 +567,6 @@ Available attributes of Map
 
 Parameters
 ----------
-Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-    Contains all currently known paths and other file-related properties.
-    Has to be updated after RunPars is finalized.
 Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
     The object that allows to cleanly log and print during runtime,
     and handle errors.
@@ -587,7 +589,7 @@ rotation_matrix : `np.ndarray`
 
 
 
-GM_get_dipole(Files, Printer, Map, Syst, osc)
+GM_get_dipole(Printer, Map, Syst, osc)
 =================================================================
 
 Returns the dipole vector and its position in cartesian coordinates.
@@ -628,9 +630,6 @@ Available attributes of Map
 
 Parameters
 ----------
-Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-    Contains all currently known paths and other file-related properties.
-    Has to be updated after RunPars is finalized.
 Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
     The object that allows to cleanly log and print during runtime,
     and handle errors.
@@ -649,6 +648,70 @@ r_vec : `np.ndarray`
     The vector that represents the dipole of this oscillator.
 r_pos : `np.ndarray`
     The position at which the dipole vector lies.
+
+
+
+
+
+
+GM_get_VEG_ref(Printer, Map, Syst, osc)
+=================================================================
+
+Returns the centerpoint for the sphere of charges contributing to the calculated electrostatics.
+
+.. tip::
+    In order to arrive at the correct result, this function should take into account the PBC. More information on PBC can be found :ref:`in the theory section<Theory_page_PBC>`. To help, the oscillator object provided has the attribute osc.positions_box - this array contains the positions of all atoms in used_atoms, transposed to box coordinates. To convert the final answer back to cartesian coordinates, multiply it with System.boxvects.
+
+
+Example uses
+------------
+
+The default method of providing the elecctrostatics sphere center is not sufficient
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Some techniques cannot be used in exclusively box coordinates, and can therefore not be used through core.txt. In those cases, it might be more appropriate to write the code here.
+
+
+Available attributes of Map
+---------------------------
+
+.. hlist::
+    :columns: 4
+
+    * self.directory
+    * self.corepath
+    * self.name
+    * self.type
+    * self.success
+    * self.avail_files
+    * self.RefPars
+    * self.DefPars
+    * self.InPars
+    * self.CmdPars
+    * self.RunPars
+    * self.code
+    * self.rawcore
+    * self.Core
+
+
+Parameters
+----------
+Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
+    The object that allows to cleanly log and print during runtime,
+    and handle errors.
+Map : :class:`~GMAP.src.tools.MapReader.Map`
+    The object that stores everything the program currently knows
+    about this map.
+Syst : :class:`~GMAP.src.tools.SystemReader.System`
+    The object that stores everyting the program currently knows about the MD system.
+osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    The oscillator for which the rotation matrix should be determined.
+
+
+Returns
+-------
+VEG_ref : `np.ndarray`
+    The position at which the sphere should be centered.
+
 
 
 

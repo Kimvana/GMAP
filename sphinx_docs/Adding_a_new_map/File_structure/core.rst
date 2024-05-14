@@ -333,6 +333,25 @@ While some maps only need to know the electrostatic potential at certain points,
     electrostatic_choice    G   # calculate the potential, the electric field, and the gradient
 
 
+***********
+local_atoms
+***********
+
+*Mandatory parameter*
+
+Calculating the electrostatics for an oscillator is involved. Not all atoms will contribute to the electrostatic environment of the oscillator - most notably, the atoms of the oscillator itself.
+
+The program is naive in calculating elecctrostatics - every atom within range can and will contribute to the elecctrostatics, unless it is specifically excluded. This parameter allows for excluding - any atoms mentioned here will be assumed part of the oscillator, and not contribute to the elecctrostatics. The atoms are selected from used_atoms. Lets look at the amide sidechain example::
+    
+    functional_group        [ASN]    CG  OD1  CB  ND2  HD21  HD22
+    used_atoms              0 1 3 4 5   # CG OD1 ND2 HD21 HD22
+    local_atoms             0 1 2 3 4
+
+Here, we say we dont want to include the atoms in used atoms, through giving the index of all five separately.
+
+It might happen that a map is more complex. If a mapping would like to exclude more atoms, the recommended method is to add these to used_atoms. If the exclusion is variable (might be different for different oscillators), the local_ix of the separate oscillators must be changed manually. This can be done in main.py, the recommended place is within GM_post_init(). 
+
+
 *****************
 type and xyz_uvec
 *****************
@@ -427,6 +446,81 @@ These two are specified using the parameters r_vec (the dipole vector) and r_pos
     r_pos                   0     # vector lives on the carbon atom.
 
 Just as with xyz_uvec, the calculations performed for r_vec and r_pos do take the periodic boundary conditions into account. :ref:`This page<Theory_page_PBC>` shows you how.
+
+
+*************
+VEG_reference
+*************
+
+*mandatory parameter*
+
+Most mappings depend on some electrostatic property on some position(s). These properties are calculated by the program. While these electrostatic properties are dependent on all atoms around, the atoms closest by have the largest impact. Therefore, a lot of computational time is saved by only considering the atoms within a certain radius. But, within a certain radius of what? Thats what this parameter encodes. Of course, the center of this sphere of charges is very likely to be somewhere within the molecule considered, but exactly where can differ. This keyword lets you specify the exact point where the sphere should be centered. There are three different ways of doing so:
+
+
+position
+========
+
+Defining the position works much the same as defining r_pos, where you determine this point using some atom positions::
+
+    functional_group        [ASN]    CG  OD1  CB  ND2  HD21  HD22
+    used_atoms              0 1 3 4   # CG OD1 ND2 HD21
+    electrostatic_atoms     0 2  # C and N
+    electrostatic_choice    E
+    type                    standard
+    x_uvec                  1-0   # O-C
+    y_uvec                  2-0   # the part of N-C orthogonal to O-C
+    r_vec                   1-0   # points along CO bond
+    r_pos                   0     # vector lives on the carbon atom.
+    VEG_reference           position 1  # at the position of the oxygen atom
+
+Any kind of position determination is possible. Considering the above example::
+
+    VEG_reference           position (0 + 1) / 2.0
+
+This way, we define the position to be the average position of atoms 0 and 1, or, in other words, the position is halfway between the carbon and oxygen atoms.
+
+
+CoM
+===
+
+Very often, this kind of sphere of charges is centred around a certain center of mass. This parameter simply lists a group of atoms, whose center of mass defines the center of the sphere of charges. The indices are compared to used_atoms::
+
+    functional_group        [ASN]    CG  OD1  CB  ND2  HD21  HD22
+    used_atoms              0 1 3 4   # CG OD1 ND2 HD21
+    electrostatic_atoms     0 2  # C and N
+    electrostatic_choice    E
+    type                    standard
+    x_uvec                  1-0   # O-C
+    y_uvec                  2-0   # the part of N-C orthogonal to O-C
+    r_vec                   1-0   # points along CO bond
+    r_pos                   0     # vector lives on the carbon atom.
+    VEG_reference           CoM  0 1 3 4 5
+
+In this example, the sphere is centered on the center of mass of the carbon, oxygen, nitrogen and two hydrogen atoms.
+
+
+residues
+========
+
+Some maps are defined in an even simpler way - the sphere is centered on the center of mass of the entire residue the oscillator is a part of::
+
+    functional_group        [ASN]    CG  OD1  CB  ND2  HD21  HD22
+    used_atoms              0 1 3 4   # CG OD1 ND2 HD21
+    electrostatic_atoms     0 2  # C and N
+    electrostatic_choice    E
+    type                    standard
+    x_uvec                  1-0   # O-C
+    y_uvec                  2-0   # the part of N-C orthogonal to O-C
+    r_vec                   1-0   # points along CO bond
+    r_pos                   0     # vector lives on the carbon atom.
+    VEG_reference           residues 0
+
+What happens here is a little bit more involved: the index provided is of an atom, just as with the 'position' and 'CoM' options. The program then checks which residue this atom belongs to. Then, the center of mass of this residue is found.
+
+If multiple atoms are given, then for each atom, the residue is found. This allows to add the atoms of multiple residues together (for oscillators that live on multiple residues). If multiple atoms are given that all belong to the same residue, that residue gets more 'weight' - it is _not_ the case that 'extra' atoms of the same residue are ignored.
+
+
+
 
 
 ****************
