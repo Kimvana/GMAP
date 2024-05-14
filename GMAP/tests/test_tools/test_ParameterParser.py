@@ -1206,7 +1206,7 @@ class TestRunPars:
         )
 
         mapdirs = GM_PP.find_mapdir(Files, Printer, cmdline, InPars, DefPars)
-        mapdict = GM_MR.scan_mapdirs(mapdirs)
+        mapdict = GM_MR.scan_mapdirs(mapdirs, "Singles")
         for map_ in mapdict.values():
             map_.find_refpars(Printer)
 
@@ -1657,7 +1657,7 @@ class TestMapPars:
         ]
 
         mapdirs = GM_PP.find_mapdir(Files, Printer, cmdline, InPars, DefPars)
-        mapdict = GM_MR.scan_mapdirs(mapdirs)
+        mapdict = GM_MR.scan_mapdirs(mapdirs, "Singles")
         for map_ in mapdict.values():
             map_.find_refpars(Printer)
 
@@ -1749,7 +1749,7 @@ class TestMapPars:
         )
 
         mapdirs = GM_PP.find_mapdir(Files, Printer, cmdline, InPars, DefPars)
-        mapdict = GM_MR.scan_mapdirs(mapdirs)
+        mapdict = GM_MR.scan_mapdirs(mapdirs, "Singles")
 
         return Files, Printer, RefPars, DefPars, InPars, mapdict
 
@@ -1787,7 +1787,7 @@ def test_get_parameters():
     argslist = []
 
     (
-        RunPars, mapdict, CmdPars, InPars, DefPars, RefPars
+        RunPars, mapdict, pairs_mapdict, CmdPars, InPars, DefPars, RefPars
     ) = GM_PP.get_parameters(
         Files, Printer, in_parfile, argslist
     )
@@ -1800,7 +1800,7 @@ def test_get_parameters():
     assert CmdPars.choices == {}
 
     (
-        RunPars, mapdict, CmdPars, InPars, DefPars, RefPars
+        RunPars, mapdict, pairs_mapdict, CmdPars, InPars, DefPars, RefPars
     ) = GM_PP.get_parameters(
         Files, Printer, None, argslist
     )
@@ -1810,7 +1810,7 @@ def test_get_parameters():
     argslist = ["-dpf", "../test_defpar.txt"]
 
     (
-        RunPars, mapdict, CmdPars, InPars, DefPars, RefPars
+        RunPars, mapdict, pairs_mapdict, CmdPars, InPars, DefPars, RefPars
     ) = GM_PP.get_parameters(
         Files, Printer, in_parfile, argslist
     )
