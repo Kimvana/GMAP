@@ -51,26 +51,22 @@ around 1600. The off-diagonal elements of the Hamiltonian list the coupling betw
 can be both positive and negative, and occasionally reach values of 30. However, virtually all values are smaller
 than 5, with most of them being smaller than 0.1.
 
-The binary file is very similar. It contains no spaces, only float
-(32 bit) characters. The first one indicates the frame number, and is followed by the hamiltonian entries
+.. math::
+
+   \begin{pmatrix}
+   C_1 & 1-2 & 1-3 & 1-4 & ... & 1-n \\
+   2-1 & C_2 & 2-3 & 2-4 & ... & 2-n \\
+   3-1 & 3-2 & C_3 & 3-4 & ... & 3-n \\
+   4-1 & 4-2 & 4-3 & C_4 & ... & 4-n \\
+   ... & ... & ... & ... & ... & ... \\
+   n-1 & n-2 & n-3 & n-4 & ... & C_n
+   \end{pmatrix}
+
+The binary file is very similar. It contains no spaces, only 32-bit floats. The first one indicates the frame number, and is followed by the hamiltonian entries
 in the same order as the text file. After one hamiltonian has been written, no spacer is used: the next
 float is the number of the next frame.
 
 Below is an example Hamiltonian:
-
-.. list-table:: Title
-   :widths: 25 25 50
-   :header-rows: 1
-
-   * - Heading row 1, column 1
-     - Heading row 1, column 2
-     - Heading row 1, column 3
-   * - Row 1, column 1
-     -
-     - Row 1, column 3
-   * - Row 2, column 1
-     - Row 2, column 2
-     - Row 2, column 3
 
 [1]: Thomas L.C. Jansen. “Computational Spectroscopy of Complex Systems”. In: The Journal of Chemical
 Physics 155 (170901 2021)
