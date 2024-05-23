@@ -1,72 +1,102 @@
-.. _UserGuide_page_Hamiltonians:
+.. _Theory_page_Hamiltonians:
 
-=============
+############
 Hamiltonians
-=============
+############
 
+********
 Use Case
---------
-The main reason to use GMAP is to obtain the strange creatures known as Hamiltionians.
+********
+The main reason to use GMAP is to obtain the Hamiltonians and transition
+dipole moments describing the energy landscape of chromophores and their interaction with light.
 They are an important input for programs like NISE that compute absorption spectra.
-The Hamiltonian contains the frequency at which a an oscillator absorbs light and
-how strongly each of these oscillators talk to each other and thus influence each
-others absorption frequency.
+The Hamiltonian contains the frequency at which each chromophore absorbs light, and
+the couplings between these chromophores describe how strongly each of 
+these chromophores talk to each other and thus influence each others absorption frequency.
 
+********************
 Physical description
---------------------
+********************
 
-The Hamiltonian is given by[1]:
+The Hamiltonian is given by the following formula[1]:
 
 .. math::
     H(t) = \sum_n \epsilon_n(t)B_n^\dagger B_n - \frac{1}{2}\sum_n \Delta_n(t)B_n^\dagger B_n^\dagger B_nB_n+
     \sum_{nm} J_{nm}(t)B_n^\dagger B_m - \sum_n \vec{E}(t)\cdot \vec{\mu}_n(t)[B_n^\dagger + B_n] ,
 
 where :math:`B_n^\dagger` and :math:`B_n` are the creation and annihilation operators respectively.
-:math:`\epsilon_n(t)` represents the energy gap between the ground state and the first excited states on
-amide group :math:`n` . The coupling strength of amide group :math:`n` with the external electric field :math:`\vec{E}(t)`
-is controlled by the transition dipole :math:`\mu_n`. The anharmonicity :math:`\Delta_n(t)` defines the
-difference in energy energy gap between the ground and first excited state and the first excited and second
-excited state, where a positive anharmonicity indicates that the latter is smaller than the former. 
-:math:`J_{nm}` represents the transition dipole coupling. The reason why :math:`\vec{E}(t)`, :math:`J_{nm}(t)`
-and :math:`\vec{\mu}_n(t)` are dependent on time is because the investigated structure is not necessarily
-completely static and constantly shifts ever so slightly, and is thus examined at discrete frames.
+:math:`\epsilon_n(t)` represents the energy gap between the ground state and the first excited state
+in a chromophore :math:`n`. The coupling strength of amide group :math:`n` with the external electric field :math:`\vec{E}(t)`
+is affected by the transition dipole :math:`\mu_n`. The anharmonicity :math:`\Delta_n(t)` is the
+difference in energy energy gaps between the ground and first excited states and the first excited and second
+excited states. A positive anharmonicity indicates that the latter is smaller than the former.
+is increasing as the latter is the number of the excited states increases. :math:`J_{nm}(t)`
+represents the coupling between chromophores :math:`n` and :math:`n`. The reason why :math:`\vec{E}(t)`, :math:`J_{nm}(t)` and
+:math:`\vec{\mu}_n(t)` are dependent on time is because the physical structure that
+we derive the Hamiltonian from is not necessarily completely static and can potentially
+change over time. 
 
-This formula is impressive, however, it is not used directly. The program works by using maps which use physical 
-characteristics of the system to compute the values inside the Hamiltionians.
+GEM obtains the different terms in this equation, which are then used by programs
+like NISE to compute spectral simulations. 
+The program works by using maps which use physical 
+characteristics of the system to compute the values that make up the Hamiltionian trajectory. 
+The way these maps work and how to add them to the program is explained :ref:`here<UserGuide_page_adding_map>`
 
-File layout
------------
-
-A Hamiltonian is computed for every single frame. In the txt format, the entire Hamiltonian lives on
-a single line. Therefore, the file contains a line for each frame. On a single line, the first number is the
-number of the frame, followed by a space. Then, the Hamiltonian itself follows. As the Hamiltonian is a
-diagonal matrix, only roughly half of the entries need to be written. The Hamiltonian is written row by
-row, starting at the diagonal entry. Therefore, after the frame number, the entry at 0,0 is written to the
-output file, followed by the one at 0,1, etc. For the next line, the first item is 1,1 (1,0 is skipped as it is
-identical to the value at 0,1), the second is 1,2, etc. The number of entries total in the Hamiltonian stored
-this way is the triangular number of the width of the Hamiltonian. The values at the diagonal of the Hamiltonian
-are the expected vibrational frequencies in wavenumbers. These include electrostatic effects from the 
-environment, but exclude any influences from coupling with neighbouring amide groups. The values are usually 
-around 1600. The off-diagonal elements of the Hamiltonian list the coupling between amide groups. The coupling 
-can be both positive and negative, and occasionally reach values of 30. However, virtually all values are smaller
-than 5, with most of them being smaller than 0.1.
+An example Hamiltonian with :math:`n` chromophores is given below. :math:`C_m`
+represents the frequency of the :math:`m` th chromophore. :math:`k-l` is 
+the coupling between the :math:`k` th and the  :math:`l` th chromophores.
+Note that :math:`k-l` and :math:`l-k` are always exactly equal.
 
 .. math::
 
    \begin{pmatrix}
-   C_1 & 1-2 & 1-3 & 1-4 & ... & 1-n \\
-   2-1 & C_2 & 2-3 & 2-4 & ... & 2-n \\
-   3-1 & 3-2 & C_3 & 3-4 & ... & 3-n \\
-   4-1 & 4-2 & 4-3 & C_4 & ... & 4-n \\
+   C_0 & 1-0 & 2-0 & 3-0 & ... & n-0 \\
+   0-1 & C_1 & 2-1 & 3-1 & ... & n-1 \\
+   0-2 & 1-2 & C_2 & 3-1 & ... & n-2 \\
+   0-3 & 1-3 & 2-3 & C_3 & ... & n-3 \\
    ... & ... & ... & ... & ... & ... \\
-   n-1 & n-2 & n-3 & n-4 & ... & C_n
+   n-0 & n-1 & n-2 & n-3 & ... & C_n
    \end{pmatrix}
 
-The binary file is very similar. It contains no spaces, only 32-bit floats. The first one indicates the frame number, and is followed by the hamiltonian entries
-in the same order as the text file. After one hamiltonian has been written, no spacer is used: the next
-float is the number of the next frame.
+***********
+File layout
+***********
 
-Below is an example Hamiltonian:
+Each frame has its own Hamiltonian. In the txt format, each Hamiltonian has its
+own line. Thus, after each Hamiltonian a new line is started. The first number on
+each line is the number of the frame. Then, the values that make up the Hamiltonian follow.
+As the Hamiltonian is a matrix which is symmetrical across the diagonal, only half of
+couplings need to be written. The Hamiltonian is written starting at the diagonal entry.
+Therefore, after the frame number, the entry at 0,0 is written to the
+output file, followed by the one at 1,0 etc. The first item after the number of the frame is 1,1 (0,1) is skipped as it is
+identical to the value at (1,0), the second number is 2,1, etc. The amount of entries total in the Hamiltonian stored
+this way is the triangular number of the width of the Hamiltonian. The values at the diagonal of the Hamiltonian
+are the expected frequencies in wavenumbers [cm:math:`^{-1}`]. These frequencies include electrostatic effects from the 
+environment, but exclude any influences from coupling with neighbouring amide groups. 
+The off-diagonal elements of the Hamiltonian denote the coupling between amide groups,
+which can be both positive and negative.
 
-[1]: Thomas L.C. Jansen. “Computational Spectroscopy of Complex Systems”. In: The Journal of Chemical
-Physics 155 (170901 2021)
+Thus the Hamiltonian trajectory in text format looks like:
+
+    | 0  :math:`C_0`  1-0  2-0  3-0  ...  n-0 :math:`C_1`  2-1  3-1  ...  n-1 ... :math:`C_n`
+    | 1  :math:`C_0`  1-0  2-0  3-0  ...  n-0 :math:`C_1`  2-1  3-1  ...  n-1 ... :math:`C_n`
+    | 3  :math:`C_0`  1-0  2-0  3-0  ...  n-0 :math:`C_1`  2-1  3-1  ...  n-1 ... :math:`C_n`
+    | ...  ...
+    | m  :math:`C_0`  1-0  2-0  3-0  ...  n-0 :math:`C_1`  2-1  3-1  ...  n-1 ... :math:`C_n`
+
+Where :math:`m` is the number of Hamiltionians. :math:`k-l` and :math:`C_n` keep the same meaning 
+as in the Hamiltonian above, except now they are per frame in the trajectory.
+
+The binary file contains only 32-bit floats. The first one indicates the 
+frame number, which is still a 32-bit float even though it represents an integer,
+and is followed by the Hamiltonian entries that belong to that frame number.
+After one Hamiltonian has been written, no spacer is used: the next
+float is the number of the next frame. Thus, in binary format the Hamiltonian trajectory looks like:
+
+    | 0  :math:`C_0`  1-0  2-0  3-0  ...  n-0 :math:`C_1`  2-1  3-1  ...  n-1 ... :math:`C_n` 1  :math:`C_0`  1-0  2-0  3-0  ...  n-0 :math:`C_1`  2-1  3-1  ...  n-1 ... :math:`C_n` 2  :math:`C_0`  1-0  2-0  3-0  ...  n-0 :math:`C_1`  2-1  3-1  ...  n-1 ... :math:`C_n` ...  ... m  :math:`C_0`  1-0  2-0  3-0  ...  n-0 :math:`C_1`  2-1  3-1  ...  n-1 ... :math:`C_n`
+
+Where :math:`m`, :math:`k-l` and :math:`C_n` keep the same meaning as in the
+representation of the text trajectory above.
+
+
+[1]: T.L.C. Jansen, J. Chem. Phys. 155:170901 (2021) https://doi.org/10.1063/5.0064092
