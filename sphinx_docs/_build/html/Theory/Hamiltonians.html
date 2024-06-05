@@ -397,27 +397,27 @@ is affected by the transition dipole <span class="math notranslate nohighlight">
 difference in energy energy gaps between the ground and first excited states and the first excited and second
 excited states. A positive anharmonicity indicates that the latter is smaller than the former.
 is increasing as the latter is the number of the excited states increases. <span class="math notranslate nohighlight">\(J_{nm}(t)\)</span>
-represents the coupling. The reason why <span class="math notranslate nohighlight">\(\vec{E}(t)\)</span>, <span class="math notranslate nohighlight">\(J_{nm}(t)\)</span> and
+represents the coupling between chromophores <span class="math notranslate nohighlight">\(n\)</span> and <span class="math notranslate nohighlight">\(n\)</span>. The reason why <span class="math notranslate nohighlight">\(\vec{E}(t)\)</span>, <span class="math notranslate nohighlight">\(J_{nm}(t)\)</span> and
 <span class="math notranslate nohighlight">\(\vec{\mu}_n(t)\)</span> are dependent on time is because the physical structure that
 we derive the Hamiltonian from is not necessarily completely static and can potentially
 change over time.</p>
-<p>GEM obtains the constants in this equation, which are then used by programs
+<p>GEM obtains the different terms in this equation, which are then used by programs
 like NISE to compute spectral simulations.
 The program works by using maps which use physical
 characteristics of the system to compute the values that make up the Hamiltionian trajectory.
 The way these maps work and how to add them to the program is explained <a class="reference internal" href="../Adding_a_new_map/index.html#userguide-page-adding-map"><span class="std std-ref">here</span></a></p>
-<p>An example Hamiltonian with <span class="math notranslate nohighlight">\(n\)</span> chromophores is given below. <span class="math notranslate nohighlight">\(C_m\)</span>
-represents the frequency of the <span class="math notranslate nohighlight">\(m\)</span> th chromophore. <span class="math notranslate nohighlight">\(k-l\)</span> is
+<p>An example Hamiltonian with <span class="math notranslate nohighlight">\(n\)</span> chromophores is given below. <span class="math notranslate nohighlight">\(\epsilon_m\)</span>
+represents the frequency of the <span class="math notranslate nohighlight">\(m\)</span> th chromophore. <span class="math notranslate nohighlight">\(J_{kl}`\)</span> is
 the coupling between the <span class="math notranslate nohighlight">\(k\)</span> th and the  <span class="math notranslate nohighlight">\(l\)</span> th chromophores.
-Note that <span class="math notranslate nohighlight">\(k-l\)</span> and <span class="math notranslate nohighlight">\(l-k\)</span> are always exactly equal.</p>
+Note that <span class="math notranslate nohighlight">\(J{kl}\)</span> and <span class="math notranslate nohighlight">\(J_{lk}\)</span> are always exactly equal.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{pmatrix}
-C_0 &amp; 1-0 &amp; 2-0 &amp; 3-0 &amp; ... &amp; n-0 \\
-0-1 &amp; C_1 &amp; 2-1 &amp; 3-1 &amp; ... &amp; n-1 \\
-0-2 &amp; 1-2 &amp; C_2 &amp; 3-1 &amp; ... &amp; n-2 \\
-0-3 &amp; 1-3 &amp; 2-3 &amp; C_3 &amp; ... &amp; n-3 \\
+\epsilon_0 &amp; J_{10} &amp; J_{20} &amp; J_{30} &amp; ... &amp; J_{n0} \\
+J_{01} &amp; \epsilon_1 &amp; J_{21} &amp; J_{31} &amp; ... &amp; J_{n1} \\
+J_{02} &amp; J_{12} &amp; \epsilon_2 &amp; J_{31} &amp; ... &amp; J_{n2} \\
+J_{03} &amp; J_{13} &amp; J_{23} &amp; \epsilon_3 &amp; ... &amp; J_{n3} \\
 ... &amp; ... &amp; ... &amp; ... &amp; ... &amp; ... \\
-n-0 &amp; n-1 &amp; n-2 &amp; n-3 &amp; ... &amp; C_n
+J_{n0} &amp; J_{n1} &amp; J_{n2} &amp; J_{n3} &amp; ... &amp; \epsilon_n
 \end{pmatrix}\end{split}\]</div>
 </section>
 <section id="file-layout">
@@ -431,21 +431,21 @@ Therefore, after the frame number, the entry at 0,0 is written to the
 output file, followed by the one at 1,0 etc. The first item after the number of the frame is 1,1 (0,1) is skipped as it is
 identical to the value at (1,0), the second number is 2,1, etc. The amount of entries total in the Hamiltonian stored
 this way is the triangular number of the width of the Hamiltonian. The values at the diagonal of the Hamiltonian
-are the expected frequencies in wavenumbers [cm:math:<cite>^{-1}</cite>]. These frequencies include electrostatic effects from the
+are the expected frequencies in wavenumbers [cm <span class="math notranslate nohighlight">\(^{-1}\)</span> ]. These frequencies include electrostatic effects from the
 environment, but exclude any influences from coupling with neighbouring amide groups.
 The off-diagonal elements of the Hamiltonian denote the coupling between amide groups,
 which can be both positive and negative.</p>
 <p>Thus the Hamiltonian trajectory in text format looks like:</p>
 <blockquote>
 <div><div class="line-block">
-<div class="line">0  <span class="math notranslate nohighlight">\(C_0\)</span>  1-0  2-0  3-0  …  n-0 <span class="math notranslate nohighlight">\(C_1\)</span>  2-1  3-1  …  n-1 … <span class="math notranslate nohighlight">\(C_n\)</span></div>
-<div class="line">1  <span class="math notranslate nohighlight">\(C_0\)</span>  1-0  2-0  3-0  …  n-0 <span class="math notranslate nohighlight">\(C_1\)</span>  2-1  3-1  …  n-1 … <span class="math notranslate nohighlight">\(C_n\)</span></div>
-<div class="line">3  <span class="math notranslate nohighlight">\(C_0\)</span>  1-0  2-0  3-0  …  n-0 <span class="math notranslate nohighlight">\(C_1\)</span>  2-1  3-1  …  n-1 … <span class="math notranslate nohighlight">\(C_n\)</span></div>
+<div class="line">0  <span class="math notranslate nohighlight">\(\epsilon_0\)</span>  <span class="math notranslate nohighlight">\(J_{10}\)</span> <span class="math notranslate nohighlight">\(J_{20}\)</span> <span class="math notranslate nohighlight">\(J_{30}\)</span> …  <span class="math notranslate nohighlight">\(J_{n0}\)</span> <span class="math notranslate nohighlight">\(\epsilon_1\)</span>  <span class="math notranslate nohighlight">\(J_{21}\)</span> <span class="math notranslate nohighlight">\(J_{31}\)</span> …  <span class="math notranslate nohighlight">\(J_{n1}\)</span> … <span class="math notranslate nohighlight">\(\epsilon_n\)</span></div>
+<div class="line">1  <span class="math notranslate nohighlight">\(\epsilon_0\)</span>  <span class="math notranslate nohighlight">\(J_{10}\)</span> <span class="math notranslate nohighlight">\(J_{20}\)</span> <span class="math notranslate nohighlight">\(J_{30}\)</span> …  <span class="math notranslate nohighlight">\(J_{n0}\)</span> <span class="math notranslate nohighlight">\(\epsilon_1\)</span>  <span class="math notranslate nohighlight">\(J_{21}\)</span> <span class="math notranslate nohighlight">\(J_{31}\)</span> …  <span class="math notranslate nohighlight">\(J_{n1}\)</span> … <span class="math notranslate nohighlight">\(\epsilon_n\)</span></div>
+<div class="line">3  <span class="math notranslate nohighlight">\(\epsilon_0\)</span>  <span class="math notranslate nohighlight">\(J_{10}\)</span> <span class="math notranslate nohighlight">\(J_{20}\)</span> <span class="math notranslate nohighlight">\(J_{30}\)</span> …  <span class="math notranslate nohighlight">\(J_{n0}\)</span> <span class="math notranslate nohighlight">\(\epsilon_1\)</span>  <span class="math notranslate nohighlight">\(J_{21}\)</span> <span class="math notranslate nohighlight">\(J_{31}\)</span> …  <span class="math notranslate nohighlight">\(J_{n1}\)</span> … <span class="math notranslate nohighlight">\(\epsilon_n\)</span></div>
 <div class="line">…  …</div>
-<div class="line">m  <span class="math notranslate nohighlight">\(C_0\)</span>  1-0  2-0  3-0  …  n-0 <span class="math notranslate nohighlight">\(C_1\)</span>  2-1  3-1  …  n-1 … <span class="math notranslate nohighlight">\(C_n\)</span></div>
+<div class="line">m  <span class="math notranslate nohighlight">\(\epsilon_0\)</span>  <span class="math notranslate nohighlight">\(J_{10}\)</span> <span class="math notranslate nohighlight">\(J_{20}\)</span> <span class="math notranslate nohighlight">\(J_{30}\)</span> …  <span class="math notranslate nohighlight">\(J_{n0}\)</span> <span class="math notranslate nohighlight">\(\epsilon_1\)</span>  <span class="math notranslate nohighlight">\(J_{21}\)</span> <span class="math notranslate nohighlight">\(J_{31}\)</span> …  <span class="math notranslate nohighlight">\(J_{n1}\)</span> … <span class="math notranslate nohighlight">\(\epsilon_n\)</span></div>
 </div>
 </div></blockquote>
-<p>Where <span class="math notranslate nohighlight">\(m\)</span> is the number of Hamiltionians. <span class="math notranslate nohighlight">\(k-l\)</span> and <span class="math notranslate nohighlight">\(C_n\)</span> keep the same meaning
+<p>Where <span class="math notranslate nohighlight">\(m\)</span> is the number of Hamiltionians. <span class="math notranslate nohighlight">\(J_{kl}\)</span> and <span class="math notranslate nohighlight">\(\epsilon_n\)</span> keep the same meaning
 as in the Hamiltonian above, except now they are per frame in the trajectory.</p>
 <p>The binary file contains only 32-bit floats. The first one indicates the
 frame number, which is still a 32-bit float even though it represents an integer,
@@ -454,10 +454,10 @@ After one Hamiltonian has been written, no spacer is used: the next
 float is the number of the next frame. Thus, in binary format the Hamiltonian trajectory looks like:</p>
 <blockquote>
 <div><div class="line-block">
-<div class="line">0  <span class="math notranslate nohighlight">\(C_0\)</span>  1-0  2-0  3-0  …  n-0 <span class="math notranslate nohighlight">\(C_1\)</span>  2-1  3-1  …  n-1 … <span class="math notranslate nohighlight">\(C_n\)</span> 1  <span class="math notranslate nohighlight">\(C_0\)</span>  1-0  2-0  3-0  …  n-0 <span class="math notranslate nohighlight">\(C_1\)</span>  2-1  3-1  …  n-1 … <span class="math notranslate nohighlight">\(C_n\)</span> 2  <span class="math notranslate nohighlight">\(C_0\)</span>  1-0  2-0  3-0  …  n-0 <span class="math notranslate nohighlight">\(C_1\)</span>  2-1  3-1  …  n-1 … <span class="math notranslate nohighlight">\(C_n\)</span> …  … m  <span class="math notranslate nohighlight">\(C_0\)</span>  1-0  2-0  3-0  …  n-0 <span class="math notranslate nohighlight">\(C_1\)</span>  2-1  3-1  …  n-1 … <span class="math notranslate nohighlight">\(C_n\)</span></div>
+<div class="line">0  <span class="math notranslate nohighlight">\(\epsilon_0\)</span>  <span class="math notranslate nohighlight">\(J_{10}\)</span>  <span class="math notranslate nohighlight">\(J_{20}\)</span>  <span class="math notranslate nohighlight">\(J_{30}\)</span>  …  <span class="math notranslate nohighlight">\(J_{n0}\)</span> <span class="math notranslate nohighlight">\(\epsilon_1\)</span>  <span class="math notranslate nohighlight">\(J_{21}\)</span>  <span class="math notranslate nohighlight">\(J_{31}\)</span>  …  <span class="math notranslate nohighlight">\(J_{n1}\)</span>… <span class="math notranslate nohighlight">\(\epsilon_n\)</span> 1  <span class="math notranslate nohighlight">\(\epsilon_0\)</span>  <span class="math notranslate nohighlight">\(J_{10}\)</span>  <span class="math notranslate nohighlight">\(J_{20}\)</span>  <span class="math notranslate nohighlight">\(J_{30}\)</span>  …  <span class="math notranslate nohighlight">\(J_{n0}\)</span> <span class="math notranslate nohighlight">\(\epsilon_1\)</span>  <span class="math notranslate nohighlight">\(J_{21}\)</span>  <span class="math notranslate nohighlight">\(J_{31}\)</span>  …  <span class="math notranslate nohighlight">\(J_{n1}\)</span> … <span class="math notranslate nohighlight">\(\epsilon_n\)</span> 2  <span class="math notranslate nohighlight">\(\epsilon_0\)</span>  <span class="math notranslate nohighlight">\(J_{10}\)</span>  <span class="math notranslate nohighlight">\(J_{20}\)</span>  <span class="math notranslate nohighlight">\(J_{30}\)</span>  …  <span class="math notranslate nohighlight">\(J_{n0}\)</span> <span class="math notranslate nohighlight">\(\epsilon_1\)</span>  <span class="math notranslate nohighlight">\(J_{21}\)</span>  <span class="math notranslate nohighlight">\(J_{31}\)</span>  …  <span class="math notranslate nohighlight">\(J_{n1}\)</span> … <span class="math notranslate nohighlight">\(\epsilon_n\)</span> …  … m  <span class="math notranslate nohighlight">\(\epsilon_0\)</span>  <span class="math notranslate nohighlight">\(J_{10}\)</span>  <span class="math notranslate nohighlight">\(J_{20}\)</span>  <span class="math notranslate nohighlight">\(J_{30}\)</span>  …  <span class="math notranslate nohighlight">\(J_{n0}\)</span> <span class="math notranslate nohighlight">\(\epsilon_1\)</span>  <span class="math notranslate nohighlight">\(J_{21}\)</span>  <span class="math notranslate nohighlight">\(J_{31}\)</span>  …  <span class="math notranslate nohighlight">\(J_{n1}\)</span> … <span class="math notranslate nohighlight">\(\epsilon_n\)</span></div>
 </div>
 </div></blockquote>
-<p>Where <span class="math notranslate nohighlight">\(m\)</span>, <span class="math notranslate nohighlight">\(k-l\)</span> and <span class="math notranslate nohighlight">\(C_n\)</span> keep the same meaning as in the
+<p>Where <span class="math notranslate nohighlight">\(m\)</span>, <span class="math notranslate nohighlight">\(J_{kl}\)</span> and <span class="math notranslate nohighlight">\(\epsilon_n\)</span> keep the same meaning as in the
 representation of the text trajectory above.</p>
 <p>[1]: T.L.C. Jansen, J. Chem. Phys. 155:170901 (2021) <a class="reference external" href="https://doi.org/10.1063/5.0064092">https://doi.org/10.1063/5.0064092</a></p>
 </section>
