@@ -2,7 +2,7 @@ topology_file                ../../../sourcefiles/pdb_1AKI.tpr
 trajectory_file              ../../../sourcefiles/pdb_1AKI_50frame.xtc
 
 source_directory                ../../../sourcefiles
-VEG_clib_file                   VEG.dll
+VEG_clib_file                   VEG_Win64bit.dll
 
 log_directory
 log_filename                    log.log

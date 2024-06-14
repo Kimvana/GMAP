@@ -90,7 +90,7 @@ class Map():
         self.success = True
         self.avail_files = avail_files
 
-    def find_refpars(self, Printer):
+    def find_refpars(self, Files, Printer):
         """Creates a RefPars object for the map-specific parameters
 
         A map is not required to have any specific parameters. But if it
@@ -111,7 +111,7 @@ class Map():
 
         refparfilename = self.directory / "parameters.ref"
         if refparfilename.is_file():
-            self.RefPars = GM_PP.RefPars(Printer, refparfilename, False)
+            self.RefPars = GM_PP.RefPars(Files, Printer, refparfilename, False)
         else:
             self.RefPars = None
 

@@ -8,6 +8,9 @@ calculating the electric potential, field and gradient on any given list
 of points.
 */
 
+
+// Only do this for Windows 32/64 bit!
+#if defined(_WIN32)
 extern "C" {
     __declspec(dllexport) void calcPot_perres_mm(
         int *tocalc, int n_osc_ats, float *spherepos, float *positions,
@@ -16,7 +19,7 @@ extern "C" {
         float r_smooth, float *halfbox, float *boxdims, float *out
     );
 }
-
+#endif
 
 extern "C" {
     void PBC_diff_cubic(

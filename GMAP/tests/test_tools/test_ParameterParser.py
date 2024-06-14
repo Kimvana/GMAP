@@ -30,13 +30,40 @@ from GMAP.src.tools import ParameterParser as GM_PP
 from GMAP.src.tools import PrintTools as GM_PT
 
 
+@pytest.fixture
+def Files():
+    Files = GM_FH.FileLocations()
+    return Files
+
+
+@pytest.fixture
+def Printer(Files):
+    Printer = GM_PT.Printer(Files)
+    return Printer
+
+
+@pytest.fixture
+def clib_extension(Files):
+    match Files.exec_os:
+        case "Linux":
+            clib_extension = "_Linux.so"
+        case "Win32bit":
+            clib_extension = "_Win32bit.dll"
+        case "Win64bit":
+            clib_extension = "_Win64bit.dll"
+        case "MacOS":
+            clib_extension = "_MacOS.dylib"
+
+    return clib_extension
+
+
 class TestRefPars:
-    def test_correctness(self):
-        Files = GM_FH.FileLocations()
-        Printer = GM_PT.Printer(Files)
+
+    def test_correctness(self, Files, Printer, clib_extension):
         RefPars = GM_PP.RefPars(
-            Printer, Path(
-                "tests/test_tools/Data/reference_parameters_1.ref"),
+            Files, Printer, Path(
+                "tests/test_tools/Data/reference_parameters_1.ref"
+            ),
             True
         )
 
@@ -66,7 +93,7 @@ class TestRefPars:
                 "../../../sourcefiles/pdb_1AKI_50frame.xtc"
             )],
             "source_directory": [Path("../../../sourcefiles")],
-            "VEG_clib_file": [Path("VEG.dll")],
+            "VEG_clib_file": [Path("VEG" + clib_extension)],
             "log_filename": [Path("log.log")],
             "output_estatics_filename": [Path("estatics.txt")],
             "output_hamiltonian_filename": [Path("hamiltonian")],
@@ -293,7 +320,7 @@ class TestRefPars:
         Files = GM_FH.FileLocations()
         Printer = GM_PT.Printer(Files)
         RefPars = GM_PP.RefPars(
-            Printer, Path(
+            Files, Printer, Path(
                 "tests/test_tools/Data/reference_parameters_3.ref"),
             True
         )
@@ -301,11 +328,9 @@ class TestRefPars:
         assert RefPars.choices["influencers"] == [
             ":All", "-", "(", ":None", ")"]
 
-    def test_SU_FP_1(self, capsys):
-        Files = GM_FH.FileLocations()
-        Printer = GM_PT.Printer(Files)
+    def test_SU_FP_1(self, capsys, Files, Printer):
         RefPars = GM_PP.RefPars(
-            Printer, Path(
+            Files, Printer, Path(
                 "tests/test_tools/Data/reference_parameters_1.ref"),
             True
         )
@@ -412,7 +437,7 @@ class TestRefPars:
         Printer = GM_PT.Printer(Files)
 
         with pytest.raises(SystemExit) as pytest_wrapped_sysexit:
-            _ = GM_PP.RefPars(Printer, Path(fname), is_main)
+            _ = GM_PP.RefPars(Files, Printer, Path(fname), is_main)
 
         assert pytest_wrapped_sysexit.type is SystemExit
         captured = capsys.readouterr()
@@ -420,11 +445,9 @@ class TestRefPars:
 
 
 class TestRawPars:
-    def test_fromfile(self):
-        Files = GM_FH.FileLocations()
-        Printer = GM_PT.Printer(Files)
+    def test_fromfile(self, Files, Printer, clib_extension):
         RefPars = GM_PP.RefPars(
-            Printer, Path(
+            Files, Printer, Path(
                 "tests/test_tools/Data/reference_parameters_1.ref"),
             True
         )
@@ -441,7 +464,7 @@ class TestRawPars:
             "topology_file": [sd / "pdb_1AKI.tpr"],
             "trajectory_file": [sd / "pdb_1AKI_50frame.xtc"],
             "source_directory": [sd],
-            "VEG_clib_file": [Path("VEG.dll")],
+            "VEG_clib_file": [Path("VEG_Win64bit.dll")],
             "log_filename": [Path("log.log")],
             "output_estatics_filename": [Path("estatics.txt")],
             "output_hamiltonian_filename": [Path("hamiltonian")],
@@ -738,7 +761,7 @@ class TestRawPars:
         mapdirs = GM_PP.find_mapdir(Files, Printer, cmdline, InPars, RefPars)
         mapdict = GM_MR.scan_mapdirs(mapdirs)
         for map_ in mapdict.values():
-            map_.find_refpars(Printer)
+            map_.find_refpars(Files, Printer)
 
         maprefdict = {name: _map.RefPars for name, _map in mapdict.items()}
 
@@ -749,7 +772,7 @@ class TestRawPars:
         Files = GM_FH.FileLocations()
         Printer = GM_PT.Printer(Files)
         RefPars = GM_PP.RefPars(
-            Printer, Path(
+            Files, Printer, Path(
                 "tests/test_tools/Data/reference_parameters_1.ref"),
             True
         )
@@ -828,7 +851,7 @@ class TestRunPars:
         assert RunPars.source_directory == Path(
             curpath / "../../../sourcefiles").resolve()
         assert RunPars.VEG_clib_file == Path(
-            curpath / "../../../sourcefiles/VEG.dll").resolve()
+            curpath / "../../../sourcefiles/VEG_Win64bit.dll").resolve()
         assert RunPars.log_directory == Path(curpath / "../Data").resolve()
         assert RunPars.log_filename == Path(
             curpath / "../Data/log.log").resolve()
@@ -926,7 +949,7 @@ class TestRunPars:
         Files = GM_FH.FileLocations()
         Printer = GM_PT.Printer(Files)
         RefPars = GM_PP.RefPars(
-            Printer, Path(
+            Files, Printer, Path(
                 "tests/test_tools/Data/reference_parameters_2.ref"),
             True
         )
@@ -969,7 +992,7 @@ class TestRunPars:
             Files, Printer, cmdlines[0], allInPars[0], DefPars)
         mapdict = GM_MR.scan_mapdirs(mapdirs)
         for map_ in mapdict.values():
-            map_.find_refpars(Printer)
+            map_.find_refpars(Files, Printer)
 
         maprefdict = {name: _map.RefPars for name, _map in mapdict.items()}
 
@@ -1226,7 +1249,7 @@ class TestRunPars:
         Files = GM_FH.FileLocations()
         Printer = GM_PT.Printer(Files)
         RefPars = GM_PP.RefPars(
-            Printer, Path(
+            Files, Printer, Path(
                 "tests/test_tools/Data/reference_parameters_1.ref"),
             True
         )
@@ -1243,7 +1266,7 @@ class TestRunPars:
         mapdirs = GM_PP.find_mapdir(Files, Printer, cmdline, InPars, DefPars)
         mapdict = GM_MR.scan_mapdirs(mapdirs)
         for map_ in mapdict.values():
-            map_.find_refpars(Printer)
+            map_.find_refpars(Files, Printer)
 
         maprefdict = {name: _map.RefPars for name, _map in mapdict.items()}
 
@@ -1286,7 +1309,7 @@ class TestMapPars:
 
         counter = 1
         for map_ in mapdict.values():
-            map_.find_refpars(Printer)
+            map_.find_refpars(Files, Printer)
 
             fname_tofind = Path(curpath / "../Data/test_mapdir/Singles")
             fname_tofind /= f"testmap{counter}/parameters.ref"
@@ -1546,7 +1569,7 @@ class TestMapPars:
         ) = TestMapPars.setup_maprefpars(pardict, cmdline, deffilepath)
 
         for map_ in mapdict.values():
-            map_.find_refpars(Printer)
+            map_.find_refpars(Files, Printer)
 
         CmdPars = GM_PP.RawPars.from_cmdline(
             Printer, cmdline, RefPars,
@@ -1572,7 +1595,7 @@ class TestMapPars:
         ) = TestMapPars.setup_maprefpars(pardict, cmdline, deffilepath)
 
         for map_ in mapdict.values():
-            map_.find_refpars(Printer)
+            map_.find_refpars(Files, Printer)
 
         CmdPars = GM_PP.RawPars.from_cmdline(
             Printer, cmdline, RefPars,
@@ -1669,7 +1692,7 @@ class TestMapPars:
         Files = GM_FH.FileLocations()
         Printer = GM_PT.Printer(Files)
         RefPars = GM_PP.RefPars(
-            Printer, Path(
+            Files, Printer, Path(
                 "tests/test_tools/Data/reference_parameters_2.ref"),
             True
         )
@@ -1695,7 +1718,7 @@ class TestMapPars:
         mapdirs = GM_PP.find_mapdir(Files, Printer, cmdline, InPars, DefPars)
         mapdict = GM_MR.scan_mapdirs(mapdirs)
         for map_ in mapdict.values():
-            map_.find_refpars(Printer)
+            map_.find_refpars(Files, Printer)
 
         CmdPars = GM_PP.RawPars.from_cmdline(
             Printer, cmdline, RefPars,
@@ -1769,7 +1792,7 @@ class TestMapPars:
         #     True
         # )
         RefPars = GM_PP.RefPars(
-            Printer, Path(
+            Files, Printer, Path(
                 "sourcefiles/reference_parameters.ref"
             ), True
         )
@@ -1796,7 +1819,7 @@ class TestMapPars:
         ) = TestMapPars.setup_maprefpars(pardict, cmdline, defparfilename)
 
         for map_ in mapdict.values():
-            map_.find_refpars(Printer)
+            map_.find_refpars(Files, Printer)
 
         CmdPars = GM_PP.RawPars.from_cmdline(
             Printer, cmdline, RefPars,
@@ -2061,7 +2084,7 @@ def test_SU_PP_3(capsys):
     Files = GM_FH.FileLocations()
     Printer = GM_PT.Printer(Files)
     RefPars = GM_PP.RefPars(
-        Printer, Path(
+        Files, Printer, Path(
             "tests/test_tools/Data/reference_parameters_2.ref"),
         True
     )

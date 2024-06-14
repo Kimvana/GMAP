@@ -110,7 +110,7 @@ class RefPars:
 
     """
 
-    def __init__(self, Printer, fname, is_main=True):
+    def __init__(self, Files, Printer, fname, is_main=True):
         self.is_main = is_main
         self.fname = fname.resolve()
         self.add_groups()
@@ -131,7 +131,7 @@ class RefPars:
 
         # for fixing intertwined / more convoluted parameters (main file only)
         if is_main:
-            self.resolve(Printer)
+            self.resolve(Files, Printer)
 
     @classmethod
     def add_reffile(cls, Printer, fname, base_RefPars):
@@ -454,7 +454,7 @@ class RefPars:
         else:
             self.choices[parname] = options
 
-    def resolve(self, Printer):
+    def resolve(self, Files, Printer):
         """Fixes intertwined/special parameters the standard parser can't fix
 
         Parameters
@@ -506,6 +506,21 @@ class RefPars:
                 "Please make sure it has a positive value.",
                 "SU_FP_7", True
             )
+
+        # Get the correct file extension for the clib!
+        match Files.exec_os:
+            case "Linux":
+                clib_extension = "_Linux.so"
+            case "Win32bit":
+                clib_extension = "_Win32bit.dll"
+            case "Win64bit":
+                clib_extension = "_Win64bit.dll"
+            case "MacOS":
+                clib_extension = "_MacOS.dylib"
+
+        self.choices["VEG_clib_file"] = [Path(
+            str(*self.choices["VEG_clib_file"]) + clib_extension
+        )]
 
     @staticmethod
     def parse_key(string):
@@ -2028,7 +2043,7 @@ def get_parameters(Files, Printer, in_parfile, argslist):
     ref_parfile = Files.sourcedir_hc / Files.refparfilename_hc
     # step 7 (parse refparfile)
     GM_FH.check_file_readability(Printer, ref_parfile)  # check if file is UTF8
-    RefPars_ = RefPars(Printer, ref_parfile, True)
+    RefPars_ = RefPars(Files, Printer, ref_parfile, True)
 
     # step 8 (parse defparfile)
     if def_parfile.suffix == ".txt":
@@ -2063,7 +2078,7 @@ def get_parameters(Files, Printer, in_parfile, argslist):
     # step 11 (for each map, parse parameters.ref, if present)
     mapdict = GM_MR.scan_mapdirs(mapdirs)
     for map_ in mapdict.values():
-        map_.find_refpars(Printer)
+        map_.find_refpars(Files, Printer)
 
     # step 12 (finish parsing cmdline, inparfile, defparfile)
 

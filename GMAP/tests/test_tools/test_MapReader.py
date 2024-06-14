@@ -1462,7 +1462,7 @@ def basic_setup(
     Files = GM_FH.FileLocations()
     Printer = GM_PT.Printer(Files)
 
-    RefPars = GM_PP.RefPars(Printer, refparfilename, True)
+    RefPars = GM_PP.RefPars(Files, Printer, refparfilename, True)
     if defparfilename:
         DefPars = GM_PP.RawPars.from_file(
             Printer, defparfilename, RefPars, True)
@@ -1478,7 +1478,7 @@ def basic_setup(
     mapdict = GM_MR.scan_mapdirs(mapdirs)
 
     for map_ in mapdict.values():
-        map_.find_refpars(Printer)
+        map_.find_refpars(Files, Printer)
 
     CmdPars = GM_PP.RawPars.from_cmdline(
         Printer, cmdline, RefPars,
