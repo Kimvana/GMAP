@@ -1564,7 +1564,28 @@ class SingleCore():
 
         # convert to ints
         try:
-            used_atoms = [int(num) for num in rawcore["used_atoms"]]
+            '''
+            TODO: Make parsing of number range when used_atoms = 'All'
+            Note: rawcore["used_atoms"] is a list of whatever comes after
+                  used_atoms in the core.txt file used
+            '''
+            used_atoms = list()
+
+            #if "All" in rawcore["used_atoms"]:
+
+
+            for elem in rawcore["used_atoms"]:
+                if "-" in elem:
+                    temp = elem.split("-") # "10-21" -> ["10","21"]
+                    start = int(temp[0])
+                    end = int(temp[1])
+                    if start > end:
+                        used_atoms.extend(list(range(start,end-1,-1)))
+                    else:
+                        used_atoms.extend(list(range(start,end+1)))
+                else:
+                    used_atoms.append(int(elem))
+            
         except Exception as ex:
             Printer.warning(
                 "\nCould not interpret the choice for the parameter "
