@@ -43,7 +43,7 @@ The way these maps work and how to add them to the program is explained :ref:`he
 An example Hamiltonian with :math:`n` chromophores is given below. :math:`\epsilon_m`
 represents the frequency of the :math:`m` th chromophore. :math:`J_{kl}`` is 
 the coupling between the :math:`k` th and the  :math:`l` th chromophores.
-Note that :math:`J_{kl}` and :math:`J_{lk}` are identical. In the following the number of chromophores is :math:`(N+1)``.
+Note that :math:`J_{kl}` and :math:`J_{lk}` are identical. In the following the number of chromophores is :math:`(N+1)`.
 
 .. math::
 
