@@ -10,6 +10,7 @@ import numpy as np
 import GMAP.src.tools.DefaultMapFunctions as GM_DMF
 import GMAP.src.tools.FileHandler as GM_FH
 import GMAP.src.tools.ParameterParser as GM_PP
+from GMAP.src.tools.PrintTools import devprint as dpr
 
 
 class Map():
@@ -1565,14 +1566,14 @@ class SingleCore():
         # convert to ints
         try:
             '''
-            TODO: Make parsing of number range when used_atoms = 'All'
             Note: rawcore["used_atoms"] is a list of whatever comes after
                   used_atoms in the core.txt file used
             '''
             used_atoms = list()
 
-            #if "All" in rawcore["used_atoms"]:
-
+            if "All" in rawcore["used_atoms"]:
+                minLen = min([len(struct.indices) for struct in self.functional_group])
+                used_atoms.extend(list(range(0,minLen)))
 
             for elem in rawcore["used_atoms"]:
                 if "-" in elem:
