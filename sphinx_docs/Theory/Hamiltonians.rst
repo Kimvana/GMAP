@@ -38,7 +38,7 @@ from is not necessarily static and can change over time.
 GEM obtains some of the terms in this equation, which are then used by programs
 like NISE to compute spectral simulations. The program works by using maps which use physical 
 characteristics of the system to compute the values that make up the Hamiltionian trajectory. 
-The way these maps work and how to add them to the program is explained :ref:`here<UserGuide_page_adding_map>`
+The way these maps work and how to add them to the program is explained :ref:`here<UserGuide_page_adding_map>`.
 
 An example Hamiltonian with :math:`n` chromophores is given below. :math:`\epsilon_m`
 represents the frequency of the :math:`m` th chromophore. :math:`J_{kl}`` is 
