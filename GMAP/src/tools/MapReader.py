@@ -1572,20 +1572,20 @@ class SingleCore():
             used_atoms = list()
 
             if "All" in rawcore["used_atoms"]:
-                minLen = min([len(struct.indices) for struct in self.functional_group])
+                minLen = min([len(struct.indices) for struct in self.functional_group]) # Use the shortest structure
                 used_atoms.extend(list(range(0,minLen)))
-
-            for elem in rawcore["used_atoms"]:
-                if "-" in elem:
-                    temp = elem.split("-") # "10-21" -> ["10","21"]
-                    start = int(temp[0])
-                    end = int(temp[1])
-                    if start > end:
-                        used_atoms.extend(list(range(start,end-1,-1)))
+            else:
+                for elem in rawcore["used_atoms"]:
+                    if "-" in elem:
+                        temp = elem.split("-") # "10-21" -> ["10","21"]
+                        start = int(temp[0])
+                        end = int(temp[1])
+                        if start > end:
+                            used_atoms.extend(list(range(start,end-1,-1)))
+                        else:
+                            used_atoms.extend(list(range(start,end+1)))
                     else:
-                        used_atoms.extend(list(range(start,end+1)))
-                else:
-                    used_atoms.append(int(elem))
+                        used_atoms.append(int(elem))
             
         except Exception as ex:
             Printer.warning(
@@ -1596,7 +1596,7 @@ class SingleCore():
                 "MI_MC_7", exception=ex
             )
             self.success = False
-            return
+            return used_atoms
 
         if any(
             not all(ix in struct.indices for struct in self.functional_group)
@@ -1764,12 +1764,27 @@ class SingleCore():
             )
             self.success = False
             return
-
+            
         # convert to ints
         try:
-            local_atoms = [
-                int(num) for num in rawcore["local_atoms"]
-            ]
+            local_atoms = list()
+            
+            if "All" in rawcore["local_atoms"]:
+                local_atoms = self.used_atoms.copy()
+            else:
+                for elem in rawcore["local_atoms"]:
+                    if "-" in elem:
+                        temp = elem.split("-")  # "10-21" -> ["10","21"]
+                        start = int(temp[0])
+                        end = int(temp[1])
+                        if start > end:
+                            local_atoms.extend(list(range(start, end - 1, -1)))
+                        else:
+                            local_atoms.extend(list(range(start, end + 1)))
+                    else:
+                        local_atoms.append(int(elem))
+
+
         except Exception as ex:
             if rawcore["local_atoms"][0].lower() == "none":
                 local_atoms = []
