@@ -1649,9 +1649,23 @@ class SingleCore():
 
         # convert to ints
         try:
-            estatic_atoms = [
-                int(num) for num in rawcore["electrostatic_atoms"]
-            ]
+            estatic_atoms = list()
+
+            if "All" in rawcore["electrostatic_atoms"]:
+                estatic_atoms = self.used_atoms.copy()
+            else:
+                for elem in rawcore["electrostatic_atoms"]:
+                    if "-" in elem:
+                        temp = elem.split("-")  # "10-21" -> ["10","21"]
+                        start = int(temp[0])
+                        end = int(temp[1])
+                        if start > end:
+                            estatic_atoms.extend(list(range(start, end - 1, -1)))
+                        else:
+                            estatic_atoms.extend(list(range(start, end + 1)))
+                    else:
+                        estatic_atoms.append(int(elem))
+
         except Exception as ex:
             if rawcore["electrostatic_atoms"][0].lower() == "none":
                 estatic_atoms = []
