@@ -1652,7 +1652,7 @@ class SingleCore():
             estatic_atoms = list()
 
             if "All" in rawcore["electrostatic_atoms"]:
-                estatic_atoms = self.used_atoms.copy()
+                estatic_atoms.extend(list(range(0,len(self.used_atoms))))
             else:
                 for elem in rawcore["electrostatic_atoms"]:
                     if "-" in elem:
@@ -1784,7 +1784,7 @@ class SingleCore():
             local_atoms = list()
             
             if "All" in rawcore["local_atoms"]:
-                local_atoms = self.used_atoms.copy()
+                local_atoms.extend(list(range(0,len(self.used_atoms))))
             else:
                 for elem in rawcore["local_atoms"]:
                     if "-" in elem:
