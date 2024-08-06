@@ -1535,17 +1535,18 @@ class SingleCore():
         atoms = list()
         if "All" in rawcore:
             atoms.extend(list(range(0,lenlist)))
-        for elem in rawcore:
-            if "-" in elem:
-                temp = elem.split("-")  # "10-21" -> ["10","21"]
-                start = int(temp[0])
-                end = int(temp[1])
-                if start > end:
-                    atoms.extend(list(range(start, end - 1, -1)))
+        else:
+            for elem in rawcore:
+                if "-" in elem:
+                    temp = elem.split("-")  # "10-21" -> ["10","21"]
+                    start = int(temp[0])
+                    end = int(temp[1])
+                    if start > end:
+                        atoms.extend(list(range(start, end - 1, -1)))
+                    else:
+                        atoms.extend(list(range(start, end + 1)))
                 else:
-                    atoms.extend(list(range(start, end + 1)))
-            else:
-                atoms.append(int(elem))
+                    atoms.append(int(elem))
         return atoms
 
     def parse_used_atoms(self, Printer, rawcore, mapdir):
@@ -1651,22 +1652,8 @@ class SingleCore():
 
         # convert to ints
         try:
-            estatic_atoms = list()
-
-            if "All" in rawcore["electrostatic_atoms"]:
-                estatic_atoms.extend(list(range(0,len(self.used_atoms))))
-            else:
-                for elem in rawcore["electrostatic_atoms"]:
-                    if "-" in elem:
-                        temp = elem.split("-")  # "10-21" -> ["10","21"]
-                        start = int(temp[0])
-                        end = int(temp[1])
-                        if start > end:
-                            estatic_atoms.extend(list(range(start, end - 1, -1)))
-                        else:
-                            estatic_atoms.extend(list(range(start, end + 1)))
-                    else:
-                        estatic_atoms.append(int(elem))
+            u_a_len = len(self.used_atoms)  # Use the shortest structure
+            estatic_atoms = self.allow_ranges(rawcore["electrostatic_atoms"], u_a_len)
 
         except Exception as ex:
             if rawcore["electrostatic_atoms"][0].lower() == "none":
@@ -1783,23 +1770,8 @@ class SingleCore():
             
         # convert to ints
         try:
-            local_atoms = list()
-            
-            if "All" in rawcore["local_atoms"]:
-                local_atoms.extend(list(range(0,len(self.used_atoms))))
-            else:
-                for elem in rawcore["local_atoms"]:
-                    if "-" in elem:
-                        temp = elem.split("-")  # "10-21" -> ["10","21"]
-                        start = int(temp[0])
-                        end = int(temp[1])
-                        if start > end:
-                            local_atoms.extend(list(range(start, end - 1, -1)))
-                        else:
-                            local_atoms.extend(list(range(start, end + 1)))
-                    else:
-                        local_atoms.append(int(elem))
-
+            u_a_len = len(self.used_atoms)  # Use the shortest structure
+            local_atoms = self.allow_ranges(rawcore["local_atoms"], u_a_len)
 
         except Exception as ex:
             if rawcore["local_atoms"][0].lower() == "none":
