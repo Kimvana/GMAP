@@ -1531,6 +1531,23 @@ class SingleCore():
                     self.success = False
                     return
 
+    def allow_ranges(self, rawcore, lenlist):
+        atoms = list()
+        if "All" in rawcore:
+            atoms.extend(list(range(0,lenlist)))
+        for elem in rawcore:
+            if "-" in elem:
+                temp = elem.split("-")  # "10-21" -> ["10","21"]
+                start = int(temp[0])
+                end = int(temp[1])
+                if start > end:
+                    atoms.extend(list(range(start, end - 1, -1)))
+                else:
+                    atoms.extend(list(range(start, end + 1)))
+            else:
+                atoms.append(int(elem))
+        return atoms
+
     def parse_used_atoms(self, Printer, rawcore, mapdir):
         """Parse the choice for the parameter used_atoms
 
@@ -1569,23 +1586,8 @@ class SingleCore():
             Note: rawcore["used_atoms"] is a list of whatever comes after
                   used_atoms in the core.txt file used
             '''
-            used_atoms = list()
-
-            if "All" in rawcore["used_atoms"]:
-                minLen = min([len(struct.indices) for struct in self.functional_group]) # Use the shortest structure
-                used_atoms.extend(list(range(0,minLen)))
-            else:
-                for elem in rawcore["used_atoms"]:
-                    if "-" in elem:
-                        temp = elem.split("-") # "10-21" -> ["10","21"]
-                        start = int(temp[0])
-                        end = int(temp[1])
-                        if start > end:
-                            used_atoms.extend(list(range(start,end-1,-1)))
-                        else:
-                            used_atoms.extend(list(range(start,end+1)))
-                    else:
-                        used_atoms.append(int(elem))
+            minLen = min([len(struct.indices) for struct in self.functional_group])  # Use the shortest structure
+            used_atoms = self.allow_ranges(rawcore["used_atoms"], minLen)
             
         except Exception as ex:
             Printer.warning(
