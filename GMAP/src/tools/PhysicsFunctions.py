@@ -80,7 +80,7 @@ def system_CoM(
     return CoM_array
 
 
-def calc_frame(Printer, RunPars, System, outputs):
+def calc_frame(RunPars, System, outputs):
     """The heart of the per-frame loop. Does the actual calculations.
 
     Currently, for each oscillator, the potential is calculated (if
@@ -89,9 +89,6 @@ def calc_frame(Printer, RunPars, System, outputs):
 
     Parameters
     ----------
-    Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
-        The object that allows to cleanly log and print during runtime,
-        and handle errors.
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
         The 'main' RunPars instance containing all the basic run-defining
         parameters.
@@ -126,30 +123,42 @@ def calc_frame(Printer, RunPars, System, outputs):
         # do we need dipoles?
         # we also need dipoles for the (full) hamiiltonian.
         if any(data in RunPars.output_data for data in ("ham", "dip")):
-            r_vec, r_pos = calc_dipole(Printer, System, oscillator)
-            outputs["dipoles"][oscix] = r_vec
+            r_vec, r_pos = calc_dipole(System, oscillator)
+            outputs["dipoles"][oscix] = r_vec  # needed for both ham and dip
 
             if any(data in RunPars.output_data for data in ("ham")):
-                outputs["dipole_pos"][oscix] = r_pos
+                outputs["dipole_pos"][oscix] = r_pos  # only ham!
 
         if "ene" in RunPars.output_data:
             outputs["energies"][oscix] = calc_frequency(
-                Printer, System, oscillator)
+                System, oscillator)
 
         if "ham" in RunPars.output_data:
             outputs["hamiltonian"][oscix, oscix] = calc_frequency(
-                Printer, System, oscillator)
+                System, oscillator)
+
+        if "ram" in RunPars.output_data:
+            outputs["raman"][oscix] = calc_raman(System, oscillator)
+
+        if "pos" in RunPars.output_data:
+            outputs["positions"][oscix] = get_positions(System, oscillator)
+
+        if "dbp" in RunPars.output_data:
+            # very similar to positions, but doublepos returns two positions
+            # simultaneously, so we catch both into the doublepos array.
+            outputs["doublepos"][oscix*2:(oscix+1)*2] = get_doublepos(
+                System, oscillator)
 
     # calculate the couplings for the hamiltonian
     if "ham" in RunPars.output_data:
-        prep_coupling(Printer, RunPars, System)
+        prep_coupling(RunPars, System)
 
-        calc_coupling(Printer, RunPars, System, outputs)
+        calc_coupling(RunPars, System, outputs)
 
     return outputs
 
 
-def calc_dipole(Printer, System, oscillator):
+def calc_dipole(System, oscillator):
     """Calculate the dipole moment for a given oscillator
 
     The oscillator 'knows' how this should be done - invoke that method.
@@ -158,9 +167,6 @@ def calc_dipole(Printer, System, oscillator):
 
     Parameters
     ----------
-    Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
-        The object that allows to cleanly log and print during runtime,
-        and handle errors.
     System : :class:`~GMAP.src.tools.SystemReader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
@@ -182,22 +188,19 @@ def calc_dipole(Printer, System, oscillator):
     # every map should have a calc dipole function
     map_ = oscillator.Map
     r_vec, r_pos = map_.code.GM_calculate_dipole(
-        Printer, map_, System, oscillator)
+        map_, System, oscillator)
     setattr(oscillator, "dipole_vec", r_vec)
     setattr(oscillator, "dipole_pos", r_pos)
     return r_vec, r_pos
 
 
-def calc_frequency(Printer, System, oscillator):
+def calc_frequency(System, oscillator):
     """Calculate the frequency for a given oscillator
 
     The oscillator 'knows' how this should be done - invoke that method.
 
     Parameters
     ----------
-    Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
-        The object that allows to cleanly log and print during runtime,
-        and handle errors.
     System : :class:`~GMAP.src.tools.SystemReader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
@@ -212,10 +215,86 @@ def calc_frequency(Printer, System, oscillator):
     """
 
     map_ = oscillator.Map
-    return map_.code.GM_calculate_frequency(Printer, map_, System, oscillator)
+    return map_.code.GM_calculate_frequency(map_, System, oscillator)
 
 
-def prep_coupling(Printer, RunPars, System):
+def calc_raman(System, oscillator):
+    """Calculate the raman tensor for a given oscillator
+
+    The oscillator 'knows' how this should be done - invoke that method.
+
+    Parameters
+    ----------
+    System : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
+    oscillator : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        The specific oscillator for which the calculation is requested.
+
+    Returns
+    -------
+    tensvect : `np.ndarray`
+        A length-6 vector representing the upper triangular part of the
+        raman tensor.
+        Datatype of this array must be float32!
+    """
+
+    map_ = oscillator.Map
+    return map_.code.GM_calculate_raman(map_, System, oscillator)
+
+
+def get_positions(System, oscillator):
+    """Determine the position for a given oscillator.
+
+    The oscillator 'knows' how this should be done - invoke that method.
+
+    Parameters
+    ----------
+    System : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
+    oscillator : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        The specific oscillator for which the calculation is requested.
+
+    Returns
+    -------
+    pos : `np.ndarray`
+        A length-3 vector representing the position of the oscillator.
+        Datatype of this array must be float32!
+    """
+
+    map_ = oscillator.Map
+    return map_.code.GM_get_position(map_, System, oscillator)
+
+
+def get_doublepos(System, oscillator):
+    """Determine the positions for a given oscillator.
+
+    The oscillator 'knows' how this should be done - invoke that method.
+
+    Parameters
+    ----------
+    System : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
+    oscillator : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        The specific oscillator for which the calculation is requested.
+
+    Returns
+    -------
+    doublepos : `np.ndarray`
+        Two length-3 vectors representing the positions of the oscillator.
+        Datatype of these arrays must be float32!
+    """
+
+    map_ = oscillator.Map
+    return map_.code.GM_get_doublepos(map_, System, oscillator)
+
+
+def prep_coupling(RunPars, System):
     """Calculate some oscillator-dependent properties for couplings
 
     Although the actual coupling value depends on the precise
@@ -227,9 +306,6 @@ def prep_coupling(Printer, RunPars, System):
 
     Parameters
     ----------
-    Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
-        The object that allows to cleanly log and print during runtime,
-        and handle errors.
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
         The 'main' RunPars instance containing all the basic run-defining
         parameters.
@@ -243,10 +319,10 @@ def prep_coupling(Printer, RunPars, System):
         oscixlist = System.oscillators_ordered_coup_ix[coupmapname]
         coupmap = RunPars.requested_pairmapdict[coupmapname]
         coupmap.code.GM_prep_coupling(
-            Printer, coupmap, System, oscixlist, osclist)
+            coupmap, System, oscixlist, osclist)
 
 
-def calc_coupling(Printer, RunPars, System, outputs):
+def calc_coupling(RunPars, System, outputs):
     """Calculate the couplings of the system.
 
     This function loops through the requested maps, and lets each
@@ -254,9 +330,6 @@ def calc_coupling(Printer, RunPars, System, outputs):
 
     Parameters
     ----------
-    Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
-        The object that allows to cleanly log and print during runtime,
-        and handle errors.
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
         The 'main' RunPars instance containing all the basic run-defining
         parameters.
@@ -272,7 +345,7 @@ def calc_coupling(Printer, RunPars, System, outputs):
     for coupmapname in System.oscillators_ordered_coup.keys():
         coupmap = RunPars.requested_pairmapdict[coupmapname]
         coupmap.code.GM_calc_coupling(
-            Printer, coupmap, System, outputs["hamiltonian"])
+            coupmap, System, outputs["hamiltonian"])
 
 
 def generate_output_structures(RunPars, System):
@@ -300,15 +373,24 @@ def generate_output_structures(RunPars, System):
     """
 
     outputs = {}
+    nosc = System.nosc
     if any(data in RunPars.output_data for data in ("ham",)):
-        outputs["hamiltonian"] = np.zeros(
-            (System.nosc, System.nosc), dtype="float32")
-        outputs["dipole_pos"] = np.zeros((System.nosc, 3), dtype="float32")
+        outputs["hamiltonian"] = np.zeros((nosc, nosc), dtype="float32")
+        outputs["dipole_pos"] = np.zeros((nosc, 3), dtype="float32")
 
     if any(data in RunPars.output_data for data in ("ene",)):
-        outputs["energies"] = np.zeros((System.nosc,), dtype="float32")
+        outputs["energies"] = np.zeros((nosc,), dtype="float32")
 
     if any(data in RunPars.output_data for data in ("ham", "dip")):
-        outputs["dipoles"] = np.zeros((System.nosc, 3), dtype="float32")
+        outputs["dipoles"] = np.zeros((nosc, 3), dtype="float32")
+
+    if any(data in RunPars.output_data for data in ("pos",)):
+        outputs["positions"] = np.zeros((nosc, 3), dtype="float32")
+
+    if any(data in RunPars.output_data for data in ("dbp",)):
+        outputs["doublepos"] = np.zeros((nosc*2, 3), dtype="float32")
+
+    if any(data in RunPars.output_data for data in ("dbp",)):
+        outputs["raman"] = np.zeros((nosc, 6), dtype="float32")
 
     return outputs

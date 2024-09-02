@@ -1,5 +1,7 @@
 functional_group       [A] A1 A2(1) A3 [B] B1(1) B2 B3
 
+can_output         ham ene dip pos dbp
+
 used_atoms             0 1 2 3 4 5
 electrostatic_atoms    2 3
 electrostatic_choice   E
@@ -16,4 +18,8 @@ VEG_reference    CoM   2 3
 
 dipole_gas_phase       0.3
 frequency_gas_phase    1200
+
+position       0
+doublepos_0    0
+doublepos_1    1
 

@@ -4,7 +4,7 @@
 Core.txt file
 #############
 
-(this applies to singles maps. If you are looking for pairs maps instead, go to :ref:`the pairs version of this page.<AddMap_FileStruct_PairCore>)
+(this applies to singles maps. If you are looking for pairs maps instead, go to :ref:`the pairs version of this page.<AddMap_FileStruct_PairCore>`)
 
 This file forms the basis for any map. It must be present in all cases. It explains what the oscillator looks like, and what parts to treat, and the corresponding map coefficients. It works somewhat similar to how one creates input parameter files. All available keywords will be listed here, with an explanation.
 
@@ -19,6 +19,16 @@ Any keyword not given here can still be used, but all information given for that
 .. note::
     Because of this variety, it is possible that a pair map needs to know additional things about an oscillator (encoded by a single map). If they request so, this file might need one or more additional keywords to function appropriately.
 
+
+
+**********
+can_output
+**********
+
+*Mandatory parameter*
+
+This parameter explains what kind of outputs this map can be used for. Among others, the program can use a map to calculate a molecules frequency or dipole. A map doesn't need to specify keywords mandatory to output types not mentioned here. Similarly, when a user requests use of a map for an output it doesn't mention, the program will automatically stop and request a change from the user. 
+The available options here are the same as the available options for :ref:`the input parameter 'output_data'<UserGuide_page_parameter_overview_output_data>`.
 
 
 ****************
@@ -297,11 +307,35 @@ In this case, the zeroth atom in used atom will have the same name as the zeroet
 While the order of atoms in the definition of functional_group has to follow some rules (all atoms pertaining to a single residue must be grouped, multiple atoms of the same name will follow the same order as found in the topology file), the definition here does not. Here, you should pick an order that makes the most sense to you - the order here is what is used everywhere else in the map!
 
 
+********************
+electrostatic_choice
+********************
+
+*Mandatory parameter*
+
+While some maps only need to know the electrostatic potential at certain points, others need to know the field or gradient. As it is significantly more expensive to compute the electric gradient than it is to compute the electric field, which in turn is significantly more expensive than the potential alone, it is valuable to specify which of these are actually needed. There are four options::
+
+    electrostatic_choice    V   # only calculate the potential
+
+::
+
+    electrostatic_choice    E   # calculate the potential and the electric field
+
+::
+
+    electrostatic_choice    G   # calculate the potential, the electric field, and the gradient
+
+::
+
+    electrostatic_choice    None  # No elecctrostatic properties should be computed.
+
 *******************
 electrostatic_atoms
 *******************
 
-*Mandatory parameter*
+*Half-mandatory parameter*
+
+This parameter is not needed if electrostatic_choice is set to None.
 
 Many maps need to know what the electrostatic potential, electric field, and/or electric gradient values are at the position of certain atoms. For example, based on the potential felt by different atoms in an oscillator, you can deduce at what frequency it absorbs light. This parameter defines at which atom's positions the electrostatic properties should be calculated. The atoms are selected from used_atoms. Lets look at the amide sidechain example::
     
@@ -318,32 +352,13 @@ While it is very common for a map to need these properties, it is not universal.
     electrostatic_atoms     None
 
 
-********************
-electrostatic_choice
-********************
-
-*Half-mandatory parameter*
-
-This parameter is not needed if electrostatic_atoms is set to None.
-
-While some maps only need to know the electrostatic potential at certain points, others need to know the field or gradient. As it is significantly more expensive to compute the electric gradient than it is to compute the electric field, which in turn is significantly more expensive than the potential alone, it is valuable to specify which of these are actually needed. There are three options::
-
-    electrostatic_choice    V   # only calculate the potential
-
-::
-
-    electrostatic_choice    E   # calculate the potential and the electric field
-
-::
-
-    electrostatic_choice    G   # calculate the potential, the electric field, and the gradient
-
-
 ***********
 local_atoms
 ***********
 
-*Mandatory parameter*
+*Half-mandatory parameter*
+
+This parameter is not needed if electrostatic_choice is set to None.
 
 Calculating the electrostatics for an oscillator is involved. Not all atoms will contribute to the electrostatic environment of the oscillator - most notably, the atoms of the oscillator itself.
 
@@ -362,9 +377,7 @@ It might happen that a map is more complex. If a mapping would like to exclude m
 type and xyz_uvec
 *****************
 
-*Half-mandatory parameters*
-
-These parameters are not needed if electrostatic_atoms is set to None, or if electrostatic_choice is set to V.
+*Mandatory if electrostatic_choice is set to E or G*
 
 When applying maps, symmetry must be taken into consideration - If we rotate all atoms in the simulation such that (in cartesian coordinates) x becomes y, y becomes z, and z becomes x, the frequency of any oscillator shouldn't change. If the oscillator is flat and lies in the xy plane, mirroring through this plane (z becomes -z) shouldn't change anything either.
 
@@ -435,7 +448,7 @@ While the first vector could be taken at face value, the second cannot, as the t
 r_pos and r_vec
 ***************
 
-*Mandatory parameters*
+*Mandatory if can_output includes any of the following: ham, ene, dip*
 
 When calculating the frequency at which an oscillator absorbs, we're usually building a hamiltonian. Such a hamiltonian is used for further spectroscopic calculations, which usually involve coupling. Regardless of whether the coupling between oscillators is explicitly calculated by GMAP, or whether it is done by a follow-up program, these calculations usually rely on dipoles. There are two important components to a dipole. First are the magnitude and direction of a dipole - the dipole vector. The second is the location of the dipole.
 
@@ -460,7 +473,7 @@ The vector found for r_vec will be normalized - its purpose is solely to indicat
 VEG_reference
 *************
 
-*mandatory parameter*
+*Mandatory if electrostatic_choice is* **not** *set to None*
 
 Most mappings depend on some electrostatic property on some position(s). These properties are calculated by the program. While these electrostatic properties are dependent on all atoms around, the atoms closest by have the largest impact. Therefore, a lot of computational time is saved by only considering the atoms within a certain radius. But, within a certain radius of what? Thats what this parameter encodes. Of course, the center of this sphere of charges is very likely to be somewhere within the molecule considered, but exactly where can differ. This keyword lets you specify the exact point where the sphere should be centered. There are three different ways of doing so:
 
@@ -528,11 +541,23 @@ What happens here is a little bit more involved: the index provided is of an ato
 If multiple atoms are given, then for each atom, the residue is found. This allows to add the atoms of multiple residues together (for oscillators that live on multiple residues). If multiple atoms are given that all belong to the same residue, that residue gets more 'weight' - it is _not_ the case that 'extra' atoms of the same residue are ignored.
 
 
+*******************
+assume_length_units
+*******************
+
+| *optional parameter*
+| *(options: angstrom, bohr. Default: angstrom)*
+
+The program assumes (by default) that maps assume length to be specified in angstrom, and define their constants accordingly. However, this might not be true for all maps. If your map uses bohrs instead, use this keyword to indicate this.
+
+If you use different units, you can do the unit conversion yourself using the function 'post_init()' in the map main.py file.
+
+
 ****************
 dipole_gas_phase
 ****************
 
-*mandatory parameter*
+*Mandatory if can_output includes any of the following: ham, ene, dip*
 
 As illustrated under 'r_pos and r_vec', the dipole moment of oscillators is a key property for the program. While the information in that section is used to give the direction of the dipole moment vector (and its position), it doesn't contain any information on its magnitude. Thats what this parameter, and the parameter 'dipole_data_file' are for. This parameter specifies the (base) magnitude of the dipole moment, in Debye. If the magnitude can vary, see 'dipole_data_file'.
 
@@ -601,7 +626,7 @@ Just as with the 'magnitude' choice for this parameter, the amount of columns th
 frequency_gas_phase
 *******************
 
-*mandatory parameter*
+*Mandatory if can_output includes any of the following: ham, ene*
 
 Similar to dipoles, the oscillation frequency of oscillators is a key property for the program. This parameter specifies the (base) oscillation frequency, typically the one measured when the oscillator in question is in the gas phase. The units used are wavenumbers, and it is provided using a single decimal number, much like the dipole_gas_phase.
 
@@ -667,6 +692,45 @@ The symbols here still mean the same: :math:`\omega_{gas}` is the gas phase freq
 The map provides these coefficients just like the linear ones, in a separate file, specified using this parameter. The file contains a grid of coefficients, with a row for each atom listed under 'electrostatic_atoms', and at most 10 columns. The first column contains the potential coefficients, the next three contain the field coefficients (in order x, y, z), and the last six contain the gradient coefficients (in order xx, yy, zz, xy, xz, yz).
 
 If you specified 'G' as the choice for the parameter 'electrostatic_choice', all 10 columns must be present. They may contain zeros, but they must be there. If you specified 'E' as the choice for the parameter 'electrostatic_choice', the first 4 columns are mandatory. Any extras will be ignored. Similarly, if you specified 'V' as the choice for the parameter 'electrostatic_choice', only the first column must be present, and all others (if present) will be ignored.
+
+
+********
+position
+********
+
+*Mandatory if can_output includes any of the following: pos, dbp*
+
+One of the available outputs of the program is positions. For each oscillator, (for each frame) a position is written to a file. This parameter allows to specify what position should be written for this oscillator to the positions file. It has no influence on the doublepos file. The syntax is the same as for defining ``r_pos`` and ``VEG_reference position``::
+
+    functional_group        [ASN]    CG  OD1  CB  ND2  HD21  HD22
+    used_atoms              0 1 3 4   # CG OD1 ND2 HD21
+    position                0  # write the position of the CG atom to file.
+
+Any kind of position determination is possible. Considering the above example::
+
+    position                (0 + 1) / 2.0
+
+This way, we define the position to be the average position of atoms 0 and 1, or, in other words, the position is halfway between the CG and OD1 atoms.
+
+
+***************************
+doublepos_0 and doublepos_1
+***************************
+
+*Mandatory if can_output includes any of the following: pos, dbp*
+
+One of the available outputs of the program is doublepos. It is very similar to positions, except that for each oscillator, two separate positions are written to a file. These parameters allow to specify which positions should be written for this oscillator to the doublepos file. It has no influence on the positions file. The syntax is the same as for defining ``r_pos`` and ``VEG_reference position``::
+
+    functional_group        [ASN]    CG  OD1  CB  ND2  HD21  HD22
+    used_atoms              0 1 3 4   # CG OD1 ND2 HD21
+    doublepos_0             0  # write the position of the CG atom to file.
+    doublepos_1             2  # write the position of the ND atom to file.
+
+Any kind of position determination is possible. Considering the above example::
+
+    doublepos_0                (0 + 1) / 2.0
+
+This way, we define the position to be the average position of atoms 0 and 1, or, in other words, the position is halfway between the CG and OD1 atoms.
 
 
 ****************

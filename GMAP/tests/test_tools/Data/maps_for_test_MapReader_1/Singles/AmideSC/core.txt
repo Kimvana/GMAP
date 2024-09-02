@@ -18,6 +18,8 @@
 # add_corefile       proteincore.txt
 
 
+can_output         ham ene dip pos dbp
+
 
 # -----------------------
 
@@ -106,4 +108,7 @@ local_atoms   0 1 3 4 5
 
 VEG_reference    CoM 0 1 3 4 5
 
+position       0
+doublepos_0    0
+doublepos_1    1
 

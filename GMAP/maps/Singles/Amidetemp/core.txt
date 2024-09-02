@@ -18,6 +18,8 @@
 add_corefile       proteincore.txt
 
 
+can_output  ham ene dip pos dbp
+
 
 # -----------------------
 
@@ -121,5 +123,11 @@ VEG_reference  CoM  0 1 2 3 4  # take CoM of listed atoms
 # if no estat ats, this parameter may be missing.
 # if estat ats, but estat choice V, this parameter may be missing.
 type   standard     # standard, linear
+
+
+position       0  # carbon atom
+doublepos_0    0  # carbon atom
+doublepos_1    3  # nitrogen atom
+
 
 

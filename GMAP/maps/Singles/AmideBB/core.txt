@@ -1,4 +1,6 @@
 
+can_output  ham ene dip pos dbp
+
 # does not cover prepros
 functional_group [anyprot] N CA C(1) O [anyprot] N(1) H CA C
 
@@ -30,3 +32,7 @@ dipole_gas_phase       0.3
 
 frequency_gas_phase    1684
 frequency_data_file_linear    Skinner.txt
+
+position       0  # carbon atom
+doublepos_0    0  # carbon atom
+doublepos_1    3  # nitrogen atom
