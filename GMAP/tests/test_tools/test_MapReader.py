@@ -1970,7 +1970,7 @@ def basic_setup(
 
     Files = GM_FH.FileLocations()
 
-    RefPars = GM_PP.RefPars(refparfilename, True)
+    RefPars = GM_PP.RefPars(Files,refparfilename, True)
     if defparfilename:
         DefPars = GM_PP.RawPars.from_file(
             defparfilename, RefPars, True)
@@ -1988,7 +1988,7 @@ def basic_setup(
     mapdict = singles_mapdict | pairs_mapdict
 
     for map_ in mapdict.values():
-        map_.find_refpars()
+        map_.find_refpars(Files)
 
     CmdPars = GM_PP.RawPars.from_cmdline(
         cmdline, RefPars,

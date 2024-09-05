@@ -36,6 +36,7 @@ class RefPars:
 
     Parameters
     ----------
+    Files : Information on c-library files 
     fname : pathlib.Path
         The absolute path to the file that contains all desired parameters
     is_main : bool, default=True
@@ -111,7 +112,7 @@ class RefPars:
 
     """
 
-    def __init__(self, fname, is_main=True):
+    def __init__(self, Files, fname, is_main=True):
         self.is_main = is_main
         self.fname = fname.resolve()
         self.add_groups()
@@ -137,7 +138,7 @@ class RefPars:
 
         # for fixing intertwined / more convoluted parameters (main file only)
         if is_main:
-            self.resolve()
+            self.resolve(Files)
 
     @classmethod
     def add_reffile(cls, fname, base_RefPars):
@@ -379,6 +380,7 @@ class RefPars:
                 GMAPerrclass=GM_Ex.GmapFileSyntaxError
             )
 
+
     def parse_line_choice(self, linelist):
         """Extract the choice for a parameter specified on the given line
 
@@ -459,7 +461,7 @@ class RefPars:
         else:
             self.choices[parname] = options
 
-    def resolve(self):
+    def resolve(self,Files):
         """Fixes intertwined/special parameters the standard parser can't fix
         """
 
@@ -560,6 +562,24 @@ class RefPars:
                 self.choices["doublepos_multiplier"] = [GM_con.ang2bohr]
             case "nm":
                 self.choices["doublepos_multiplier"] = [0.1]
+
+        # Get the correct file extension for the clib!
+        match Files.exec_os:
+            case "Linux":
+                clib_extension = "_Linux.so"
+            case "Win32bit":
+                clib_extension = "_Win32bit.dll"
+            case "Win64bit":
+                clib_extension = "_Win64bit.dll"
+            case "MacOS":
+                clib_extension = "_MacOS.dylib"
+            case _:
+                clib_extension = ""
+
+        # Add extension to clib file name
+        self.choices["VEG_clib_file"] = [Path(
+            str(*self.choices["VEG_clib_file"]) + clib_extension
+        )]
 
     @staticmethod
     def parse_key(string):
@@ -2458,7 +2478,7 @@ def get_parameters(Files, in_parfile, argslist):
     ref_parfile = Files.sourcedir_hc / Files.refparfilename_hc
     # step 7 (parse refparfile)
     GM_FH.check_file_readability(ref_parfile)  # check if file is UTF8
-    RefPars_ = RefPars(ref_parfile, True)
+    RefPars_ = RefPars(Files,ref_parfile, True)
 
     # step 8 (parse defparfile)
     if def_parfile.suffix == ".txt":
@@ -2495,7 +2515,7 @@ def get_parameters(Files, in_parfile, argslist):
     pairs_mapdict = GM_MR.scan_mapdirs(mapdirs, "Pairs")
     all_mapdict = singles_mapdict | pairs_mapdict
     for map_ in all_mapdict.values():
-        map_.find_refpars()
+        map_.find_refpars(Files)
 
     # step 12 (finish parsing cmdline, inparfile, defparfile)
 

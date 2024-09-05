@@ -93,7 +93,7 @@ class Map():
         self.success = True
         self.avail_files = avail_files
 
-    def find_refpars(self):
+    def find_refpars(self,Files):
         """Creates a RefPars object for the map-specific parameters
 
         A map is not required to have any specific parameters. But if it
@@ -108,7 +108,7 @@ class Map():
 
         refparfilename = self.directory / "parameters.ref"
         if refparfilename.is_file():
-            self.RefPars = GM_PP.RefPars(refparfilename, False)
+            self.RefPars = GM_PP.RefPars(Files,refparfilename, False)
         else:
             # self.RefPars = None
             with open(refparfilename, "w") as _:
