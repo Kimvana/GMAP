@@ -32,28 +32,8 @@ import GMAP.src.tools.FileHandler as GM_FH
 import GMAP.src.tools.MapReader as GM_MR
 import GMAP.src.tools.ParameterParser as GM_PP
 
-
-@pytest.fixture
-def Files():
-    Files = GM_FH.FileLocations()
-    return Files
-
-@pytest.fixture
-def clib_extension(Files):
-    match Files.exec_os:
-        case "Linux":
-            clib_extension = "_Linux.so"
-        case "Win32bit":
-            clib_extension = "_Win32bit.dll"
-        case "Win64bit":
-            clib_extension = "_Win64bit.dll"
-        case "MacOS":
-            clib_extension = "_MacOS.dylib"
-
-    return clib_extension
-
 class TestRefPars:
-    def test_correctness(self,Files):
+    def test_correctness(self):
         Files = GM_FH.FileLocations()  # still needed for initialization
         RefPars = GM_PP.RefPars(
             Files,
@@ -61,6 +41,19 @@ class TestRefPars:
                 "tests/test_tools/Data/reference_parameters_1.ref"),
             True
         )
+
+        match Files.exec_os:
+            case "Linux":
+                clib_extension = "_Linux.so"
+            case "Win32bit":
+                clib_extension = "_Win32bit.dll"
+            case "Win64bit":
+                clib_extension = "_Win64bit.dll"
+            case "MacOS":
+                clib_extension = "_MacOS.dylib"
+            case _:
+                clib_extension = ""
+
 
         assert RefPars.fname.name == "reference_parameters_1.ref"
         assert RefPars.options == {
@@ -94,7 +87,7 @@ class TestRefPars:
                 "../../../sourcefiles/pdb_1AKI_50frame.xtc"
             )],
             "source_directory": [Path("../../../sourcefiles")],
-            "VEG_clib_file": [Path("VEG_MacOS.dylib")],
+            "VEG_clib_file": [Path("VEG"+clib_extension)],
             "log_filename": [Path("log.log")],
             "output_legend_filename": [Path("legend.txt")],
             "output_couplingvis_filename": [Path("couplingvisualization.pdf")],
@@ -501,6 +494,20 @@ class TestRefPars:
 class TestRawPars:
     def test_fromfile(self):
         Files = GM_FH.FileLocations()  # still needed for initialization
+
+        # Get the correct file extension for the clib!
+        match Files.exec_os:
+            case "Linux":
+                clib_extension = "_Linux.so"
+            case "Win32bit":
+                clib_extension = "_Win32bit.dll"
+            case "Win64bit":
+                clib_extension = "_Win64bit.dll"
+            case "MacOS":
+                clib_extension = "_MacOS.dylib"
+            case _:
+                clib_extension = ""
+
         RefPars = GM_PP.RefPars(
             Files,
             Path(
@@ -698,6 +705,7 @@ class TestRawPars:
         # Also, test map-shorthand
 
     def test_variations(self):
+
         def infltest(cmdline, inflchoice):
             _, RefPars, _, _, maprefdict = self.setup_test_SU_WP_cmd(
                 cmdline)
@@ -1005,6 +1013,19 @@ class TestRawPars:
 class TestRunPars:
     def test_correctness(self):
         # Assumes that RefPars and RawPars work correctly!!!
+        Files = GM_FH.FileLocations()
+
+        match Files.exec_os:
+            case "Linux":
+                clib_extension = "_Linux.so"
+            case "Win32bit":
+                clib_extension = "_Win32bit.dll"
+            case "Win64bit":
+                clib_extension = "_Win64bit.dll"
+            case "MacOS":
+                clib_extension = "_MacOS.dylib"
+            case _:
+                clib_extension = ""
 
         pardict = {
             "verbose": ["4"],
@@ -1145,6 +1166,19 @@ class TestRunPars:
 
         # setup - Create all necessary objects.
         Files = GM_FH.FileLocations()
+
+        match Files.exec_os:
+            case "Linux":
+                clib_extension = "_Linux.so"
+            case "Win32bit":
+                clib_extension = "_Win32bit.dll"
+            case "Win64bit":
+                clib_extension = "_Win64bit.dll"
+            case "MacOS":
+                clib_extension = "_MacOS.dylib"
+            case _:
+                clib_extension = ""
+
         RefPars = GM_PP.RefPars(
             Files,
             Path(
@@ -1606,6 +1640,8 @@ class TestRunPars:
 
 class TestMapPars:
     def test_maprefpars(self):
+        Files = GM_FH.FileLocations()
+
         # Assumes that RefPars and RawPars work correctly!!
         pardict = {
             "map_directory": ["Data/test_mapdir"]

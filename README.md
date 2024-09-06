@@ -46,13 +46,13 @@ When you've made some choices to the code, and would like to rebuild the docs, n
 - make sure to install microsoft visual studio (detailed instructions are a must - AIM repo has them in the manual, page 12).
 - through windows start menu, scroll trough list of programs, select visual studio folder, in there, the desired command prompt. x64 Native Tools for 64 bit windows, x86 Native Tools for 32 bit. __Make sure to open the command prompt in admin mode__.
 - run the following command: ```cl.exe /LD scriptname.cpp``` (generates 4 files)
-- use the .dll file for the program (ignore or delete the other 3 generated ones).
+- use the .dll file for the program (ignore or delete the other 3 generated ones). Change the extension from .dll to _Win32bit.dll or _Win64bit.dll as appropriate.
 
 
 ### linux
 
 - open terminal
-- ```g++ -fPIC -shared -o scriptname.so scriptname.cpp```
+- ```g++ -fPIC -shared -o scriptname_Linux.so scriptname.cpp```
 
 (if installed, using cc instead of g++ also works)
 
@@ -60,4 +60,4 @@ When you've made some choices to the code, and would like to rebuild the docs, n
 ### mac
 
 - open terminal
-- ```cc -fPIC -dynamiclib -o scriptname.dylib scriptname.cpp```
+- ```cc -fPIC -dynamiclib -o scriptname_MacOS.dylib scriptname.cpp```

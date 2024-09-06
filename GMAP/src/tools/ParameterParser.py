@@ -465,6 +465,8 @@ class RefPars:
         """Fixes intertwined/special parameters the standard parser can't fix
         """
 
+        Files = GM_FH.FileLocations()
+
         # influencers - we need some defaults, but they should not clash in any
         # way.... in the default file, top one takes precedence.
         for parameter in self.maybe_list:
