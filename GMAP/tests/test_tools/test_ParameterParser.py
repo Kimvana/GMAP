@@ -53,7 +53,7 @@ def clib_extension(Files):
     return clib_extension
 
 class TestRefPars:
-    def test_correctness(self):
+    def test_correctness(self,Files):
         Files = GM_FH.FileLocations()  # still needed for initialization
         RefPars = GM_PP.RefPars(
             Files,
@@ -94,7 +94,7 @@ class TestRefPars:
                 "../../../sourcefiles/pdb_1AKI_50frame.xtc"
             )],
             "source_directory": [Path("../../../sourcefiles")],
-            "VEG_clib_file": [Path("VEG")],
+            "VEG_clib_file": [Path("VEG_MacOS.dylib")],
             "log_filename": [Path("log.log")],
             "output_legend_filename": [Path("legend.txt")],
             "output_couplingvis_filename": [Path("couplingvisualization.pdf")],
@@ -395,7 +395,6 @@ class TestRefPars:
 
         with pytest.raises(GM_Ex.GmapNotImplementedError, match="SU_FP_1$"):
             GM_PP.RefPars.add_reffile(
-                Files,
                 Path("tests/test_tools/Data/reference_parameters_1.ref"),
                 RefPars
             )
