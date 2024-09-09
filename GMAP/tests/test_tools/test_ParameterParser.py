@@ -74,7 +74,7 @@ class TestRefPars:
                 "../../../sourcefiles/pdb_1AKI_50frame.xtc"
             )],
             "source_directory": [Path("../../../sourcefiles")],
-            "VEG_clib_file": [Path("VEG.dll")],
+            "VEG_clib_file": [Path("VEG")],
             "log_filename": [Path("log.log")],
             "output_legend_filename": [Path("legend.txt")],
             "output_couplingvis_filename": [Path("couplingvisualization.pdf")],
@@ -496,7 +496,7 @@ class TestRawPars:
             "topology_file": [sd / "pdb_1AKI.tpr"],
             "trajectory_file": [sd / "pdb_1AKI_50frame.xtc"],
             "source_directory": [sd],
-            "VEG_clib_file": [Path("VEG.dll")],
+            "VEG_clib_file": [Path("VEG")],
             "log_filename": [Path("log.log")],
             "output_legend_filename": [Path("legend.txt")],
             "output_couplingvis_filename": [Path("couplingvisualization.pdf")],
@@ -1025,7 +1025,7 @@ class TestRunPars:
         assert RunPars.source_directory == Path(
             curpath / "../../../sourcefiles").resolve()
         assert RunPars.VEG_clib_file == Path(
-            curpath / "../../../sourcefiles/VEG.dll").resolve()
+            curpath / "../../../sourcefiles/VEG").resolve()
         assert RunPars.log_directory == Path(curpath / "../Data").resolve()
         assert RunPars.log_filename == Path(
             curpath / "../Data/log.log").resolve()

@@ -6,7 +6,7 @@ import ctypes as ct
 import GMAP.src.tools.CodingTools as GM_CT
 import GMAP.src.tools.Exceptions as GM_Ex
 from GMAP.src.tools.PrintTools import Printer
-
+import GMAP.src.tools.FileHandler as GM_FH
 
 class VEG_CLib(metaclass=GM_CT.Singleton):
     """Stores and manages all c functions regarding electrostatics.
@@ -45,12 +45,27 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
     """
 
     def __init__(self, RunPars):
+        # Find propper file extension for clib file
+        Files = GM_FH.FileLocations()
+        match Files.exec_os:
+            case "Linux":
+                clib_extension = "_Linux.so"
+            case "Win32bit":
+                clib_extension = "_Win32bit.dll"
+            case "Win64bit":
+                clib_extension = "_Win64bit.dll"
+            case "MacOS":
+                clib_extension = "_MacOS.dylib"
+            case _:
+                clib_extension = ""
+        print("TLC %s %s\n",str(RunPars.VEG_clib_file),clib_extension)
+
         try:
             msg = (
-                f"\nThe file {RunPars.VEG_clib_file} was requested to be used "
+                f"\nThe file {RunPars.VEG_clib_file}{clib_extension} was requested to be used "
                 "as the VEG c-library. However, the file is invalid. "
             )
-            self.clib = ct.CDLL(str(RunPars.VEG_clib_file))
+            self.clib = ct.CDLL(str(RunPars.VEG_clib_file)+clib_extension)
         except FileNotFoundError as ex:
             Printer().warning(
                 msg, "CL_VG_1", True, exception=ex,

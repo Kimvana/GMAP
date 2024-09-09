@@ -67,6 +67,7 @@ class FileLocations:
         self.refparfilename_hc = "reference_parameters.ref"
 
         GM_PT.Printer(self)  # initialize the printer!
+        self.set_exec_os()
 
     def set_exec_os(self):
         """Find and set the exec_os attribute.
