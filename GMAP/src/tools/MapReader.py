@@ -1586,7 +1586,7 @@ class SingleCore():
 
     def allow_ranges(self, rawcore, lenlist):
         atoms = list()
-        if "All" in rawcore:
+        if "all" in (elem.lower() for elem in rawcore): # Case insensitive in
             atoms.extend(list(range(0,lenlist)))
         else:
             for elem in rawcore:
@@ -1594,6 +1594,8 @@ class SingleCore():
                     temp = elem.split("-")  # "10-21" -> ["10","21"]
                     start = int(temp[0])
                     end = int(temp[1])
+                    if start > lenlist or end > lenlist:
+                        raise IndexError
                     if start > end:
                         atoms.extend(list(range(start, end - 1, -1)))
                     else:
@@ -1639,7 +1641,18 @@ class SingleCore():
             '''
             minLen = min([len(struct.indices) for struct in self.functional_group])  # Use the shortest structure
             used_atoms = self.allow_ranges(rawcore["used_atoms"], minLen)
-            
+
+        except IndexError as IErr:
+            GM_PT.Printer().warning(
+                "\nChoice of parameter 'used_atoms' is out of bounds. " 
+                f"In the file {mapdir / 'core.txt'}. Please make sure the "
+                "choice is within bounds. MI_MC_8",
+                "MI_MC_8", exception=IErr
+            )
+            self.success = False
+            return
+
+
         except Exception as ex:
             GM_PT.Printer().warning(
                 "\nCould not interpret the choice for the parameter "
@@ -1649,7 +1662,8 @@ class SingleCore():
                 "MI_MC_7", exception=ex
             )
             self.success = False
-            return used_atoms
+            return
+
 
         if any(
             not all(ix in struct.indices for struct in self.functional_group)
