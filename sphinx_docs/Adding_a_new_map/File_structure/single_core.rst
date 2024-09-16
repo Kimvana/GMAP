@@ -306,6 +306,17 @@ In this case, the zeroth atom in used atom will have the same name as the zeroet
 
 While the order of atoms in the definition of functional_group has to follow some rules (all atoms pertaining to a single residue must be grouped, multiple atoms of the same name will follow the same order as found in the topology file), the definition here does not. Here, you should pick an order that makes the most sense to you - the order here is what is used everywhere else in the map!
 
+Additionally, some functional groups may be quite lengthy, and writing down each individual integer for each individual atom may be cumbersome. For such cases, it is useful if the user can select some range to be included rather than writing out all of the integers manually. This can be done easily by inserting a hyphen '-' between the two integers for which the range is to be defined. For example::
+
+    functional_group        [ASN]    CG  OD1  CB  ND2  HD21  HD22
+    used_atoms              0-3 5   # CG  OD1  CB  ND2  HD22
+
+This specific case does not include a long list of atoms in the functional group, but the ranges can still be useful here. In this case the used_atoms list will result to be 0 1 2 3 5.
+
+In case that you would like to include the whole functional group, you may also simply write down "All"::
+
+    functional_group        [ASN]    CG  OD1  CB  ND2  HD21  HD22
+    used_atoms              All   # CG  OD1  CB  ND2  HD21  HD22
 
 ********************
 electrostatic_choice
@@ -345,6 +356,9 @@ Many maps need to know what the electrostatic potential, electric field, and/or 
 
 Here, we say we want to know the electrostatic properties on the zeroeth and twoeth atoms in used_atoms, which in turn are the zeroeth and threeeth atoms in functional_group - C and N.
 
+.. hint::
+Using ranges or "All" is also allowed when defining this property, but beware that the selection is defined with respect to the used_atoms list, rather than the functional_group list.
+
 While it is very common for a map to need these properties, it is not universal. If these properties are not needed, instead, you say this::
 
     functional_group        [ASN]    CG  OD1  CB  ND2  HD21  HD22
@@ -369,6 +383,9 @@ The program is naive in calculating elecctrostatics - every atom within range ca
     local_atoms             0 1 2 3 4
 
 Here, we say we dont want to include the atoms in used atoms, through giving the index of all five separately.
+
+.. hint::
+Using ranges or "All" is also allowed when defining this property, but beware that the selection is defined with respect to the used_atoms list, rather than the functional_group list.
 
 It might happen that a map is more complex. If a mapping would like to exclude more atoms, the recommended method is to add these to used_atoms. If the exclusion is variable (might be different for different oscillators), the local_ix of the separate oscillators must be changed manually. This can be done in main.py, the recommended place is within GM_post_init(). 
 
