@@ -39,7 +39,7 @@ def GM_adjust_RunPars(Files, Map):
 # a detected parameter, a different choice is preferred. This function
 # allows to make a different choice, **in the same format as the file**.
 # if more complex behaviour is desired, a separate function is needed.
-def GM_adjust_map_core_raw(Files, Map):
+def GM_adjust_map_core_raw(Files, map_):
     """Makes the necessary changes to the 'raw' input read from core.txt.
 
     Is expected to not return anything - return value is not caught.
@@ -63,21 +63,58 @@ def GM_adjust_map_core_raw(Files, Map):
         Contains all currently known paths and other file-related
         properties.
         Has to be updated after RunPars is finalized.
-    Map : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
         The object that stores everything the program currently knows
         about this map.
     """
 
-    choice = Map.RunPars.pos_choice
+    # still to do (for emaps):
+    # local_atoms, assume_length_units, VEG_reference
+
+    # still to do:
+    # dipoles, doublepos, xyz?? (or fixed across all maps?)
+
+    # atom order: CG  OD1  CB  ND2  HD21  HD22
+
+    choice = map_.RunPars.frequency_map_choice
+    parname = "frequency_data_file_linear"
+    match choice:
+        case "Skinner":  # the default
+            map_.rawcore["electrostatic_atoms"] = ["0", "3"]  # C and N
+            map_.rawcore["electrostatic_choice"] = ["E"]
+            map_.rawcore["frequency_gas_phase"] = ["1714"]
+            map_.rawcore[parname] = ["frequency_maps/Skinner.txt"]
+        case "Tokmakoff":
+            map_.rawcore["electrostatic_atoms"] = ["1"]  # Oxygen!
+            map_.rawcore["electrostatic_choice"] = ["E"]
+            map_.rawcore["frequency_gas_phase"] = ["1740"]
+            map_.rawcore[parname] = ["frequency_maps/Tokmakoff.txt"]
+        case "Jansen":
+            map_.rawcore["electrostatic_atoms"] = ["0", "1", "3", "4"]
+            map_.rawcore["electrostatic_choice"] = ["G"]
+            map_.rawcore["frequency_gas_phase"] = ["1747"]
+            map_.rawcore[parname] = ["frequency_maps/Jansen.txt"]
+        case "Cho":
+            map_.rawcore["electrostatic_atoms"] = ["0", "1", "3", "4"]
+            map_.rawcore["electrostatic_choice"] = ["V"]
+            map_.rawcore["frequency_gas_phase"] = ["1747"]
+            map_.rawcore[parname] = ["frequency_maps/Cho.txt"]
+        case "Hirst":
+            map_.rawcore["electrostatic_atoms"] = ["0", "1", "3", "4"]
+            map_.rawcore["electrostatic_choice"] = ["V"]
+            map_.rawcore["frequency_gas_phase"] = ["1747"]
+            map_.rawcore[parname] = ["frequency_maps/Hirst.txt"]
+
+    choice = map_.RunPars.pos_choice
     match choice:
         case "C":  # the default
-            Map.rawcore["position"] = ["0"]
+            map_.rawcore["position"] = ["0"]
         case "O":
-            Map.rawcore["position"] = ["1"]
+            map_.rawcore["position"] = ["1"]
         case "N":
-            Map.rawcore["position"] = ["3"]
+            map_.rawcore["position"] = ["3"]
         case "D":
-            Map.rawcore["position"] = ["4"]
+            map_.rawcore["position"] = ["4"]
 
 
 # A function to adjust the oscillators found for this map. Gets a list

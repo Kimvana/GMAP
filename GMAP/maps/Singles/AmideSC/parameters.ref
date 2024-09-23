@@ -1,1 +1,3 @@
-pos_choice[str]    [C] O N D
+frequency_map_choice(fmc)[str]        Tokmakoff [Skinner] Jansen Cho Hirst
+pos_choice[str]                       [C] O N D
+
