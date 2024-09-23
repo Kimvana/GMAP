@@ -82,8 +82,8 @@ def test_Setup(tmp_path, capsys):
     assert target_srcdir.exists()
     assert target_mapdir.exists()
 
-    assert sourcefiles_original == sourcefiles_copies
-    assert map_original == map_copies
+    assert set(sourcefiles_original) == set(sourcefiles_copies)
+    assert set(map_original) == set(map_copies)
 
 
 def base_tests(tmp_path):  # Not a test
