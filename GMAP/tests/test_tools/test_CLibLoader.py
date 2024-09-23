@@ -235,7 +235,7 @@ class TestVClib:
 
         RunPars.VEG_clib_file = (
             RunPars.VEG_clib_file.parent / "doesntexist.txt")
-        with pytest.raises(GM_Ex.GmapFileNotFoundError, match="CL_VG_1$"):
+        with pytest.raises(GM_Ex.GmapOSError, match="CL_VG_1$"):
             _ = GM_CL.VEG_CLib(RunPars)
 
         RunPars.VEG_clib_file = (

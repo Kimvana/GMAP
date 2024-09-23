@@ -54,10 +54,15 @@ def test_cmd_interface(capsys):
 def test_main():
     callcommand = ["GMAP", "nothing", "nothing"]
     captured = subprocess.run(callcommand, capture_output=True)
-    assert captured.stderr.endswith(b"SU_GM_1\r\n")
+    stderr = captured.stderr
+    # On windows the \r will be generated, not on linux/mac
+    assert stderr.endswith(b"SU_GM_1\r\n") or stderr.endswith(b"SU_GM_1\n")
 
     callcommand = ["GMAP"]  # == GMAP help help
     captured = subprocess.run(callcommand, capture_output=True)
+    # On windows
     outbytes = (GM_PT.prettifier(GMAP.__doc__) + "\n").replace(
         "\n", "\r\n").encode('utf-8')
-    assert captured.stdout.endswith(outbytes)
+    # On linux/mac
+    outbyteslinux = (GM_PT.prettifier(GMAP.__doc__) + "\n").encode('utf-8')
+    assert captured.stdout.endswith(outbytes) or captured.stdout.endswith(outbyteslinux)

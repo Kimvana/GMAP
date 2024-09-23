@@ -1591,13 +1591,17 @@ class TestMapPars:
         _, _, _, _, mapdict = TestMapPars.setup_maprefpars(
             pardict, cmdline)
 
-        counter = 1
-        for map_ in mapdict.values():
-            map_.find_refpars()
+#        counter = 1
+        print([*mapdict.keys()])
+        for mapname, map_ in mapdict.items():
 
+            map_.find_refpars()
+            counter=mapname[-1] 
             fname_tofind = Path(curpath / "../Data/test_mapdir/Singles")
             fname_tofind /= f"testmap{counter}/parameters.ref"
-            counter += 1
+#            counter += 1
+            print(map_.RefPars.fname)
+            print(fname_tofind.resolve())
             assert map_.RefPars.fname == fname_tofind.resolve()
             assert map_.RefPars.options == {
                 "str_test_choice": ["pick_this", "not_this", "or_this"],
