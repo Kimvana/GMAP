@@ -21,7 +21,7 @@ Basic structure
 
 There are a few objects that occur quite often as an argument for these functions. Here is a quick overview of them:
 
-Map
+map\_
 =====
 An instance of :class:`~GMAP.src.tools.MapReader.SingleMap`. Stores all information of this class. This is the most important object, as it stores everything related to this class. As functions of the map can change how the map is registered, this object will look different during the different functions. Here is an overview of all attributes the class can have, at each function it will be explained/highlighted what attributes are available at that point.
 
@@ -45,13 +45,13 @@ It is probable that the map wants to save information between functions, too, ju
 - self.Core (type :class:`~GMAP.src.tools.MapReader.SingleCore`) contains the information from core.txt, after parsing.
 
 
-Files
+files
 ======
 An instance of :class:`~GMAP.src.tools.FileHandler.FileLocations`. Stores filepaths and such.
 
 
-Syst
-====
+system
+======
 An instance of :class:`~GMAP.src.tools.SystemReader.System`. Stores all available information about the MD system used. Think atom-based information on it's name, element, type, the name and number of its residue, molecule, segment. Also charges, positions, masses and such are in here. 
 
 
@@ -67,7 +67,7 @@ The function are in the order at which they're called by the program. This means
 
 
 
-GM_adjust_RunPars(Files, Map)
+GM_adjust_RunPars
 ======================================
 Makes the necessary changes to Map.RunPar.
 
@@ -85,8 +85,8 @@ dependent parameters
 ^^^^^^^^^^^^^^^^^^^^
 Some maps are designed with certain assumptions in mind. These assumptions don't always mix. Because of this, it can happen that when a choice for one parameter is made, not all choices should be available for another. Custom code can solve this kind of conflicts.
 
-Available attributes of Map
----------------------------
+Available attributes of map\_
+-----------------------------
 
 .. hlist::
     :columns: 4
@@ -105,16 +105,28 @@ Available attributes of Map
 
 Parameters
 ----------
-Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
+files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
     Contains all currently known paths and other file-related properties.
     Has to be updated after RunPars is finalized.
-Map : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
 
+Returns
+-------
+(nothing)
+
+Default implementation
+----------------------
+
+.. code-block:: python
+
+    def GM_adjust_RunPars(files, map_):
+        pass
 
 
-GM_adjust_map_core_raw(Files, Map)
+
+GM_adjust_map_core_raw
 ===========================================
 
 Makes the necessary changes to the 'raw' input read from core.txt.
@@ -134,8 +146,8 @@ Dependency on map parameters
 The core.txt file gives the option to link a file containing the map constants. There are cases (for example, the Amide-I stretch) for which multiple different sets of constants have been developed. In this case, it would be useful for this function to select a different file with map constants based on a map-specific parameter.
 
 
-Available attributes of Map
----------------------------
+Available attributes of map\_
+-----------------------------
 
 .. hlist::
     :columns: 4
@@ -157,23 +169,38 @@ Available attributes of Map
 
 Parameters
 ----------
-Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
+files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
     Contains all currently known paths and other file-related properties.
     Has to be updated after RunPars is finalized.
-Map : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
 
+Returns
+-------
+(nothing)
+
+Default implementation
+----------------------
+
+.. code-block:: python
+
+    def GM_adjust_map_core_raw(files, map_):
+        pass
 
 
-GM_adjust_oscillators(Files, Map, Syst, oscillator_list)
+
+GM_adjust_oscillators
 =================================================================
 
 Finalizes the list of oscillators.
 
 Is expected to return a list of oscillators - by default, it returns oscillator_list.
 
-The purpose of a map is to define how to calculate the properties for a certain kind of oscillator. The program will find instances of that oscillator in the MD system based on the choice for 'functional_group' in core.txt. After they've been found, they are passed to this function. The reason for this is twofold. Fistly, this allows the map to change this list if it were necessary (see example uses). Secondly, it allows the map to 'see' the oscillators for the first time, allowing it to identify the type of an oscillator, for example.
+The purpose of a map is to define how to calculate the properties for a certain kind of oscillator. The program will find instances of that oscillator in the MD system based on the choice for 'functional_group' in core.txt. After they've been found, they are passed to this function. The reason for this is twofold. Fistly, this allows the map to change this list if it were necessary (see example uses). Secondly, it allows the map to 'see' the oscillators for the first time, allowing it to identify the type of an oscillator, for example. When all oscillators are passed through this function, the (global) atom number of the first atom of this group (for example) can be linked to a specific property the group might need to know. This might be useful if a map needs to cover two very similar oscillators.
+
+.. note::
+    This function is called separately for each struct that the map defines. So take into account that the function could be called multiple times within a single simulation!
 
 
 Example uses
@@ -194,8 +221,8 @@ A single functional group actually contains two oscillators
 The water map is a good example of this. The map is designed such that two oscillators should be put in the hamiltonian for each water molecule. This function allows the map to return both, back to back.
 
 
-Available attributes of Map
----------------------------
+Available attributes of map\_
+-----------------------------
 
 .. hlist::
     :columns: 4
@@ -218,20 +245,33 @@ Available attributes of Map
 
 Parameters
 ----------
-Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
+files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
     Contains all currently known paths and other file-related properties.
     Has to be updated after RunPars is finalized.
-Map : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
-Syst : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.SystemReader.System`
     The object that stores everyting the program currently knows about the MD system.
 oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
     The oscillators that were identified as a good match for this map.
 
+Returns
+-------
+oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    The oscillators that were identified as a good match for this map.
+
+Default implementation
+----------------------
+
+.. code-block:: python
+
+    def GM_adjust_oscillators(files, map_, system, oscillator_list):
+        return oscillator_list
 
 
-GM_post_init(Files, Map, Syst)
+
+GM_post_init
 =======================================
 
 Allows the user to do some final initialization steps. These can include building lookup-tables, or computing some basic properties for later use. This function is called when all initialization is done (maps, MD system, etc).
@@ -262,8 +302,8 @@ The main purpose of a map is to provide constants to calculate spectroscopic pro
 One could either do the conversion first, and save the converted constants with the correct assumptions in the files supplied to GMAP, or let GMAP do this conversion. The latter might be preferred if one wants the files to match the original publication of the map. In that case, this function here is the best place for a map to do the conversion. To make the conversion easy, use the function Map.Core.change_map_units().
 
 
-Available attributes of Map
----------------------------
+Available attributes of map\_
+-----------------------------
 
 .. hlist::
     :columns: 4
@@ -286,18 +326,30 @@ Available attributes of Map
 
 Parameters
 ----------
-Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
+files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
     Contains all currently known paths and other file-related properties.
     Has to be updated after RunPars is finalized.
-Map : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
-Syst : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.SystemReader.System`
     The object that stores everyting the program currently knows about the MD system.
 
+Returns
+-------
+(nothing)
+
+Default implementation
+----------------------
+
+.. code-block:: python
+
+    def GM_post_init(files, map_, system)
+        pass
 
 
-GM_pre_run(Map, Syst)
+
+GM_pre_run
 =======================================
 
 Allows the user to prepare the structures needed for the run.
@@ -313,8 +365,8 @@ New output type
 If the map wants to compute a new property / output type, the data structure storing that property could be initialized here.
 
 
-Available attributes of Map
----------------------------
+Available attributes of map\_
+-----------------------------
 
 .. hlist::
     :columns: 4
@@ -337,15 +389,26 @@ Available attributes of Map
 
 Parameters
 ----------
-Map : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
-Syst : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.SystemReader.System`
     The object that stores everyting the program currently knows about the MD system.
 
+Returns
+-------
+(nothing)
+
+Default implementation
+----------------------
+
+.. code-block:: python
+
+    def GM_pre_run(map_, system)
+        pass
 
 
-GM_pre_frame(Map, Syst)
+GM_pre_frame
 =======================================
 
 Allows the user to compute information that will change for each frame.
@@ -363,8 +426,8 @@ To be added
 To be explained.
 
 
-Available attributes of Map
----------------------------
+Available attributes of map\_
+-----------------------------
 
 .. hlist::
     :columns: 4
@@ -387,15 +450,27 @@ Available attributes of Map
 
 Parameters
 ----------
-Map : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
-Syst : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.SystemReader.System`
     The object that stores everyting the program currently knows about the MD system.
 
+Returns
+-------
+(nothing)
+
+Default implementation
+----------------------
+
+.. code-block:: python
+
+    def GM_pre_frame(map_, system)
+        pass
 
 
-GM_post_frame(Map, Syst)
+
+GM_post_frame
 =======================================
 
 Allows the user to finalize the frame.
@@ -411,8 +486,8 @@ New output type
 If the map wants to compute a new property / output type, the computed data should be written to a file here.
 
 
-Available attributes of Map
----------------------------
+Available attributes of map\_
+-----------------------------
 
 .. hlist::
     :columns: 4
@@ -435,15 +510,27 @@ Available attributes of Map
 
 Parameters
 ----------
-Map : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
-Syst : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.SystemReader.System`
     The object that stores everyting the program currently knows about the MD system.
 
+Returns
+-------
+(nothing)
+
+Default implementation
+----------------------
+
+.. code-block:: python
+
+    def GM_post_frame(map_, system)
+        pass
 
 
-GM_post_run(Map, Syst)
+
+GM_post_run
 =======================================
 
 Allows the user to do some final reports.
@@ -459,8 +546,8 @@ Reporting on the calculation
 If the user should know anything about the computation that has been performed, they can be told by this function.
 
 
-Available attributes of Map
----------------------------
+Available attributes of map\_
+-----------------------------
 
 .. hlist::
     :columns: 4
@@ -483,16 +570,28 @@ Available attributes of Map
 
 Parameters
 ----------
-Map : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
-Syst : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.SystemReader.System`
     The object that stores everyting the program currently knows about the MD system.
 
+Returns
+-------
+(nothing)
+
+Default implementation
+----------------------
+
+.. code-block:: python
+
+    def GM_post_run(map_, system)
+        pass
 
 
-GM_str_osc(Map, Syst, osc)
-==========================
+
+GM_str_osc
+==============================
 
 Returns the (human-readable) string representation of an oscillator of this type.
 
@@ -508,8 +607,8 @@ Clearly indicating an oscillator
 The default is very generic, and should give some information to identify an oscillator. However, for some kinds of oscillator, this information might not be sufficient, or hard to interpret. For example, any protein-related maps will most likely want to print the residue name along with its number, as that is how literature usually refers to them. 
  
 
-Available attributes of Map
----------------------------
+Available attributes of map\_
+-----------------------------
 
 .. hlist::
     :columns: 4
@@ -532,17 +631,97 @@ Available attributes of Map
 
 Parameters
 ----------
-Syst : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.SystemReader.System`
     The object that stores everyting the program currently knows about the MD system.
-Map : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
 osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
     The oscillator for which the rotation matrix should be determined.
 
+Returns
+-------
+print_string : str
+    The string that should be printed to the legend file to explain what the oscillator looks like / which it is
+
+Default implementation
+----------------------
+
+.. code-block:: python
+
+    def GM_str_osc(map_, system, osc):
+        return f"living on residue number {system.resnums[osc.used_atoms[0]]}"
 
 
-GM_get_rotation_matrix(Map, Syst, osc)
+
+GM_report_system
+=================================
+
+Reports what this part of the system looks like.
+
+This function is used whenever the program needs to report some information about all oscillators of this type to the user, as part of a full system summary.
+
+By default (if this function is not present) this representation is the following: ``[mapname]:      [amount]``. Here, ``[mapname]`` will be replaced by the program with the actual name of the map being reported on, and ``[amount]`` will be replaced with the amount of oscillators of this type.
+
+
+Example uses
+------------
+
+Providing the total amount of oscillators is insufficient
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The default is very generic, and only gives some information on how much of a certain (requested!) type of oscillator is present. This might, however, not be enough for all types of oscilators.
+
+As an example, take the amide groups in protein backbones. It would be very useful to report these per protein chain instead: so, to first report the amount of chains, and then the amount of groups contained within each chain.
+ 
+
+Available attributes of map\_
+-----------------------------
+
+.. hlist::
+    :columns: 4
+
+    * self.directory
+    * self.corepath
+    * self.name
+    * self.type
+    * self.success
+    * self.avail_files
+    * self.RefPars
+    * self.DefPars
+    * self.InPars
+    * self.CmdPars
+    * self.RunPars
+    * self.code
+    * self.rawcore
+    * self.Core
+
+
+Parameters
+----------
+system : :class:`~GMAP.src.tools.SystemReader.System`
+    The object that stores everyting the program currently knows about the MD system.
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
+    The object that stores everything the program currently knows
+    about this map.
+
+Returns
+-------
+print_string : str
+    The string that should be printed to report on this part of the system.
+
+Default implementation
+----------------------
+
+.. code-block:: python
+
+    def GM_report_system(map_, system):
+        name = map_.name + ":"
+        amount = len(system.oscillators_ordered[map_.name])
+        return f"{name: <21} {amount: >4}"
+
+
+
+GM_get_rotation_matrix
 ===============================================
 
 Returns the rotation matrix for the provided oscillator osc.
@@ -603,6 +782,92 @@ Returns
 -------
 rotation_matrix : `np.ndarray`
     The matrix that should be used to convert the electrostatic properties. rotation_matrix[0] should return a vector of length 3 defining what the box-x vector should look like, in cartesian coordinates. Same for [1] giving the y, and [2] giving the z. The three vectors are orthonormal.
+
+Default implementation
+----------------------
+
+The default implementation depends on the contents of the core.txt file. Here are a few examples of what the corefile could look like, and what the corresponding default function looks like:
+
+A 'standard'-type molecule, with x as primary axis, y as secondary
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+core.txt file::
+    x_uvec  3 - 2
+    y_uvec  1 - 2
+    type standard
+
+.. code-block:: python
+
+    import numpy as np
+    import GMAP.src.tools.MathFunctions as GM_MF
+
+    def GM_get_rotation_matrix(map_, system, osc):
+        x_uvec = (osc.positions_box[3] - osc.positions_box[2]) @ system.boxvects
+        x_uvec /= GM_MF.vec3_len(x_uvec)
+
+        y_uvec = GM_MF.project(x_uvec,
+            (osc.positions_box[1] - osc.positions_box[2]) @ system.boxvects)
+        y_uvec /= GM_MF.vec3_len(y_uvec)
+
+        z_uvec = GM_MF.crossprod(x_uvec, y_uvec)
+        z_uvec /== GM_MF.vec3_len(z_uvec)
+
+        return np.array([x_uvec, y_uvec, z_uvec])
+
+
+A 'standard'-type molecule, with y as primary axis, z as secondary
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+core.txt file::
+    y_uvec  3 - 2
+    z_uvec  1 - 2
+    type standard
+
+.. code-block:: python
+
+    import numpy as np
+    import GMAP.src.tools.MathFunctions as GM_MF
+
+    def GM_get_rotation_matrix(map_, system, osc):
+        y_uvec = (osc.positions_box[3] - osc.positions_box[2]) @ system.boxvects
+        y_uvec /= GM_MF.vec3_len(y_uvec)
+
+        z_uvec = GM_MF.project(y_uvec,
+            (osc.positions_box[1] - osc.positions_box[2]) @ system.boxvects)
+        z_uvec /= GM_MF.vec3_len(z_uvec)
+
+        x_uvec = GM_MF.crossprod(y_uvec, z_uvec)
+        x_uvec /== GM_MF.vec3_len(x_uvec)
+
+        return np.array([x_uvec, y_uvec, z_uvec])
+
+
+A 'linear'-type molecule, with z as primary axis
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+core.txt file::
+    z_uvec  1 - 0
+    type linear
+
+.. code-block:: python
+
+    import numpy as np
+    import GMAP.src.tools.MathFunctions as GM_MF
+
+    def GM_get_rotation_matrix(map_, system, osc):
+        z_uvec = (osc.positions_box[1] - osc.positions_box[0]) @ system.boxvects
+        z_uvec /= GM_MF.vec3_len(z_uvec)
+
+        smalldir = np.argmin(np.abs(z_uvec))
+        x_uvec = np.zeros((3))
+        x_uvec[smalldir] = 1
+        x_uvec = GM_MF.project(z_uvec, x_uvec)
+        x_uvec /= GM_MF.vec3_len(x_uvec)
+
+        y_uvec = GM_MF.crossprod(z_uvec, x_uvec)
+        y_uvec /== GM_MF.vec3_len(y_uvec)
+
+        return np.array([x_uvec, y_uvec, z_uvec])
 
 
 
@@ -836,6 +1101,60 @@ Returns
 -------
 freq : float
     The frequency at which this oscillator is expected to absorb.
+
+
+GM_calculate_raman(Map, Syst, osc)
+=========================================
+
+Returns the expected raman tensor for the given oscillator. The raman tensor is (along with dipoles and frequencies) required for programs to calculate different kinds of spectra: raman spectrum, SFG spectrum, 2D-Raman spectrum, 2D-IR-Raman spectrum. 
+
+
+Example uses
+------------
+
+A raman output is desired
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Calculating raman spectra is still relatively new, so a default method for doing so has not yet been developed. Therefore, if a raman output is desired, the map-maker must define their own method.
+
+
+Available attributes of Map
+---------------------------
+
+.. hlist::
+    :columns: 4
+
+    * self.directory
+    * self.corepath
+    * self.name
+    * self.type
+    * self.success
+    * self.avail_files
+    * self.RefPars
+    * self.DefPars
+    * self.InPars
+    * self.CmdPars
+    * self.RunPars
+    * self.code
+    * self.rawcore
+    * self.Core
+
+
+Parameters
+----------
+Map : :class:`~GMAP.src.tools.MapReader.Map`
+    The object that stores everything the program currently knows
+    about this map.
+Syst : :class:`~GMAP.src.tools.SystemReader.System`
+    The object that stores everyting the program currently knows about the MD system.
+osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    The oscillator for which the dipole moment magnitude should be determined.
+
+
+Returns
+-------
+freq : float
+    The frequency at which this oscillator is expected to absorb.
+
 
 
 

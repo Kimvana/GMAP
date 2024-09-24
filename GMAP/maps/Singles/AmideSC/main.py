@@ -12,6 +12,11 @@ import GMAP.src.tools.MathFunctions as GM_MF
 import GMAP.src.tools.PhysicsFunctions as GM_PF
 
 
+# own module imports
+from MapCode import parameter_changer
+from MapCode import calculation_methods
+
+
 # A function to adjust the parameters of the map. For some kinds of
 # parameter (especially if theres multiple that are linked), the way
 # RunPar is built might not be correct. In this function, the user can
@@ -69,52 +74,12 @@ def GM_adjust_map_core_raw(Files, map_):
     """
 
     # still to do (for emaps):
-    # local_atoms, assume_length_units, VEG_reference
+    # assume_length_units, VEG_reference
 
     # still to do:
     # dipoles, doublepos, xyz?? (or fixed across all maps?)
 
-    # atom order: CG  OD1  CB  ND2  HD21  HD22
-
-    choice = map_.RunPars.frequency_map_choice
-    parname = "frequency_data_file_linear"
-    match choice:
-        case "Skinner":  # the default
-            map_.rawcore["electrostatic_atoms"] = ["0", "3"]  # C and N
-            map_.rawcore["electrostatic_choice"] = ["E"]
-            map_.rawcore["frequency_gas_phase"] = ["1714"]
-            map_.rawcore[parname] = ["frequency_maps/Skinner.txt"]
-        case "Tokmakoff":
-            map_.rawcore["electrostatic_atoms"] = ["1"]  # Oxygen!
-            map_.rawcore["electrostatic_choice"] = ["E"]
-            map_.rawcore["frequency_gas_phase"] = ["1740"]
-            map_.rawcore[parname] = ["frequency_maps/Tokmakoff.txt"]
-        case "Jansen":
-            map_.rawcore["electrostatic_atoms"] = ["0", "1", "3", "4"]
-            map_.rawcore["electrostatic_choice"] = ["G"]
-            map_.rawcore["frequency_gas_phase"] = ["1747"]
-            map_.rawcore[parname] = ["frequency_maps/Jansen.txt"]
-        case "Cho":
-            map_.rawcore["electrostatic_atoms"] = ["0", "1", "3", "4"]
-            map_.rawcore["electrostatic_choice"] = ["V"]
-            map_.rawcore["frequency_gas_phase"] = ["1747"]
-            map_.rawcore[parname] = ["frequency_maps/Cho.txt"]
-        case "Hirst":
-            map_.rawcore["electrostatic_atoms"] = ["0", "1", "3", "4"]
-            map_.rawcore["electrostatic_choice"] = ["V"]
-            map_.rawcore["frequency_gas_phase"] = ["1747"]
-            map_.rawcore[parname] = ["frequency_maps/Hirst.txt"]
-
-    choice = map_.RunPars.pos_choice
-    match choice:
-        case "C":  # the default
-            map_.rawcore["position"] = ["0"]
-        case "O":
-            map_.rawcore["position"] = ["1"]
-        case "N":
-            map_.rawcore["position"] = ["3"]
-        case "D":
-            map_.rawcore["position"] = ["4"]
+    parameter_changer.adjust_map_core_raw(Files, map_)
 
 
 # A function to adjust the oscillators found for this map. Gets a list
@@ -170,15 +135,12 @@ def GM_adjust_oscillators(Files, Map, Syst, oscillator_list):
 # A place to do further initialization if a map requires it. Think of
 # things like building further lookup tables, for instance.
 # (for AmideBB - find neighbours!)
-def GM_post_init(Files, Map, Syst):
-    pass
-
-
-# This is what GMAP assumes this function to contain if it is not specified.
-# If oscillators belonging to this map should be reported any differently, that
-# method should be specified here.
-def placeholder_GM_report_system(Map, Syst):
-    return
+def GM_post_init(files, map_, system):
+    map_.Core.dipole_gas_phase_array = np.array(map_.Core.dipole_gas_phase)
+    if map_.RunPars.dipole_map_choice == "Jansen":
+        map_.code.GM_calculate_dipole = calculation_methods.calc_dipole_Jansen
+    else:
+        map_.code.GM_calculate_dipole = calculation_methods.calc_dipole_Torii
 
 
 # A place to do things before the main loop starts (create datastructures
@@ -214,6 +176,12 @@ def GM_post_run(Map, Syst):
 # method should be specified here.
 def placeholder_GM_str_osc(Map, Syst, osc):
     return f"living on residue number {Syst.resnums[osc.used_atoms[0]]}"
+
+
+def placeholder_GM_report_system(Map, Syst):
+    name = Map.name + ":"
+    amount = len(Syst.oscillators_ordered[Map.name])
+    return f"{name: <21} {amount: >4}"
 
 
 # !!!! ATTENTION !!!! - THIS IS A PLACEHOLDER!
