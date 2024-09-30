@@ -611,7 +611,7 @@ def color_test():  # run this one with word_wrap to 150 (8 colors per row)
     .. important::
         This function is no longer used, and just here for testing/
         development purposes. There is now a more fancy version:
-        :func: `GMAP.src.tools.Plotter.plot_color_conv`.
+        :func:`GMAP.src.tools.Plotter.plot_color_conv`.
 
         Only when pandas is an issue, or when the commandline
         specifically is desired to generate the output, this function

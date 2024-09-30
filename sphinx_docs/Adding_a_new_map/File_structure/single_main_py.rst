@@ -67,6 +67,7 @@ The function are in the order at which they're called by the program. This means
 
 
 
+.. #region GM_adjust_RunPars
 GM_adjust_RunPars
 ======================================
 Makes the necessary changes to Map.RunPar.
@@ -77,9 +78,11 @@ Is expected to not return anything - return value is not caught.
 Example uses
 ------------
 
+
 interlinked parameters
 ^^^^^^^^^^^^^^^^^^^^^^
 Take the three parameters start_frame, end_frame and frames_tocalc. In the default file, these may be set to 0, 100 and 100 respectively. This makes sense, as if you start on frame 0 and end at frame 100 (exclusive), you will see 100 frames. But if in the input file the choice to start at frame 10 was given, the default RunPars creation will select the numbers 10, 100, 100, which doesn't make sense (there is not 100 frames to treat between frames 10 and 100). Custom code can change these to 10, 100, 90.
+
 
 dependent parameters
 ^^^^^^^^^^^^^^^^^^^^
@@ -123,9 +126,11 @@ Default implementation
 
     def GM_adjust_RunPars(files, map_):
         pass
+.. #endregion
 
 
 
+.. #region GM_adjust_map_core_raw
 GM_adjust_map_core_raw
 ===========================================
 
@@ -187,9 +192,11 @@ Default implementation
 
     def GM_adjust_map_core_raw(files, map_):
         pass
+.. #endregion
 
 
 
+.. #region GM_adjust_oscillators
 GM_adjust_oscillators
 =================================================================
 
@@ -268,9 +275,11 @@ Default implementation
 
     def GM_adjust_oscillators(files, map_, system, oscillator_list):
         return oscillator_list
+.. #endregion
 
 
 
+.. #region GM_post_init
 GM_post_init
 =======================================
 
@@ -346,9 +355,11 @@ Default implementation
 
     def GM_post_init(files, map_, system)
         pass
+.. #endregion
 
 
 
+.. #region GM_pre_run
 GM_pre_run
 =======================================
 
@@ -406,8 +417,11 @@ Default implementation
 
     def GM_pre_run(map_, system)
         pass
+.. #endregion
 
 
+
+.. #region GM_pre_frame
 GM_pre_frame
 =======================================
 
@@ -467,9 +481,11 @@ Default implementation
 
     def GM_pre_frame(map_, system)
         pass
+.. #endregion
 
 
 
+.. #region GM_post_frame
 GM_post_frame
 =======================================
 
@@ -527,9 +543,11 @@ Default implementation
 
     def GM_post_frame(map_, system)
         pass
+.. #endregion
 
 
 
+.. #region GM_post_run
 GM_post_run
 =======================================
 
@@ -587,9 +605,11 @@ Default implementation
 
     def GM_post_run(map_, system)
         pass
+.. #endregion
 
 
 
+.. #region GM_str_osc
 GM_str_osc
 ==============================
 
@@ -651,9 +671,11 @@ Default implementation
 
     def GM_str_osc(map_, system, osc):
         return f"living on residue number {system.resnums[osc.used_atoms[0]]}"
+.. #endregion
 
 
 
+.. #region GM_report_system
 GM_report_system
 =================================
 
@@ -718,9 +740,11 @@ Default implementation
         name = map_.name + ":"
         amount = len(system.oscillators_ordered[map_.name])
         return f"{name: <21} {amount: >4}"
+.. #endregion
 
 
 
+.. #region GM_get_rotation_matrix
 GM_get_rotation_matrix
 ===============================================
 
@@ -745,8 +769,8 @@ The default method of providing the rotation matrix is not sufficient
 Some techniques cannot be used in box coordinates, and can therefore not be used through core.txt. In those cases, it might be more appropriate to write the code here.
 
 
-Available attributes of Map
----------------------------
+Available attributes of map\_
+------------------------------
 
 .. hlist::
     :columns: 4
@@ -792,10 +816,12 @@ A 'standard'-type molecule, with x as primary axis, y as secondary
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 core.txt file::
+
     x_uvec  3 - 2
     y_uvec  1 - 2
     type standard
 
+default code:
 .. code-block:: python
 
     import numpy as np
@@ -819,10 +845,12 @@ A 'standard'-type molecule, with y as primary axis, z as secondary
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 core.txt file::
+
     y_uvec  3 - 2
     z_uvec  1 - 2
     type standard
 
+default code:
 .. code-block:: python
 
     import numpy as np
@@ -832,7 +860,8 @@ core.txt file::
         y_uvec = (osc.positions_box[3] - osc.positions_box[2]) @ system.boxvects
         y_uvec /= GM_MF.vec3_len(y_uvec)
 
-        z_uvec = GM_MF.project(y_uvec,
+        z_uvec = GM_MF.project(
+            y_uvec,
             (osc.positions_box[1] - osc.positions_box[2]) @ system.boxvects)
         z_uvec /= GM_MF.vec3_len(z_uvec)
 
@@ -846,9 +875,11 @@ A 'linear'-type molecule, with z as primary axis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 core.txt file::
+
     z_uvec  1 - 0
     type linear
 
+default code:
 .. code-block:: python
 
     import numpy as np
@@ -868,10 +899,12 @@ core.txt file::
         y_uvec /== GM_MF.vec3_len(y_uvec)
 
         return np.array([x_uvec, y_uvec, z_uvec])
+.. #endregion
 
 
 
-GM_get_dipole_dir(Map, Syst, osc)
+.. #region GM_get_dipole_dir
+GM_get_dipole_dir
 ==========================================
 
 Returns the direction of the dipole vector and its position in cartesian coordinates.
@@ -891,8 +924,8 @@ The default method of providing the dipole vector direction is not sufficient
 Some techniques cannot be used in box coordinates, and can therefore not be used through core.txt. In those cases, it might be more appropriate to write the code here.
 
 
-Available attributes of Map
----------------------------
+Available attributes of map\_
+-----------------------------
 
 .. hlist::
     :columns: 4
@@ -915,10 +948,10 @@ Available attributes of Map
 
 Parameters
 ----------
-Map : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
-Syst : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.SystemReader.System`
     The object that stores everyting the program currently knows about the MD system.
 osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
     The oscillator for which the dipole moment vectors should be determined.
@@ -932,8 +965,57 @@ r_pos : `np.ndarray`
     The (length-3) position vector at which the dipole vector lies. The vector must lie within the simulation box.
 
 
+Default implementation
+----------------------
 
-GM_get_dipole_mag(Map, Syst, osc)
+The default implementation is dependent on the corefile. The marked lines in the code example are generated flexibly by the program upon reading the core.txt file, to match the user request. This method only allows for a simple direction definition, not the more complex one where each of the (local) x-, y- and z coordinates has its own dependence on the electrostatics from the environment. For that complex case, GM_calculate_dipole has a different implementation that does not depend on GM_get_dipole_dir.
+
+core.txt file::
+
+    r_vec  1 - 0  # dipole vector points in the direction from atom 0 to atom 1
+    r_pos  (0 + 1) / 2.0  # dipole vector originates from halfway between atom 0 and 1
+
+.. code-block:: python
+
+    import numpy as np
+    import GMAP.src.tools.MathFunctions as GM_MF
+
+    def GM_get_dipole_dir(map_, system, osc):
+
+        # First, main dipole vector:
+
+        # main vector direction (in box coordinates)
+        # This line is the code representation from the contents of the file.
+        # All following lines for r_vec are independent of core.txt contents.
+        r_vec = (osc.positions_box[1] - osc.positions_box[0]) @ system.boxvects
+        
+        # adjusting vector for PBC
+        r_vec = (r_vec - np.floor(r_vec + 0.5))  # normalize box coordinates
+        r_vec = r_vec @ system.boxvects  # back to cartesian coordinates
+
+        # normalizing and correct type.
+        r_vec /= GM_MF.vec3_len(r_vec)  # only a direction -> normalize!!
+        r_vec = r_vec.astype('float32')  # correct numpy dtype
+
+        # Then, position of dipole vector:
+        # This line is the code representation from the contents of the file.
+        # All following lines for r_pos are independent of core.txt contents.
+        r_pos = (osc_positions_box[0] + osc_positions_box[1]) / 2.0
+
+        # adjusting vector for PBC
+        r_pos = (r_pos - np.floor(r_pos + 0.5))  # normalize box coordinates
+        r_pos = r_pos @ system.boxvects  # back to cartesian coordinates
+
+        # switching to correct type.
+        r_pos = r_pos.astype('float32')  # correct numpy dtype
+
+        return r_vec, r_pos
+.. #endregion
+
+
+
+.. #region GM_get_dipole_mag
+GM_get_dipole_mag
 ==========================================
 
 Returns the magnitude of the dipole vector in Debye.
@@ -951,8 +1033,8 @@ Sometimes, the magnitude has a more complex dependence than the one offered by d
 
 
 
-Available attributes of Map
----------------------------
+Available attributes of map\_
+------------------------------
 
 .. hlist::
     :columns: 4
@@ -975,10 +1057,10 @@ Available attributes of Map
 
 Parameters
 ----------
-Map : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
-Syst : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.SystemReader.System`
     The object that stores everyting the program currently knows about the MD system.
 osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
     The oscillator for which the dipole moment magnitude should be determined.
@@ -990,8 +1072,31 @@ magnitude : `np.float32`
     The length that the dipole moment vector should have.
 
 
+Default implementation
+----------------------
 
-GM_calculate_dipole(Map, Syst, osc)
+The default implementation only works with a set magnitude, or a magnitude map. It does not allow for the xyz-dependent maps. When those kinds of maps are found, the implementation for GM_get_dipole changes such that it no longer uses this function.
+
+
+.. code-block:: python
+
+    import GMAP.src.tools.DefaultMapFunctions as GM_DMF
+
+    def GM_get_dipole_mag(map_, system, osc):
+        if map_.Core.dipole_data_array is not None:
+            return GM_DMF.uses_maps(
+                map_.Core.dipole_gas_phase,
+                [osc.VEGout],
+                [map_.Core.dipole_data_array]
+            )
+        else:
+            return map_.Core.dipole_gas_phase
+.. #endregion
+
+
+
+.. #region GM_calculate_dipole
+GM_calculate_dipole
 ============================================
 
 Returns the dipole vector and its position in cartesian coordinates.
@@ -1008,8 +1113,8 @@ The default method of providing the dipole vector is not sufficient
 Sometimes, the dipole moment is determined in a more complex method than supported by the program. In those cases, it might be more appropriate to write the code here.
 
 
-Available attributes of Map
----------------------------
+Available attributes of map\_
+-----------------------------
 
 .. hlist::
     :columns: 4
@@ -1032,10 +1137,10 @@ Available attributes of Map
 
 Parameters
 ----------
-Map : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
-Syst : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.SystemReader.System`
     The object that stores everyting the program currently knows about the MD system.
 osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
     The oscillator for which the dipole moment magnitude should be determined.
@@ -1049,8 +1154,55 @@ r_pos : `np.ndarray`
     The position at which the dipole vector lies.
 
 
+Default implementation
+----------------------
 
-GM_calculate_frequency(Map, Syst, osc)
+There are two main different ways of calculating the dipole moment. The first is by determining the dipole direction and magnitude following the GM_get_dipole_dir and GM_get_dipole_mag methods, and multiplying the two. However, as those methods also mention, that only works for some types of dipole specifications. When the dipole has each of its x-, y- and z-components depend on the electrostatics in a different way, a different method is needed. The actual implementation defines two possible ways of calculating the dipole moment, and then looks at the supplied map to see which is applicable, and return the correct method. That method selection should not be done within this function, but, eg. in the post_init function. It works as follows:
+
+.. code-block:: python
+    def function_determiner(map_):
+
+        # if there is no array, just a set magnitude provided in the corefile:
+        if map_.Core.dipole_data_array is None:
+            return dir_mag_method
+        
+        # there is a special array, it is 2D, so only 1 dependence:
+        if len(map_.Core.dipole_data_array.shape) == 2:
+            return dir_mag_method
+        
+        # Otherwise, the array is 3-dimensional, so there are separate x, y
+        # and z dependencies:
+        return xyz_method
+
+Again, these methods above are what this function contains, something like the above example is only for steps before the calculation (like post_init).
+
+The contents of this function (GM_calculate_dipole) have two (the above-mentioned) possible defaults. The first is for 'simpler' dipoles with a provided direction and position (in the above code called dir_mag_method):
+
+.. code-block:: python
+    def GM_calculate_dipole(map_, system, osc):
+        r_vec, r_pos = map_.code.GM_get_dipole_dir(map_, system, osc)
+        r_vec *= map_.code.GM_get_dipole_mag(map_, system, osc)
+        r_vec = r_vec.astype("float32")
+        return r_vec, r_pos
+
+In case of the separate x-, y- and z dependencies (in the above method selector referred to as xyz_method), the default implementation is as follows:
+
+.. code-block:: python
+    def GM_calculate_dipole(map_, system, osc):
+        _, r_pos = map_.code.GM_get_dipole_dir(map_, system, osc)
+        xyz = [
+            uses_maps(omega, [osc.VEGout], [arr]) for omega, arr in zip(
+                Map.Core.dipole_gas_phase, Map.Core.dipole_data_array)
+        ]
+        xyz_local = np.array(xyz, dtype="float32")
+        xyz_cartesian = np.dot(xyz_local, osc.rotation_matrix)
+        return xyz_cartesian, r_pos
+.. #endregion
+
+
+
+.. #region GM_calculate_frequency
+GM_calculate_frequency
 ===============================================
 
 Returns the frequency at which the oscillator is expected to give a signal (resonate), in units of cm-1.
@@ -1064,8 +1216,8 @@ The default method of providing the frequency is not sufficient
 Sometimes, the frequency is determined in a more complex method than supported by the program. In those cases, it might be more appropriate to write the code here.
 
 
-Available attributes of Map
----------------------------
+Available attributes of map\_
+-----------------------------
 
 .. hlist::
     :columns: 4
@@ -1088,10 +1240,10 @@ Available attributes of Map
 
 Parameters
 ----------
-Map : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
-Syst : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.SystemReader.System`
     The object that stores everyting the program currently knows about the MD system.
 osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
     The oscillator for which the dipole moment magnitude should be determined.
@@ -1103,7 +1255,55 @@ freq : float
     The frequency at which this oscillator is expected to absorb.
 
 
-GM_calculate_raman(Map, Syst, osc)
+Default implementation
+----------------------
+
+There are multiple different ways of calculating the frequency. While all methods take the gas phase frequency as a base, the linear and quadratic dependencies are optional. That results in 4 total possible options.
+
+Gas phase only
+^^^^^^^^^^^^^^
+.. code-block:: python
+    def GM_calculate_frequency(map_, system, osc):
+        return map_.Core.frequency_gas_phase
+
+Gas phase and linear dependence
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. code-block:: python
+    def GM_calculate_frequency(map_, system, osc):
+        freq = uses_maps(
+            map_.Core.frequency_gas_phase, [osc.VEGout],
+            [map_.Core.frequency_data_array_linear]
+        )
+        return freq
+
+Gas phase and quadratic dependence
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. code-block:: python
+    def GM_calculate_frequency(map_, system, osc):
+        freq = uses_maps(
+            map_.Core.frequency_gas_phase, [osc.VEGout**2],
+            [map_.Core.frequency_data_array_quadratic]
+        )
+        return freq
+
+Gas phase and both linear and quadratic dependence
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. code-block:: python
+    def GM_calculate_frequency(map_, system, osc):
+        freq = uses_maps(
+            map_.Core.frequency_gas_phase,
+            [osc.VEGout, osc.VEGout**2],
+            [
+                map_.Core.frequency_data_array_linear,
+                map_.Core.frequency_data_array_quadratic]
+        )
+        return freq
+.. #endregion
+
+
+
+.. #region GM_calculate_raman
+GM_calculate_raman
 =========================================
 
 Returns the expected raman tensor for the given oscillator. The raman tensor is (along with dipoles and frequencies) required for programs to calculate different kinds of spectra: raman spectrum, SFG spectrum, 2D-Raman spectrum, 2D-IR-Raman spectrum. 
@@ -1117,8 +1317,8 @@ A raman output is desired
 Calculating raman spectra is still relatively new, so a default method for doing so has not yet been developed. Therefore, if a raman output is desired, the map-maker must define their own method.
 
 
-Available attributes of Map
----------------------------
+Available attributes of map\_
+------------------------------
 
 .. hlist::
     :columns: 4
@@ -1141,10 +1341,10 @@ Available attributes of Map
 
 Parameters
 ----------
-Map : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
-Syst : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.SystemReader.System`
     The object that stores everyting the program currently knows about the MD system.
 osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
     The oscillator for which the dipole moment magnitude should be determined.
@@ -1156,9 +1356,16 @@ freq : float
     The frequency at which this oscillator is expected to absorb.
 
 
+Default implementation
+----------------------
+
+Due to the highly specific nature of this functionality, no default method has been implemented (yet). If Raman calculations become more common (mroe than the current 1 or 2 available maps), a default method can be established.
+.. #endregion
 
 
-GM_get_VEG_ref(Map, Syst, osc)
+
+.. #region GM_get_VEG_ref
+GM_get_VEG_ref
 =================================================================
 
 Returns the centerpoint for the sphere of charges contributing to the calculated electrostatics.
@@ -1175,8 +1382,8 @@ The default method of providing the elecctrostatics sphere center is not suffici
 Some techniques cannot be used in exclusively box coordinates, and can therefore not be used through core.txt. In those cases, it might be more appropriate to write the code here.
 
 
-Available attributes of Map
----------------------------
+Available attributes of map\_
+-------------------------------
 
 .. hlist::
     :columns: 4
@@ -1199,10 +1406,10 @@ Available attributes of Map
 
 Parameters
 ----------
-Map : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
-Syst : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.SystemReader.System`
     The object that stores everyting the program currently knows about the MD system.
 osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
     The oscillator for which the rotation matrix should be determined.
@@ -1212,5 +1419,85 @@ Returns
 -------
 VEG_ref : `np.ndarray`
     The position at which the sphere should be centered.
+
+
+Default implementation
+----------------------
+
+There are multiple different ways of calculating the VEG reference position, depending on the method requested by the user in the core.txt file. 
+
+residues method
+^^^^^^^^^^^^^^^^
+
+Takes the centre of mass of all atoms of the mentioned residues. If two mentioned atoms belong to the same residue, all atoms in that residue will be counted twice!
+
+core.txt file::
+
+    VEG_reference residues 0 6
+
+default code:
+.. code-block:: python
+    import GMAP.src.tools.PhysicsFunctions as GM_PF
+
+    def GM_get_VEG_ref(map_, system, osc):
+        local_atoms = [int(num) for num in map_.local_atoms]
+
+        atnums = []
+        for atom in local_atoms:
+            resnum = system.resnums[osc.used_atoms[atom]]
+            atnums.extend([*range(
+                system.residues.first_ix[resnum],
+                system.residues.last_ix[resnum] + 1
+            )])
+        CoM = GM_PF.calc_CoM(system, atnums)
+        return CoM
+
+
+CoM method
+^^^^^^^^^^^^^^^^
+
+Takes the centre of mass of all provided atoms.
+
+core.txt file::
+
+    VEG_reference CoM 0 6
+
+default code:
+.. code-block:: python
+    import GMAP.src.tools.PhysicsFunctions as GM_PF
+
+    def GM_get_VEG_ref(map_, system, osc):
+        local_atoms = [int(num) for num in map_.local_atoms]
+
+        atnums = [osc.used_atoms[ix] for ix in local_atoms]
+        CoM = GM_PF.calc_CoM(Syst, atnums)
+        return CoM
+
+
+Position method
+^^^^^^^^^^^^^^^^
+
+Allows the user to directly specify an exact position.
+
+core.txt file::
+
+    VEG_reference position 0.625 * 1 + 0.375 * 3
+
+default code:
+.. code-block:: python
+    import GMAP.src.tools.PhysicsFunctions as GM_PF
+
+    def GM_get_VEG_ref(map_, system, osc):
+        # This line is the code representation from the contents of the file.
+        # All following lines for refpos are independent of core.txt contents.
+        refpos = (0.625 * osc_positions_box[0] + 0.375 * osc_positions_box[1])
+
+        # adjusting vector for PBC
+        refpos = (refpos - np.floor(refpos + 0.5))  # normalize box coordinates
+        refpos = refpos @ system.boxvects  # back to cartesian coordinates
+
+        return refpos
+
+.. #endregion
 
 
