@@ -1634,10 +1634,8 @@ class SingleCore():
 
         # convert to ints
         try:
-            '''
-            Note: rawcore["used_atoms"] is a list of whatever comes after
-                  used_atoms in the core.txt file used
-            '''
+            # Note: rawcore["used_atoms"] is a list of whatever comes after
+            #       used_atoms in the core.txt file used
             minLen = min([len(struct.indices) for struct in self.functional_group])  # Use the shortest structure
             used_atoms = self.allow_ranges(rawcore["used_atoms"], minLen)
 
