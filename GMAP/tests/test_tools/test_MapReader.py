@@ -1798,7 +1798,6 @@ class TestSingleCore:
         _ = basic_setup_core(map_, finish_before=finish_before)
 
         out, _ = capfd.readouterr()
-        print(out)
         assert out.endswith(errcode + "\n")
 
 
