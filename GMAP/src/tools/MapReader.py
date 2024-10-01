@@ -12,7 +12,6 @@ import GMAP.src.tools.DefaultMapFunctions as GM_DMF
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.FileHandler as GM_FH
 import GMAP.src.tools.ParameterParser as GM_PP
-from GMAP.src.tools.PrintTools import devprint as dpr
 import GMAP.src.tools.PrintTools as GM_PT
 
 class Map():
