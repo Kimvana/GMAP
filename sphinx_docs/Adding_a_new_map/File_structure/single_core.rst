@@ -357,7 +357,7 @@ Many maps need to know what the electrostatic potential, electric field, and/or 
 Here, we say we want to know the electrostatic properties on the zeroeth and twoeth atoms in used_atoms, which in turn are the zeroeth and threeeth atoms in functional_group - C and N.
 
 .. hint::
-Using ranges or "All" is also allowed when defining this property, but beware that the selection is defined with respect to the used_atoms list, rather than the functional_group list.
+    Using ranges or "All" is also allowed when defining this property, but beware that the selection is defined with respect to the used_atoms list, rather than the functional_group list.
 
 While it is very common for a map to need these properties, it is not universal. If these properties are not needed, instead, you say this::
 
