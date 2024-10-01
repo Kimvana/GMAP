@@ -111,7 +111,7 @@ class RefPars:
 
     """
 
-    def __init__(self, fname, is_main=True):
+    def __init__(self, Files, fname, is_main=True):
         self.is_main = is_main
         self.fname = fname.resolve()
         self.add_groups()
@@ -137,7 +137,7 @@ class RefPars:
 
         # for fixing intertwined / more convoluted parameters (main file only)
         if is_main:
-            self.resolve()
+            self.resolve(Files)
 
     @classmethod
     def add_reffile(cls, fname, base_RefPars):
@@ -459,7 +459,7 @@ class RefPars:
         else:
             self.choices[parname] = options
 
-    def resolve(self):
+    def resolve(self, Files):
         """Fixes intertwined/special parameters the standard parser can't fix
         """
 
@@ -520,6 +520,11 @@ class RefPars:
                 "Please make sure it has a positive value.",
                 "SU_FP_7", True, GMAPerrclass=GM_Ex.GmapValueError
             )
+
+        self.choices["VEG_clib_file"] = [Path(
+            str(*self.choices["VEG_clib_file"]) + Files.clib_extension
+        )]
+
 
         if self.choices["hamiltonian_units"][0] == "cm-1":
             self.choices["hamiltonian_multiplier"] = [1]
@@ -666,7 +671,7 @@ class RawPars:
 
     """
 
-    def __init__(self, fname, is_default, given_dict, RefPars):
+    def __init__(self, Files, fname, is_default, given_dict, RefPars):
         self.fname = fname
         self.is_default = is_default
 
@@ -676,10 +681,10 @@ class RawPars:
 
         # if the class isn't empty
         if given_dict:
-            self.resolve()
+            self.resolve(Files)
 
     @classmethod
-    def create_empty(cls):
+    def create_empty(cls, Files):
         """Create an instance of this class without any data
 
         .. seealso ::
@@ -691,10 +696,10 @@ class RawPars:
             A newly generated instance.
         """
 
-        return cls(None, False, {}, {})
+        return cls(Files, None, False, {}, {})
 
     @classmethod
-    def from_dict(cls, fname, given_dict, RefPars, is_default):
+    def from_dict(cls, Files, fname, given_dict, RefPars, is_default):
         """Create an instance of this class for parameters stored in a dict.
 
         .. seealso ::
@@ -722,13 +727,13 @@ class RawPars:
         """
 
         if len(given_dict) == 0:
-            instance = cls.create_empty()
+            instance = cls.create_empty(Files)
             return instance
 
-        return cls(fname, is_default, given_dict, RefPars)
+        return cls(Files, fname, is_default, given_dict, RefPars)
 
     @classmethod
-    def from_file(cls, fname, RefPars, is_default):
+    def from_file(cls, Files, fname, RefPars, is_default):
         """Create an instance of this class for parameters stored in a file.
 
         First obtains a dict from the file, then uses :meth:`from_dict`
@@ -756,13 +761,13 @@ class RawPars:
             given_dict = get_pardict(file, RefPars.compounds)
 
         instance = cls.from_dict(
-            fname, given_dict, RefPars, is_default
+            Files, fname, given_dict, RefPars, is_default
         )
         return instance
 
     @classmethod
     def from_cmdline(
-        cls, cmdargs, RefPars, maprefpars_dict, is_default
+        cls, Files, cmdargs, RefPars, maprefpars_dict, is_default
     ):
         """Create an instance of this class for parameters in the command line
 
@@ -799,7 +804,7 @@ class RawPars:
         # - extract num of expected arguments
         # - extract actual arguments
 
-        temp_instance = cls(Path("command line"), False, {}, {})
+        temp_instance = cls(Files, Path("command line"), False, {}, {})
         parfile_mock = []
 
         while len(cmdargs) > 0:
@@ -839,7 +844,7 @@ class RawPars:
         pardict = get_pardict(parfile_mock, RefPars.compounds)
 
         instance = cls.from_dict(
-            Path("command line"), pardict, RefPars, is_default
+            Files, Path("command line"), pardict, RefPars, is_default
         )
 
         return instance
@@ -1320,7 +1325,7 @@ class RawPars:
                     "SU_WP_14", True, GMAPerrclass=GM_Ex.GmapParameterError
                 )
 
-    def resolve(self):
+    def resolve(self,Files):
         """Fixes intertwined/special parameters the standard parser can't fix
         """
 
@@ -1393,6 +1398,12 @@ class RawPars:
                 "SU_WP_11", True, GMAPerrclass=GM_Ex.GmapValueError
             )
 
+        # Add c library extension
+        if self.choices.get("VEG_clib_file") is not None:
+            self.choices["VEG_clib_file"] = [Path(
+                str(*self.choices["VEG_clib_file"]) + Files.clib_extension
+            )]
+ 
         # next - frame numbers!
         start_frame = self.choices.get("start_frame", [None])[0]
         number_frames = self.choices.get("number_frames", [None])[0]
@@ -2458,14 +2469,14 @@ def get_parameters(Files, in_parfile, argslist):
     ref_parfile = Files.sourcedir_hc / Files.refparfilename_hc
     # step 7 (parse refparfile)
     GM_FH.check_file_readability(ref_parfile)  # check if file is UTF8
-    RefPars_ = RefPars(ref_parfile, True)
+    RefPars_ = RefPars(Files,ref_parfile, True)
 
     # step 8 (parse defparfile)
     if def_parfile.suffix == ".txt":
         # check if file is UTF8
         GM_FH.check_file_readability(def_parfile)
         DefPars = RawPars.from_file(
-            def_parfile, RefPars_, True
+            Files, def_parfile, RefPars_, True
         )
     elif def_parfile == ref_parfile:
         DefPars = RefPars_
@@ -2483,9 +2494,9 @@ def get_parameters(Files, in_parfile, argslist):
     # step 9 (parse inparfile, not map part)
     if in_parfile:
         InPars = RawPars.from_file(
-            in_parfile, RefPars_, False)
+            Files, in_parfile, RefPars_, False)
     else:
-        InPars = RawPars.create_empty()
+        InPars = RawPars.create_empty(Files)
 
     # step 10 (find mapdir in cmdline > inparfile > defparfile)
     mapdirs = find_mapdir(Files, argslist, InPars, DefPars)
@@ -2495,19 +2506,19 @@ def get_parameters(Files, in_parfile, argslist):
     pairs_mapdict = GM_MR.scan_mapdirs(mapdirs, "Pairs")
     all_mapdict = singles_mapdict | pairs_mapdict
     for map_ in all_mapdict.values():
-        map_.find_refpars()
+        map_.find_refpars(Files)
 
     # step 12 (finish parsing cmdline, inparfile, defparfile)
 
     # cmdline
     CmdPars = RawPars.from_cmdline(
-        argslist, RefPars_,
+        Files, argslist, RefPars_,
         {name: map_.RefPars for name, map_ in all_mapdict.items()},
         False
     )
 
     for map_ in all_mapdict.values():
-        map_.find_rawpars(CmdPars, InPars, DefPars)
+        map_.find_rawpars(Files, CmdPars, InPars, DefPars)
 
     CmdPars.finalize_map_pars()
     InPars.finalize_map_pars()

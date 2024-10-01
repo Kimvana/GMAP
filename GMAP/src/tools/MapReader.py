@@ -93,7 +93,7 @@ class Map():
         self.success = True
         self.avail_files = avail_files
 
-    def find_refpars(self):
+    def find_refpars(self, Files):
         """Creates a RefPars object for the map-specific parameters
 
         A map is not required to have any specific parameters. But if it
@@ -108,14 +108,14 @@ class Map():
 
         refparfilename = self.directory / "parameters.ref"
         if refparfilename.is_file():
-            self.RefPars = GM_PP.RefPars(refparfilename, False)
+            self.RefPars = GM_PP.RefPars(Files,refparfilename, False)
         else:
             # self.RefPars = None
             with open(refparfilename, "w") as _:
                 pass
-            self.RefPars = GM_PP.RefPars(refparfilename, False)
+            self.RefPars = GM_PP.RefPars(Files,refparfilename, False)
 
-    def find_rawpars(self, CmdPars, InPars, DefPars):
+    def find_rawpars(self, Files, CmdPars, InPars, DefPars):
         """Creates CmdPars, InPars and DefPars objects for this map instance.
 
         Searches through the provided CmdPars, InPars and DefPars to see
@@ -144,7 +144,7 @@ class Map():
         # first, CmdPars
         map_pars = self.extract_notfound(CmdPars)
         self.CmdPars = GM_PP.RawPars.from_dict(
-            "Cmdline", map_pars, self.RefPars, False
+            Files, "Cmdline", map_pars, self.RefPars, False
         )
         for parname in map_pars.keys():
             del CmdPars.not_found[self.name + "." + parname]
@@ -152,7 +152,7 @@ class Map():
         # InPars
         map_pars = self.extract_notfound(InPars)
         self.InPars = GM_PP.RawPars.from_dict(
-            InPars.fname, map_pars, self.RefPars, False
+            Files, InPars.fname, map_pars, self.RefPars, False
         )
         for parname in map_pars.keys():
             del InPars.not_found[self.name + "." + parname]
@@ -161,12 +161,12 @@ class Map():
         if type(DefPars) is GM_PP.RawPars:
             map_pars = self.extract_notfound(DefPars)
             self.DefPars = GM_PP.RawPars.from_dict(
-                DefPars.fname, map_pars, self.RefPars, True
+                Files, DefPars.fname, map_pars, self.RefPars, True
             )
             for parname in map_pars.keys():
                 del DefPars.not_found[self.name + "." + parname]
         else:
-            self.DefPars = GM_PP.RawPars.create_empty()
+            self.DefPars = GM_PP.RawPars.create_empty(Files)
 
     def extract_notfound(self, RawParInst):
         """Find all parameters of this map in the given RawPars instance.

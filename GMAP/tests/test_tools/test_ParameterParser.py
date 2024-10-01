@@ -32,11 +32,11 @@ import GMAP.src.tools.FileHandler as GM_FH
 import GMAP.src.tools.MapReader as GM_MR
 import GMAP.src.tools.ParameterParser as GM_PP
 
-
 class TestRefPars:
     def test_correctness(self):
-        _ = GM_FH.FileLocations()  # still needed for initialization
+        Files = GM_FH.FileLocations()  # still needed for initialization
         RefPars = GM_PP.RefPars(
+            Files,
             Path(
                 "tests/test_tools/Data/reference_parameters_1.ref"),
             True
@@ -74,7 +74,7 @@ class TestRefPars:
                 "../../../sourcefiles/pdb_1AKI_50frame.xtc"
             )],
             "source_directory": [Path("../../../sourcefiles")],
-            "VEG_clib_file": [Path("VEG.dll")],
+            "VEG_clib_file": [Path("VEG"+Files.clib_extension)],
             "log_filename": [Path("log.log")],
             "output_legend_filename": [Path("legend.txt")],
             "output_couplingvis_filename": [Path("couplingvisualization.pdf")],
@@ -353,8 +353,9 @@ class TestRefPars:
         ]
 
     def test_variations(self):
-        _ = GM_FH.FileLocations()  # still needed for initialization
+        Files = GM_FH.FileLocations()  # still needed for initialization
         RefPars = GM_PP.RefPars(
+            Files,
             Path(
                 "tests/test_tools/Data/reference_parameters_3.ref"),
             True
@@ -364,8 +365,9 @@ class TestRefPars:
             ":All", "-", "(", ":None", ")"]
 
     def test_SU_FP_1(self):
-        _ = GM_FH.FileLocations()  # still needed for initialization
+        Files = GM_FH.FileLocations()  # still needed for initialization
         RefPars = GM_PP.RefPars(
+            Files,
             Path(
                 "tests/test_tools/Data/reference_parameters_1.ref"),
             True
@@ -470,21 +472,23 @@ class TestRefPars:
 
     @staticmethod
     def systest(fname, errcode, errclass=None, is_main=True):
-        _ = GM_FH.FileLocations()  # still needed for initialization
+        Files = GM_FH.FileLocations()  # still needed for initialization
 
         with pytest.raises(errclass, match=f"{errcode}$"):
-            _ = GM_PP.RefPars(Path(fname), is_main)
+            _ = GM_PP.RefPars(Files, Path(fname), is_main)
 
 
 class TestRawPars:
     def test_fromfile(self):
-        _ = GM_FH.FileLocations()  # still needed for initialization
+        Files = GM_FH.FileLocations()  # still needed for initialization
         RefPars = GM_PP.RefPars(
+            Files,
             Path(
                 "tests/test_tools/Data/reference_parameters_1.ref"),
             True
         )
         DefPars = GM_PP.RawPars.from_file(
+            Files,
             Path("tests/test_tools/Data/default_parameters_1.txt"),
             RefPars, True
         )
@@ -496,7 +500,7 @@ class TestRawPars:
             "topology_file": [sd / "pdb_1AKI.tpr"],
             "trajectory_file": [sd / "pdb_1AKI_50frame.xtc"],
             "source_directory": [sd],
-            "VEG_clib_file": [Path("VEG.dll")],
+            "VEG_clib_file": [Path("VEG"+Files.clib_extension)],
             "log_filename": [Path("log.log")],
             "output_legend_filename": [Path("legend.txt")],
             "output_couplingvis_filename": [Path("couplingvisualization.pdf")],
@@ -583,7 +587,7 @@ class TestRawPars:
         # Still missing DefPars.not_found
 
     def test_fromdict(self):
-        _, RefPars = TestRawPars.setup_test_SU_WP_base()
+        Files, RefPars = TestRawPars.setup_test_SU_WP_base()
 
         pardict = {
             "verbose": ["4"],
@@ -600,7 +604,7 @@ class TestRawPars:
         }
 
         InPars = GM_PP.RawPars.from_dict(
-            Path("mydict"), pardict, RefPars, False
+            Files, Path("mydict"), pardict, RefPars, False
         )
 
         assert InPars.fname.name == "mydict"
@@ -641,11 +645,11 @@ class TestRawPars:
             "--doublepos_units", "nm"
         ]
 
-        _, RefPars, _, _, maprefdict = self.setup_test_SU_WP_cmd(
+        Files, RefPars, _, _, maprefdict = self.setup_test_SU_WP_cmd(
             cmdline)
 
         CmdPars = GM_PP.RawPars.from_cmdline(
-            cmdline, RefPars, maprefdict, False
+            Files, cmdline, RefPars, maprefdict, False
         )
 
         assert CmdPars.fname.name == "command line"
@@ -676,11 +680,11 @@ class TestRawPars:
 
     def test_variations(self):
         def infltest(cmdline, inflchoice):
-            _, RefPars, _, _, maprefdict = self.setup_test_SU_WP_cmd(
+            Files, RefPars, _, _, maprefdict = self.setup_test_SU_WP_cmd(
                 cmdline)
 
             CmdPars = GM_PP.RawPars.from_cmdline(
-                cmdline, RefPars, maprefdict, False
+                Files, cmdline, RefPars, maprefdict, False
             )
             assert CmdPars.choices["influencers"] == inflchoice
 
@@ -699,7 +703,7 @@ class TestRawPars:
             "segid A"
         )
 
-        _, RefPars = TestRawPars.setup_test_SU_WP_base()
+        Files, RefPars = TestRawPars.setup_test_SU_WP_base()
 
         pardict = {
             "verbose": ["4"],
@@ -713,7 +717,7 @@ class TestRawPars:
         }
 
         InPars = GM_PP.RawPars.from_dict(
-            Path("mydict"), pardict, RefPars, False
+            Files, Path("mydict"), pardict, RefPars, False
         )
 
         assert InPars.fname.name == "mydict"
@@ -840,9 +844,9 @@ class TestRawPars:
         pardict = {
             "nonexistentmap.par1": ["1"]
         }
-        _, RefPars = TestRawPars.setup_test_SU_WP_base()
+        Files, RefPars = TestRawPars.setup_test_SU_WP_base()
         InPars = GM_PP.RawPars.from_dict(
-            Path("mydict"), pardict, RefPars, False
+            Files, Path("mydict"), pardict, RefPars, False
         )
 
         with pytest.raises(GM_Ex.GmapKeyError, match="SU_WP_15$"):
@@ -937,12 +941,12 @@ class TestRawPars:
     def setup_test_SU_WP_cmd(cmdline):
         Files, RefPars = TestRawPars.setup_test_SU_WP_base()
 
-        InPars = GM_PP.RawPars.create_empty()
+        InPars = GM_PP.RawPars.create_empty(Files)
 
         mapdirs = GM_PP.find_mapdir(Files, cmdline, InPars, RefPars)
         mapdict = GM_MR.scan_mapdirs(mapdirs, "Singles")
         for map_ in mapdict.values():
-            map_.find_refpars()
+            map_.find_refpars(Files)
 
         maprefdict = {name: _map.RefPars for name, _map in mapdict.items()}
 
@@ -952,6 +956,7 @@ class TestRawPars:
     def setup_test_SU_WP_base():
         Files = GM_FH.FileLocations()
         RefPars = GM_PP.RefPars(
+            Files,
             Path(
                 "tests/test_tools/Data/reference_parameters_1.ref"),
             True
@@ -961,20 +966,20 @@ class TestRawPars:
     @staticmethod
     def systest_cmdline(cmdline, errcode, errclass, isdef=False):
         (
-            _, RefPars, _, _, maprefdict
+            Files, RefPars, _, _, maprefdict
         ) = TestRawPars.setup_test_SU_WP_cmd(cmdline)
 
         with pytest.raises(errclass, match=f"{errcode}$"):
             _ = GM_PP.RawPars.from_cmdline(
-                cmdline, RefPars, maprefdict, isdef
+                Files, cmdline, RefPars, maprefdict, isdef
             )
 
     @staticmethod
     def systest_pardict(pardict, errcode, errclass, isdef=False):
-        _, RefPars = TestRawPars.setup_test_SU_WP_base()
+        Files, RefPars = TestRawPars.setup_test_SU_WP_base()
         with pytest.raises(errclass, match=f"{errcode}$"):
             _ = GM_PP.RawPars.from_dict(
-                Path("mydict"), pardict, RefPars, isdef
+                Files, Path("mydict"), pardict, RefPars, isdef
             )
 
 
@@ -1024,8 +1029,15 @@ class TestRunPars:
             curpath / "../../../sourcefiles/pdb_1AKI_50frame.xtc").resolve()
         assert RunPars.source_directory == Path(
             curpath / "../../../sourcefiles").resolve()
-        assert RunPars.VEG_clib_file == Path(
-            curpath / "../../../sourcefiles/VEG.dll").resolve()
+        ### TLC - this can be made more rigorous
+        assert (RunPars.VEG_clib_file == Path(
+            curpath / "../../../sourcefiles/VEG_Win64bit.dll").resolve()) or (
+            RunPars.VEG_clib_file == Path(
+            curpath / "../../../sourcefiles/VEG_Win32bit.dll").resolve()) or (
+            RunPars.VEG_clib_file == Path(
+            curpath / "../../../sourcefiles/VEG_MacOS.dylib").resolve()) or (
+            RunPars.VEG_clib_file == Path(
+            curpath / "../../../sourcefiles/VEG_Linux.so").resolve())
         assert RunPars.log_directory == Path(curpath / "../Data").resolve()
         assert RunPars.log_filename == Path(
             curpath / "../Data/log.log").resolve()
@@ -1122,11 +1134,13 @@ class TestRunPars:
         # setup - Create all necessary objects.
         Files = GM_FH.FileLocations()
         RefPars = GM_PP.RefPars(
+            Files,
             Path(
                 "tests/test_tools/Data/reference_parameters_2.ref"),
             True
         )
         DefPars = GM_PP.RawPars.from_file(
+            Files,
             Path("tests/test_tools/Data/default_parameters_2.txt"),
             RefPars, True
         )
@@ -1154,7 +1168,7 @@ class TestRunPars:
         curpath = Path(__file__).resolve()
         allInPars = [
             GM_PP.RawPars.from_dict(
-                curpath / "../Data/testout/imaginary_inpfile", pardict,
+                Files, curpath / "../Data/testout/imaginary_inpfile", pardict,
                 RefPars, False
             ) for pardict in pardicts
         ]
@@ -1163,13 +1177,13 @@ class TestRunPars:
             Files, cmdlines[0], allInPars[0], DefPars)
         mapdict = GM_MR.scan_mapdirs(mapdirs, "Singles")
         for map_ in mapdict.values():
-            map_.find_refpars()
+            map_.find_refpars(Files)
 
         maprefdict = {name: _map.RefPars for name, _map in mapdict.items()}
 
         allCmdPars = [
             GM_PP.RawPars.from_cmdline(
-                cmdline, RefPars, maprefdict, False
+                Files, cmdline, RefPars, maprefdict, False
             ) for cmdline in cmdlines
         ]
 
@@ -1413,7 +1427,7 @@ class TestRunPars:
         }
 
         _ = GM_PP.RawPars.from_file(
-            curpath.parent/"Data"/"rawpars_coupling.txt", RefPars,
+            Files, curpath.parent/"Data"/"rawpars_coupling.txt", RefPars,
             False
         )
 
@@ -1537,27 +1551,31 @@ class TestRunPars:
         # setup - Create all necessary objects.
         Files = GM_FH.FileLocations()
         RefPars = GM_PP.RefPars(
+            Files,
             Path(
                 "tests/test_tools/Data/reference_parameters_1.ref"),
             True
         )
         DefPars = GM_PP.RawPars.from_file(
+            Files,
             Path("tests/test_tools/Data/default_parameters_1.txt"),
             RefPars, True
         )
 
         InPars = GM_PP.RawPars.from_dict(
+            Files,
             inparspath, pardict, RefPars, False
         )
 
         mapdirs = GM_PP.find_mapdir(Files, cmdline, InPars, DefPars)
         mapdict = GM_MR.scan_mapdirs(mapdirs, "Singles")
         for map_ in mapdict.values():
-            map_.find_refpars()
+            map_.find_refpars(Files)
 
         maprefdict = {name: _map.RefPars for name, _map in mapdict.items()}
 
         CmdPars = GM_PP.RawPars.from_cmdline(
+            Files,
             cmdline, RefPars, maprefdict, False
         )
 
@@ -1588,14 +1606,14 @@ class TestMapPars:
 
         curpath = Path(__file__).resolve()
 
-        _, _, _, _, mapdict = TestMapPars.setup_maprefpars(
+        Files, _, _, _, mapdict = TestMapPars.setup_maprefpars(
             pardict, cmdline)
 
 #        counter = 1
         print([*mapdict.keys()])
         for mapname, map_ in mapdict.items():
 
-            map_.find_refpars()
+            map_.find_refpars(Files)
             counter=mapname[-1] 
             fname_tofind = Path(curpath / "../Data/test_mapdir/Singles")
             fname_tofind /= f"testmap{counter}/parameters.ref"
@@ -1857,9 +1875,10 @@ class TestMapPars:
         ) = TestMapPars.setup_maprefpars(pardict, cmdline, deffilepath)
 
         for map_ in mapdict.values():
-            map_.find_refpars()
+            map_.find_refpars(Files)
 
         CmdPars = GM_PP.RawPars.from_cmdline(
+            Files,
             cmdline, RefPars,
             {name: map_.RefPars for name, map_ in mapdict.items()},
             False
@@ -1867,7 +1886,7 @@ class TestMapPars:
 
         with pytest.raises(GM_Ex.GmapKeyError, match="SU_WP_6$"):
             for map_ in mapdict.values():
-                map_.find_rawpars(CmdPars, InPars, DefPars)
+                map_.find_rawpars(Files, CmdPars, InPars, DefPars)
 
     def test_SU_WP_14(self):
         pardict = {"map_directory": ["Data/test_mapdir"]}
@@ -1880,9 +1899,10 @@ class TestMapPars:
         ) = TestMapPars.setup_maprefpars(pardict, cmdline, deffilepath)
 
         for map_ in mapdict.values():
-            map_.find_refpars()
+            map_.find_refpars(Files)
 
         CmdPars = GM_PP.RawPars.from_cmdline(
+            Files,
             cmdline, RefPars,
             {name: map_.RefPars for name, map_ in mapdict.items()},
             False
@@ -1890,7 +1910,7 @@ class TestMapPars:
 
         with pytest.raises(GM_Ex.GmapParameterError, match="SU_WP_14$"):
             for map_ in mapdict.values():
-                map_.find_rawpars(CmdPars, InPars, DefPars)
+                map_.find_rawpars(Files, CmdPars, InPars, DefPars)
 
     def test_maprunpars(self):
         pardict = {
@@ -1973,6 +1993,7 @@ class TestMapPars:
         # setup - Create all necessary objects.
         Files = GM_FH.FileLocations()
         RefPars = GM_PP.RefPars(
+            Files,
             Path(
                 "tests/test_tools/Data/reference_parameters_2.ref"),
             True
@@ -1987,7 +2008,7 @@ class TestMapPars:
 
         curpath = Path(__file__).resolve()
         InPars = GM_PP.RawPars.from_dict(
-            curpath, pardict, RefPars, False
+            Files, curpath, pardict, RefPars, False
         )
 
         cmdline = [
@@ -1999,10 +2020,10 @@ class TestMapPars:
         mapdirs = GM_PP.find_mapdir(Files, cmdline, InPars, DefPars)
         mapdict = GM_MR.scan_mapdirs(mapdirs, "Singles")
         for map_ in mapdict.values():
-            map_.find_refpars()
+            map_.find_refpars(Files)
 
         CmdPars = GM_PP.RawPars.from_cmdline(
-            cmdline, RefPars,
+            Files, cmdline, RefPars,
             {name: _map.RefPars for name, _map in mapdict.items()},
             False
         )
@@ -2010,7 +2031,7 @@ class TestMapPars:
 
         with pytest.raises(GM_Ex.GmapValueError, match="SU_MR_1$"):
             for map_ in mapdict.values():
-                map_.find_rawpars(CmdPars, InPars, DefPars)
+                map_.find_rawpars(Files, CmdPars, InPars, DefPars)
 
     def test_SU_NP_2(self):
         pardict = {}
@@ -2062,19 +2083,21 @@ class TestMapPars:
         #     True
         # )
         RefPars = GM_PP.RefPars(
+            Files,
             Path(
                 "sourcefiles/reference_parameters.ref"
             ), True
         )
         if defparfilename:
             DefPars = GM_PP.RawPars.from_file(
+                Files,
                 defparfilename, RefPars, True)
         else:
             DefPars = RefPars
 
         curpath = Path(__file__).resolve()
         InPars = GM_PP.RawPars.from_dict(
-            curpath, pardict, RefPars, False
+            Files, curpath, pardict, RefPars, False
         )
 
         mapdirs = GM_PP.find_mapdir(Files, cmdline, InPars, DefPars)
@@ -2089,16 +2112,16 @@ class TestMapPars:
         ) = TestMapPars.setup_maprefpars(pardict, cmdline, defparfilename)
 
         for map_ in mapdict.values():
-            map_.find_refpars()
+            map_.find_refpars(Files)
 
         CmdPars = GM_PP.RawPars.from_cmdline(
-            cmdline, RefPars,
+            Files, cmdline, RefPars,
             {name: map_.RefPars for name, map_ in mapdict.items()},
             False
         )
 
         for map_ in mapdict.values():
-            map_.find_rawpars(CmdPars, InPars, DefPars)
+            map_.find_rawpars(Files, CmdPars, InPars, DefPars)
 
         CmdPars.finalize_map_pars()
         InPars.finalize_map_pars()
@@ -2334,6 +2357,7 @@ def test_SU_PP_3():
 
     Files = GM_FH.FileLocations()
     RefPars = GM_PP.RefPars(
+        Files,
         Path(
             "tests/test_tools/Data/reference_parameters_2.ref"),
         True
@@ -2342,7 +2366,7 @@ def test_SU_PP_3():
 
     curpath = Path(__file__).resolve()
     InPars = GM_PP.RawPars.from_dict(
-        curpath, {}, RefPars, False
+        Files, curpath, {}, RefPars, False
     )
 
     cmdline = ["-md", "this/dir/doesnt_exist\\;"]

@@ -68,6 +68,19 @@ class FileLocations:
 
         GM_PT.Printer(self)  # initialize the printer!
 
+        # Always define the operating system
+        self.exec_os = find_exec_os()
+        match self.exec_os:
+            case "Linux":
+                self.clib_extension = "_Linux.so"
+            case "Win32bit":
+                self.clib_extension = "_Win32bit.dll"
+            case "Win64bit":
+                self.clib_extension = "_Win64bit.dll"
+            case "MacOS":
+                self.clib_extension = "_MacOS.dylib"  
+
+
     def set_exec_os(self):
         """Find and set the exec_os attribute.
 
@@ -77,6 +90,15 @@ class FileLocations:
         """
 
         self.exec_os = find_exec_os()
+        match self.exec_os:
+            case "Linux":
+                self.clib_extension = "_Linux.so"
+            case "Win32bit":
+                self.clib_extension = "_Win32bit.dll"
+            case "Win64bit":
+                self.clib_extension = "_Win64bit.dll"
+            case "MacOS":
+                self.clib_extension = "_MacOS.dylib"
 
 
 def find_exec_os():
