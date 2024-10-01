@@ -385,7 +385,7 @@ The program is naive in calculating elecctrostatics - every atom within range ca
 Here, we say we dont want to include the atoms in used atoms, through giving the index of all five separately.
 
 .. hint::
-Using ranges or "All" is also allowed when defining this property, but beware that the selection is defined with respect to the used_atoms list, rather than the functional_group list.
+    Using ranges or "All" is also allowed when defining this property, but beware that the selection is defined with respect to the used_atoms list, rather than the functional_group list.
 
 It might happen that a map is more complex. If a mapping would like to exclude more atoms, the recommended method is to add these to used_atoms. If the exclusion is variable (might be different for different oscillators), the local_ix of the separate oscillators must be changed manually. This can be done in main.py, the recommended place is within GM_post_init(). 
 
