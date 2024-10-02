@@ -1,0 +1,276 @@
+
+
+
+
+  .-_'''-.                ,---.    ,---.   ____   .-------.
+ '_( )_   \               |    \  /    | .'  __ `.\  _(`)_ \
+|(_ o _)|  '              |  ,  \/  ,  |/   '  \  \ (_ o._)|
+. (_,_)/___|   _ _    _ _ |  |\_   /|  ||___|  /  |  (_,_) /
+|  |  .-----. ( ' )--( ' )|  _( )_/ |  |   _.-`   |   '-.-'
+'  \  '-   .'(_{;}_)(_{;}_) (_ o _) |  |.'   _    |   |
+ \  `-'`   |  (_,_)--(_,_)|  (_,_)  |  ||  _( )_  |   |
+  \        /              |  |      |  |\ (_ o _) /   )
+   `'-...-'               '--'      '--' '.(_,_).'`---'
+
+
+
+For the most up-to-date version of GMAP, reporting bugs/issues, suggesting
+improvements for the program, questions, or any other kind of feedback, go to
+github.com/Kimvana/GMAP
+
+
+Running the following job:
+GMAP nothing nothing
+
+Choice of program wasn't recognized. Please type the following for more
+information on how to use this package:
+
+GMAP
+
+
+More information can be found in the documentation user pages using the
+following error code:  SU_GM_1
+
+
+
+
+  .-_'''-.                ,---.    ,---.   ____   .-------.
+ '_( )_   \               |    \  /    | .'  __ `.\  _(`)_ \
+|(_ o _)|  '              |  ,  \/  ,  |/   '  \  \ (_ o._)|
+. (_,_)/___|   _ _    _ _ |  |\_   /|  ||___|  /  |  (_,_) /
+|  |  .-----. ( ' )--( ' )|  _( )_/ |  |   _.-`   |   '-.-'
+'  \  '-   .'(_{;}_)(_{;}_) (_ o _) |  |.'   _    |   |
+ \  `-'`   |  (_,_)--(_,_)|  (_,_)  |  ||  _( )_  |   |
+  \        /              |  |      |  |\ (_ o _) /   )
+   `'-...-'               '--'      '--' '.(_,_).'`---'
+
+
+
+For the most up-to-date version of GMAP, reporting bugs/issues, suggesting
+improvements for the program, questions, or any other kind of feedback, go to
+github.com/Kimvana/GMAP
+
+
+Running the following job:
+GMAP
+
+Welcome to the G-MAP package. Currently, this is a work in progress. The
+following options are available:
+
+    GMAP
+    GMAP help
+prints this help.
+
+    GMAP help [program]
+prints the help for the requested program
+
+    GMAP AIM
+This program will create the required files for calculating infrared spectra.
+
+    GMAP GEM
+This program will create the required files for calculating electronic spectra.
+
+    GMAP Setup
+This program will copy the source code and maps to target folder.
+
+
+
+
+
+  .-_'''-.                ,---.    ,---.   ____   .-------.
+ '_( )_   \               |    \  /    | .'  __ `.\  _(`)_ \
+|(_ o _)|  '              |  ,  \/  ,  |/   '  \  \ (_ o._)|
+. (_,_)/___|   _ _    _ _ |  |\_   /|  ||___|  /  |  (_,_) /
+|  |  .-----. ( ' )--( ' )|  _( )_/ |  |   _.-`   |   '-.-'
+'  \  '-   .'(_{;}_)(_{;}_) (_ o _) |  |.'   _    |   |
+ \  `-'`   |  (_,_)--(_,_)|  (_,_)  |  ||  _( )_  |   |
+  \        /              |  |      |  |\ (_ o _) /   )
+   `'-...-'               '--'      '--' '.(_,_).'`---'
+
+
+
+For the most up-to-date version of GMAP, reporting bugs/issues, suggesting
+improvements for the program, questions, or any other kind of feedback, go to
+github.com/Kimvana/GMAP
+
+
+Running the following job:
+GMAP HeLp
+
+Welcome to the G-MAP package. Currently, this is a work in progress. The
+following options are available:
+
+    GMAP
+    GMAP help
+prints this help.
+
+    GMAP help [program]
+prints the help for the requested program
+
+    GMAP AIM
+This program will create the required files for calculating infrared spectra.
+
+    GMAP GEM
+This program will create the required files for calculating electronic spectra.
+
+    GMAP Setup
+This program will copy the source code and maps to target folder.
+
+
+
+
+
+  .-_'''-.                ,---.    ,---.   ____   .-------.
+ '_( )_   \               |    \  /    | .'  __ `.\  _(`)_ \
+|(_ o _)|  '              |  ,  \/  ,  |/   '  \  \ (_ o._)|
+. (_,_)/___|   _ _    _ _ |  |\_   /|  ||___|  /  |  (_,_) /
+|  |  .-----. ( ' )--( ' )|  _( )_/ |  |   _.-`   |   '-.-'
+'  \  '-   .'(_{;}_)(_{;}_) (_ o _) |  |.'   _    |   |
+ \  `-'`   |  (_,_)--(_,_)|  (_,_)  |  ||  _( )_  |   |
+  \        /              |  |      |  |\ (_ o _) /   )
+   `'-...-'               '--'      '--' '.(_,_).'`---'
+
+
+
+For the most up-to-date version of GMAP, reporting bugs/issues, suggesting
+improvements for the program, questions, or any other kind of feedback, go to
+github.com/Kimvana/GMAP
+
+
+Running the following job:
+GMAP GEM
+
+Usage:
+
+    GMAP GEM
+    GMAP GEM help
+Prints this help.
+
+    GMAP GEM demo
+Launches GEM in demo-mode. Performs a basic calculation to demonstrate
+basic use and to verify the program is installed correctly.
+
+    GMAP GEM run [name of input file] [optional parameters]
+Performs a run of GEM using the parameters specified in the included file.
+
+
+Groningen Electrostatic Maps
+
+The purpose of GEM is to take an MD trajectory and compute the
+time-dependent Hamiltonian to be used in electronic spectral calculations.
+Instructions on how to deal with specific chromophores have to be included
+in the corresponding .emap file.
+
+For more information, check the manual on N/A.
+
+
+
+
+
+  .-_'''-.                ,---.    ,---.   ____   .-------.
+ '_( )_   \               |    \  /    | .'  __ `.\  _(`)_ \
+|(_ o _)|  '              |  ,  \/  ,  |/   '  \  \ (_ o._)|
+. (_,_)/___|   _ _    _ _ |  |\_   /|  ||___|  /  |  (_,_) /
+|  |  .-----. ( ' )--( ' )|  _( )_/ |  |   _.-`   |   '-.-'
+'  \  '-   .'(_{;}_)(_{;}_) (_ o _) |  |.'   _    |   |
+ \  `-'`   |  (_,_)--(_,_)|  (_,_)  |  ||  _( )_  |   |
+  \        /              |  |      |  |\ (_ o _) /   )
+   `'-...-'               '--'      '--' '.(_,_).'`---'
+
+
+
+For the most up-to-date version of GMAP, reporting bugs/issues, suggesting
+improvements for the program, questions, or any other kind of feedback, go to
+github.com/Kimvana/GMAP
+
+
+Running the following job:
+GMAP help GEM
+
+Usage:
+
+    GMAP GEM
+    GMAP GEM help
+Prints this help.
+
+    GMAP GEM demo
+Launches GEM in demo-mode. Performs a basic calculation to demonstrate
+basic use and to verify the program is installed correctly.
+
+    GMAP GEM run [name of input file] [optional parameters]
+Performs a run of GEM using the parameters specified in the included file.
+
+
+Groningen Electrostatic Maps
+
+The purpose of GEM is to take an MD trajectory and compute the
+time-dependent Hamiltonian to be used in electronic spectral calculations.
+Instructions on how to deal with specific chromophores have to be included
+in the corresponding .emap file.
+
+For more information, check the manual on N/A.
+
+
+
+
+
+  .-_'''-.                ,---.    ,---.   ____   .-------.
+ '_( )_   \               |    \  /    | .'  __ `.\  _(`)_ \
+|(_ o _)|  '              |  ,  \/  ,  |/   '  \  \ (_ o._)|
+. (_,_)/___|   _ _    _ _ |  |\_   /|  ||___|  /  |  (_,_) /
+|  |  .-----. ( ' )--( ' )|  _( )_/ |  |   _.-`   |   '-.-'
+'  \  '-   .'(_{;}_)(_{;}_) (_ o _) |  |.'   _    |   |
+ \  `-'`   |  (_,_)--(_,_)|  (_,_)  |  ||  _( )_  |   |
+  \        /              |  |      |  |\ (_ o _) /   )
+   `'-...-'               '--'      '--' '.(_,_).'`---'
+
+
+
+For the most up-to-date version of GMAP, reporting bugs/issues, suggesting
+improvements for the program, questions, or any other kind of feedback, go to
+github.com/Kimvana/GMAP
+
+
+Running the following job:
+GMAP help nothing
+
+Choice of program wasn't recognized. Please type the following for more
+information on how to use this package:
+
+GMAP
+
+
+More information can be found in the documentation user pages using the
+following error code:  SU_GM_1
+
+
+
+
+  .-_'''-.                ,---.    ,---.   ____   .-------.
+ '_( )_   \               |    \  /    | .'  __ `.\  _(`)_ \
+|(_ o _)|  '              |  ,  \/  ,  |/   '  \  \ (_ o._)|
+. (_,_)/___|   _ _    _ _ |  |\_   /|  ||___|  /  |  (_,_) /
+|  |  .-----. ( ' )--( ' )|  _( )_/ |  |   _.-`   |   '-.-'
+'  \  '-   .'(_{;}_)(_{;}_) (_ o _) |  |.'   _    |   |
+ \  `-'`   |  (_,_)--(_,_)|  (_,_)  |  ||  _( )_  |   |
+  \        /              |  |      |  |\ (_ o _) /   )
+   `'-...-'               '--'      '--' '.(_,_).'`---'
+
+
+
+For the most up-to-date version of GMAP, reporting bugs/issues, suggesting
+improvements for the program, questions, or any other kind of feedback, go to
+github.com/Kimvana/GMAP
+
+
+Running the following job:
+GMAP GEM doesntexist
+[Wed 02 10:39] 0-00:00:00.005:  Start Parsing GMAP parameters
+
+Choice 'doesntexist' was not recognized. Please type the following to see all
+available options:
+
+GMAP GEM
+
+More information can be found in the documentation user pages using the
+following error code:  SU_PP_1

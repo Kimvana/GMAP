@@ -1,0 +1,707 @@
+
+WARNING:
+The file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_4_2/core.txt
+contains a definition of functional_group that cannot be interpreted. A hint of
+what went wrong is this extra code: 5-0-0. Please see the manual for more
+information.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_4
+
+WARNING:
+The file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_9/core.txt
+contains an invalid definition of functional_group. At least one of the
+definitions consists of multiple residues, but not all residues are bonded to
+each other. Please make sure all residues are bonded!
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_9
+
+WARNING:
+The file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_4_5/core.txt
+contains a definition of functional_group that cannot be interpreted. A hint of
+what went wrong is this extra code: 4-0-2. Please see the manual for more
+information.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_4
+
+WARNING:
+Could not find the parameter 'dipole_gas_phase' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_6_8/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+Could not find the parameter 'used_atoms' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_6_1/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+Could not find the parameter 'type' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_6_6/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+Could not interpret the choice for the parameter 'VEG_reference' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_8_7/core.txt.
+Please make sure the choice of method 'residues', 'position', or 'CoM' is also
+followed with a choice for this method. 
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_8
+
+WARNING:
+The file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_8_9/core.txt
+contains an invalid choice for the parameter 'dipole_data_file'. The expected
+format requires both a specification of type of file (magnitude or xyz), and
+the file name.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_8
+
+WARNING:
+Found both the parameters 'functional_group' and 'functional_group_file' in the
+file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_1/core.txt.
+Only one of these two is allowed.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_1
+
+WARNING:
+Could not find the parameter 'VEG_reference' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_6_7/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+The file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_4_4/core.txt
+contains a definition of functional_group that cannot be interpreted. A hint of
+what went wrong is this extra code: 3-0-2. Please see the manual for more
+information.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_4
+
+WARNING:
+Could not find the parameter 'frequency_gas_phase' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_6_9/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+The file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_4_3/core.txt
+contains a definition of functional_group that cannot be interpreted. A hint of
+what went wrong is this extra code: 1-0-0. Please see the manual for more
+information.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_4
+
+WARNING:
+Invalid choice for the parameter 'dipole_gas_phase' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_8_8/core.txt.
+Please make sure the choice consists of three decimal numbers.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_8
+
+WARNING:
+Could not interpret the choice for the parameter 'used_atoms' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_8_1/core.txt.
+Please make sure the indices don't exceed the amount of atoms given for the
+parameter functional_group.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_8
+
+WARNING:
+Could not interpret the choice for the parameter 'VEG_reference' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_8_6/core.txt.
+Please make sure the choice is 'residues', 'position', or 'CoM'.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_8
+
+WARNING:
+Could not find the parameter 'VEG_reference' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_10_2/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+Found unexpected contents for the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/AmideSC/Skinner.txt.
+There were 10 columns found, but only 4 columns are needed. The first 4 columns
+will be used for the calculation. If this is not what you want, please
+terminate the process manually.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_8
+
+WARNING:
+Could not find the parameter 'local_atoms' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_find_core/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+Could not find the parameter 'position' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_dipoles_datafile_magG/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+The file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_3_3/core.txt
+wants to use the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_3_3/doesntexist.txt
+to define the dependency of the frequency on the electrostatics. However, this
+file does not exist.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_3
+
+WARNING:
+There was a problem with the contents of the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_8_11/dipolemap.txt.
+Please make sure the file has the correct amount of columns.
+Amount of columns found: 1
+Amount of columns needed: 4
+
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_8
+
+WARNING:
+There was a problem with the contents of the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_8_11/dipolemap.txt.
+Please make sure the file has the correct amount of rows.
+Amount of rows found: 1
+Amount of rows needed: 2
+
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_8
+
+WARNING:
+Could not find the parameter 'dipole_gas_phase' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_estatic_None/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+Could not interpret the choice for the parameter 'electrostatic_atoms' in the
+file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_7_2/core.txt.
+Please make sure the choice consists of nothing but numbers separated by
+spaces.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_7
+
+WARNING:
+Numpy could not interpret the contents of the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_7_5/dipolemap.txt.
+Please make sure the file contains only decimal numbers in a grid.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_7
+
+WARNING:
+The file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_5_1/core.txt
+contains a definition of functional_group_bonds that cannot be interpreted.
+Please make sure that the bond is defined using a hyphen.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_5
+
+WARNING:
+Could not find the parameter 'frequency_gas_phase' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_dipoles_datafile_xyzgood/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+The file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_8_10/core.txt
+contains an invalid choice for the parameter 'dipole_data_file'. The expected
+format requires both a specification of type of file (magnitude or xyz), and
+the file name.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_8
+
+WARNING:
+Found unexpected contents for the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_dipoles_datafile_maglong/dipolemap.txt.
+There were 5 columns found, but only 4 columns are needed. The first 4 columns
+will be used for the calculation. If this is not what you want, please
+terminate the process manually.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_8
+
+WARNING:
+Found unexpected contents for the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_dipoles_datafile_maglong/dipolemap.txt.
+There were 3 rows found, but only 2 rows are needed. The first 2 rows will be
+used for the calculation. If this is not what you want, please terminate the
+process manually.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_8
+
+WARNING:
+Found unexpected contents for the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_dipoles_datafile_maglong/freqmap.txt.
+There were 5 columns found, but only 4 columns are needed. The first 4 columns
+will be used for the calculation. If this is not what you want, please
+terminate the process manually.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_8
+
+WARNING:
+Found unexpected contents for the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_dipoles_datafile_maglong/freqmap.txt.
+There were 3 rows found, but only 2 rows are needed. The first 2 rows will be
+used for the calculation. If this is not what you want, please terminate the
+process manually.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_8
+
+WARNING:
+Found unexpected contents for the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_dipoles_datafile_maglong/freqmapquad.txt.
+There were 5 columns found, but only 4 columns are needed. The first 4 columns
+will be used for the calculation. If this is not what you want, please
+terminate the process manually.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_8
+
+WARNING:
+Found unexpected contents for the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_dipoles_datafile_maglong/freqmapquad.txt.
+There were 3 rows found, but only 2 rows are needed. The first 2 rows will be
+used for the calculation. If this is not what you want, please terminate the
+process manually.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_8
+
+WARNING:
+Could not find the parameter 'position' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_dipoles_datafile_maglong/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+Could not find the parameter 'VEG_reference' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_9_2/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+The file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_3_2/core.txt
+wants to use the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_3_2/doesntexist.txt
+to define the dependency of the dipole moment on the electrostatics. However,
+this file does not exist.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_3
+
+WARNING:
+Could not interpret the choice for the parameter 'dipole_gas_phase' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_7_4/core.txt.
+Please make sure the choice consists of a single decimal number.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_7
+
+WARNING:
+Could not interpret the choice for the parameter 'local_atoms' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_7_3/core.txt.
+Please make sure the choice consists of nothing but numbers separated by
+spaces.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_7
+
+WARNING:
+The map test_MI_MR_7 stored in
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MR_7
+does not provide the function 'GM_calculate_raman' while its choice for
+can_output does indicate it can compute raman tensors. Without this function,
+this map cannot be used.
+More information can be found in the documentation user pages using the
+following error code:  MI_MR_7
+
+WARNING:
+Could not find the parameter 'position' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_bohr_const2/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+A problem occured while reading in the code for the map test_MI_MR_1, defined
+at
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MR_1.
+Please consult the information of this map, or contact the developer of this
+map.
+More information can be found in the documentation user pages using the
+following error code:  MI_MR_1
+
+WARNING:
+Could not find the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MR_1/core.txt.
+This file is required for the map to function. Please consult the information
+of this map, or contact the developer of this map.
+More information can be found in the documentation user pages using the
+following error code:  MI_MR_2
+
+WARNING:
+A file of the name thisfiledoesntexist was requested to be added to the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MR_6/core.txt.
+However, no file of that name could be found
+More information can be found in the documentation user pages using the
+following error code:  MI_MR_6
+
+WARNING:
+No choice detected for parameter keywordhasnochoice in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MR_3.
+This issue must be fixed before this map can be used.
+More information can be found in the documentation user pages using the
+following error code:  MI_MR_3
+
+WARNING:
+Could not find the parameter 'used_atoms' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_funcgroupfile/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+Could not interpret the choice for the parameter 'electrostatic_atoms' in the
+file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_8_3/core.txt.
+Please make sure the indices don't exceed the amount of atoms given for the
+parameter used_atoms.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_8
+
+WARNING:
+Could not interpret the choice for the parameter 'local_atoms' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_8_4/core.txt.
+Please make sure the indices don't exceed the amount of atoms given for the
+parameter used_atoms.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_8
+
+WARNING:
+The file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_4_6/core.txt
+contains a definition of functional_group that cannot be interpreted. A hint of
+what went wrong is this extra code: 6-0-1. Please see the manual for more
+information.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_4
+
+WARNING:
+The file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_4_1/core.txt
+contains a definition of functional_group that cannot be interpreted. A hint of
+what went wrong is this extra code: 2-0-0. Please see the manual for more
+information.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_4
+
+WARNING:
+Could not find the parameter 'local_atoms' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_6_5/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+Could not find the parameter 'electrostatic_choice' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_6_2/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+Could not interpret the choice for the parameter 'type' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_8_5/core.txt.
+Please make sure the choice is either 'standard', or 'linear'.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_8
+
+WARNING:
+The file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_10_1/core.txt
+does not contain the right amount of definitions for x_uvec, y_uvec, and
+z_uvec. Depending on the choice for type, only one or two of these is allowed
+to be specified.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_10
+
+WARNING:
+Could not interpret the choice for the parameter 'electrostatic_choice' in the
+file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_8_2/core.txt.
+Please make sure the choice is either 'None', 'V', 'E', or 'G'.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_8
+
+WARNING:
+The file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_unicodedecodeerror_core/core.txt
+is of the wrong type, please make sure it is a plain text file. 
+More information can be found in the documentation user pages using the
+following error code:  SU_FH_3
+
+WARNING:
+Could not find the parameter 'electrostatic_atoms' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_6_3/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+Could not find the parameter 'can_output' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_2/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+Found neither the parameter 'functional_group' nor the parameter
+'functional_group_file' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_2/core.txt.
+However, at least one of them is necessary for the map to function.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_2
+
+WARNING:
+Could not find the parameter 'local_atoms' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_6_4/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+Could not find the parameter 'position' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_code_build_3/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+Could not find the parameter 'dipole_gas_phase' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_Core/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+Could not find the parameter 'used_atoms' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_funcgroup_bonded/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+Could not find the parameter 'can_output' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_appending/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+Found neither the parameter 'functional_group' nor the parameter
+'functional_group_file' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_appending/core.txt.
+However, at least one of them is necessary for the map to function.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_2
+
+WARNING:
+Could not find the parameter 'position' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_code_build_2/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+Could not find the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_extract_code_nocode/core.txt.
+This file is required for the map to function. Please consult the information
+of this map, or contact the developer of this map.
+More information can be found in the documentation user pages using the
+following error code:  MI_MR_2
+
+WARNING:
+Could not interpret the choice for the parameter 'frequency_gas_phase' in the
+file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_7_6/core.txt.
+Please make sure the choice consists of a single decimal number.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_7
+
+WARNING:
+Could not interpret the choice for the parameter 'used_atoms' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_7_1/core.txt.
+Please make sure the choice consists of nothing but numbers separated by
+spaces.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_7
+
+WARNING:
+Could not interpret the choice for the parameter 'assume_length_units' in the
+file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_7_8/core.txt.
+Please make sure the choice is either 'bohr' or 'angstrom.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_7
+
+WARNING:
+The file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_5_2/core.txt
+contains a definition of functional_group_bonds that cannot be interpreted.
+Please make sure that the bond consists of exactly two atoms.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_5
+
+WARNING:
+Could not find the parameter 'position' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_dipoles_datafile_NA/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+There was a problem with the contents of the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_8_12/freqmap.txt.
+Please make sure the file has the correct amount of columns.
+Amount of columns found: 1
+Amount of columns needed: 4
+
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_8
+
+WARNING:
+There was a problem with the contents of the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_8_12/freqmap.txt.
+Please make sure the file has the correct amount of rows.
+Amount of rows found: 1
+Amount of rows needed: 2
+
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_8
+
+WARNING:
+The file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_5_3/core.txt
+contains a definition of functional_group_bonds that cannot be interpreted.
+Please make sure that the definition contains only integers and a single
+hyphen.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_5
+
+WARNING:
+The file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_5_4/core.txt
+contains a definition of functional_group_bonds that cannot be interpreted.
+Please make sure that the indices point to atoms within functional_group.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_5
+
+WARNING:
+Numpy could not interpret the contents of the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_7_7/freqmap.txt.
+Please make sure the file contains only decimal numbers in a grid.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_7
+
+WARNING:
+Could not find the parameter 'local_atoms' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_estat_choice_V/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+Could not find the parameter 'VEG_reference' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_9_1/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+Could not find the parameter 'position' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_bohr_const/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+The file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_3_1/core.txt
+wants to use the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_3_1/doesntexist.txt
+to define the functional groups for that map. However, this file does not
+exist.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_3
+
+WARNING:
+Could not find the parameter 'dipole_gas_phase' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_local_None/core.txt.
+Without it, the map cannot function. Please make sure it is present.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_6
+
+WARNING:
+Could not find the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_extract_code/core.txt.
+This file is required for the map to function. Please consult the information
+of this map, or contact the developer of this map.
+More information can be found in the documentation user pages using the
+following error code:  MI_MR_2
+
+WARNING:
+The parameter keyword appeared more than once in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MR_4/core.txt.
+It may only occur once. This issue must be fixed before this map can be used.
+More information can be found in the documentation user pages using the
+following error code:  MI_MR_4
+
+WARNING:
+Could not find the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MR_2/core.txt.
+This file is required for the map to function. Please consult the information
+of this map, or contact the developer of this map.
+More information can be found in the documentation user pages using the
+following error code:  MI_MR_2
+
+WARNING:
+The parameter 'can_output' in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MC_12/core.txt
+can only take specific options. The following of those provided are not amongst
+the available options: doesntexist. These are the available options: ham, dip,
+ene, pos, dbp, ram. Please make sure to only include allowed ones.
+More information can be found in the documentation user pages using the
+following error code:  MI_MC_12
+
+WARNING:
+No choice detected for parameter keywordwithoutchoice in the file
+/Users/lacour/Documents/GitHub/GMAP/GMAP/tests/test_tools/Data/maps_for_test_MapReader_1/Singles/test_MI_MR_3_1/core.txt.
+This issue must be fixed before this map can be used.
+More information can be found in the documentation user pages using the
+following error code:  MI_MR_3
+
+The map test_posonly was requested for use in calculating ham, dip, pos.
+However, it cannot calculate the following output type(s): ham, dip. Please
+either calculate fewer properties, or use a different map.
+More information can be found in the documentation user pages using the
+following error code:  MI_MM_5
