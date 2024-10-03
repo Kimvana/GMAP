@@ -18,6 +18,19 @@ def adjust_map_core_raw(Files, map_):
             map_.rawcore["position"] = ["3"]
         case "D":
             map_.rawcore["position"] = ["4"]
+        case "CNO":
+            # map_.rawcore["position"] = ["(0+0.665*1+0.258*3)/1.923"]
+            map_.rawcore["position"] = ["0.077*0+0.665*1+0.258*3"]
+
+    match map_.RunPars.dipole_map_choice:
+        case "Torii":
+            map_.rawcore["dipole_data_file"] = ["[N/A]"]
+            map_.rawcore["dipole_gas_phase"] = ["0.276"]
+        case "Jansen":
+            if not map_.RunPars.frequency_map_choice == "Jansen":
+                # throw up an error, and set map_.success to false.
+                pass
+    # else: default (xyz jansen_dipoles.txt)
 
 
 def adjust_mcr_freqchoice(map_):

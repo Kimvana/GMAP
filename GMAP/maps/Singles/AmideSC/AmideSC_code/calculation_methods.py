@@ -7,18 +7,18 @@ import numpy as np
 import GMAP.src.tools.MathFunctions as GM_MF
 
 
-def calc_dipole_Jansen(map_, system, osc):
-    map_.Core.dipole_gas_phase_array   # gas phase
-    map_.Core.dipole_data_array   # arrays.
+# def calc_dipole_Jansen(map_, system, osc):
+#     map_.Core.dipole_gas_phase_array   # gas phase
+#     map_.Core.dipole_data_array   # arrays.
 
-    r_pos = osc.positions[0] + 0.868 * osc.rotation_matrix[0]
+#     r_pos = osc.positions[0] + 0.868 * osc.rotation_matrix[0]
 
-    r_vec = map_.Core.dipole_gas_phase_array + np.sum(
-        np.multiply(osc.VEGout[None, :, :], map_.Core.dipole_data_array),
-        axis=(1, 2)
-    )
+#     r_vec = map_.Core.dipole_gas_phase_array + np.sum(
+#         np.multiply(osc.VEGout[None, :, :], map_.Core.dipole_data_array),
+#         axis=(1, 2)
+#     )
 
-    return r_vec, r_pos
+#     return r_vec, r_pos
 
 
 def calc_dipole_Torii(map_, system, osc):
@@ -30,7 +30,7 @@ def calc_dipole_Torii(map_, system, osc):
     r_pos = osc.positions[0] + 0.665*COvec + 0.258*CNvec
 
     # dipole moment vector itself
-    r_vec = dipole_Torii(COvec, CNvec, 0.276)
+    r_vec = dipole_Torii(COvec, CNvec, map_.Core.dipole_gas_phase)
 
     return r_vec, r_pos
 

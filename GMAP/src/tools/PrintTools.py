@@ -3,7 +3,7 @@
 import datetime
 import inspect
 import pathlib
-# import sys
+import sys
 import time
 from traceback import TracebackException as TbEx
 
@@ -61,6 +61,8 @@ class Printer(metaclass=GM_CT.Singleton):
         encountered. Silenced fatal errors will still quit the program.
     Timer : :class:`~Timer`
         The timer that keeps track of calculation times.
+    syspathcopy : list
+        A copy of sys.path made when Files was instantiated.
     verbose : int
         How verbose the prints to the command line should be.
     verbose_logfile : int
@@ -101,6 +103,8 @@ class Printer(metaclass=GM_CT.Singleton):
         self.Timer = Timer(start=Files.start)
 
         Files.set_exec_os()
+
+        self.syspathcopy = Files.syspathcopy
 
         # to have some kind of default - will be changed as soon as parameter
         # choices are known.
@@ -264,6 +268,7 @@ class Printer(metaclass=GM_CT.Singleton):
 
         if self.backlog:
             self.print_backlog()
+            sys.path = self.syspathcopy
 
     def print_backlog(self):
         """Prints the backlog so the program can stop.

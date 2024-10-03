@@ -398,11 +398,15 @@ def get_calculate_dipole(map_):
     # (this one ignores the earlier given r_vec)
     def GM_get_dipole_vxyz(Map, Syst, osc):
         _, r_pos = Map.code.GM_get_dipole_dir(Map, Syst, osc)
-        xyz = [
-            uses_maps(omega, [osc.VEGout], [arr]) for omega, arr in zip(
-                Map.Core.dipole_gas_phase, Map.Core.dipole_data_array)
-        ]
-        xyz_local = np.array(xyz, dtype="float32")
+        # xyz = [
+        #     uses_maps(omega, [osc.VEGout], [arr]) for omega, arr in zip(
+        #         Map.Core.dipole_gas_phase, Map.Core.dipole_data_array)
+        # ]
+        # xyz_local = np.array(xyz, dtype="float32")
+        xyz_local = Map.Core.dipole_gas_phase_array + np.sum(
+            np.multiply(osc.VEGout[None, :, :], Map.Core.dipole_data_array),
+            axis=(1, 2)
+        )
         xyz_cartesian = np.dot(xyz_local, osc.rotation_matrix)
         return xyz_cartesian, r_pos
 

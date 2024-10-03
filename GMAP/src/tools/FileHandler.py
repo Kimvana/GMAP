@@ -31,6 +31,8 @@ class FileLocations:
 
     Attributes
     ----------
+    syspathcopy : list
+        A copy of sys.path, so it can be restored after GMAP is done.
     script_dir : `pathlib.Path`
         The location where GMAP is installed. (The parent of
         GMAP.__file__).
@@ -62,6 +64,11 @@ class FileLocations:
     """
 
     def __init__(self) -> None:
+        # https://stackoverflow.com/questions/41861427/
+        # python-3-5-how-to-dynamically-import-a-module-given-the-full
+        # -file-path-in-the/41904558#41904558
+        # |_> says sys.path is shared between threads, so reset?
+        self.syspathcopy = sys.path[:]
         self.start = time.perf_counter_ns()
         self.script_dir = Path(GMAP.__file__).parent.resolve()
         self.cwd = Path(".").resolve()

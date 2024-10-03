@@ -13,6 +13,7 @@ import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.FileHandler as GM_FH
 import GMAP.src.tools.ParameterParser as GM_PP
 import GMAP.src.tools.PrintTools as GM_PT
+from GMAP.src.tools.PrintTools import devprint as dpr
 
 
 class Map():
@@ -86,7 +87,7 @@ class Map():
     """
 
     def __init__(self, mapdir, avail_files):
-        self.directory = mapdir
+        self.directory = mapdir.resolve()
         self.name = mapdir.name
         self.type = mapdir.parent.name
         self.success = True
@@ -241,12 +242,17 @@ class Map():
         if not modpath.is_file():
             return None
 
-        modname = self.name + "_code"
+        modname = self.name + "_mainpy_code"
 
         try:
             spec = importlib.util.spec_from_file_location(modname, modpath)
             module = importlib.util.module_from_spec(spec)
+            dpr(module.__name__)
             sys.modules[modname] = module
+            if self.name == "AmideSC":
+                dpr(sys.path)
+                dpr(len(sys.path))
+            sys.path.insert(1, str(self.directory))
             spec.loader.exec_module(module)
         except Exception as ex:
             GM_PT.Printer().warning(
@@ -559,6 +565,7 @@ class SingleMap(Map):
             return
 
         # allow the contents of core.txt to be changed
+        dpr(f"About to adjust map core raw for {self.name}")
         self.code.GM_adjust_map_core_raw(Files, self)
 
         self.Core = SingleCore(self)
@@ -1150,6 +1157,8 @@ class SingleCore():
             rawcore, Map.directory)
         if not self.success:
             return
+        if isinstance(self.dipole_gas_phase, list):
+            self.dipole_gas_phase_array = np.array(self.dipole_gas_phase)
 
         (
             self.frequency_gas_phase, self.frequency_data_array_linear,

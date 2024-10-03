@@ -357,6 +357,8 @@ If you need a place to quickly write something down, do it here! It can be tidie
 
 
 - (KvA) TODO before PR:
+  - Have AmideSC raise a warning if the Jansen dipoles are requested without Jansen frequencies.
+  - do some testing on how much sys.path is being shared between processes.
   - Does Files have to create Printer? leads to some difficulties as well...
   - AmideSC - main.py - GM_adjust_map_core_raw - freqmap based local atoms!, also assume_length_units, VEG_reference for freqmaps.
   - AmideSC - main.py - GM_adjust_map_core_raw - create options for dipoles, doublepos (and xyz?)
