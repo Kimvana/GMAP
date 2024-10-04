@@ -1970,16 +1970,16 @@ def basic_setup(
 
     Files = GM_FH.FileLocations()
 
-    RefPars = GM_PP.RefPars(refparfilename, True)
+    RefPars = GM_PP.RefPars(Files,refparfilename, True)
     if defparfilename:
         DefPars = GM_PP.RawPars.from_file(
-            defparfilename, RefPars, True)
+            Files, defparfilename, RefPars, True)
     else:
         DefPars = RefPars
 
     curpath = Path(__file__).resolve()
     InPars = GM_PP.RawPars.from_dict(
-        curpath, inpardict, RefPars, False
+        Files, curpath, inpardict, RefPars, False
     )
 
     mapdirs = GM_PP.find_mapdir(Files, cmdline, InPars, DefPars)
@@ -1988,16 +1988,16 @@ def basic_setup(
     mapdict = singles_mapdict | pairs_mapdict
 
     for map_ in mapdict.values():
-        map_.find_refpars()
+        map_.find_refpars(Files)
 
     CmdPars = GM_PP.RawPars.from_cmdline(
-        cmdline, RefPars,
+        Files, cmdline, RefPars,
         {name: map_.RefPars for name, map_ in mapdict.items()},
         False
     )
 
     for map_ in mapdict.values():
-        map_.find_rawpars(CmdPars, InPars, DefPars)
+        map_.find_rawpars(Files, CmdPars, InPars, DefPars)
 
     CmdPars.finalize_map_pars()
     InPars.finalize_map_pars()

@@ -1,0 +1,972 @@
+
+
+
+
+  .-_'''-.                ,---.    ,---.   ____   .-------.
+ '_( )_   \               |    \  /    | .'  __ `.\  _(`)_ \
+|(_ o _)|  '              |  ,  \/  ,  |/   '  \  \ (_ o._)|
+. (_,_)/___|   _ _    _ _ |  |\_   /|  ||___|  /  |  (_,_) /
+|  |  .-----. ( ' )--( ' )|  _( )_/ |  |   _.-`   |   '-.-'
+'  \  '-   .'(_{;}_)(_{;}_) (_ o _) |  |.'   _    |   |
+ \  `-'`   |  (_,_)--(_,_)|  (_,_)  |  ||  _( )_  |   |
+  \        /              |  |      |  |\ (_ o _) /   )
+   `'-...-'               '--'      '--' '.(_,_).'`---'
+
+
+
+For the most up-to-date version of GMAP, reporting bugs/issues, suggesting
+improvements for the program, questions, or any other kind of feedback, go to
+github.com/Kimvana/GMAP
+
+
+Running the following job:
+GMAP GEM run test_inpar.txt
+[Wed 02 10:48] 0-00:00:00.000:  Start Parsing GMAP parameters
+[Wed 02 10:48] 0-00:00:00.003:  Finished GMAP parameters, start adding maps
+[Wed 02 10:48] 0-00:00:00.007:  Added all maps, start initializing MD system
+
+
+╔═════════════╗
+║ Influencers ║
+╚╦════════════╝
+ ║ 
+ ║ Residue names included in influencers:
+ ║ CL, GLY, GLU, THR, LYS, VAL, PHE, SOL, ILE, ARG, SER, MET, HIS, ASN, CYS,
+ ║ PRO, LEU, ASP, TYR, ALA, TRP, GLN
+ ║ 
+ ║ Residue names NOT included in influencers:
+ ║ None
+ ║ 
+ ║ Atoms included in influencers:
+ ║ 0-33875
+ ║ 
+ ║ Atoms NOT included in influencers:
+ ║ None
+ ║ 
+ ╚═══ End of influencers ═════
+
+[Wed 02 10:48] 0-00:00:01.344:  Initialized MD system, start initializing maps
+[Wed 02 10:48] 0-00:00:01.344:  Initialization complete, start loading C
+libraries
+
+
+╔════════════════════╗
+║ MD system analysis ║
+╚╦═══════════════════╝
+ ║ 
+ ║ AmideBB:               128
+ ║ AmideSC:                17
+ ║ 
+ ╚═══ End of MD system analysis ═════
+
+[Wed 02 10:48] 0-00:00:01.346:  Preparing loop over frames
+[Wed 02 10:48] 0-00:00:01.347:  Starting loop over frames
+
+
+╔═══════════════════╗
+║ Processing frames ║
+╚═══════════════════╝
+
+[Wed 02 10:48] 0-00:00:01.348:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |             0 |   0-00:00:01
+[Wed 02 10:48] 0-00:00:01.348:  positions and box:
+[Wed 02 10:48] 0-00:00:01.348:  Center of Mass:
+[Wed 02 10:48] 0-00:00:02.277:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:02.429:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:02.430:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:02.430:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:02.430:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:02.502:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:02.502:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:02.626:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:02.627:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:02.630:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:02.630:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |             1 |   0-00:00:02 |   0-00:01:04 | Wed 02 10:49  
+[Wed 02 10:48] 0-00:00:02.631:  positions and box:
+[Wed 02 10:48] 0-00:00:02.631:  Center of Mass:
+[Wed 02 10:48] 0-00:00:02.635:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:02.638:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:02.638:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:02.638:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:02.638:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:02.712:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:02.712:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:02.712:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:02.712:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:02.714:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:02.715:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |             2 |   0-00:00:02 |   0-00:00:33 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:02.715:  positions and box:
+[Wed 02 10:48] 0-00:00:02.716:  Center of Mass:
+[Wed 02 10:48] 0-00:00:02.720:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:02.722:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:02.723:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:02.723:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:02.723:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:02.796:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:02.796:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:02.796:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:02.796:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:02.798:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:02.799:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |             3 |   0-00:00:02 |   0-00:00:23 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:02.799:  positions and box:
+[Wed 02 10:48] 0-00:00:02.800:  Center of Mass:
+[Wed 02 10:48] 0-00:00:02.804:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:02.806:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:02.806:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:02.806:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:02.806:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:02.880:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:02.880:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:02.880:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:02.881:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:02.882:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:02.883:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |             4 |   0-00:00:02 |   0-00:00:18 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:02.883:  positions and box:
+[Wed 02 10:48] 0-00:00:02.884:  Center of Mass:
+[Wed 02 10:48] 0-00:00:02.887:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:02.890:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:02.890:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:02.890:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:02.890:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:02.964:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:02.964:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:02.964:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:02.964:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:02.966:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:02.967:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |             5 |   0-00:00:02 |   0-00:00:14 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:02.967:  positions and box:
+[Wed 02 10:48] 0-00:00:02.968:  Center of Mass:
+[Wed 02 10:48] 0-00:00:02.972:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:02.974:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:02.974:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:02.974:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:02.975:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:03.048:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:03.048:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:03.049:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:03.049:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:03.050:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:03.051:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |             6 |   0-00:00:03 |   0-00:00:12 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:03.051:  positions and box:
+[Wed 02 10:48] 0-00:00:03.052:  Center of Mass:
+[Wed 02 10:48] 0-00:00:03.056:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:03.058:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:03.058:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:03.058:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:03.058:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:03.132:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:03.132:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:03.132:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:03.132:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:03.134:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:03.135:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |             7 |   0-00:00:03 |   0-00:00:11 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:03.135:  positions and box:
+[Wed 02 10:48] 0-00:00:03.135:  Center of Mass:
+[Wed 02 10:48] 0-00:00:03.139:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:03.142:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:03.142:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:03.142:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:03.142:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:03.216:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:03.216:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:03.216:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:03.216:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:03.218:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:03.219:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |             8 |   0-00:00:03 |   0-00:00:10 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:03.219:  positions and box:
+[Wed 02 10:48] 0-00:00:03.219:  Center of Mass:
+[Wed 02 10:48] 0-00:00:03.223:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:03.226:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:03.226:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:03.226:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:03.226:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:03.300:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:03.300:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:03.301:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:03.301:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:03.302:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:03.303:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |             9 |   0-00:00:03 |   0-00:00:09 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:03.303:  positions and box:
+[Wed 02 10:48] 0-00:00:03.304:  Center of Mass:
+[Wed 02 10:48] 0-00:00:03.308:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:03.310:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:03.310:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:03.310:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:03.310:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:03.384:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:03.384:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:03.385:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:03.385:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:03.386:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:03.387:  Starting on frame - starting updates
+
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            10 |   0-00:00:03 |   0-00:00:08 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:03.387:  positions and box:
+[Wed 02 10:48] 0-00:00:03.388:  Center of Mass:
+[Wed 02 10:48] 0-00:00:03.392:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:03.394:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:03.395:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:03.395:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:03.395:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:03.468:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:03.468:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:03.468:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:03.468:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:03.470:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:03.471:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            11 |   0-00:00:03 |   0-00:00:07 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:03.471:  positions and box:
+[Wed 02 10:48] 0-00:00:03.471:  Center of Mass:
+[Wed 02 10:48] 0-00:00:03.475:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:03.478:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:03.478:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:03.478:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:03.478:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:03.552:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:03.552:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:03.553:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:03.553:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:03.554:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:03.555:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            12 |   0-00:00:03 |   0-00:00:07 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:03.555:  positions and box:
+[Wed 02 10:48] 0-00:00:03.556:  Center of Mass:
+[Wed 02 10:48] 0-00:00:03.560:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:03.562:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:03.562:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:03.562:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:03.562:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:03.636:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:03.636:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:03.636:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:03.637:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:03.638:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:03.639:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            13 |   0-00:00:03 |   0-00:00:06 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:03.639:  positions and box:
+[Wed 02 10:48] 0-00:00:03.640:  Center of Mass:
+[Wed 02 10:48] 0-00:00:03.643:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:03.646:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:03.646:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:03.646:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:03.646:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:03.720:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:03.720:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:03.720:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:03.720:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:03.722:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:03.723:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            14 |   0-00:00:03 |   0-00:00:06 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:03.723:  positions and box:
+[Wed 02 10:48] 0-00:00:03.723:  Center of Mass:
+[Wed 02 10:48] 0-00:00:03.727:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:03.730:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:03.730:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:03.730:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:03.730:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:03.804:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:03.804:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:03.804:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:03.804:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:03.806:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:03.807:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            15 |   0-00:00:03 |   0-00:00:05 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:03.807:  positions and box:
+[Wed 02 10:48] 0-00:00:03.808:  Center of Mass:
+[Wed 02 10:48] 0-00:00:03.811:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:03.814:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:03.814:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:03.814:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:03.814:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:03.888:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:03.888:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:03.888:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:03.889:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:03.890:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:03.891:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            16 |   0-00:00:03 |   0-00:00:05 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:03.891:  positions and box:
+[Wed 02 10:48] 0-00:00:03.891:  Center of Mass:
+[Wed 02 10:48] 0-00:00:03.895:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:03.898:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:03.898:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:03.898:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:03.898:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:03.972:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:03.972:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:03.972:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:03.972:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:03.974:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:03.975:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            17 |   0-00:00:03 |   0-00:00:05 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:03.975:  positions and box:
+[Wed 02 10:48] 0-00:00:03.975:  Center of Mass:
+[Wed 02 10:48] 0-00:00:03.979:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:03.982:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:03.982:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:03.982:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:03.982:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:04.056:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:04.056:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:04.056:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:04.056:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:04.058:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:04.059:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            18 |   0-00:00:04 |   0-00:00:04 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:04.059:  positions and box:
+[Wed 02 10:48] 0-00:00:04.059:  Center of Mass:
+[Wed 02 10:48] 0-00:00:04.063:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:04.066:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:04.066:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:04.066:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:04.066:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:04.139:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:04.139:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:04.140:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:04.140:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:04.141:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:04.142:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            19 |   0-00:00:04 |   0-00:00:04 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:04.142:  positions and box:
+[Wed 02 10:48] 0-00:00:04.143:  Center of Mass:
+[Wed 02 10:48] 0-00:00:04.147:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:04.149:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:04.149:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:04.149:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:04.149:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:04.222:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:04.222:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:04.223:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:04.223:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:04.224:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:04.225:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            20 |   0-00:00:04 |   0-00:00:04 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:04.225:  positions and box:
+[Wed 02 10:48] 0-00:00:04.226:  Center of Mass:
+[Wed 02 10:48] 0-00:00:04.230:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:04.232:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:04.232:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:04.233:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:04.233:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:04.306:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:04.306:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:04.307:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:04.307:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:04.309:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:04.309:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            21 |   0-00:00:04 |   0-00:00:04 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:04.309:  positions and box:
+[Wed 02 10:48] 0-00:00:04.310:  Center of Mass:
+[Wed 02 10:48] 0-00:00:04.314:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:04.316:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:04.316:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:04.316:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:04.317:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:04.390:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:04.390:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:04.391:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:04.391:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:04.392:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:04.393:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            22 |   0-00:00:04 |   0-00:00:04 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:04.393:  positions and box:
+[Wed 02 10:48] 0-00:00:04.394:  Center of Mass:
+[Wed 02 10:48] 0-00:00:04.398:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:04.400:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:04.400:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:04.400:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:04.401:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:04.474:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:04.474:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:04.474:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:04.474:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:04.476:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:04.477:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            23 |   0-00:00:04 |   0-00:00:03 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:04.477:  positions and box:
+[Wed 02 10:48] 0-00:00:04.477:  Center of Mass:
+[Wed 02 10:48] 0-00:00:04.481:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:04.484:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:04.484:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:04.484:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:04.484:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:04.558:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:04.558:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:04.558:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:04.558:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:04.560:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:04.561:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            24 |   0-00:00:04 |   0-00:00:03 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:04.561:  positions and box:
+[Wed 02 10:48] 0-00:00:04.562:  Center of Mass:
+[Wed 02 10:48] 0-00:00:04.565:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:04.568:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:04.568:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:04.568:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:04.568:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:04.642:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:04.642:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:04.642:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:04.642:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:04.644:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:04.645:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            25 |   0-00:00:04 |   0-00:00:03 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:04.645:  positions and box:
+[Wed 02 10:48] 0-00:00:04.645:  Center of Mass:
+[Wed 02 10:48] 0-00:00:04.649:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:04.652:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:04.652:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:04.652:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:04.652:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:04.726:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:04.726:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:04.726:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:04.726:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:04.728:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:04.729:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            26 |   0-00:00:04 |   0-00:00:03 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:04.729:  positions and box:
+[Wed 02 10:48] 0-00:00:04.729:  Center of Mass:
+[Wed 02 10:48] 0-00:00:04.733:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:04.736:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:04.736:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:04.736:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:04.736:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:04.810:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:04.810:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:04.810:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:04.810:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:04.812:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:04.813:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            27 |   0-00:00:04 |   0-00:00:03 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:04.813:  positions and box:
+[Wed 02 10:48] 0-00:00:04.813:  Center of Mass:
+[Wed 02 10:48] 0-00:00:04.817:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:04.820:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:04.820:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:04.820:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:04.820:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:04.893:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:04.894:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:04.894:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:04.894:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:04.896:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:04.896:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            28 |   0-00:00:04 |   0-00:00:02 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:04.897:  positions and box:
+[Wed 02 10:48] 0-00:00:04.897:  Center of Mass:
+[Wed 02 10:48] 0-00:00:04.901:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:04.903:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:04.903:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:04.904:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:04.904:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:04.977:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:04.977:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:04.977:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:04.978:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:04.979:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:04.980:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            29 |   0-00:00:04 |   0-00:00:02 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:04.980:  positions and box:
+[Wed 02 10:48] 0-00:00:04.981:  Center of Mass:
+[Wed 02 10:48] 0-00:00:04.984:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:04.987:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:04.987:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:04.987:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:04.987:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:05.061:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:05.061:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:05.061:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:05.061:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:05.063:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:05.064:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            30 |   0-00:00:05 |   0-00:00:02 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:05.064:  positions and box:
+[Wed 02 10:48] 0-00:00:05.064:  Center of Mass:
+[Wed 02 10:48] 0-00:00:05.068:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:05.071:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:05.071:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:05.071:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:05.071:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:05.145:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:05.145:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:05.145:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:05.145:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:05.147:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:05.148:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            31 |   0-00:00:05 |   0-00:00:02 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:05.148:  positions and box:
+[Wed 02 10:48] 0-00:00:05.148:  Center of Mass:
+[Wed 02 10:48] 0-00:00:05.152:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:05.155:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:05.155:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:05.155:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:05.155:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:05.229:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:05.229:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:05.229:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:05.229:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:05.231:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:05.232:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            32 |   0-00:00:05 |   0-00:00:02 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:05.232:  positions and box:
+[Wed 02 10:48] 0-00:00:05.232:  Center of Mass:
+[Wed 02 10:48] 0-00:00:05.236:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:05.239:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:05.239:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:05.239:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:05.239:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:05.312:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:05.312:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:05.312:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:05.312:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:05.314:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:05.315:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            33 |   0-00:00:05 |   0-00:00:02 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:05.315:  positions and box:
+[Wed 02 10:48] 0-00:00:05.315:  Center of Mass:
+[Wed 02 10:48] 0-00:00:05.319:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:05.322:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:05.322:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:05.322:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:05.322:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:05.395:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:05.396:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:05.396:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:05.396:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:05.398:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:05.399:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            34 |   0-00:00:05 |   0-00:00:02 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:05.399:  positions and box:
+[Wed 02 10:48] 0-00:00:05.399:  Center of Mass:
+[Wed 02 10:48] 0-00:00:05.403:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:05.406:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:05.406:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:05.406:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:05.406:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:05.480:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:05.480:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:05.480:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:05.480:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:05.482:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:05.483:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            35 |   0-00:00:05 |   0-00:00:01 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:05.483:  positions and box:
+[Wed 02 10:48] 0-00:00:05.483:  Center of Mass:
+[Wed 02 10:48] 0-00:00:05.487:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:05.490:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:05.490:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:05.490:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:05.490:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:05.563:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:05.563:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:05.563:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:05.564:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:05.565:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:05.566:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            36 |   0-00:00:05 |   0-00:00:01 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:05.566:  positions and box:
+[Wed 02 10:48] 0-00:00:05.567:  Center of Mass:
+[Wed 02 10:48] 0-00:00:05.570:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:05.573:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:05.573:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:05.573:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:05.573:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:05.646:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:05.646:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:05.646:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:05.646:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:05.648:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:05.649:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            37 |   0-00:00:05 |   0-00:00:01 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:05.649:  positions and box:
+[Wed 02 10:48] 0-00:00:05.649:  Center of Mass:
+[Wed 02 10:48] 0-00:00:05.653:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:05.656:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:05.656:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:05.656:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:05.656:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:05.729:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:05.729:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:05.730:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:05.730:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:05.731:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:05.732:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            38 |   0-00:00:05 |   0-00:00:01 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:05.732:  positions and box:
+[Wed 02 10:48] 0-00:00:05.733:  Center of Mass:
+[Wed 02 10:48] 0-00:00:05.736:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:05.739:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:05.739:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:05.739:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:05.739:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:05.813:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:05.813:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:05.813:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:05.813:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:05.815:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:05.816:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            39 |   0-00:00:05 |   0-00:00:01 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:05.816:  positions and box:
+[Wed 02 10:48] 0-00:00:05.816:  Center of Mass:
+[Wed 02 10:48] 0-00:00:05.820:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:05.823:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:05.823:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:05.823:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:05.823:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:05.896:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:05.896:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:05.896:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:05.896:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:05.898:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:05.899:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            40 |   0-00:00:05 |   0-00:00:01 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:05.899:  positions and box:
+[Wed 02 10:48] 0-00:00:05.899:  Center of Mass:
+[Wed 02 10:48] 0-00:00:05.903:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:05.906:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:05.906:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:05.906:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:05.906:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:05.979:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:05.979:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:05.980:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:05.980:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:05.981:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:05.982:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            41 |   0-00:00:05 |   0-00:00:01 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:05.982:  positions and box:
+[Wed 02 10:48] 0-00:00:05.983:  Center of Mass:
+[Wed 02 10:48] 0-00:00:05.987:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:05.989:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:05.989:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:05.989:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:05.989:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:06.063:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:06.063:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:06.063:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:06.063:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:06.065:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:06.066:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            42 |   0-00:00:06 |   0-00:00:01 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:06.066:  positions and box:
+[Wed 02 10:48] 0-00:00:06.066:  Center of Mass:
+[Wed 02 10:48] 0-00:00:06.070:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:06.073:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:06.073:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:06.073:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:06.073:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:06.146:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:06.146:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:06.147:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:06.147:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:06.148:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:06.149:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            43 |   0-00:00:06 |   0-00:00:00 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:06.149:  positions and box:
+[Wed 02 10:48] 0-00:00:06.150:  Center of Mass:
+[Wed 02 10:48] 0-00:00:06.153:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:06.156:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:06.156:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:06.156:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:06.156:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:06.230:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:06.230:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:06.230:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:06.230:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:06.232:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:06.233:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            44 |   0-00:00:06 |   0-00:00:00 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:06.233:  positions and box:
+[Wed 02 10:48] 0-00:00:06.233:  Center of Mass:
+[Wed 02 10:48] 0-00:00:06.237:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:06.240:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:06.240:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:06.240:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:06.240:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:06.313:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:06.313:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:06.314:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:06.314:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:06.315:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:06.316:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            45 |   0-00:00:06 |   0-00:00:00 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:06.316:  positions and box:
+[Wed 02 10:48] 0-00:00:06.317:  Center of Mass:
+[Wed 02 10:48] 0-00:00:06.321:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:06.323:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:06.323:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:06.323:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:06.323:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:06.397:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:06.397:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:06.397:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:06.397:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:06.399:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:06.400:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            46 |   0-00:00:06 |   0-00:00:00 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:06.400:  positions and box:
+[Wed 02 10:48] 0-00:00:06.400:  Center of Mass:
+[Wed 02 10:48] 0-00:00:06.404:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:06.407:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:06.407:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:06.407:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:06.407:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:06.480:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:06.480:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:06.480:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:06.481:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:06.482:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:06.483:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            47 |   0-00:00:06 |   0-00:00:00 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:06.483:  positions and box:
+[Wed 02 10:48] 0-00:00:06.484:  Center of Mass:
+[Wed 02 10:48] 0-00:00:06.487:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:06.490:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:06.490:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:06.490:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:06.490:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:06.564:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:06.564:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:06.564:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:06.564:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:06.567:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:06.567:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            48 |   0-00:00:06 |   0-00:00:00 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:06.568:  positions and box:
+[Wed 02 10:48] 0-00:00:06.568:  Center of Mass:
+[Wed 02 10:48] 0-00:00:06.572:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:06.574:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:06.574:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:06.575:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:06.575:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:06.648:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:06.648:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:06.648:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:06.649:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:06.650:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:06.651:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            49 |   0-00:00:06 |   0-00:00:00 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:06.651:  positions and box:
+[Wed 02 10:48] 0-00:00:06.652:  Center of Mass:
+[Wed 02 10:48] 0-00:00:06.655:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:06.658:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:06.658:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:06.658:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:06.658:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:06.732:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:06.732:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:06.732:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:06.732:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:06.735:  Frame completed. Loading next frame
+
+[Wed 02 10:48] 0-00:00:06.735:  Starting on frame - starting updates
+Current time   | current frame | time elapsed | time to go   | end time  (est.)
+Wed 02 10:48   |            50 |   0-00:00:06 |   0-00:00:00 | Wed 02 10:48  
+[Wed 02 10:48] 0-00:00:06.735:  positions and box:
+[Wed 02 10:48] 0-00:00:06.736:  Center of Mass:
+[Wed 02 10:48] 0-00:00:06.740:  done system updates. next: osc updates
+[Wed 02 10:48] 0-00:00:06.742:  updates done. next: initialize
+[Wed 02 10:48] 0-00:00:06.742:  initialize done. next: map init
+[Wed 02 10:48] 0-00:00:06.742:  map init done. next: calculation
+[Wed 02 10:48] 0-00:00:06.742:  VEG-related properties:
+[Wed 02 10:48] 0-00:00:06.816:  Preparing coupling:
+[Wed 02 10:48] 0-00:00:06.816:  Calculating coupling:
+[Wed 02 10:48] 0-00:00:06.816:  calculation done. next: map final
+[Wed 02 10:48] 0-00:00:06.817:  map final done. next: write output
+[Wed 02 10:48] 0-00:00:06.818:  Frame completed. Loading next frame
+
+
+===== End of processing frames =====
+
+[Wed 02 10:48] 0-00:00:06.819:  Frames Completed. Finishing up.
+
+
+╔═════════════════╗
+║                 ║
+║   Calculation   ║
+║     summary     ║
+║                 ║
+╚═════════════════╝
+
+
+╔════════════╗
+║ Time spent ║
+╚════════════╝
+
+Total time:                     0-00:00:06
+  Initialization:               0-00:00:01
+    Parsing parameters:         0-00:00:00
+    Collecting maps:            0-00:00:00
+    Initializing MD system:     0-00:00:01
+    Initializing maps:          0-00:00:00
+    Loading C libraries:        0-00:00:00
+  Treating frames:              0-00:00:05  --> 00:00:00.107 / frame
+    Reading frames:             0-00:00:00  --> 00:00:00.000 / frame
+    Per-frame initialization:   0-00:00:01  --> 00:00:00.028 / frame
+      Position/box updates:     0-00:00:00  --> 00:00:00.000 / frame
+      Center of Mass:           0-00:00:01  --> 00:00:00.021 / frame
+      Oscillator updates:       0-00:00:00  --> 00:00:00.005 / frame
+      Structure init.:          0-00:00:00  --> 00:00:00.000 / frame
+      Map initialization:       0-00:00:00  --> 00:00:00.000 / frame
+    Calculation:                0-00:00:03  --> 00:00:00.076 / frame
+      Calculating estatics:     0-00:00:03  --> 00:00:00.071 / frame
+      SingleMap outputs:        0-00:00:00  --> 00:00:00.002 / frame
+      Coupling preparation:     0-00:00:00  --> 00:00:00.000 / frame
+      Coupling calculation:     0-00:00:00  --> 00:00:00.002 / frame
+    Frame finalization:         0-00:00:00  --> 00:00:00.001 / frame
+      Map finalization:         0-00:00:00  --> 00:00:00.000 / frame
+      Writing frames:           0-00:00:00  --> 00:00:00.001 / frame
+  Calculation finalization:     0-00:00:00
+
+
+╔═══════════╗
+║ MD frames ║
+╚═══════════╝
+
+Frames treated:                 0-51
+Frames requested:               0-51
+Frames available:               0-51
+
+
+╔════════════╗
+║ Files used ║
+╚════════════╝
+
+========  Program files and information ========
+Python installation used:  
+/Users/lacour/Documents/GitHub/GMAP/env_GMAP/bin/python3
+GMAP installation used:     /Users/lacour/Documents/GitHub/GMAP/GMAP
+Working directory:          /Users/lacour/Documents/GitHub/GMAP
+Program started at:         2024-10-02_10-48-05
+
+========  Input files ========
+Command issued:             GMAP GEM run test_inpar.txt
+Default parameter file:    
+/Users/lacour/Documents/GitHub/GMAP/GMAP/sourcefiles/reference_parameters.ref
+Input parameter file:       /Users/lacour/Documents/GitHub/GMAP/test_inpar.txt
+Topology file analyzed:    
+/Users/lacour/Documents/GitHub/GMAP/GMAP/sourcefiles/pdb_1AKI.tpr
+Trajectory file analyzed:  
+/Users/lacour/Documents/GitHub/GMAP/GMAP/sourcefiles/pdb_1AKI_50frame.xtc
+Map directories used:       /Users/lacour/Documents/GitHub/GMAP/GMAP/maps
+VEG-library file used:     
+/Users/lacour/Documents/GitHub/GMAP/GMAP/sourcefiles/VEG_MacOS.dylib
+
+========  Output files ========
+Logfile generated:          /Users/lacour/Documents/GitHub/GMAP/log.log
+Legend file generated:      /Users/lacour/Documents/GitHub/GMAP/legend.txt
+Coupling visualization:    
+/Users/lacour/Documents/GitHub/GMAP/couplingvisualization.pdf
+Hamiltonian text file:      /Users/lacour/Documents/GitHub/GMAP/hamiltonian.txt
+Dipole text file:           /Users/lacour/Documents/GitHub/GMAP/dipoles.txt
+
+  ░░▒▒▓▓██ That was all for today, folks. Thank you, and good night! ██▓▓▒▒░░
