@@ -59,6 +59,25 @@ class Singleton(type):
         return cls._instances[cls]
 
 
+class singletonproperty:
+    # decorator implementation for having @property work on the class of a
+    # singleton subclass, instead of just an instance
+
+    # While I know it is not needed in the current version of GMAP (chaining
+    # decorators works in 3.9 and 3.10), I would like to slightly futureproof
+    # the code by not relying on that (as it is removed in 3.10+, and no
+    # info yet on whether it will return)
+
+    # https://stackoverflow.com/questions/76249636/
+    # class-properties-in-python-3-11
+
+    def __init__(self, func):
+        self.fget = func
+
+    def __get__(self, instance, owner):
+        return self.fget(owner.__call__())
+
+
 class FrozenDict(dict):
     # credit: https://stackoverflow.com/questions/62301911/
     # is-there-a-dictionary-like-object-that-is-immutable

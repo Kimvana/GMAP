@@ -30,7 +30,7 @@ class TestVClib:
     def test_calcVEG_perres_mm(self):
         cmdline = ["-md", "maps\\;"]
         (
-            Files, RunPars, RefPars, DefPars, InPars,
+            RunPars, RefPars, DefPars, InPars,
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter("AmideSC", cmdline)
 
@@ -168,7 +168,7 @@ class TestVClib:
     def test_calcVEG_perres_mm_influencers(self):
         cmdline = ["-md", "maps\\;"]
         (
-            Files, RunPars, RefPars, DefPars, InPars,
+            RunPars, RefPars, DefPars, InPars,
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter("AmideSC", cmdline)
 
@@ -233,13 +233,13 @@ class TestVClib:
 
         cmdline = ["-md", "maps\\;"]
         (
-            Files, RunPars, RefPars, DefPars, InPars,
+            RunPars, RefPars, DefPars, InPars,
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter("AmideSC", cmdline)
 
         RunPars.VEG_clib_file = (
             RunPars.VEG_clib_file.parent / "doesntexist.txt")
-        matchstr="CL_VG_1$"
+        matchstr = "CL_VG_1$"
         with pytest.raises(GM_Ex.GmapOSError, match=matchstr):
             _ = GM_CL.VEG_CLib(RunPars)
 

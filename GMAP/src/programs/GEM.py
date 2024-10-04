@@ -338,7 +338,7 @@ def trj_loop(RunPars, System):
     # (profiler?)
 
 
-def print_calculation_summary(Files, RunPars, System):
+def print_calculation_summary(RunPars, System):
     """Reports how the calculation went, and some details users might
     want to know.
 
@@ -438,14 +438,15 @@ def print_calculation_summary(Files, RunPars, System):
     GM_PT.Printer().print(
         1, f"\n{line} Files used {line}", detailed_instructions=[1])
     line = f"{cb}========{ct}"
+    files = GM_FH.FileLocations
     pr.print(3, f"{line}  Program files and information {line}")
     pr.print(3, f"Python installation used:   {sys.executable}")
-    pr.print(3, f"GMAP installation used:     {Files.script_dir}")
-    pr.print(3, f"Working directory:          {Files.cwd}")
-    pr.print(3, f"Program started at:         {Files.now_str}")
+    pr.print(3, f"GMAP installation used:     {files.script_dir}")
+    pr.print(3, f"Working directory:          {files.cwd}")
+    pr.print(3, f"Program started at:         {files.now_str}")
 
     pr.print(2, f"\n{line}  Input files {line}")
-    pr.print(1, f"Command issued:             {Files.callcommand}")
+    pr.print(1, f"Command issued:             {files.callcommand}")
     pr.print(2, f"Default parameter file:     {RunPars.defparfilename}")
     pr.print(2, f"Input parameter file:       {RunPars.inparfilename}")
     pr.print(1, f"Topology file analyzed:     {RunPars.topology_file}")
@@ -478,7 +479,7 @@ def print_calculation_summary(Files, RunPars, System):
 # end manage the different run modes, and probably do nothing else?
 # This means, a big decision tree: match job, case x: call func_x,
 # case y: call func_y, etc. Now, we're basically only doing 1 kind of job.
-def GEM(callcommand, Files):
+def GEM(callcommand):
     GM_PT.Printer().add_time(
         3, "Start Parsing GMAP parameters", "ParParse", "ms")
     # step 1 (is GEM in demo mode? to become: What job do we need to do?)
@@ -488,12 +489,12 @@ def GEM(callcommand, Files):
         exp_inpfile = True
     # step 2 (very basic cmd line parse)
     job, in_parfile, argslist = GM_PP.parse_commandline(
-        Files, callcommand, alljobs, "GMAP GEM", exp_inpfile, True
+        callcommand, alljobs, "GMAP GEM", exp_inpfile, True
     )
 
     # Parameter parsing
     RunPars, singles_mapdict, pairs_mapdict, _, _, _, _ = GM_PP.get_parameters(
-        Files, in_parfile, argslist
+        in_parfile, argslist
     )
     GM_PT.Printer().add_time(
         3, "Finished GMAP parameters, start adding maps", "AddMaps", "ms")
@@ -501,13 +502,13 @@ def GEM(callcommand, Files):
     # --- end of SU errors ---
 
     # Map initialization
-    GM_MR.manage_maps_singles(Files, RunPars, singles_mapdict)
-    GM_MR.manage_maps_pairs(Files, RunPars, pairs_mapdict)
+    GM_MR.manage_maps_singles(RunPars, singles_mapdict)
+    GM_MR.manage_maps_pairs(RunPars, pairs_mapdict)
     GM_PT.Printer().add_time(
         2, "Added all maps, start initializing MD system", "MDinit", "ms")
 
     # Looking at MD system - finding oscillators.
-    System = GM_SR.System(Files, RunPars)
+    System = GM_SR.System(RunPars)
 
     # Save overview of found coupling maps to file.
     if "ham" in RunPars.output_data:
@@ -519,10 +520,10 @@ def GEM(callcommand, Files):
     # GEM is now done - let maps initialize as well
     for mapname in System.oscillators_ordered.keys():  # singles
         map_ = RunPars.requested_mapdict[mapname]
-        map_.code.GM_post_init(Files, map_, System)
+        map_.code.GM_post_init(map_, System)
     for mapname in System.oscillators_ordered_coup.keys():  # pairs
         map_ = RunPars.requested_pairmapdict[mapname]
-        map_.code.GM_post_init(Files, map_, System)
+        map_.code.GM_post_init(map_, System)
     GM_PT.Printer().add_time(
         3, "Initialization complete, start loading C libraries",
         "ClibLoad", "ms"
@@ -537,7 +538,7 @@ def GEM(callcommand, Files):
     # calculate all (requested) frames
     trj_loop(RunPars, System)
 
-    print_calculation_summary(Files, RunPars, System)
+    print_calculation_summary(RunPars, System)
 
 
 # The jobs that GEM can currently execute.
@@ -558,8 +559,8 @@ def main(callcommand):
     if len(callcommand) == 1:
         print(__doc__)
     else:
-        Files = GM_FH.FileLocations()
-        GEM(callcommand, Files)
+        GM_FH.FileLocations()
+        GEM(callcommand)
 
 
 if __name__ == "__main__":

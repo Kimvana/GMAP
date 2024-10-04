@@ -114,7 +114,7 @@ class RefPars:
 
     """
 
-    def __init__(self, Files, fname, is_main=True):
+    def __init__(self, fname, is_main=True):
         self.is_main = is_main
         self.fname = fname.resolve()
         self.add_groups()
@@ -140,7 +140,7 @@ class RefPars:
 
         # for fixing intertwined / more convoluted parameters (main file only)
         if is_main:
-            self.resolve(Files)
+            self.resolve()
 
     @classmethod
     def add_reffile(cls, fname, base_RefPars):
@@ -465,7 +465,7 @@ class RefPars:
         else:
             self.choices[parname] = options
 
-    def resolve(self, Files):
+    def resolve(self):
         """Fixes intertwined/special parameters the standard parser can't fix
         """
 
@@ -532,7 +532,8 @@ class RefPars:
             )
 
         self.choices["VEG_clib_file"] = [Path(
-            str(*self.choices["VEG_clib_file"]) + Files.clib_extension
+            str(*self.choices["VEG_clib_file"])
+            + GM_FH.FileLocations.clib_extension
         )]
 
         if self.choices["hamiltonian_units"][0] == "cm-1":
@@ -681,7 +682,7 @@ class RawPars:
         choices.
     """
 
-    def __init__(self, Files, fname, is_default, given_dict, RefPars):
+    def __init__(self, fname, is_default, given_dict, RefPars):
         self.fname = fname
         self.is_default = is_default
 
@@ -691,10 +692,10 @@ class RawPars:
 
         # if the class isn't empty
         if given_dict:
-            self.resolve(Files)
+            self.resolve()
 
     @classmethod
-    def create_empty(cls, Files):
+    def create_empty(cls):
         """Create an instance of this class without any data
 
         .. seealso ::
@@ -706,10 +707,10 @@ class RawPars:
             A newly generated instance.
         """
 
-        return cls(Files, None, False, {}, {})
+        return cls(None, False, {}, {})
 
     @classmethod
-    def from_dict(cls, Files, fname, given_dict, RefPars, is_default):
+    def from_dict(cls, fname, given_dict, RefPars, is_default):
         """Create an instance of this class for parameters stored in a dict.
 
         .. seealso ::
@@ -739,13 +740,12 @@ class RawPars:
         """
 
         if len(given_dict) == 0:
-            instance = cls.create_empty(Files)
-            return instance
+            return cls.create_empty()
 
-        return cls(Files, fname, is_default, given_dict, RefPars)
+        return cls(fname, is_default, given_dict, RefPars)
 
     @classmethod
-    def from_file(cls, Files, fname, RefPars, is_default):
+    def from_file(cls, fname, RefPars, is_default):
         """Create an instance of this class for parameters stored in a file.
 
         First obtains a dict from the file, then uses :meth:`from_dict`
@@ -775,13 +775,13 @@ class RawPars:
             given_dict = get_pardict(file, RefPars.compounds)
 
         instance = cls.from_dict(
-            Files, fname, given_dict, RefPars, is_default
+            fname, given_dict, RefPars, is_default
         )
         return instance
 
     @classmethod
     def from_cmdline(
-        cls, Files, cmdargs, RefPars, maprefpars_dict, is_default
+        cls, cmdargs, RefPars, maprefpars_dict, is_default
     ):
         """Create an instance of this class for parameters in the
         command line
@@ -822,7 +822,7 @@ class RawPars:
         # - extract num of expected arguments
         # - extract actual arguments
 
-        temp_instance = cls(Files, Path("command line"), False, {}, {})
+        temp_instance = cls(Path("command line"), False, {}, {})
         parfile_mock = []
 
         while len(cmdargs) > 0:
@@ -862,7 +862,7 @@ class RawPars:
         pardict = get_pardict(parfile_mock, RefPars.compounds)
 
         instance = cls.from_dict(
-            Files, Path("command line"), pardict, RefPars, is_default
+            Path("command line"), pardict, RefPars, is_default
         )
 
         return instance
@@ -1355,7 +1355,7 @@ class RawPars:
                     "SU_WP_14", True, GMAPerrclass=GM_Ex.GmapParameterError
                 )
 
-    def resolve(self, Files):
+    def resolve(self):
         """Fixes intertwined/special parameters the standard parser can't fix
         """
 
@@ -1436,7 +1436,8 @@ class RawPars:
         # Add c library extension
         if self.choices.get("VEG_clib_file") is not None:
             self.choices["VEG_clib_file"] = [Path(
-                str(*self.choices["VEG_clib_file"]) + Files.clib_extension
+                str(*self.choices["VEG_clib_file"])
+                + GM_FH.FileLocations.clib_extension
             )]
 
         # next - frame numbers!
@@ -1638,9 +1639,6 @@ class RunPars:
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties. Has to be updated after RunPars is finalized.
     CmdPars : :class:`RawPars`
         Contains any parameter choices made on the command line
     InPars : :class:`RawPars`
@@ -1719,7 +1717,7 @@ class RunPars:
     """
 
     def __init__(
-        self, Files, CmdPars, InPars, DefPars, RefPars, is_main,
+        self, CmdPars, InPars, DefPars, RefPars, is_main,
         MainRunPars=None
     ):
         self.is_main = is_main
@@ -1733,7 +1731,7 @@ class RunPars:
         self.get_pars(CmdPars, InPars, DefPars, RefPars)
 
         # Extract all parameters that are a file
-        self.get_files(Files, CmdPars, InPars, DefPars, RefPars)
+        self.get_files(CmdPars, InPars, DefPars, RefPars)
 
         if self.is_main:
             self.resolve_errorcodes()
@@ -1802,7 +1800,7 @@ class RunPars:
 
             setattr(self, parname, choice)
 
-    def get_files(self, Files, CmdPars, InPars, DefPars, RefPars):
+    def get_files(self, CmdPars, InPars, DefPars, RefPars):
         """Sets attribute for each path parameter
 
         Following the order mentioned in `RunPars`, extracts the choice
@@ -1814,10 +1812,6 @@ class RunPars:
 
         Parameters
         ----------
-        Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-            Contains all currently known paths and other file-related
-            properties.
-            Has to be updated after RunPars is finalized.
         CmdPars : :class:`RawPars`
             Contains any parameter choices made on the command line
         InPars : :class:`RawPars`
@@ -1833,14 +1827,14 @@ class RunPars:
 
         # deal with all files that are organized
         self.get_ordered_files(
-            Files, CmdPars, InPars, DefPars, RefPars
+            CmdPars, InPars, DefPars, RefPars
         )
 
         if self.is_main:
             # deal with map_directory separately
             file_hc = RefPars.choices["map_directory"]
             names = GM_FH.get_bare_file(
-                Files, "map_directory", file_hc, RefPars.fname.parent,
+                "map_directory", file_hc, RefPars.fname.parent,
                 CmdPars.choices,
                 [InPars.choices, DefPars.choices],
                 [InPars.fname, DefPars.fname]
@@ -1870,7 +1864,7 @@ class RunPars:
                 file_hc = None
             try:
                 names = GM_FH.get_bare_file(
-                    Files, parname, file_hc, RefPars.fname.parent,
+                    parname, file_hc, RefPars.fname.parent,
                     CmdPars.choices,
                     [InPars.choices, DefPars.choices],
                     [InPars.fname, DefPars.fname]
@@ -1926,7 +1920,7 @@ class RunPars:
                 setattr(self, parname, files_found[0])
 
     def get_ordered_files(
-        self, Files, CmdPars, InPars, DefPars, RefPars
+        self, CmdPars, InPars, DefPars, RefPars
     ):
         """Sets attribute for each ordered-path parameter
 
@@ -1942,10 +1936,6 @@ class RunPars:
 
         Parameters
         ----------
-        Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-            Contains all currently known paths and other file-related
-            properties.
-            Has to be updated after RunPars is finalized.
         CmdPars : :class:`RawPars`
             Contains any parameter choices made on the command line
         InPars : :class:`RawPars`
@@ -1973,11 +1963,11 @@ class RunPars:
             try:
                 dir_hc = RefPars.choices[dir_parname][0]
             except Exception:
-                dir_hc = Files.cwd
+                dir_hc = GM_FH.FileLocations.cwd
 
             # What directory are we based on?
             dir_hc = GM_FH.get_bare_file(
-                Files, dir_parname, [dir_hc], RefPars.fname.parent,
+                dir_parname, [dir_hc], RefPars.fname.parent,
                 CmdPars.choices, dirlist, fnamelist
             )
             name = dir_hc[0].resolve()
@@ -2028,7 +2018,7 @@ class RunPars:
                     RefPars.nondefcount += 1
 
                 files_found = GM_FH.get_file(
-                    Files, dir_parname, file_parname, dir_hc[0], files_hc,
+                    dir_parname, file_parname, dir_hc[0], files_hc,
                     CmdPars.choices, dirlist, fnamelist
                 )[0]
 
@@ -2449,7 +2439,7 @@ class RunPars:
         self.estatic_smooth_range = np.float32(self.estatic_smooth_range)
 
 
-def get_parameters(Files, in_parfile, argslist):
+def get_parameters(in_parfile, argslist):
     """Collect all provided parameters, and store them.
 
     Parameters are defined (along with default choices) in the reference
@@ -2462,9 +2452,6 @@ def get_parameters(Files, in_parfile, argslist):
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties. Has to be updated after RunPars is finalized.
     in_parfile : `pathlib.Path`
         The path to the requested input parameter file.
     argslist : list of str
@@ -2521,27 +2508,28 @@ def get_parameters(Files, in_parfile, argslist):
             in_pardict = get_pardict(file)
         # step 5 (find which defpar to use)
         def_parfile = GM_FH.get_def_parfile(
-            Files, temp_cmd_pardict, in_parfile, in_pardict
+            temp_cmd_pardict, in_parfile, in_pardict
         )
     else:
         # step 5 (find which defpar to use)
-        def_parfile = GM_FH.get_def_parfile(Files, temp_cmd_pardict)
+        def_parfile = GM_FH.get_def_parfile(temp_cmd_pardict)
 
     # as get_def_parfile also checks for the presence of the hard-coded
     # reference parameter file (regardless of program flow), no need to do
     # it again.
     # step 6 (find refparfile)
-    ref_parfile = Files.sourcedir_hc / Files.refparfilename_hc
+    files = GM_FH.FileLocations
+    ref_parfile = files.sourcedir_hc / files.refparfilename_hc
     # step 7 (parse refparfile)
     GM_FH.check_file_readability(ref_parfile)  # check if file is UTF8
-    RefPars_ = RefPars(Files, ref_parfile, True)
+    RefPars_ = RefPars(ref_parfile, True)
 
     # step 8 (parse defparfile)
     if def_parfile.suffix == ".txt":
         # check if file is UTF8
         GM_FH.check_file_readability(def_parfile)
         DefPars = RawPars.from_file(
-            Files, def_parfile, RefPars_, True
+            def_parfile, RefPars_, True
         )
     elif def_parfile == ref_parfile:
         DefPars = RefPars_
@@ -2559,31 +2547,31 @@ def get_parameters(Files, in_parfile, argslist):
     # step 9 (parse inparfile, not map part)
     if in_parfile:
         InPars = RawPars.from_file(
-            Files, in_parfile, RefPars_, False)
+            in_parfile, RefPars_, False)
     else:
-        InPars = RawPars.create_empty(Files)
+        InPars = RawPars.create_empty()
 
     # step 10 (find mapdir in cmdline > inparfile > defparfile)
-    mapdirs = find_mapdir(Files, argslist, InPars, DefPars)
+    mapdirs = find_mapdir(argslist, InPars, DefPars)
 
     # step 11 (for each map, parse parameters.ref, if present)
     singles_mapdict = GM_MR.scan_mapdirs(mapdirs, "Singles")
     pairs_mapdict = GM_MR.scan_mapdirs(mapdirs, "Pairs")
     all_mapdict = singles_mapdict | pairs_mapdict
     for map_ in all_mapdict.values():
-        map_.find_refpars(Files)
+        map_.find_refpars()
 
     # step 12 (finish parsing cmdline, inparfile, defparfile)
 
     # cmdline
     CmdPars = RawPars.from_cmdline(
-        Files, argslist, RefPars_,
+        argslist, RefPars_,
         {name: map_.RefPars for name, map_ in all_mapdict.items()},
         False
     )
 
     for map_ in all_mapdict.values():
-        map_.find_rawpars(Files, CmdPars, InPars, DefPars)
+        map_.find_rawpars(CmdPars, InPars, DefPars)
 
     CmdPars.finalize_map_pars()
     InPars.finalize_map_pars()
@@ -2591,11 +2579,11 @@ def get_parameters(Files, in_parfile, argslist):
         DefPars.finalize_map_pars()
 
     RunPars_ = RunPars(
-        Files, CmdPars, InPars, DefPars, RefPars_, True
+        CmdPars, InPars, DefPars, RefPars_, True
     )
 
     for map_ in all_mapdict.values():
-        map_.find_runpars(Files, RunPars_)
+        map_.find_runpars(RunPars_)
 
     RunPars_.defparfilename = DefPars.fname
     RunPars_.inparfilename = InPars.fname
@@ -2640,7 +2628,7 @@ def add_missing_frame_parameter(pardict):
 
 
 def parse_commandline(
-    Files, callcommand, alljobs, helpcall, expect_inputfile=False,
+    callcommand, alljobs, helpcall, expect_inputfile=False,
     expect_parameters=False
 ):
     """Extracts the groups of information from the command line.
@@ -2656,9 +2644,6 @@ def parse_commandline(
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties. Has to be updated after RunPars is finalized.
     callcommand : list
         A slice from the output of sys.argv
     alljobs : list of str
@@ -2703,7 +2688,7 @@ def parse_commandline(
                 GMAPerrclass=GM_Ex.GmapParameterError
             )
 
-        in_parfile = (Files.cwd / callcommand[2]).resolve()
+        in_parfile = (GM_FH.FileLocations.cwd / callcommand[2]).resolve()
         if not (in_parfile.exists() and in_parfile.is_file()):
             GM_PT.Printer().warning(
                 f"\nThe requested input parameter file {in_parfile} could not "
@@ -2841,7 +2826,7 @@ def find_par_in_cmd(argslist, flags, parname, is_list=False):
         return choice
 
 
-def find_mapdir(Files, argslist, InPars, DefPars):
+def find_mapdir(argslist, InPars, DefPars):
     """Extracts choice for the parameter map_directory from the command
     line.
 
@@ -2850,9 +2835,6 @@ def find_mapdir(Files, argslist, InPars, DefPars):
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties. Has to be updated after RunPars is finalized.
     argslist : list of str
         The part of the output of sys.argv that contains parameter
         choices.
@@ -2875,7 +2857,8 @@ def find_mapdir(Files, argslist, InPars, DefPars):
     # if cmd supplied, check if exists
     if cmd_mapdir:
         mapdirs = directory_list_checker(
-            Files.cwd, cmd_mapdir, "map_directory", "the command line"
+            GM_FH.FileLocations.cwd, cmd_mapdir, "map_directory",
+            "the command line"
         )
 
     elif InPars and "map_directory" in InPars.choices:

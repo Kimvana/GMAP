@@ -94,7 +94,7 @@ def test_system_CoM():
 def test_get_positions():
     cmdline = ["--verbose", "4"]
     (
-        Files, RunPars, RefPars, DefPars, InPars,
+        RunPars, RefPars, DefPars, InPars,
         CmdPars, mapdict, pairs_mapdict
     ) = parameter_getter("test_calc_dipoles_xyz", cmdline)
     # position - 2,  db0 - 3, db1 - 1
@@ -130,7 +130,7 @@ def test_get_positions():
 def test_calc_dipole_xyz():
     cmdline = ["--verbose", "4"]
     (
-        Files, RunPars, RefPars, DefPars, InPars,
+        RunPars, RefPars, DefPars, InPars,
         CmdPars, mapdict, pairs_mapdict
     ) = parameter_getter("test_calc_dipoles_xyz", cmdline)
 
@@ -165,7 +165,7 @@ def test_calc_dipole_xyz():
 def test_calc_dipole_magnitude():
     cmdline = []
     (
-        Files, RunPars, RefPars, DefPars, InPars,
+        RunPars, RefPars, DefPars, InPars,
         CmdPars, mapdict, pairs_mapdict
     ) = parameter_getter("test_calc_dipoles_magnitude", cmdline)
 
@@ -201,7 +201,7 @@ def test_calc_dipole_magnitude():
 def test_calc_frequency():
     cmdline = []
     (
-        Files, RunPars, RefPars, DefPars, InPars,
+        RunPars, RefPars, DefPars, InPars,
         CmdPars, mapdict, pairs_mapdict
     ) = parameter_getter("test_calc_dipoles_magnitude", cmdline)
 
@@ -232,7 +232,7 @@ def test_calc_frequency():
 
     cmdline = []
     (
-        Files, RunPars, RefPars, DefPars, InPars,
+        RunPars, RefPars, DefPars, InPars,
         CmdPars, mapdict, pairs_mapdict
     ) = parameter_getter("test_calc_freq_quad", cmdline)
 
@@ -267,7 +267,7 @@ def test_calc_frequency():
 
     cmdline = []
     (
-        Files, RunPars, RefPars, DefPars, InPars,
+        RunPars, RefPars, DefPars, InPars,
         CmdPars, mapdict, pairs_mapdict
     ) = parameter_getter("test_calc_freq_linquad", cmdline)
 
@@ -485,18 +485,18 @@ def prep_coupling_tests():
         "couplings_to_use": [["DipDip", ":All"]]  # in 'main' maps
     }
     (
-        Files, RunPars, RefPars, DefPars, InPars,
+        RunPars, RefPars, DefPars, InPars,
         CmdPars, singles_mapdict, pairs_mapdict
     ) = tMR.basic_setup(cmdline, inpardict, finish_before="extract_code")
 
-    GM_MR.manage_maps_singles(Files, RunPars, singles_mapdict)
+    GM_MR.manage_maps_singles(RunPars, singles_mapdict)
     oscillators = [get_oscillator_1(), get_oscillator_2()]
     for oscillator in oscillators:
         # assign map to the oscillators
         setattr(
             oscillator, "Map", singles_mapdict["test_calc_dipoles_magnitude"])
 
-    GM_MR.manage_maps_pairs(Files, RunPars, pairs_mapdict)
+    GM_MR.manage_maps_pairs(RunPars, pairs_mapdict)
 
     System = get_System_1()
 

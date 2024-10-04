@@ -92,7 +92,7 @@ class Map():
         self.success = True
         self.avail_files = avail_files
 
-    def find_refpars(self, Files):
+    def find_refpars(self):
         """Creates a RefPars object for the map-specific parameters
 
         A map is not required to have any specific parameters. But if it
@@ -107,14 +107,14 @@ class Map():
 
         refparfilename = self.directory / "parameters.ref"
         if refparfilename.is_file():
-            self.RefPars = GM_PP.RefPars(Files, refparfilename, False)
+            self.RefPars = GM_PP.RefPars(refparfilename, False)
         else:
             # self.RefPars = None
             with open(refparfilename, "w") as _:
                 pass
-            self.RefPars = GM_PP.RefPars(Files, refparfilename, False)
+            self.RefPars = GM_PP.RefPars(refparfilename, False)
 
-    def find_rawpars(self, Files, CmdPars, InPars, DefPars):
+    def find_rawpars(self, CmdPars, InPars, DefPars):
         """Creates CmdPars, InPars and DefPars objects for this map instance.
 
         Searches through the provided CmdPars, InPars and DefPars to see
@@ -146,7 +146,7 @@ class Map():
         # first, CmdPars
         map_pars = self.extract_notfound(CmdPars)
         self.CmdPars = GM_PP.RawPars.from_dict(
-            Files, "Cmdline", map_pars, self.RefPars, False
+            "Cmdline", map_pars, self.RefPars, False
         )
         for parname in map_pars.keys():
             del CmdPars.not_found[self.name + "." + parname]
@@ -154,7 +154,7 @@ class Map():
         # InPars
         map_pars = self.extract_notfound(InPars)
         self.InPars = GM_PP.RawPars.from_dict(
-            Files, InPars.fname, map_pars, self.RefPars, False
+            InPars.fname, map_pars, self.RefPars, False
         )
         for parname in map_pars.keys():
             del InPars.not_found[self.name + "." + parname]
@@ -163,12 +163,12 @@ class Map():
         if type(DefPars) is GM_PP.RawPars:
             map_pars = self.extract_notfound(DefPars)
             self.DefPars = GM_PP.RawPars.from_dict(
-                Files, DefPars.fname, map_pars, self.RefPars, True
+                DefPars.fname, map_pars, self.RefPars, True
             )
             for parname in map_pars.keys():
                 del DefPars.not_found[self.name + "." + parname]
         else:
-            self.DefPars = GM_PP.RawPars.create_empty(Files)
+            self.DefPars = GM_PP.RawPars.create_empty()
 
     def extract_notfound(self, RawParInst):
         """Find all parameters of this map in the given RawPars
@@ -200,7 +200,7 @@ class Map():
 
         return map_pars
 
-    def find_runpars(self, Files, RunPars):
+    def find_runpars(self, RunPars):
         """Create a RunPars instance for this map.
 
         Just like the main code, a map has a RefPars, DefPars, Inpars
@@ -209,10 +209,6 @@ class Map():
 
         Parameters
         ----------
-        Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-            Contains all currently known paths and other file-related
-            properties.
-            Has to be updated after RunPars is finalized.
         RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
             The 'main' RunPars instance containing all the basic
             run-defining parameters.
@@ -220,7 +216,7 @@ class Map():
 
         if self.RefPars:
             self.RunPars = GM_PP.RunPars(
-                Files, self.CmdPars, self.InPars, self.DefPars,
+                self.CmdPars, self.InPars, self.DefPars,
                 self.RefPars, False, MainRunPars=RunPars
             )
 
@@ -508,7 +504,7 @@ class Map():
 
 
 class SingleMap(Map):
-    def initialize(self, Files):
+    def initialize(self):
         """Initializes the map.
 
         Initializing is a multi-step process:
@@ -523,13 +519,6 @@ class SingleMap(Map):
         - Parse the final choice of rawcore to Core
         - If not present in self.code, create functions for
           GM_calculate_dipole and GM_get_rotation matrix based on core.
-
-        Parameters
-        ----------
-        Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-            Contains all currently known paths and other file-related
-            properties.
-            Has to be updated after RunPars is finalized.
         """
 
         self.code = self.extract_code()
@@ -545,7 +534,7 @@ class SingleMap(Map):
             "adjust_map_core_raw",
             "adjust_oscillators"
         ))
-        self.code.GM_adjust_RunPars(Files, self)
+        self.code.GM_adjust_RunPars(self)
 
         # simple parse of core.txt
         self.rawcore = self.find_core()
@@ -558,7 +547,7 @@ class SingleMap(Map):
             return
 
         # allow the contents of core.txt to be changed
-        self.code.GM_adjust_map_core_raw(Files, self)
+        self.code.GM_adjust_map_core_raw(self)
 
         self.Core = SingleCore(self)
         if not self.Core.success:
@@ -686,12 +675,6 @@ class PairMap(Map):
 
     Any attributes listed for Map are not separately listed here.
 
-    Parameters
-    ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties. Has to be updated after RunPars is finalized.
-
     Attributes
     ----------
     allpairs : list of tuple of 2 ints
@@ -701,7 +684,7 @@ class PairMap(Map):
         this can severely impact calculation times.
     """
 
-    def initialize(self, Files):
+    def initialize(self):
         """Initializes the map.
 
         Initializing is a multi-step process:
@@ -716,13 +699,6 @@ class PairMap(Map):
         - Parse the final choice of rawcore to Core
         - If not present in self.code, create functions for all missing
           behaviour
-
-        Parameters
-        ----------
-        Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-            Contains all currently known paths and other file-related
-            properties.
-            Has to be updated after RunPars is finalized.
         """
 
         self.code = self.extract_code()
@@ -733,7 +709,7 @@ class PairMap(Map):
             "adjust_RunPars",
             "adjust_map_core_raw"
         ))
-        self.code.GM_adjust_RunPars(Files, self)
+        self.code.GM_adjust_RunPars(self)
 
         # simple parse of core.txt
         self.rawcore = self.find_core()
@@ -746,7 +722,7 @@ class PairMap(Map):
             return
 
         # allow the contents of core.txt to be changed
-        self.code.GM_adjust_map_core_raw(Files, self)
+        self.code.GM_adjust_map_core_raw(self)
 
         self.Core = PairCore(self)
         if not self.Core.success:
@@ -755,11 +731,11 @@ class PairMap(Map):
 
         # self.complete_code(("needs_mapfunc",))
         # self.required_functions = self.code.GM_needs_mapfunc(
-        #     Files, self)
+        #     self)
 
         # self.complete_code(("needs_keyword",))
         # self.required_keywords = self.code.GM_needs_keyword(
-        #     Files, self)
+        #     self)
 
         # Add in the remaining code
         self.complete_code((
@@ -2864,14 +2840,11 @@ class Residue():
         return f"{self.__class__.__name__}({repr(mylist)})"
 
 
-def manage_maps_singles(Files, RunPars, mapdict):
+def manage_maps_singles(RunPars, mapdict):
     """Initializes and manages the detected maps in singles.
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties. Has to be updated after RunPars is finalized.
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
@@ -2883,7 +2856,7 @@ def manage_maps_singles(Files, RunPars, mapdict):
     """
 
     for map_ in mapdict.values():
-        map_.initialize(Files)
+        map_.initialize()
 
     mapdict = {map_.name: map_ for map_ in mapdict.values() if map_.success}
     RunPars.available_maps_singles = mapdict
@@ -2922,14 +2895,11 @@ def manage_maps_singles(Files, RunPars, mapdict):
         RunPars.detected_requires_bonds = False
 
 
-def manage_maps_pairs(Files, RunPars, mapdict):
+def manage_maps_pairs(RunPars, mapdict):
     """Initializes and manages the detected maps in singles.
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties. Has to be updated after RunPars is finalized.
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
@@ -2941,7 +2911,7 @@ def manage_maps_pairs(Files, RunPars, mapdict):
     """
 
     for map_ in mapdict.values():
-        map_.initialize(Files)
+        map_.initialize()
 
     mapdict = {map_.name: map_ for map_ in mapdict.values() if map_.success}
     RunPars.available_maps_pairs = mapdict

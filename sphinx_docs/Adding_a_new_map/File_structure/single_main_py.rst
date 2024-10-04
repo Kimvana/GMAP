@@ -45,11 +45,6 @@ It is probable that the map wants to save information between functions, too, ju
 - self.Core (type :class:`~GMAP.src.tools.MapReader.SingleCore`) contains the information from core.txt, after parsing.
 
 
-Files
-======
-An instance of :class:`~GMAP.src.tools.FileHandler.FileLocations`. Stores filepaths and such.
-
-
 Syst
 ====
 An instance of :class:`~GMAP.src.tools.SystemReader.System`. Stores all available information about the MD system used. Think atom-based information on it's name, element, type, the name and number of its residue, molecule, segment. Also charges, positions, masses and such are in here. 
@@ -67,7 +62,7 @@ The function are in the order at which they're called by the program. This means
 
 
 
-GM_adjust_RunPars(Files, Map)
+GM_adjust_RunPars(Map)
 ======================================
 Makes the necessary changes to Map.RunPar.
 
@@ -105,16 +100,13 @@ Available attributes of Map
 
 Parameters
 ----------
-Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-    Contains all currently known paths and other file-related properties.
-    Has to be updated after RunPars is finalized.
 Map : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
 
 
 
-GM_adjust_map_core_raw(Files, Map)
+GM_adjust_map_core_raw(Map)
 ===========================================
 
 Makes the necessary changes to the 'raw' input read from core.txt.
@@ -157,16 +149,13 @@ Available attributes of Map
 
 Parameters
 ----------
-Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-    Contains all currently known paths and other file-related properties.
-    Has to be updated after RunPars is finalized.
 Map : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
 
 
 
-GM_adjust_oscillators(Files, Map, Syst, oscillator_list)
+GM_adjust_oscillators(Map, Syst, oscillator_list)
 =================================================================
 
 Finalizes the list of oscillators.
@@ -218,9 +207,6 @@ Available attributes of Map
 
 Parameters
 ----------
-Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-    Contains all currently known paths and other file-related properties.
-    Has to be updated after RunPars is finalized.
 Map : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
@@ -231,7 +217,7 @@ oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
 
 
 
-GM_post_init(Files, Map, Syst)
+GM_post_init(Map, Syst)
 =======================================
 
 Allows the user to do some final initialization steps. These can include building lookup-tables, or computing some basic properties for later use. This function is called when all initialization is done (maps, MD system, etc).
@@ -286,9 +272,6 @@ Available attributes of Map
 
 Parameters
 ----------
-Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-    Contains all currently known paths and other file-related properties.
-    Has to be updated after RunPars is finalized.
 Map : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.

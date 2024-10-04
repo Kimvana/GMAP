@@ -357,6 +357,7 @@ If you need a place to quickly write something down, do it here! It can be tidie
 
 
 - (KvA) TODO before PR:
+  - Printer() calls can be replaced with Printer - I think it's prettier/easier to remember (I constantly made mistakes with that)
   - clean up code (lots of commented out statements as of writing this)
   - test/fix the new header functions (quite sure they're buggy still)
   - add proper erros? to header functions?

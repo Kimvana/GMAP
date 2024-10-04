@@ -59,15 +59,15 @@ def test_verify_target(tmp_path):
 
 def test_Setup(tmp_path, capsys):
     callcommand = ["Setup", tmp_path]
-    Files = GM_FH.FileLocations()
+    GM_FH.FileLocations()
 
-    src_dir = Files.sourcedir_hc
-    map_dir = Files.mapdir_hc
+    src_dir = GM_FH.FileLocations.sourcedir_hc
+    map_dir = GM_FH.FileLocations.mapdir_hc
 
     sourcefiles_original = [file.name for file in Path(src_dir).iterdir()]
     map_original = [file.name for file in Path(map_dir).iterdir()]
 
-    GM_Setup.Setup(callcommand, Files)
+    GM_Setup.Setup(callcommand)
 
     captured = capsys.readouterr()
     assert captured.out.endswith(

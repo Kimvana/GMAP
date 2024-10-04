@@ -28,14 +28,14 @@ import GMAP.src.tools.FileHandler as GM_FH
 
 
 def test_get_bare_file():
-    Files = GM_FH.FileLocations()
+    GM_FH.FileLocations()
     cmd_pardict = {
         "logofile": [Path("logo.txt")]
     }
     files_hc = [Path("default.hc")]
     floc_hc = Path(".")
     flocs = GM_FH.get_bare_file(
-        Files, "logofile", files_hc, floc_hc, cmd_pardict)
+        "logofile", files_hc, floc_hc, cmd_pardict)
     assert flocs == [(floc_hc / "logo.txt").resolve()]
 
 
@@ -484,10 +484,10 @@ def test_write_legend():
 
 
 def test_SU_FH_1():
-    Files = GM_FH.FileLocations()
+    GM_FH.FileLocations()
     cwd = Path(".")
 
     with pytest.raises(GM_Ex.GmapFileNotFoundError, match="SU_FH_1$"):
-        _ = GM_FH.get_def_parfile(Files, {
+        _ = GM_FH.get_def_parfile({
             "default_parameter_filename": [cwd/"doesntexist.dfa"]
         })

@@ -25,7 +25,7 @@ import GMAP.src.tools.FileHandler as GM_FH
 import GMAP.src.tools.PrintTools as GM_PT
 
 
-def Setup(callcommand, Files):
+def Setup(callcommand):
     """Copies the maps and src dirs and copies them to a new map.
 
     Setup copies the maps folder and the src folder and copies them to
@@ -36,9 +36,6 @@ def Setup(callcommand, Files):
     ----------
     callcommand : list of str
         This is the user input into the terminal.
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties. Has to be updated after RunPars is finalized.
     """
 
     printer = GM_PT.Printer()
@@ -51,8 +48,8 @@ def Setup(callcommand, Files):
 
     verify_target(target, target_srcdir, target_mapdir)
 
-    src_dir = Files.sourcedir_hc
-    map_dir = Files.mapdir_hc
+    src_dir = GM_FH.FileLocations.sourcedir_hc
+    map_dir = GM_FH.FileLocations.mapdir_hc
 
     shutil.copytree(src_dir, target_srcdir)
     shutil.copytree(map_dir, target_mapdir)
@@ -116,8 +113,8 @@ def main():
     if len(callcommand) == 1:
         print(__doc__)
     else:
-        Files = GM_FH.FileLocations()
-        Setup(callcommand, Files)
+        GM_FH.FileLocations()
+        Setup(callcommand)
 
 
 if __name__ == "__main__":

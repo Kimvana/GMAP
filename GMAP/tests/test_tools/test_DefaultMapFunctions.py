@@ -176,13 +176,12 @@ def test_interpret_position():
 def test_MI_MC_9(capsys):
     # too few opening brackets (should be 4 instead of two)
     VEGref_pos = ["position", "((0+1)/2.0)+2)/2.0)"]
-    Files = GM_FH.FileLocations()
 
     map_ = GM_CT.CustomClass(**{
         "rawcore": {
             "VEG_reference": VEGref_pos
         },
-        "directory": Files.cwd
+        "directory": GM_FH.FileLocations.cwd
     })
     _ = GM_DMF.interpret_position(map_, VEGref_pos[1:], "VEG_reference")
     GM_PT.Printer().print_backlog()

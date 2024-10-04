@@ -18,10 +18,6 @@ class System:
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties.
-        Has to be updated after RunPars is finalized.
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
@@ -114,7 +110,7 @@ class System:
         All oscillators, but grouped by the map they belong to.
     """
 
-    def __init__(self, Files, RunPars):
+    def __init__(self, RunPars):
         self.universe = gen_universe(RunPars)  # MDA universe creation
         self.set_properties()  # Extract numpy arrays from MDA universe
         self.basic_boxchecks(RunPars)  # see if box has correct size and charge
@@ -122,7 +118,7 @@ class System:
         self.find_influencers(RunPars)  # Find all influencing atoms
 
         # detect all valid oscillators and introduce them to the maps
-        self.find_oscillators(Files, RunPars)
+        self.find_oscillators(RunPars)
 
         # sort all oscillators, make usable lookup-tables. Also, determine
         # correct coupling map for each oscillator pair (and build tables
@@ -380,7 +376,7 @@ class System:
         self.n_influencers = np.shape(self.influencers_atix)[0]
         self.influencers_atix_c = np.ctypeslib.as_ctypes(self.influencers_atix)
 
-    def find_oscillators(self, Files, RunPars):
+    def find_oscillators(self, RunPars):
         """Finds all the oscillators in the MD system
 
         Before an oscillator is considered 'found', it has to match the
@@ -397,10 +393,6 @@ class System:
 
         Parameters
         ----------
-        Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-            Contains all currently known paths and other file-related
-            properties.
-            Has to be updated after RunPars is finalized.
         RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
             The 'main' RunPars instance containing all the basic
             run-defining parameters.
@@ -432,7 +424,7 @@ class System:
         for oscillators in allgroups:
             map_ = oscillators[0].Map
             checked = map_.code.GM_adjust_oscillators(
-                Files, map_, self, oscillators
+                map_, self, oscillators
             )
             if checked:
                 checked_oscillators.append(checked)
