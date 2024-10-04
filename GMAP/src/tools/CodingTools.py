@@ -59,6 +59,23 @@ class Singleton(type):
         return cls._instances[cls]
 
 
+class FrozenDict(dict):
+    # credit: https://stackoverflow.com/questions/62301911/
+    # is-there-a-dictionary-like-object-that-is-immutable
+
+    def __add__(self, other):
+        raise TypeError("You may not alter this dictionary")
+
+    def __radd__(self, other):
+        raise TypeError("You may not alter this dictionary")
+
+    def __setitem__(self, key, val):
+        raise TypeError("You may not alter this dictionary")
+
+    def update(self, other):
+        raise TypeError("You may not alter this dictionary")
+
+
 class CustomClass:
     """Creates a new class with attributes equallying given dict entries
 

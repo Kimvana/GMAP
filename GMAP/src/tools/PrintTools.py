@@ -100,8 +100,6 @@ class Printer(metaclass=GM_CT.Singleton):
 
         self.Timer = Timer(start=Files.start)
 
-        Files.set_exec_os()
-
         # to have some kind of default - will be changed as soon as parameter
         # choices are known.
         self.verbose = 3

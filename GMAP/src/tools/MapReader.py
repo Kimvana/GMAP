@@ -107,12 +107,12 @@ class Map():
 
         refparfilename = self.directory / "parameters.ref"
         if refparfilename.is_file():
-            self.RefPars = GM_PP.RefPars(Files,refparfilename, False)
+            self.RefPars = GM_PP.RefPars(Files, refparfilename, False)
         else:
             # self.RefPars = None
             with open(refparfilename, "w") as _:
                 pass
-            self.RefPars = GM_PP.RefPars(Files,refparfilename, False)
+            self.RefPars = GM_PP.RefPars(Files, refparfilename, False)
 
     def find_rawpars(self, Files, CmdPars, InPars, DefPars):
         """Creates CmdPars, InPars and DefPars objects for this map instance.

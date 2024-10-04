@@ -1,7 +1,0 @@
-
-The requested default parameter file
-[PosixPath('/Users/lacour/Documents/GitHub/GMAP/GMAP/doesntexist.dfa')] could
-not be found, or is not a file. Please make sure you specified it correctly.
-
-More information can be found in the documentation user pages using the
-following error code:  SU_FH_1

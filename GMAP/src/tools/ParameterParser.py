@@ -535,7 +535,6 @@ class RefPars:
             str(*self.choices["VEG_clib_file"]) + Files.clib_extension
         )]
 
-
         if self.choices["hamiltonian_units"][0] == "cm-1":
             self.choices["hamiltonian_multiplier"] = [1]
         else:  # eV
@@ -1439,7 +1438,7 @@ class RawPars:
             self.choices["VEG_clib_file"] = [Path(
                 str(*self.choices["VEG_clib_file"]) + Files.clib_extension
             )]
- 
+
         # next - frame numbers!
         start_frame = self.choices.get("start_frame", [None])[0]
         number_frames = self.choices.get("number_frames", [None])[0]
@@ -1713,6 +1712,10 @@ class RunPars:
     available_outputs : tuple of str
         What kinds of output the user can request the program to
         generate. Is a copy of RefPars.options["output_data"].
+    defparfilename : `pathlib.Path`
+        The name of the default parameter file used.
+    inparfilename : `pathlib.Path`
+        The name of the input parameter file used.
     """
 
     def __init__(
@@ -2531,7 +2534,7 @@ def get_parameters(Files, in_parfile, argslist):
     ref_parfile = Files.sourcedir_hc / Files.refparfilename_hc
     # step 7 (parse refparfile)
     GM_FH.check_file_readability(ref_parfile)  # check if file is UTF8
-    RefPars_ = RefPars(Files,ref_parfile, True)
+    RefPars_ = RefPars(Files, ref_parfile, True)
 
     # step 8 (parse defparfile)
     if def_parfile.suffix == ".txt":
@@ -2594,8 +2597,8 @@ def get_parameters(Files, in_parfile, argslist):
     for map_ in all_mapdict.values():
         map_.find_runpars(Files, RunPars_)
 
-    Files.defparfilename = DefPars.fname
-    Files.inparfilename = InPars.fname
+    RunPars_.defparfilename = DefPars.fname
+    RunPars_.inparfilename = InPars.fname
 
     return (
         RunPars_, singles_mapdict, pairs_mapdict, CmdPars, InPars, DefPars,

@@ -569,10 +569,18 @@ class Header():
         self.header = self.finalize(
             color_border, color_text, padding_char, padding)
 
-        self.s = str(self)
+    def __add__(self, other):
+        return ColStr(self) + other
+
+    def __radd__(self, other):
+        return other + ColStr(self)
 
     def __str__(self):
         return str(self.header)
+
+    @property
+    def s(self):
+        return str(self)
 
     def format_title(self, maxwidth, n_padding):
         """Prepare the title text for the header

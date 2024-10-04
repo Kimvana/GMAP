@@ -446,8 +446,8 @@ def print_calculation_summary(Files, RunPars, System):
 
     pr.print(2, f"\n{line}  Input files {line}")
     pr.print(1, f"Command issued:             {Files.callcommand}")
-    pr.print(2, f"Default parameter file:     {Files.defparfilename}")
-    pr.print(2, f"Input parameter file:       {Files.inparfilename}")
+    pr.print(2, f"Default parameter file:     {RunPars.defparfilename}")
+    pr.print(2, f"Input parameter file:       {RunPars.inparfilename}")
     pr.print(1, f"Topology file analyzed:     {RunPars.topology_file}")
     pr.print(1, f"Trajectory file analyzed:   {RunPars.trajectory_file}")
     mapdirs = ", ".join([str(direc) for direc in RunPars.map_directory])
