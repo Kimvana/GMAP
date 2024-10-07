@@ -636,9 +636,9 @@ def color_test():  # run this one with word_wrap to 150 (8 colors per row)
     step = 16
     range_ = [*range(0, 255, step)] + [255]
     for r in range_:
-        Printer().print(
+        Printer.print(
             0, f"\nRed value: {r}", instruction="p", line_length=130)
-        Printer().print(
+        Printer.print(
             0, " Blue -> " + "".join(
                 [f"{ix:<7}" for ix in range_])
             + "\nGreen", instruction="p", line_length=130)
@@ -650,7 +650,7 @@ def color_test():  # run this one with word_wrap to 150 (8 colors per row)
                 string += shortstr
                 string += shortstr.change_color("4bit")
                 string += " "
-            Printer().print(0, string, instruction="p", line_length=130)
+            Printer.print(0, string, instruction="p", line_length=130)
         if r == 128:
             break
 
@@ -799,12 +799,12 @@ def header(
     """
 
     if "color_border" not in kwargs or kwargs["color_border"] is None:
-        cb = Printer().colors.green_lc
+        cb = Printer.colors.green_lc
 
     if "color_text" not in kwargs or kwargs["color_text"] is None:
-        _ = Printer().colors.clear
+        _ = Printer.colors.clear
 
-    cc = Printer().colors.clear
+    cc = Printer.colors.clear
 
     if newlines is None:
         match preset:
@@ -819,9 +819,9 @@ def header(
             if preset == "custom":
                 title = GM_SC.Header(title, **kwargs).s
             head += title
-            Printer().print(verbose, head, **kwargs)
+            Printer.print(verbose, head, **kwargs)
             if preline is not None:
-                Printer().preline.append([[*range(verbose, 5)], preline])
+                Printer.preline.append([[*range(verbose, 5)], preline])
         case "doublebox" | "doublebox_bare":
             if preset == "doublebox":
                 special = {"u": {"replace": {"╦": [[1]]}}}
@@ -832,12 +832,12 @@ def header(
                 underline_char="═", left_char="║", right_char="║",
                 corner_char="╔╗╚╝", special=special
             ).s
-            Printer().print(verbose, head, **kwargs)
+            Printer.print(verbose, head, **kwargs)
             if preset != "doublebox_bare":
-                Printer().preline.append([
+                Printer.preline.append([
                     [*range(verbose, 5)], cb + " ║ " + cc])
     if newlines[1] > 0:
-        Printer().print(verbose, "\n" * (newlines[1] - 1), **kwargs)
+        Printer.print(verbose, "\n" * (newlines[1] - 1), **kwargs)
 
 
 def footer(
@@ -891,12 +891,12 @@ def footer(
     """
 
     if "color_border" not in kwargs or kwargs["color_border"] is None:
-        cb = Printer().colors.green_lc
+        cb = Printer.colors.green_lc
 
     if "color_text" not in kwargs or kwargs["color_text"] is None:
-        ct = Printer().colors.clear
+        ct = Printer.colors.clear
 
-    cc = Printer().colors.clear
+    cc = Printer.colors.clear
 
     if newlines is None:
         match preset:
@@ -907,7 +907,7 @@ def footer(
 
     if newlines[0] > 0:
         foot = "\n" * (newlines[0] - 1)
-        Printer().print(verbose, foot, **kwargs)
+        Printer.print(verbose, foot, **kwargs)
     match preset:
         case "nohead" | "custom":
             if preset == "custom":
@@ -915,19 +915,19 @@ def footer(
             else:
                 title = ""
             if preline is not None:
-                if Printer().preline[-1][1] == preline:
-                    _ = Printer().preline.pop()
+                if Printer.preline[-1][1] == preline:
+                    _ = Printer.preline.pop()
         case "doublebox_bare":
             title = ""
         case "doublebox":
             title = f" {cb}╚═══{ct} End of {title} {cb}═════{cc}"
             if preset != "doublebox_bare":
-                if Printer().preline[-1][1] == cb + " ║ " + cc:
-                    _ = Printer().preline.pop()
+                if Printer.preline[-1][1] == cb + " ║ " + cc:
+                    _ = Printer.preline.pop()
     if newlines[1] > 0:
         title += "\n" * (newlines[1])
     if title != "":
-        Printer().print(verbose, title, **kwargs)
+        Printer.print(verbose, title, **kwargs)
 
 
 def intlist_to_rangelist(intlist, n_int, make_shadow=True):

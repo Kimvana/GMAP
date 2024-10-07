@@ -154,9 +154,9 @@ def test_calc_dipole_xyz():
 
     r_vec_ans = np.array([0.82, 0.84, 0.86], dtype="float32")
     r_vec_ans = np.dot(r_vec_ans, oscillator.rotation_matrix).round(6)
-    # GM_PT.Printer().print(0, r_vec_ans)
-    # GM_PT.Printer().print(0, r_vec)
-    # GM_PT.Printer().print(0, r_pos)
+    # GM_PT.Printer.print(0, r_vec_ans)
+    # GM_PT.Printer.print(0, r_vec)
+    # GM_PT.Printer.print(0, r_pos)
 
     assert np.all(r_vec.round(6) == r_vec_ans)
     assert np.all(r_pos.round(4) == np.array([8, 28, -32], dtype="float32"))

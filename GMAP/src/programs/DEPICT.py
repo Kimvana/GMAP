@@ -89,7 +89,7 @@ def show_data(Printer, RunPars):
 
 
 def DEPICT(callcommand):
-    Printer = GM_PT.Printer()
+    Printer = GM_PT.Printer
     alljobs = [
         "calculate",
         "show",

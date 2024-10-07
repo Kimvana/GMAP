@@ -28,7 +28,6 @@ import GMAP.src.tools.FileHandler as GM_FH
 
 
 def test_get_bare_file():
-    GM_FH.FileLocations()
     cmd_pardict = {
         "logofile": [Path("logo.txt")]
     }
@@ -484,7 +483,6 @@ def test_write_legend():
 
 
 def test_SU_FH_1():
-    GM_FH.FileLocations()
     cwd = Path(".")
 
     with pytest.raises(GM_Ex.GmapFileNotFoundError, match="SU_FH_1$"):

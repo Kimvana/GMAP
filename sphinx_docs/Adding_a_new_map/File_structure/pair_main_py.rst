@@ -53,7 +53,7 @@ An instance of :class:`~GMAP.src.tools.SystemReader.System`. Stores all availabl
 
 
 .. important:: 
-    When your functions should report/print anything, **do not** use the python build-in function print. Instead, import the GMAP PrintTools module (``from GMAP.src.tools import PrintTools as GM_PT``), from which you can call an instance of the Printer class. This instance is a singleton (so all print settings for that run are already set), so don't change it! But you can have it print (``GM_PT.Printer().print``), or even trigger an error (``GM_PT.Printer().warning``). See :class:`~GMAP.src.tools.PrintTools.Printer` for detailed information on using these functions.
+    When your functions should report/print anything, **do not** use the python build-in function print. Instead, import the GMAP PrintTools module (``from GMAP.src.tools import PrintTools as GM_PT``), from which you can call an instance of the Printer class. This instance is a singleton (so all print settings for that run are already set), so don't change it! But you can have it print (``GM_PT.Printer.print``), or even trigger an error (``GM_PT.Printer.warning``). See :class:`~GMAP.src.tools.PrintTools.Printer` for detailed information on using these functions.
 
 
 *************************

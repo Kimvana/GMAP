@@ -52,7 +52,7 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
             )
             self.clib = ct.CDLL(str(RunPars.VEG_clib_file))
 #        except FileNotFoundError as ex:
-#            GM_PT.Printer().warning(
+#            GM_PT.Printer.warning(
 #                msg, "CL_VG_1", True, exception=ex,
 #                GMAPerrclass=GM_Ex.GmapFileNotFoundError
 #            )
@@ -61,7 +61,7 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
             # No others found yet.
             # On windows no existing file give FileNotFoundError
             # On linux/mac this will be a OSError
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 msg, "CL_VG_1", True, exception=ex,
                 GMAPerrclass=GM_Ex.GmapOSError
             )

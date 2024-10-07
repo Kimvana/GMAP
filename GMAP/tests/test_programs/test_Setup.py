@@ -59,7 +59,6 @@ def test_verify_target(tmp_path):
 
 def test_Setup(tmp_path, capsys):
     callcommand = ["Setup", tmp_path]
-    GM_FH.FileLocations()
 
     src_dir = GM_FH.FileLocations.sourcedir_hc
     map_dir = GM_FH.FileLocations.mapdir_hc
@@ -87,8 +86,6 @@ def test_Setup(tmp_path, capsys):
 
 
 def base_tests(tmp_path):  # Not a test
-    _ = GM_FH.FileLocations()
-
     sourcefiles_dir = tmp_path / "sourcefiles_dir"
     mapfiles_dir = tmp_path / "mapfiles_dir"
 

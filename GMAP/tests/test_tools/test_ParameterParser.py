@@ -364,7 +364,6 @@ class TestRefPars:
         ]
 
     def test_variations(self):
-        GM_FH.FileLocations()  # still needed for initialization
         RefPars = GM_PP.RefPars(
             Path(
                 "tests/test_tools/Data/reference_parameters_3.ref"),
@@ -377,7 +376,6 @@ class TestRefPars:
         assert RefPars.choices["command_line_color"] == ["white"]
 
     def test_SU_FP_1(self):
-        GM_FH.FileLocations()  # still needed for initialization
         RefPars = GM_PP.RefPars(
             Path(
                 "tests/test_tools/Data/reference_parameters_1.ref"),
@@ -483,8 +481,6 @@ class TestRefPars:
 
     @staticmethod
     def systest(fname, errcode, errclass=None, is_main=True):
-        GM_FH.FileLocations()  # still needed for initialization
-
         with pytest.raises(errclass, match=f"{errcode}$"):
             _ = GM_PP.RefPars(Path(fname), is_main)
 
@@ -1055,7 +1051,7 @@ class TestRunPars:
         assert RunPars.VEG_clib_file in [
             Path(curpath / ("../../../sourcefiles/VEG_" + fname)).resolve()
             for fname in [
-                "_Win64bit.dll", "_Win32bit.dll", "MacOS.dylib", "Linux.so"]
+                "Win64bit.dll", "Win32bit.dll", "MacOS.dylib", "Linux.so"]
         ]
         assert RunPars.log_directory == Path(curpath / "../Data").resolve()
         assert RunPars.log_filename == Path(
@@ -1151,7 +1147,6 @@ class TestRunPars:
         # Assumes that RefPars and RawPars work correctly!!!
 
         # setup - Create all necessary objects.
-        GM_FH.FileLocations()
         RefPars = GM_PP.RefPars(
             Path(
                 "tests/test_tools/Data/reference_parameters_2.ref"),
@@ -2001,7 +1996,6 @@ class TestMapPars:
 
     def test_SU_MR_1(self):
         # setup - Create all necessary objects.
-        GM_FH.FileLocations()
         RefPars = GM_PP.RefPars(
             Path(
                 "tests/test_tools/Data/reference_parameters_2.ref"),
@@ -2138,8 +2132,6 @@ class TestMapPars:
 
 
 def test_get_parameters():
-    GM_FH.FileLocations()
-
     in_parfile = Path("../test_inpar.txt").resolve()
     argslist = []
 
@@ -2176,7 +2168,6 @@ def test_get_parameters():
 
 
 def test_parse_commandline():
-    GM_FH.FileLocations()
     callcommand = [
         "GEM", "run", "../test_inpar.txt", "-verbose", "3"
     ]
@@ -2225,7 +2216,6 @@ def test_parse_commandline():
 
 
 def test_find_defparfile():
-    _ = GM_FH.FileLocations()  # still needed for initialization
     argslist = [
         "-sd", "sourcefiles",
         "-dpf", "reference_parameters.ref"
@@ -2240,8 +2230,6 @@ def test_find_defparfile():
 
 
 def test_parse_influencerfile():
-    _ = GM_FH.FileLocations()  # still needed for initialization
-
     file = Path("sourcefiles/infl_file_base.txt")
     groupdict = {
         "All": set("ABC")
@@ -2278,8 +2266,6 @@ def test_parse_influencer_par():
 
 
 def test_SU_FP_1():
-    GM_FH.FileLocations()
-
     in_parfile = Path("../test_inpar.txt").resolve()
 
     # this map no longer exists
@@ -2293,8 +2279,6 @@ def test_SU_FP_1():
 
 
 def test_SU_GEM_1():
-    GM_FH.FileLocations()
-
     in_parfile = Path("../test_inpar.txt").resolve()
     argslist = ["-dpf", "__init__.py"]
 
@@ -2305,7 +2289,6 @@ def test_SU_GEM_1():
 
 
 def test_SU_PP_1():
-    GM_FH.FileLocations()
     callcommand = [
         "GEM", "not_available_job_choice", "../test_inpar.txt", "-verbose", "3"
     ]
@@ -2318,7 +2301,6 @@ def test_SU_PP_1():
 
 
 def test_SU_PP_2():
-    GM_FH.FileLocations()
     callcommand = [
         "GEM", "run"
     ]
@@ -2331,7 +2313,6 @@ def test_SU_PP_2():
 
 
 def test_SU_PP_3():
-    GM_FH.FileLocations()
     callcommand = [
         "GEM", "run", "../doesnt_exist.really", "-verbose", "3"
     ]
@@ -2341,14 +2322,6 @@ def test_SU_PP_3():
             callcommand, alljobs, "GMAP",
             expect_inputfile=True, expect_parameters=True
         )
-    # with pytest.raises(SystemExit) as pytest_wrapped_sysexit:
-    #     _ = GM_PP.parse_commandline(
-    #         callcommand, alljobs, "GMAP",
-    #         expect_inputfile=True, expect_parameters=True
-    #     )
-    # assert pytest_wrapped_sysexit.type is SystemExit
-    # captured = capsys.readouterr()
-    # assert captured.out.endswith("SU_PP_3\n")
 
     callcommand = [
         "GEM", "run", "-verbose", "3"
@@ -2361,7 +2334,6 @@ def test_SU_PP_3():
 
     # -------
 
-    GM_FH.FileLocations()
     RefPars = GM_PP.RefPars(
         Path(
             "tests/test_tools/Data/reference_parameters_2.ref"),
@@ -2382,7 +2354,6 @@ def test_SU_PP_3():
 
 
 def test_SU_PP_4():
-    _ = GM_FH.FileLocations()  # still needed for initialization
     argslist = [
         "-sd", "sourcefiles",
         "--source_directory", "sourcefiles",
@@ -2394,7 +2365,6 @@ def test_SU_PP_4():
 
 
 def test_SU_WP_4():
-    _ = GM_FH.FileLocations()  # still needed for initialization
     argslist = [
         "-sd",
         "-dpf", "reference_parameters.ref"
@@ -2411,7 +2381,6 @@ def test_SU_WP_4():
 
 
 def test_SU_WP_5():
-    _ = GM_FH.FileLocations()  # still needed for initialization
     argslist = [
         "-md", "someloc"
     ]
@@ -2428,8 +2397,6 @@ def test_SU_WP_5():
 
 
 def test_SU_NP_4():
-    _ = GM_FH.FileLocations()  # still needed for initialization
-
     file = Path("tests/test_tools/Data/infl_file_SU_NP_4.txt")
     groupdict = {
         "All": set("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
@@ -2439,8 +2406,6 @@ def test_SU_NP_4():
 
 
 def test_SU_NP_5():
-    _ = GM_FH.FileLocations()  # still needed for initialization
-
     file = Path("tests/test_tools/Data/infl_file_SU_NP_5_1.txt")
     groupdict = {
         "All": set("ABCDEFGHIJKLMNOPQRSTUVWXYZ")

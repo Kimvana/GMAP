@@ -13,7 +13,6 @@ import time
 
 # local imports
 import GMAP.src.tools.ColorSchemes as GM_CS
-import GMAP.src.tools.FileHandler as GM_FH
 import GMAP.src.tools.PrintTools as GM_PT
 
 
@@ -23,7 +22,7 @@ def test_devprint(capsys):
     GM_PT.devprint("this is a test")
     captured = capsys.readouterr()
     assert captured.out == (
-        "(line   23) this is a test (from test_devprint in test_PrintTools.py)"
+        "(line   22) this is a test (from test_devprint in test_PrintTools.py)"
         "\n"
     )
 
@@ -36,8 +35,7 @@ class TestPrinter:
         assert captured.out.startswith("\nWARNING:\nthis is a test")
 
     def test_setenv(self):
-        _ = GM_FH.FileLocations()  # initializes printer also
-        pr = GM_PT.Printer()
+        pr = GM_PT.Printer
         pr.setenv(True, False)
         assert pr.color_mode == "white"  # safe mode toggles white
         assert pr._colors == GM_CS.LightModeColors
@@ -202,8 +200,7 @@ def test_time_to_str():
 
 
 def prep_printer():
-    _ = GM_FH.FileLocations()  # initializes printer also
-    pr = GM_PT.Printer()
+    pr = GM_PT.Printer
     pr.setenv(False, True)
     pr.set_state("running", 2, 3, "white", 79)
     return pr

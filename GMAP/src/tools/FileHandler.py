@@ -210,7 +210,7 @@ def find_exec_os():
         elif bits == 64:
             exec_os = "Win64bit"
         else:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nEnvironment was determined to be windows, but it is "
                 "neither a"
                 f" 32, nor 64 bit version. It appears to be {bits} bit. Please"
@@ -222,7 +222,7 @@ def find_exec_os():
     elif sys.platform == "linux":
         exec_os = "Linux"
     else:
-        GM_PT.Printer().warning(
+        GM_PT.Printer.warning(
             f"\nexecuting OS not recognised... sys.platform = {sys.platform}. "
             "Please contact the developers to solve this. ",
             "howtogethere", True, GMAPerrclass=GM_Ex.GmapOSError
@@ -424,7 +424,7 @@ def get_def_parfile(
     file_found = try_file(name[0])
 
     if not file_found:
-        GM_PT.Printer().warning(
+        GM_PT.Printer.warning(
             f"\nThe requested default parameter file {name} could not be "
             "found, or is not a file. "
             "Please make sure you specified it correctly.\n",
@@ -439,7 +439,7 @@ def get_def_parfile(
         name = files.sourcedir_hc / files.refparfilename_hc
         check_file_found = try_file(name)
         if not check_file_found:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nThe requested default parameter file requires the presence "
                 f"of the file {name}, but this file could not be found. "
                 "Please make sure you specified it correctly.\n",
@@ -507,7 +507,7 @@ def check_file_readability(fname, doprint=True, doquit=True):
                 pass
     except UnicodeDecodeError:
         if doprint:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 f"\n The file {fname} is of the wrong type, please make sure "
                 "it is a plain text file. ",
                 "SU_FH_3", doquit, GMAPerrclass=GM_Ex.GmapUnicodeDecodeError

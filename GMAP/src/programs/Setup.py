@@ -38,7 +38,7 @@ def Setup(callcommand):
         This is the user input into the terminal.
     """
 
-    printer = GM_PT.Printer()
+    printer = GM_PT.Printer
     printer.set_state("running", 2, 3)
 
     target = Path(callcommand[1]).resolve()
@@ -78,14 +78,14 @@ def verify_target(target, target_srcdir, target_mapdir):
     """
 
     if not target.is_dir():
-        GM_PT.Printer().warning(
+        GM_PT.Printer.warning(
             f"{target} is not a valid directory. Please submit a valid target "
             "target directory.", "Setup_1", True,
             GMAPerrclass=GM_Ex.GmapNotADirectoryError
         )
 
     if Path(target_srcdir).exists():
-        GM_PT.Printer().warning(
+        GM_PT.Printer.warning(
             f"The folder {target_srcdir} already exist. Please rename it or "
             "select another target folder.",
             "Setup_2", True,
@@ -93,7 +93,7 @@ def verify_target(target, target_srcdir, target_mapdir):
         )
 
     if Path(target_mapdir).exists():
-        GM_PT.Printer().warning(
+        GM_PT.Printer.warning(
             f"The folder {target_mapdir} already exist. Please rename it or "
             "select another target folder.",
             "Setup_3", True,

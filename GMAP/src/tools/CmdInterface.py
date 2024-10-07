@@ -13,7 +13,7 @@ from GMAP.src.tools.PrintTools import Printer
 def _report_unknown_choice():
     """Wrapper for warning call SU_GM_1."""
 
-    Printer().warning(
+    Printer.warning(
         "\nChoice of program wasn't recognized. Please type the following "
         "for more\ninformation on how to use this package:\n\nGMAP\n\n",
         "SU_GM_1", True, GMAPerrclass=GmapAttributeError
@@ -35,7 +35,7 @@ def cmd_interface(callcommand):
     """
 
     # The very first initialization the program needs/assumes. Also initializes
-    # the printing tool (Printer()).
+    # the printing tool (Printer).
     GM_FH.FileLocations()
 
     # Deduce whether we should be running in safe mode / dark mode.
@@ -43,7 +43,7 @@ def cmd_interface(callcommand):
     # 'GMAP -nodm' throwing an error.
     all_args = calldict(callcommand)
     safe_mode, dark_mode = get_safe_dark(all_args)
-    Printer().setenv(safe_mode, dark_mode)
+    Printer.setenv(safe_mode, dark_mode)
 
     print_logo()  # Print the GMAP logo + base text below
 
@@ -166,20 +166,20 @@ def print_logo():
         logostr = lfile.read()
 
     # convert abbr to actual color markers
-    colors = Printer().colors
+    colors = Printer.colors
     logostr = logostr.replace("P", colors.pink_hc)
     logostr = logostr.replace("G", colors.green_hc)
     logostr += colors.clear
 
-    Printer().print(1, "\n\n" + logostr + "\n")
-    Printer().print(
+    Printer.print(1, "\n\n" + logostr + "\n")
+    Printer.print(
         1,
         "\nFor the most up-to-date version of GMAP, reporting bugs/issues, "
         "suggesting improvements for the program, questions, or any other "
         "kind of feedback, go to github.com/Kimvana/GMAP\n"
     )
 
-    Printer().print(
+    Printer.print(
         1,
         f"\nRunning the following job:\n{GM_FH.FileLocations.callcommand}"
     )
@@ -197,7 +197,7 @@ def cmd_to_help(allhelps, subch):
         Used by user to indicate intent.
     """
 
-    printer = Printer()
+    printer = Printer
     if subch.lower() in allhelps:
         printer.print(0, GMAP.__doc__)
         printer.quit_early()
@@ -226,7 +226,7 @@ def cmd_to_tools(allhelps, callcommand, choice, subch):
         Used by user to indicate intent.
     """
 
-    printer = Printer()
+    printer = Printer
     modch = getattr(GMAP, choice)
     if subch.lower() in allhelps:
         printer.print(0, modch.__doc__)

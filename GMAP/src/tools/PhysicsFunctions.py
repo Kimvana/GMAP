@@ -109,7 +109,7 @@ def calc_frame(RunPars, System, outputs):
     """
 
     VEGlib = GM_CL.VEG_CLib()
-    printer = GM_PT.Printer()
+    printer = GM_PT.Printer
 
     printer.add_time(4, "VEG-related properties:", "VEGprop", "ms")
     for oscix, oscillator in enumerate(System.oscillators):
