@@ -21,11 +21,14 @@ This program will copy the source code and maps to target folder.
 
 
 from .src.programs import AIM
+from .src.programs import DEPICT
 from .src.programs import GEM
 from .src.programs import Setup
+
 
 alltools = {
     "AIM": AIM,
     "GEM": GEM,
-    "Setup": Setup
+    "Setup": Setup,
+    "DEPICT": DEPICT
 }

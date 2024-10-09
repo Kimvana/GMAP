@@ -81,7 +81,7 @@ The given parameter requires a choice to be provided, but this did not happen. S
 
 SU_WP_5
 -------
-When specifying a choice for a parameter that can accept multiple choices, the last choice must always be appended by '\\;', without spaces between the last choice and the '\\;'. See :ref:`this page <UserGuide_page_specifying_parameters_commandline>` for more information on how to specify a parameter on the command line.
+When specifying a choice (on the command line) for a parameter that can accept multiple choices, the last choice must always be appended by '\\;', without spaces between the last choice and the '\\;'. See :ref:`this page <UserGuide_page_specifying_parameters_commandline>` for more information on how to specify a parameter on the command line.
 
 SU_WP_6
 -------
@@ -113,7 +113,7 @@ One of the parameters supplied in a parameter file (either input or default, see
 
 SU_WP_13
 --------
-Default parameter files must contain all parameters, but there is an exception. There is a subclass of parameters that are not allowed in the default parameter file, because it would simply not make sense. This parameter is one of them, and should be removed from the default parameter file. See :ref:`this page <UserGuide_page_specifying_parameters_file>` for more information on how parameter files work.
+Default parameter files must contain all parameters, but there is an exception. There is a group of parameters that are not allowed in the default parameter file, because it would simply not make sense. This parameter is one of them, and should be removed from the default parameter file. See :ref:`this page <UserGuide_page_specifying_parameters_file>` for more information on how parameter files work.
 
 SU_WP_14
 --------
@@ -126,6 +126,11 @@ One of the parameters supplied in a parameter file (either input or default, see
 SU_WP_16
 --------
 For some groups of parameters, only one of the parameters can be used. Multiple parameters from such a group were used, make sure to only use one of those mentioned in the error message.
+
+SU_WP_17
+--------
+Some groups of parameters are linked, meaning that the available choices for one parameter might depend on the choice(s) provided for (an)other(s). The mentioned parameters are linked, but their choices don't match.
+
 
 SU_NP
 =====
@@ -153,6 +158,14 @@ The given parameter file contains a mistake in how things are specified. See the
 SU_NP_6
 -------
 The given command for select_atoms triggered some error. See the returned python error for more information. To see the error, set either the parameter 'verbose', or the parameter 'verbose_logfile' to 4.
+
+SU_NP_7
+-------
+The mentioned parameters have choices that are valid on their own, but their combination is not. Please make sure that these conflicts are resolved!
+
+SU_NP_8
+-------
+The given parameter was provided with an invalid choice. The error gives more information on what parameter, and whats wrong.
 
 
 SU_PP
@@ -247,6 +260,10 @@ MI_MR_6
 -------
 An extra core file was requested to be appended to the given core file. However, no file of the requested name could be found. If the developer did not provide additional instructions on extra files to add, this is an issue that most likely needs to be fixed by the developer of this map.
 
+MI_MR_7
+-------
+A prerequisite part of the map was missing. This is an issue that most likely needs to be fixed by the developer of this map.
+
 
 MI_MC
 =====
@@ -319,13 +336,38 @@ MI_MC_10
 If type is set to be 'linear', only one axis needs to be defined. Any of x, y and z can be used, depending on the map constants used. The other two will be taken perpendicular to eachother, and the one defined.
 If type is set to be 'standard', two of the three axes need to be defined. The first (any of x, y, and z) will take the direction as is, the second (any of the remainder of x, y and z) will have the component along the first removed. This means that for the second, only the perpendicular component will be used for the direction of the vector. The third is assumed by the program to be the cross product of the first vector with the second (first x second).
 
+MI_MC_11
+--------
+There was an issue with the specification for the keyword 'valid_combinations' for one of the maps. [Cite relevant manual page!!]
 
-MI_GEM
+MI_MC_12
+--------
+The mentioned parameter can only take a limited amount of options, and one of those used is not one of them. [Cite relevant manual page!!]
+
+
+MI_MM
 ======
 
-MI_GEM_1
+MI_MM_1
 --------
 The user requested the use of a certain map, but the program cannot use/find it. Make sure there is a directory of the requested name in the directory named 'singles' inside your maps directory. If there is, check the earlier errors - there might have been issues loading it in.
+
+MI_MM_2
+-------
+Certain coupling maps require some additional information from oscillators which cannot be provided/determined by GMAP, or the coupling map itself. Therefore, the map for an oscillator must give it specifically for this coupling map (which is completely optional for a map to do). This error was triggered because the mentioned combination of maps is not supported.
+
+MI_MM_3
+-------
+Certain couplings maps might indicate they cannot be used for certain types of oscillators. Make sure you only use a map for its intended purpose!
+
+MI_MM_4
+-------
+Certain couplings maps might indicate they cannot be used for certain types of couplings. Make sure you only use a map for its intended purpose!
+
+MI_MM_5
+-------
+Certain singles maps might indicate they cannot be used for certain types of outputs. Make sure you only use a map for its intended purpose!
+
 
 **********************
 Codes starting with MD
@@ -364,6 +406,11 @@ There is no bond information in the supplied MD system, but this information is 
   - Charmm: .psf
   - NAMD: .psf
 
+MD_SU_6
+-------
+Some circular reference was found when determining what coupling map should be used to couple a certain pair of oscillators. The first one in the list is the one directly requested by the user, and that map determined that the second map in the list would be a better fit. Each map points to the next in the list, until one is encountered that has been requested before, starting this circular nature. This means the program will never find a suitable map, and thus quits.
+The issue could lie with the initial (or any other) map not being a good fit, and therefore sorting out the pair wrongly. Alternatively, there's a mistake in the map's code directing it to a different map. 
+
 *************************
 Codes starting with Setup
 *************************
@@ -387,6 +434,15 @@ A file named maps_copy already exists in the directory that is being copied to.
 ***********
 Other codes
 ***********
+
+
+CT_EC_1
+=======
+Something was compared to an error code, but wasn't one itself. If the error persists without using any custom maps, please contact the GMAP developers. If not, please contact the respective map authors.
+
+CT_EC_2
+=======
+Something was compared to an error code, but had the wrong format. If the error persists without using any custom maps, please contact the GMAP developers. If not, please contact the respective map authors.
 
 howtogethere
 ============

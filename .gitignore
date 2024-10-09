@@ -3,4 +3,10 @@ env_**
 **.pyc
 **.DS_Store
 **_offsets.**
-.vscode
+.vscode/settings.json
+GMAP/sourcefiles/VEG.exp
+GMAP/sourcefiles/VEG.lib
+GMAP/sourcefiles/VEG.obj
+sphinx_docs/_build/**
+
+GMAP/.coverage**

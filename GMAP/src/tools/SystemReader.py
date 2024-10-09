@@ -6,10 +6,11 @@ import MDAnalysis as MDA
 import numpy as np
 
 # local imports
+import GMAP.src.tools.DefaultMapFunctions as GM_DMF
+import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.ParameterParser as GM_PP
+import GMAP.src.tools.PhysicsFunctions as GM_PF
 import GMAP.src.tools.PrintTools as GM_PT
-from GMAP.src.tools.PrintTools import devprint as dpr
-dpr("", end="")  # to disable error of dpr unused
 
 
 class System:
@@ -17,16 +18,9 @@ class System:
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties.
-        Has to be updated after RunPars is finalized.
-    Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
-        The object that allows to cleanly log and print during runtime,
-        and handle errors.
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
-        The 'main' RunPars instance containing all the basic run-defining
-        parameters.
+        The 'main' RunPars instance containing all the basic
+        run-defining parameters.
 
     Attributes
     ----------
@@ -109,18 +103,37 @@ class System:
         ones calculations will be performed on.
     influencers_atix : list of int
         The indices of all atoms that should be considered influencers.
+    nosc : int
+        The amount of oscillators present in the system.
+    ordered_oscillators : dict of str: list of \
+        :class:`~GMAP.src.tools.SystemReader.Oscillator` pairs
+        All oscillators, but grouped by the map they belong to.
     """
 
-    def __init__(self, Files, Printer, RunPars):
-        self.universe = gen_universe(Printer, RunPars)
-        self.set_properties(Printer)
-        self.basic_boxchecks(Printer, RunPars)
+    def __init__(self, RunPars):
+        self.universe = gen_universe(RunPars)  # MDA universe creation
+        self.set_properties()  # Extract numpy arrays from MDA universe
+        self.basic_boxchecks(RunPars)  # see if box has correct size and charge
 
-        self.find_influencers(Printer, RunPars)
+        self.find_influencers(RunPars)  # Find all influencing atoms
 
-        self.find_oscillators(Files, Printer, RunPars)
+        # detect all valid oscillators and introduce them to the maps
+        self.find_oscillators(RunPars)
 
-    def basic_boxchecks(self, Printer, RunPars):
+        # sort all oscillators, make usable lookup-tables. Also, determine
+        # correct coupling map for each oscillator pair (and build tables
+        # for the pairs, too)
+        self.order_oscillators(RunPars)
+
+        # It would make sense to, just as with influencers, also report all
+        # findings to the user (through printing to command line and log file).
+        # However, we're not going to do that, as maps might need to do
+        # more investigating on their oscillators to know what they are. So,
+        # we want to give maps the time to do that, and only report on the
+        # system once they're done! This means reporting happens after the
+        # post-init call to each map!
+
+    def basic_boxchecks(self, RunPars):
         """Performs the first basic analyses on the provided universe.
 
         Doesn't return anything - if anything is amiss, it will just
@@ -128,24 +141,21 @@ class System:
 
         Parameters
         ----------
-        Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
-            The object that allows to cleanly log and print during runtime,
-            and handle errors.
         RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
-            The 'main' RunPars instance containing all the basic run-defining
-            parameters.
+            The 'main' RunPars instance containing all the basic
+            run-defining parameters.
         """
 
         self.rightangled = check_box_rightangled(self.universe)
         if not self.rightangled:
-            Printer.warning(
+            GM_PT.Printer.warning(
                 "\nSubmitted MD system is not of cubic, tetragonal or "
                 "orthorhombic symmetry. In the current state, this program "
                 "only supports right-angled systems.",
-                "MD_SU_2", True
+                "MD_SU_2", True, GMAPerrclass=GM_Ex.GmapNotImplementedError
             )
 
-        self.neutral = check_box_charge(Printer, RunPars, self.charges)
+        self.neutral = check_box_charge(RunPars, self.charges)
 
         try:
             self.universe.bonds
@@ -154,55 +164,41 @@ class System:
             if not RunPars.detected_requires_bonds:
                 pass
             else:
-                Printer.warning(
+                GM_PT.Printer.warning(
                     "\nSubmitted MD system does not contain any "
                     "information on "
                     "bonds, but the requested maps do require this. Either "
                     "choose a different map, or provide a different input.",
-                    "MD_SU_5", True, exception=ex
+                    "MD_SU_5", True, exception=ex,
+                    GMAPerrclass=GM_Ex.GmapParameterError
                 )
 
     # TO DO inside!
-    def set_properties(self, Printer):
+    def set_properties(self):
         """Sets the basic properties of the system.
 
         Extracts them from self.universe.atoms, and saves them in self.
         """
+
         self.atnums = self.universe.atoms.ix
         self.atnames = self.universe.atoms.names
         self.resnums = self.universe.atoms.resnums
         self.resnames = self.universe.atoms.resnames
-        self.positions = self.universe.atoms.positions
-        self.masses = self.universe.atoms.masses
-        self.charges = self.universe.atoms.charges
+        self.positions = self.universe.atoms.positions.astype('float32')
+        self.masses = self.universe.atoms.masses.astype('float32')
+        self.charges = self.universe.atoms.charges.astype('float32')
         self.types = self.universe.atoms.types
         self.segids = self.universe.atoms.segids
 
         self.natoms = np.int32(self.resnums.shape[0])
 
-        # dpr(set(self.masses))
-        # for name, mass, type1, type2 in zip(
-        #     self.atnames, self.masses, self.types,
-        #     self.universe.atoms.elements
-        # ):
-        #     if int(mass) == 14:
-        #         dpr(name, mass, type1, type2)
-
         # make sure resums always follow AIM-convention (regardless of MD input
         # used)
-        self.abs_resnums(Printer)
+        self.abs_resnums()
 
         self.nres = np.int32(self.resnums[-1] + 1)
 
-        self.boxdims = self.universe.dimensions[:3].astype('float32')
-        self.halfbox = self.boxdims/2
-        self.halfbox = self.halfbox.astype('float32')
-        self.angles = self.universe.dimensions[3:].astype('float32')
-        self.boxvects = MDA.lib.mdamath.triclinic_vectors(
-            self.universe.dimensions
-        )
-        self.safesphere = 0.5 * self.boxvects.diagonal().min()
-        self.boxvects_inv = np.linalg.inv(self.boxvects)
+        self.determine_box()
 
         # TO DO - analogue of AIMs ResidueFinder and IXFinder
         self.residues = Residues(self)
@@ -220,6 +216,8 @@ class System:
         #         whether OPLS is being used?
 
         # TO DO - C support?
+        self.positions_c = np.ctypeslib.as_ctypes(np.ravel(self.positions))
+        self.charges_c = np.ctypeslib.as_ctypes(self.charges)
         # if RunPar.use_c_lib:
         #     self.charges = self.charges.astype('float32')
         #     self.charges_c = np.ctypeslib.as_ctypes(self.charges)
@@ -228,28 +226,22 @@ class System:
         #     self.res_COM_c = np.ctypeslib.as_ctypes(
         #         np.zeros((self.nres * 3), dtype='float32'))
 
-    def abs_resnums(self, Printer):
+    def abs_resnums(self):
         """Renumbers residue numbers so they start at 0, and never reset
-
-        Parameters
-        ----------
-        Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
-            The object that allows to cleanly log and print during runtime,
-            and handle errors.
         """
 
         prevresnum = -1
         writeresnum = -1
-        for atomnum, ix in enumerate(self.atnums):
+        for ix, atomnum in enumerate(self.atnums):
             if atomnum != ix:
                 # yes, we could just force atomnum to match ix. But if this
                 # MD software does this differently, it might very well do
                 # other things differently as well, so please, check that!
-                Printer.warning(
-                    f"\nThe atom number of the atom at position {atomnum} "
+                GM_PT.Printer.warning(
+                    f"\nThe atom number of the atom at position {ix} "
                     "does "
                     "not match its position in the list.",
-                    "MD_SU_4", True
+                    "MD_SU_4", True, GMAPerrclass=GM_Ex.GmapMDFileError
                 )
             resnum = self.resnums[atomnum]
             if resnum != prevresnum:
@@ -257,7 +249,22 @@ class System:
             self.resnums[atomnum] = writeresnum
             prevresnum = resnum
 
-    def find_influencers(self, Printer, RunPars):
+    def determine_box(self):
+        """Find out what the simulation box looks like."""
+        self.boxdims = self.universe.dimensions[:3].astype('float32')
+        self.halfbox = self.boxdims/2
+        self.halfbox = self.halfbox.astype('float32')
+        self.angles = self.universe.dimensions[3:].astype('float32')
+        self.boxvects = MDA.lib.mdamath.triclinic_vectors(
+            self.universe.dimensions
+        ).astype('float32')
+        self.safesphere = 0.5 * self.boxvects.diagonal().min()
+        self.boxvects_inv = np.linalg.inv(self.boxvects).astype('float32')
+
+        self.boxdims_c = np.ctypeslib.as_ctypes(self.boxdims)
+        self.halfbox_c = np.ctypeslib.as_ctypes(self.halfbox)
+
+    def find_influencers(self, RunPars):
         """Find the indices of all atoms that are influencers
 
         Influencers are the atoms whose charge should be considered
@@ -267,12 +274,9 @@ class System:
 
         Parameters
         ----------
-        Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
-            The object that allows to cleanly log and print during runtime,
-            and handle errors.
         RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
-            The 'main' RunPars instance containing all the basic run-defining
-            parameters.
+            The 'main' RunPars instance containing all the basic
+            run-defining parameters.
         """
 
         groupdict = {}
@@ -285,54 +289,66 @@ class System:
                 name = map_inflgroup[0]
                 group_def = " ".join(map_inflgroup[1:])
                 groupdict[name] = GM_PP.parse_influencerfile_line(
-                    Printer, group_def, groupdict, map_.corepath
+                    group_def, groupdict, map_.corepath
                 )
 
-        for key, val in groupdict.items():
-            dpr(key, val)
+        cb = GM_PT.Printer.colors.green_lc
+        ct = GM_PT.Printer.colors.clear
+        line = f"{cb}════{ct}"
+        GM_PT.Printer.print(
+            1, f"\n{line} Influencers {line}", detailed_instructions=[1])
+        GM_PT.header(2, "Influencers", "doublebox")
 
-        Printer.print(1, f"\n{GM_PT.make_header('Influencers', '-')}\n\n")
-
+        # names of residues or residue groups are given to specify infl.
         if isinstance(RunPars.influencers, list):
             choice = GM_PP.parse_influencer_par(" ".join(RunPars.influencers))
             choice = GM_PP.parse_influencerfile_line(
-                Printer, choice, groupdict,
+                choice, groupdict,
                 "parameter file "
             )
             self.influencers_atix = self.residues.manage_influencers(choice)
             influencers_not_included = groupdict["All"] - choice
-            Printer.print(
+            if len(influencers_not_included) == 0:
+                influencers_not_included.add("None")
+            GM_PT.Printer.print(
                 1,
                 "Residue names included in influencers:\n"
                 + ", ".join(choice) +
                 "\n\nResidue names NOT included in influencers:\n"
                 + ", ".join(influencers_not_included)
             )
+
+        # The MDA select_atoms functionality is used to define influencers.
         elif isinstance(RunPars.influencers, str):
             try:
                 atgroup = self.universe.select_atoms(RunPars.influencers)
             except Exception as ex:
-                Printer.warning(
-                    "Some problem occured while selecting atoms for the "
+                GM_PT.Printer.warning(
+                    "\nSome problem occured while selecting atoms for the "
                     "influencers",
                     "SU_NP_6", True, exception=ex
                 )
             self.influencers_atix = atgroup.atoms.ix.tolist()
+
+        # similar to the first, names of residues or residue groups are given.
+        # however, this time, a separate file is used.
         else:  # must be a separate file
             choice = GM_PP.parse_influencerfile(
-                Printer, RunPars.influencers, groupdict)
+                RunPars.influencers, groupdict)
             if "choice" in choice:
                 choice = choice["choice"]
             else:
-                Printer.warning(
-                    "When using a file to specify influencers, the final "
+                GM_PT.Printer.warning(
+                    "\nWhen using a file to specify influencers, the final "
                     "choice of influencers must be given using the group "
                     "'choice'.",
-                    "SU_NP_5", True
+                    "SU_NP_5", True, GMAPerrclass=GM_Ex.GmapFileSyntaxError
                 )
             self.influencers_atix = self.residues.manage_influencers(choice)
             influencers_not_included = groupdict["All"] - choice
-            Printer.print(
+            if len(influencers_not_included) == 0:
+                influencers_not_included.add("None")
+            GM_PT.Printer.print(
                 1,
                 "Residue names included in influencers:\n"
                 + ", ".join(choice) +
@@ -344,18 +360,23 @@ class System:
         atixprint = GM_PT.intlist_to_rangelist(
             self.influencers_atix, self.natoms
         )
-        Printer.print(
+        if len(atixprint[1]) == 0:
+            atixprint[1].append("None")
+        GM_PT.Printer.print(
             3,
-            "Atoms included in influencers:\n"
+            "\nAtoms included in influencers:\n"
             + ", ".join(atixprint[0]) +
             "\n\nAtoms NOT included in influencers:\n"
             + ", ".join(atixprint[1])
         )
+        GM_PT.footer(2, "influencers", "doublebox")
         self.influencers_atix = np.asarray(
             self.influencers_atix, dtype=np.int32
         )
+        self.n_influencers = np.shape(self.influencers_atix)[0]
+        self.influencers_atix_c = np.ctypeslib.as_ctypes(self.influencers_atix)
 
-    def find_oscillators(self, Files, Printer, RunPars):
+    def find_oscillators(self, RunPars):
         """Finds all the oscillators in the MD system
 
         Before an oscillator is considered 'found', it has to match the
@@ -372,16 +393,9 @@ class System:
 
         Parameters
         ----------
-        Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-            Contains all currently known paths and other file-related
-            properties.
-            Has to be updated after RunPars is finalized.
-        Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
-            The object that allows to cleanly log and print during runtime,
-            and handle errors.
         RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
-            The 'main' RunPars instance containing all the basic run-defining
-            parameters.
+            The 'main' RunPars instance containing all the basic
+            run-defining parameters.
         """
 
         # If only single-residue oscillators:
@@ -410,39 +424,16 @@ class System:
         for oscillators in allgroups:
             map_ = oscillators[0].Map
             checked = map_.code.GM_adjust_oscillators(
-                Files, Printer, map_, self, oscillators
+                map_, self, oscillators
             )
             if checked:
                 checked_oscillators.append(checked)
-
-        # PRINTS!!!!
-
-        # PRINT FOUND OSCILLATORS
-        # for oscillators in checked_oscillators:
-        #     if not oscillators:
-        #         continue
-        #     dpr(oscillators[0].Map.name, len(oscillators))
-        #     for oscillator in oscillators:
-        #         dpr(
-        #             self.resnames[oscillator.used_atoms[0]],
-        #             [(ix, self.atnames[ix]) for ix in oscillator.used_atoms]
-        #         )
-
-        # PRINT ATOMS OF CERTAIN GROUP FOR SCANNING PURPOSES
-        # for ix, name in enumerate(self.residues.resnames):
-        #     if name == "CYS":
-        #         for atix in range(
-        #             self.residues.first_ix[ix],
-        #             self.residues.last_ix[ix] + 1
-        #         ):
-        #             dpr(atix, self.atnames[atix])
-        #             if self.atnames[atix] == "SG":
-        #                 dpr(self.universe.atoms[atix].bonded_atoms)
 
         self.oscillators = [
             oscillator for oscillators in checked_oscillators
             for oscillator in oscillators
         ]
+        self.nosc = len(self.oscillators)
 
     def find_oscillators_perstruct(self, struct, map_):
         """Finds all oscillators matching the given structure.
@@ -454,14 +445,15 @@ class System:
         ----------
         struct : :class:`~GMAP.src.tools.MapReader.Structure`
             The structure template that will be matched.
-        map_ : :class:`~GMAP.src.tools.MapReader.Map`
+        map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
             The map instance the structure belongs to.
 
         Returns
         -------
         all_oscillators : list of \
             :class:`~GMAP.src.tools.SystemReader.Oscillator`
-            All oscillators that were found matching the given structure.
+            All oscillators that were found matching the given
+            structure.
         """
 
         if len(struct.residues) == 1:
@@ -485,7 +477,8 @@ class System:
             # stick the different residues together, using the bonds.
             all_oscillators = self.match_residues(all_oscillators, struct)
 
-        all_oscillators = [Oscillator(osc, map_) for osc in all_oscillators]
+        all_oscillators = [
+            Oscillator(self, osc, map_) for osc in all_oscillators]
         return all_oscillators
 
     def find_oscillators_residue(self, residue):
@@ -558,6 +551,7 @@ class System:
                         continue
                     atoms_ix[local_ix] = atom_ix
                     atoms_found[local_ix] = True
+                    break
 
         if all(atoms_found):
             return atoms_ix
@@ -756,9 +750,170 @@ class System:
                 outlist.append(new_osc)
         return outlist
 
+    def order_oscillators(self, RunPars):
+        """Sort all present oscillators by their map.
+
+        Parameters
+        ----------
+        RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+            The 'main' RunPars instance containing all the basic
+            run-defining parameters.
+        """
+
+        # for each singles map, determine which oscillators are treated
+        # by that map (no treated oscillators - not in the dict)
+        self.oscillators_ordered = {}
+        self.oscillators_ordered_ix = {}
+        for oscix, oscillator in enumerate(self.oscillators):
+            setattr(oscillator, "oscix", oscix)
+            mapname = oscillator.Map.name
+            if mapname not in self.oscillators_ordered:
+                self.oscillators_ordered[mapname] = [oscillator]
+                self.oscillators_ordered_ix[mapname] = [oscix]
+            else:
+                self.oscillators_ordered[mapname].append(oscillator)
+                self.oscillators_ordered_ix[mapname].append(oscix)
+
+        # for each oscillator pair, determine which coupling map should
+        # treat it. That coupling map has the chance to change it.
+        coup_v_allpair = {}
+        for oscix1, osc1 in enumerate(self.oscillators):
+            for oscix2 in range(oscix1 + 1, self.nosc):
+                osc2 = self.oscillators[oscix2]
+                base_coupmap = None
+                req_coupmap = RunPars.pair_v_coupling_dict[
+                    (osc1.Map.name, osc2.Map.name)]
+                all_req_maps = [req_coupmap]
+                while base_coupmap != req_coupmap:
+                    base_coupmap = req_coupmap
+                    # ask the current map which map should actually be used
+                    coupmap = RunPars.requested_pairmapdict[base_coupmap]
+                    req_coupmap = coupmap.code.GM_change_coup_type(
+                        coupmap, self, oscix1, osc1, oscix2, osc2)
+                    if (
+                        req_coupmap in all_req_maps
+                        and req_coupmap != all_req_maps[-1]
+                    ):
+                        all_req_maps.append(req_coupmap)
+                        mapseq = ", ".join(all_req_maps)
+                        GM_PT.Printer.warning(
+                            "\nAn issue occurred when determining which "
+                            "coupling method should be used to couple the "
+                            "following two oscillators:\n"
+                            f"{osc1}\n{osc2}\nThe user requested to use "
+                            f"{all_req_maps[0]}, which started the following "
+                            f"circular chain: {mapseq}.\nThis might mean the "
+                            "choice of coupling was unsuitable, or there is "
+                            "a misstake in one of these maps.",
+                            "MD_SU_6", True,
+                            GMAPerrclass=GM_Ex.GmapParameterError
+                        )
+                    else:
+                        all_req_maps.append(req_coupmap)
+                if req_coupmap in coup_v_allpair:
+                    coup_v_allpair[req_coupmap].append((oscix1, oscix2))
+                else:
+                    coup_v_allpair[req_coupmap] = [(oscix1, oscix2)]
+
+        # if any pairs shouln't be coupled, remove the 'none' choice from the
+        # dict.
+        try:
+            del coup_v_allpair[None]
+        except Exception:
+            pass
+
+        # save each list of pairs to the map that should be coupling it.
+        for coupmapname, pairlist in coup_v_allpair.items():
+            coupmap = RunPars.requested_pairmapdict[coupmapname]
+            coupmap.allpairs = pairlist
+
+        # for each coupling map, determine which oscillators are coupled
+        # by that map (no coupled oscillators - not in the dict)
+        self.oscillators_ordered_coup = {}
+        self.oscillators_ordered_coup_ix = {}
+        for oscix, oscillator in enumerate(self.oscillators):
+            for coupmap, pairs in coup_v_allpair.items():
+                for pair in pairs:
+                    if oscix in pair:
+                        if coupmap not in self.oscillators_ordered_coup:
+                            self.oscillators_ordered_coup[coupmap] = [
+                                oscillator]
+                            self.oscillators_ordered_coup_ix[coupmap] = [oscix]
+                        else:
+                            self.oscillators_ordered_coup[coupmap].append(
+                                oscillator)
+                            self.oscillators_ordered_coup_ix[coupmap].append(
+                                oscix)
+                        # if this oscillator is part of this map, no need to
+                        # check the other pairs!
+                        break
+        for coupmapname, oscillators in self.oscillators_ordered_coup.items():
+            coupmap = RunPars.requested_pairmapdict[coupmapname]
+            coupmap.check_singles_2(RunPars, oscillators)
+
+    def update_properties(self):
+        """Reloads the frame-dependent properties of the system.
+
+        This function is supposed to be called at the beginning of every
+        frame to ensure that the properties stored inside are up to
+        date.
+        """
+
+        printer = GM_PT.Printer
+
+        printer.add_time(4, "positions and box:", "PosBox", "ms")
+        self.positions = self.universe.atoms.positions.astype('float32')
+        self.positions_c = np.ctypeslib.as_ctypes(np.ravel(self.positions))
+        self.determine_box()
+        printer.add_time(4, "Center of Mass:", "COM", "ms")
+        self.residues.CoM = GM_PF.system_CoM(
+            self.positions, self.masses, self.boxvects_inv,
+            self.boxvects, self.residues.first_ix, self.residues.last_ix,
+            self.nres
+        )
+        self.residues.CoM_c = np.ctypeslib.as_ctypes(
+            np.ravel(self.residues.CoM))
+
+    def print_system(self, RunPars):
+        """Reports what the MD system looks like - what oscillators were
+        found
+
+        Parameters
+        ----------
+        RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+            The 'main' RunPars instance containing all the basic
+            run-defining parameters.
+        """
+
+        cb = GM_PT.Printer.colors.green_lc
+        ct = GM_PT.Printer.colors.clear
+        line = f"{cb}════{ct}"
+        GM_PT.Printer.print(
+            1, f"\n{line} MD system analysis {line}",
+            detailed_instructions=[1])
+        GM_PT.header(2, "MD system analysis", "doublebox")
+
+        # reporting the amount of oscillators per oscillator type
+        report_osctype = GM_DMF.get_report_system()  # generate function
+        toprint = [
+            report_osctype(map_, self)
+            for map_ in RunPars.requested_mapdict.values()]
+
+        # This should be printed if and only if verbose is set to 1.
+        GM_PT.Printer.print(1, "\n".join(toprint), detailed_instructions=[1])
+
+        # let each map decide how to report their oscillators.
+        for mapname in self.oscillators_ordered.keys():
+            map_ = RunPars.requested_mapdict[mapname]
+            toprint = map_.code.GM_report_system(map_, self)
+            GM_PT.Printer.print(2, toprint)
+
+        GM_PT.footer(2, "MD system analysis", "doublebox")
+
 
 class Residues:
-    """Creates and stores information on the system on a per-residue basis
+    """Creates and stores information on the system on a per-residue
+    basis
 
     The System class has a lot of information on a per-atom basis, this
     class has it on a per residue.
@@ -771,12 +926,14 @@ class Residues:
 
     Attributes
     ----------
-    first_ix : list of int
-        A list as long as there are residues in the MD system. For each
-        residue, it stores the index of the first atom.
-    last_ix : list of int
-        A list as long as there are residues in the MD system. For each
-        residue, it stores the index of the last atom.
+    first_ix : np.ndarray
+        An array as long as there are residues in the MD system, with
+        dtype np.int32. For each residue, it stores the index of the
+        first atom.
+    last_ix : np.ndarray
+        An array as long as there are residues in the MD system, with
+        dtype np.int32. For each residue, it stores the index of the
+        last atom.
     resnames : list of str
         A list as long as there are residues in the MD system. For each
         residue, it stores its residue name.
@@ -784,13 +941,17 @@ class Residues:
         All residue names that are considered influencers this run.
     influencer_ix : list of int
         The indices of all residues that are influencers.
+    CoM : np.ndarray
+        An array as long as there are residues in the MD system. For
+        each residue, it stores its center of mass.
     """
 
     def __init__(self, syst):
         self.find_markers(syst)
 
     def find_markers(self, syst):
-        """Make lookup tables (len=nres) for basic residue-based properties.
+        """Make lookup tables (len=nres) for basic residue-based
+        properties.
 
         1D arrays are built with a length equal to the amount of
         residues in the system. For each residue, we save the index
@@ -805,6 +966,7 @@ class Residues:
             This object stores all important information about the MD
             system that will be analyzed.
         """
+
         self.first_ix = []
         self.resnames = []
         self.last_ix = []
@@ -828,8 +990,10 @@ class Residues:
         else:
             self.last_ix.append(atnum)
 
-        self.first_ix = np.array(self.first_ix)
-        self.last_ix = np.array(self.last_ix)
+        self.first_ix = np.array(self.first_ix, dtype="int32")
+        self.last_ix = np.array(self.last_ix, dtype="int32")
+        self.first_ix_c = np.ctypeslib.as_ctypes(self.first_ix)
+        self.last_ix_c = np.ctypeslib.as_ctypes(self.last_ix)
 
     def manage_influencers(self, influencerset):
         """Return all atom indices with one of the given residue names
@@ -860,15 +1024,18 @@ class Oscillator:
 
     Parameters
     ----------
+    System : :class:`~GMAP.src.tools.SystemReader.System`
+        The class containing all the information on the system of the
+        MD trajectory.
     atoms : list of int
         The indices of the atoms that make up this oscillator. All atoms
         specified in functional_group are in here.
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
         The map that this oscillator belongs to.
 
     Attributes
     ----------
-    Map : :class:`~GMAP.src.tools.MapReader.Map`
+    Map : :class:`~GMAP.src.tools.MapReader.SingleMap`
         The map that this oscillator belongs to.
     used_atoms : list of int
         Using Map.used_atoms - contains the system indices of the atoms
@@ -877,18 +1044,119 @@ class Oscillator:
     electrostatic_atoms : list of int
         The system indices of all atoms that the map should calculate
         the electrostatic properties for.
+    local_atoms : list of int
+        The system indices of all atoms that the map should calculate
+        the electrostatic properties for.
+    electrostatic_atoms_c : `ctypes.Array`
+        The c-friendly variant of self.electrostatic_atoms
+    local_atoms_c : `ctypes.Array`
+        The c-friendly variant of self.local_atoms
+    n_estatic_atoms : `np.int32`
+        The c-friendly form for the length of self.electrostatic_atoms
+    n_local_atoms : `np.int32`
+        The c-friendly form for the length of self.local_atoms
+    VEGout : `np.ndarray`
+        The array to which the output of the VEG calculations will be
+        written. Is of shape (n_estatic_atoms, 10).
+    VEGout_c : `ctypes.Array`
+        The c-friendly variant of self.VEGout
     positions_box : `np.ndarray`
         The positions of all atoms given in used_atoms, in box
         coordinates.
+    VEG_refpos : `np.ndarray`
+        The position on which the sphere defining the electrostatics
+        should be centered.
+    VEG_refpos_c : `ctypes.Array`
+        The c-friendly variant of self.VEG_refpos_c.
+    rotation_matrix : `np.ndarray`
+        The definition of the local vectors. This 3*3 numpy array can be
+        considered 3 vectors, the x, y, and z unit vector in
+        MD-coordinates.
+    oscix : int
+        The index of this oscillator in the current MD system.
+    dipole_vec : `np.ndarray`
+        (Only used if dipoles are calculated this run!)
+        The dipole moment calculated for this oscillator.
+    dipole_pos : `np.ndarray`
+        (Only used if dipoles are calculated this run!)
+        The position at which the dipole moment lies.
     """
 
-    def __init__(self, atoms, map_):
+    def __init__(self, System, atoms, map_):
+        self.system = System
         self.Map = map_
         self.used_atoms = [atoms[index] for index in self.Map.Core.used_atoms]
         self.electrostatic_atoms = [
             self.used_atoms[index]
             for index in self.Map.Core.electrostatic_atoms
         ]
+        self.local_atoms = [
+            self.used_atoms[index] for index in self.Map.Core.local_atoms
+        ]
+        self.local_atoms.sort()
+
+        # for c integration - here, or should this part be called later?
+        self.electrostatic_atoms_c = np.ctypeslib.as_ctypes(np.array(
+            self.electrostatic_atoms, dtype="int32"))
+        self.local_atoms_c = np.ctypeslib.as_ctypes(np.array(
+            self.local_atoms, dtype="int32"
+        ))
+        self.n_estatic_atoms = np.int32(len(self.electrostatic_atoms))
+        self.n_local_atoms = np.int32(len(self.local_atoms))
+        self.VEGout = np.zeros((self.n_estatic_atoms, 10), dtype="float32")
+        self.VEGout_c = np.ctypeslib.as_ctypes(np.ravel(self.VEGout))
+
+        # So we have some default RM to avoid stupid bugs and checks later
+        self.rotation_matrix = np.array(
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]], dtype="float32")
+
+    def __str__(self):
+        return (
+            f"{self.__class__.__name__} of type {self.Map.name} "
+            f"{self.Map.code.GM_str_osc(self.Map, self.system, self)}"
+        )
+
+    def rotate_VEG(self):
+        """Rotate the stored VEG from cartesian to local basis.
+
+        The local basis is defined in self.rotation_matrix. The
+        potential is not rotated, only the field and gradient are.
+        """
+
+        # G as a matrix should look like this:
+        # row \\ column   0   1   2
+        #   0           (Gxx Gxy Gxz)
+        #   1           (Gyx Gyy Gyz)
+        #   2           (Gzx Gzy Gzz)
+
+        # Here, VEGout has the following structure:
+
+        # index   0  1   2   3   4   5   6   7   8   9
+        #       ( V  Ex  Ey  Ez Gxx Gyy Gzz Gxy Gxz Gyz )
+
+        # So, to build the square matrix, we need the following indices:
+        # (4 7 8)
+        # (7 5 9)
+        # (8 9 6)
+
+        # and to go back:  (coords in row, col)
+        # VEGout[4:] = ((0, 0), (1, 1), (2, 2), (0, 1), (0, 2), (1, 2))
+
+        # --------------------------------------------------------------
+        # rotate E
+        self.VEGout[:, 1:4] = self.VEGout[:, 1:4] @ self.rotation_matrix.T
+
+        # --------------------------------------------------------------
+        # rotate G
+
+        # build square representation
+        Gsq = self.VEGout[:, [4, 7, 8, 7, 5, 9, 8, 9, 6]].reshape((-1, 3, 3))
+
+        # Do the rotation
+        temp = self.rotation_matrix @ Gsq @ self.rotation_matrix.T
+
+        # and back to other representation
+        self.VEGout[:, 4:] = temp[:, [0, 1, 2, 0, 0, 1], [0, 1, 2, 1, 2, 2]]
 
     def frame_update(self, Syst):
         """Update the frame-specific attributes of the instance.
@@ -902,21 +1170,74 @@ class Oscillator:
         Syst : :class:`~GMAP.src.tools.SystemReader.System`
             The object that stores all information on the MD system
         """
+
         self.positions_box = (
             Syst.positions[self.used_atoms] @ Syst.boxvects_inv)
+        self.VEG_refpos = self.get_VEG_ref(Syst)
+        self.VEG_refpos_c = np.ctypeslib.as_ctypes(self.VEG_refpos)
+        if self.Map.Core.electrostatic_choice in ("E", "G"):
+            self.rotation_matrix = self.get_rotation_matrix(Syst)
+
+    def get_VEG_ref(self, System):
+        """Obtain the VEG point for the current system. Must be repeated
+        every frame.
+
+        Parameters
+        ----------
+        System : :class:`~GMAP.src.tools.SystemReader.System`
+            The class containing all the information on the system of the
+            MD trajectory.
+
+        Returns
+        -------
+        VEG_ref : `np.ndarray`
+            A 1D array of length 3 and type float32. This point is the
+            center of a sphere with radius spheresize. All charges
+            located within that sphere will (if allowed by locals and
+            influencers) make up the final potential, field and gradient
+            calculated for this oscillator.
+        """
+
+        return self.Map.code.GM_get_VEG_ref(
+            self.Map, System, self
+        )
+
+    def get_rotation_matrix(self, System):
+        """Obtain the rotation matrix for the current system. Must be
+        repeated every frame.
+
+        Parameters
+        ----------
+        System : :class:`~GMAP.src.tools.SystemReader.System`
+            The class containing all the information on the system of
+            the MD trajectory.
+
+        Returns
+        -------
+        rotation_matrix : `np.ndarray`
+            A 2D array of shape (3, 3) and type float32. The first row
+            is the x-direction unit vector of the oscillator, defined
+            in global (/system/MD) coordinates. The second row is the
+            y-direction, the third the z. These three vectors must
+            always be orthonormal (and real). It is used for example to
+            rotate the computed field and gradient into the local
+            coordinates (through multiplying with the transpose of the
+            matrix provided here.
+        """
+
+        return self.Map.code.GM_get_rotation_matrix(
+            self.Map, System, self)
 
 
-def gen_universe(Printer, RunPars):
-    """Calls MDAanalysis.Universe on the supplied files and catches errors.
+def gen_universe(RunPars):
+    """Calls MDAanalysis.Universe on the supplied files and catches
+    errors.
 
     Parameters
     ----------
-    Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
-        The object that allows to cleanly log and print during runtime,
-        and handle errors.
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
-        The 'main' RunPars instance containing all the basic run-defining
-        parameters.
+        The 'main' RunPars instance containing all the basic
+        run-defining parameters.
 
     Returns
     -------
@@ -930,25 +1251,26 @@ def gen_universe(Printer, RunPars):
             guess_bonds=RunPars.guess_bonds
         )
     except FileNotFoundError as ex:
-        Printer.warning(
+        GM_PT.Printer.warning(
             "\nCould not find the topology or trajectory file. "
             "Please make sure "
             "the names are correct.",
-            "MD_SU_1", True, exeption=ex
+            "MD_SU_1", True, exeption=ex,
+            GMAPerrclass=GM_Ex.GmapFileNotFoundError
         )
     except ValueError as ex:
-        Printer.warning(
+        GM_PT.Printer.warning(
             "\nThe given topology and/or trajectory files are of the "
             "wrong type."
             " Please remember that only certain file types and combinations "
             "thereof are currently supported by the program.",
-            "MD_SU_1", True, exception=ex
+            "MD_SU_1", True, exception=ex, GMAPerrclass=GM_Ex.GmapValueError
         )
     except Exception as ex:
-        Printer.warning(
+        GM_PT.Printer.warning(
             "\nThe given topology and/or trajectory files could not be "
             "interpreted.",
-            "MD_SU_1", True, exception=ex
+            "MD_SU_1", True, exception=ex, GMAPerrclass=GM_Ex.GmapMDFileError
         )
 
     return universe
@@ -976,7 +1298,7 @@ def check_box_rightangled(universe):
         return False
 
 
-def check_box_charge(Printer, RunPars, charges):
+def check_box_charge(RunPars, charges):
     """Checks whether the supplied universe has neutral charge.
 
     If the box has a non-integer charge, the program throws an error
@@ -984,12 +1306,9 @@ def check_box_charge(Printer, RunPars, charges):
 
     Parameters
     ----------
-    Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
-        The object that allows to cleanly log and print during runtime,
-        and handle errors.
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
-        The 'main' RunPars instance containing all the basic run-defining
-        parameters.
+        The 'main' RunPars instance containing all the basic
+        run-defining parameters.
     charges : np.ndarray
         The charges of all atoms in the system. Array is 1-dimensional,
         with a length equal to the amount of atoms in the MD simulation.
@@ -1009,14 +1328,14 @@ def check_box_charge(Printer, RunPars, charges):
     if abs(total_charge) > threshold:
         # if charge is not basically integer:
         if abs(round(total_charge) - total_charge) > threshold:
-            Printer.warning(
+            GM_PT.Printer.warning(
                 "\nThe total charge of the MD system deviates too far from an "
                 "integer number. Check whether the files are correct, and "
                 "whether the chosen threshold is relevant for this system.",
-                "MD_SU_3", True
+                "MD_SU_3", True, GMAPerrclass=GM_Ex.GmapParameterError
             )
         else:
-            Printer.warning(
+            GM_PT.Printer.warning(
                 "\nThe total charge of the MD system is of integer, but not "
                 "neutral value. Check whether the files are correct - usually "
                 "md systems have a neutral charge. The program will continue, "

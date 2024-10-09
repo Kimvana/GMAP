@@ -4,8 +4,8 @@ import numpy as np
 
 # local imports
 import GMAP.src.tools.MathFunctions as GM_MF
-from GMAP.src.tools.PrintTools import devprint as dpr
-dpr("", end="")  # to disable error of dpr unused
+import GMAP.src.tools.PhysicsFunctions as GM_PF
+import GMAP.src.tools.PrintTools as GM_PT
 
 
 class NewModule:
@@ -30,74 +30,279 @@ def get_adjust_oscillators():
     return returns_last
 
 
-def get_get_dipole(Printer, map_):
+def get_post_init():
+    return does_nothing
+
+
+def get_pre_run():
+    return does_nothing
+
+
+def get_pre_frame():
+    return does_nothing
+
+
+def get_post_frame():
+    return does_nothing
+
+
+def get_post_run():
+    return does_nothing
+
+
+def get_change_coup_type(name):
+    # yes, here we have call - there's a def inside returns_input.
+    return returns_input(name)
+
+
+def get_prep_coupling():
+    return does_nothing
+
+
+def get_str_osc():
+    def base_str_getter(Map, Syst, osc):
+        return f"living on residue number {Syst.resnums[osc.used_atoms[0]]}"
+    return base_str_getter
+
+
+def get_report_system():
+    def base_str_getter(Map, Syst):
+        name = Map.name + ":"
+        amount = len(Syst.oscillators_ordered[Map.name])
+        return f"{name: <21} {amount: >4}"
+    return base_str_getter
+
+
+def get_get_VEG_ref(map_):
+    """Creates the function GM_get_VEG_ref.
+
+    Recognizes requested method and finds relevant function.
+
+    Parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+        The map instance which this function will belong to.
+
+    Returns
+    -------
+    GM_get_VEG_ref : function
+        The function that should be called to find the VEG centre for
+        this oscillator.
+    """
+
+    instructions = map_.rawcore["VEG_reference"]
+    method = instructions[0]
+    details = instructions[1:]
+    match method.lower():
+        case "residues":
+            GM_get_VEG_ref = VEG_from_residues(details)
+        case "com":
+            GM_get_VEG_ref = VEG_from_com(details)
+        case "position":
+            GM_get_VEG_ref = interpret_position(map_, details, "VEG_reference")
+    return GM_get_VEG_ref
+
+
+def VEG_from_residues(local_atoms):
+    """Creates the function GM_get_VEG_ref for given residues.
+
+    Each residue is defined by an atom that is part of it. All atoms of
+    the given residues will count towards the centre of mass.
+
+    Parameters
+    ----------
+    local_atoms : list of str
+        All these strings must be convertable to ints using int(). Each
+        of these atoms is assumed to be in a different residue.
+
+    Returns
+    -------
+    GM_get_VEG_ref : function
+        The function that should be called to find the VEG centre for
+        this oscillator.
+    """
+
+    def GM_get_VEG_ref(Map, Syst, osc):
+        atnums = []
+        for atom in local_atoms:
+            resnum = Syst.resnums[osc.used_atoms[atom]]
+            atnums.extend([*range(
+                Syst.residues.first_ix[resnum],
+                Syst.residues.last_ix[resnum] + 1
+            )])
+        CoM = GM_PF.calc_CoM(Syst, atnums)
+        return CoM
+
+    local_atoms = [int(num) for num in local_atoms]
+    return GM_get_VEG_ref
+
+
+def VEG_from_com(local_atoms):
+    """Creates the function GM_get_VEG_ref for given atoms.
+
+    Each atom given will count towards the VEG centre.
+
+    Parameters
+    ----------
+    local_atoms : list of str
+        All these strings must be convertable to ints using int(). Each
+        value corresponds to an atom (using local indices)
+
+    Returns
+    -------
+    GM_get_VEG_ref : function
+        The function that should be called to find the VEG centre for
+        this oscillator.
+    """
+
+    def GM_get_VEG_ref(Map, Syst, osc):
+        atnums = [osc.used_atoms[ix] for ix in local_atoms]
+        CoM = GM_PF.calc_CoM(Syst, atnums)
+        return CoM
+
+    local_atoms = [int(num) for num in local_atoms]
+    return GM_get_VEG_ref
+
+
+def interpret_position(map_, details, parname):
+    """Creates a function that finds a requested position.
+
+    This position could be the definition of the VEG-sphere-centre
+    (VEG reference), but it could also be the position or doublepos
+    output.
+
+    Parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+        The map instance which this function will belong to.
+    details : list of str
+        The string(s) explaining what to do. Ints will be converted to
+        the box positions of the atoms with that int as used_ix.
+    parname : str
+        The name of the parameter which specified the position currently
+        being analyzed.
+
+    Returns
+    -------
+    GM_get_position : function
+        The function that should be called to find the requested
+        position for this oscillator.
+    """
+
+    codestring = "\ndef GM_get_position"
+    codestring += "(Map, Syst, osc):\n"
+
+    codestring += "    CoM = " + envelop_int(
+        " ".join(details), "osc.positions_box[", "]"
+    ) + "\n"
+    codestring += "    CoM = (CoM - np.floor(CoM + 0.5)) @ Syst.boxvects\n"
+    codestring += "    return CoM"
+
+    try:
+        exec(codestring)
+    except Exception as ex:
+        corefile = (map_.directory / 'core.txt').resolve()
+        GM_PT.Printer.warning(
+            f"\nThe file {corefile} does not contain a valid definition of "
+            f"{parname}.",
+            "MI_MC_9", exception=ex
+        )
+        return None
+
+    # return GM_get_VEG_ref
+    return locals()["GM_get_position"]
+
+
+def get_get_dipole_dir(map_):
     """Default for obtaining the dipole
 
     parameters
     ----------
-    Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
-        The object that allows to cleanly log and print during runtime,
-        and handle errors.
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
         The map instance which this function will belong to.
 
     returns
     -------
     GM_get_dipole : function
-        The function that every oscillator will call to get its dipole
+        The function that every oscillator can call to get its dipole
+        moment direction (might not always get used), and the position
+        of that dipole moment.
     """
 
     # based on the r_vec and r_pos lines in the map core, build a function.
-    codestring = "\ndef GM_get_dipole(Files, Printer, Map, Syst, osc):\n"
+
+    # find direction of dipole vector
+    codestring = "\ndef GM_get_dipole_dir(Map, Syst, osc):\n"
     codestring += "    r_vec = " + envelop_int(
         " ".join(map_.rawcore["r_vec"]),
-        # "GM_MF.PBCvect(Syst.positions[osc.used_atoms[", "]])"
         "osc.positions_box[", "]"
     ) + "\n"
+    # Move vector back into the box, and normalize
+    codestring += "    r_vec = (r_vec - np.floor(r_vec + 0.5))\n"
+    codestring += "    r_vec = r_vec @ Syst.boxvects\n"
+    codestring += "    r_vec /= GM_MF.vec3_len(r_vec)\n"
+    codestring += "    r_vec = r_vec.astype('float32')\n\n"
+
+    # find position of the dipole
     codestring += "    r_pos = " + envelop_int(
         " ".join(map_.rawcore["r_pos"]),
-        # "GM_MF.PBCvect(Syst.positions[osc.used_atoms[", "]])"
         "osc.positions_box[", "]"
     ) + "\n"
-    codestring += "    return r_vec @ Syst.boxvects, r_pos @ Syst.boxvects\n"
-
-    # dpr(envelop_int("1-0", "pos(", ")"))
-    # dpr(envelop_int("np.cross(1, 0)", "pos(", ")"))
-    # dpr(envelop_int("(1+0)/2.0", "pos(", ")"))
-    # dpr(map_.rawcore["r_vec"])
-    # dpr(codestring)
+    codestring += "    r_pos = (r_pos - np.floor(r_pos + 0.5))\n"
+    codestring += "    r_pos = r_pos @ Syst.boxvects\n"
+    codestring += "    r_pos = r_pos.astype('float32')\n\n"
+    codestring += "    return r_vec, r_pos\n"
 
     try:
-        # exec(codestring, globals(), locals())
         exec(codestring)
     except Exception as ex:
         corefile = (map_.directory / 'core.txt').resolve()
-        Printer.warning(
+        GM_PT.Printer.warning(
             f"\nThe file {corefile} does not contain a valid definition of "
             "r_vec and/or r_pos.",
             "MI_MC_9", exception=ex
         )
         return None
 
-    # return GM_get_dipole
-    return locals()["GM_get_dipole"]
+    return locals()["GM_get_dipole_dir"]
 
 
-def get_get_rotation_matrix(Printer, map_):
+def get_get_dipole_mag():
+    """Default for obtaining the dipole magnitude
+
+    returns
+    -------
+    GM_get_dipole_mag : function
+        The function that can be used to get the magnitude of a dipole
+        moment.
+    """
+
+    def GM_get_dipole_mag(Map, Syst, osc):
+        if Map.Core.dipole_data_array is not None:
+            return uses_maps(
+                Map.Core.dipole_gas_phase,
+                [osc.VEGout],
+                [Map.Core.dipole_data_array]
+            )
+        else:
+            return Map.Core.dipole_gas_phase
+
+    return GM_get_dipole_mag
+
+
+def get_get_rotation_matrix(map_):
     """Default for creating a rotation matrix
 
     parameters
     ----------
-    Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
-        The object that allows to cleanly log and print during runtime,
-        and handle errors.
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
         The map instance which this function will belong to.
 
     returns
     -------
     GM_get_rotation_matrix : function
-        The function that every oscillator will call to get its rotaion matrix
+        The function that every oscillator will call to get its rotaion
+        matrix
     """
 
     allparnames = ("x_uvec", "y_uvec", "z_uvec")
@@ -105,7 +310,7 @@ def get_get_rotation_matrix(Printer, map_):
     given_directions = [key for key in map_.rawcore if key in allparnames]
 
     codestring = "\ndef GM_get_rotation_matrix"
-    codestring += "(Files, Printer, Map, Syst, osc):\n"
+    codestring += "(Map, Syst, osc):\n"
 
     # the first direction should be taken as is
     direc = given_directions[0]
@@ -146,14 +351,12 @@ def get_get_rotation_matrix(Printer, map_):
     # now, combine into array to return
     codestring += "    return np.array([x_uvec, y_uvec, z_uvec])\n"
 
-    # dpr(codestring)
-
     try:
         # exec(codestring, globals(), locals())
         exec(codestring)
     except Exception as ex:
         corefile = (map_.directory / 'core.txt').resolve()
-        Printer.warning(
+        GM_PT.Printer.warning(
             f"\nThe file {corefile} does not contain a valid definition of "
             "x_uvec, y_uvec and/or z_uvec.",
             "MI_MC_9", exception=ex
@@ -162,6 +365,151 @@ def get_get_rotation_matrix(Printer, map_):
 
     # return GM_get_dipole
     return locals()["GM_get_rotation_matrix"]
+
+
+def get_calculate_dipole(map_):
+    """Default for obtaining the dipole.
+
+    If the size of the dipole does not depend on the electrostatics, or
+    only a single dependence (through magnitude), the returned method
+    just combines GM_get_dipole_dir with GM_get_dipole_mag.
+    If each of the x, y and z components have their own dependency on
+    the electrostatics, the r_vec from GM_get_dipole_dir is ignored.
+
+    parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+        The map instance which this function will belong to.
+
+    returns
+    -------
+    GM_get_dipole : function
+        The function that every oscillator will call to get its dipole
+    """
+
+    # the version when we are working with magnitude
+    def GM_get_dipole_vmag(Map, Syst, osc):
+        r_vec, r_pos = Map.code.GM_get_dipole_dir(Map, Syst, osc)
+        r_vec *= Map.code.GM_get_dipole_mag(Map, Syst, osc)
+        r_vec = r_vec.astype("float32")
+        return r_vec, r_pos
+
+    # the version when we are working with a separate x, y, z component
+    # (this one ignores the earlier given r_vec)
+    def GM_get_dipole_vxyz(Map, Syst, osc):
+        _, r_pos = Map.code.GM_get_dipole_dir(Map, Syst, osc)
+        xyz = [
+            uses_maps(omega, [osc.VEGout], [arr]) for omega, arr in zip(
+                Map.Core.dipole_gas_phase, Map.Core.dipole_data_array)
+        ]
+        xyz_local = np.array(xyz, dtype="float32")
+        xyz_cartesian = np.dot(xyz_local, osc.rotation_matrix)
+        return xyz_cartesian, r_pos
+
+    if map_.Core.dipole_data_array is None:
+        return GM_get_dipole_vmag
+
+    if len(map_.Core.dipole_data_array.shape) == 2:
+        return GM_get_dipole_vmag
+
+    # now, the array must be of shape 3 (xyz-style file)
+    return GM_get_dipole_vxyz
+
+
+def get_calculate_frequency(map_):
+    """Default for obtaining the frequency.
+
+    If frequency does not depend on the electrostatics, the returned
+    frequency simply equals the gas phase value. If there is a
+    dependency, the VEGout array will be combined with the mapping
+    coeffients to obtain the frequency.
+
+    parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+        The map instance which this function will belong to.
+
+    returns
+    -------
+    GM_calculate_frequency : function
+        The function that every oscillator will call to get its
+        frequency
+    """
+
+    def GM_calculate_freq_base(Map, Syst, osc):
+        return Map.Core.frequency_gas_phase
+
+    def GM_calculate_freq_VEG_lin(Map, Syst, osc):
+        freq = uses_maps(
+            Map.Core.frequency_gas_phase, [osc.VEGout],
+            [Map.Core.frequency_data_array_linear]
+        )
+        return freq
+
+    def GM_calculate_freq_VEG_quad(Map, Syst, osc):
+        freq = uses_maps(
+            Map.Core.frequency_gas_phase, [osc.VEGout**2],
+            [Map.Core.frequency_data_array_quadratic]
+        )
+        return freq
+
+    def GM_calculate_freq_VEG_both(Map, Syst, osc):
+        freq = uses_maps(
+            Map.Core.frequency_gas_phase,
+            [osc.VEGout, osc.VEGout**2],
+            [
+                Map.Core.frequency_data_array_linear,
+                Map.Core.frequency_data_array_quadratic]
+        )
+        return freq
+
+    if map_.Core.frequency_data_array_linear is None:
+        if map_.Core.frequency_data_array_quadratic is None:
+            return GM_calculate_freq_base
+        else:
+            return GM_calculate_freq_VEG_quad
+    elif map_.Core.frequency_data_array_quadratic is None:
+        return GM_calculate_freq_VEG_lin
+    else:
+        return GM_calculate_freq_VEG_both
+
+
+def get_get_position(map_):
+    """Default for obtaining the position.
+
+    By default, the author of a map uses the oscillator-indices to
+    indicate what position (e.g. just an atom index) should be returned.
+    Those instructions are interpreted here and converted to a function
+    that can be used during runs.
+    """
+
+    instructions = map_.rawcore["position"]
+    GM_get_positions = interpret_position(map_, instructions, "position")
+    return GM_get_positions
+
+
+def get_get_doublepos(map_):
+    """Default for obtaining the double positions.
+
+    By default, the author of a map uses the oscillator-indices to
+    indicate what positions (e.g. just an atom index) should be
+    returned.
+    Those instructions are interpreted here and converted to a function
+    that can be used during runs.
+    """
+
+    def GM_get_doublepos(Map, Syst, osc):
+        pos0 = GM_get_doublepos0(Map, Syst, osc)
+        pos1 = GM_get_doublepos1(Map, Syst, osc)
+        return pos0, pos1
+
+    instructions = map_.rawcore["doublepos_0"]
+    GM_get_doublepos0 = interpret_position(map_, instructions, "doublepos_0")
+    instructions = map_.rawcore["doublepos_1"]
+    GM_get_doublepos1 = interpret_position(map_, instructions, "doublepos_1")
+
+    return GM_get_doublepos
+
 
 # ------------------------
 # Base functions
@@ -176,8 +524,26 @@ def returns_last(*args):
     return args[-1]
 
 
+def returns_input(input_):
+    def returner(*args):
+        return input_
+    return returner
+
+
+def uses_maps(gas_freq, VEGs, mapconsts_list):
+    freq = gas_freq
+    for VEG, mapconsts in zip(VEGs, mapconsts_list):
+        freq += np.sum(np.multiply(VEG, mapconsts))
+    return freq
+
+# ------------------------
+# Useful tools
+# ------------------------
+
+
 def envelop_int(string, pre, post):
-    """Envelops any integer (but not float) found in string with pre and post.
+    """Envelops any integer (but not float) found in string with pre and
+    post.
 
     Currently, python built-in and numpy functions are supported.
 
@@ -251,4 +617,4 @@ def envelop_int(string, pre, post):
 # never called, just to remove the unused warnings for imports
 def unused_user():
     _ = np.array([1, 2])
-    _ = GM_MF.dotprod([1, 2, 3], [1, 2, 3])
+    _ = GM_MF.dotprod(np.array([1, 2, 3]), np.array([1, 2, 3]))
