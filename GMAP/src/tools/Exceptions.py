@@ -32,14 +32,14 @@ class GMAPexception(Exception):
     """
 
     def __init__(self, message=" ", error_code="", cause=None):
-        if GM_PT.Printer().verbose != 4:
+        if GM_PT.Printer.verbose != 4:
             sys.tracebacklimit = 0
         self.message = message
         self.error_code = error_code
         self.cause = cause
 
     def __str__(self):
-        if GM_PT.Printer().verbose == 4 and self.cause is not None:
+        if GM_PT.Printer.verbose == 4 and self.cause is not None:
             cc = self.cause.__class__
             return (
                 f"\n{cc.__module__}.{cc.__name__} "

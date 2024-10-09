@@ -25,7 +25,7 @@ import GMAP.src.tools.FileHandler as GM_FH
 import GMAP.src.tools.PrintTools as GM_PT
 
 
-def Setup(callcommand, Files):
+def Setup(callcommand):
     """Copies the maps and src dirs and copies them to a new map.
 
     Setup copies the maps folder and the src folder and copies them to
@@ -36,12 +36,9 @@ def Setup(callcommand, Files):
     ----------
     callcommand : list of str
         This is the user input into the terminal.
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties. Has to be updated after RunPars is finalized.
     """
 
-    printer = GM_PT.Printer()
+    printer = GM_PT.Printer
     printer.set_state("running", 2, 3)
 
     target = Path(callcommand[1]).resolve()
@@ -51,8 +48,8 @@ def Setup(callcommand, Files):
 
     verify_target(target, target_srcdir, target_mapdir)
 
-    src_dir = Files.sourcedir_hc
-    map_dir = Files.mapdir_hc
+    src_dir = GM_FH.FileLocations.sourcedir_hc
+    map_dir = GM_FH.FileLocations.mapdir_hc
 
     shutil.copytree(src_dir, target_srcdir)
     shutil.copytree(map_dir, target_mapdir)
@@ -81,14 +78,14 @@ def verify_target(target, target_srcdir, target_mapdir):
     """
 
     if not target.is_dir():
-        GM_PT.Printer().warning(
+        GM_PT.Printer.warning(
             f"{target} is not a valid directory. Please submit a valid target "
             "target directory.", "Setup_1", True,
             GMAPerrclass=GM_Ex.GmapNotADirectoryError
         )
 
     if Path(target_srcdir).exists():
-        GM_PT.Printer().warning(
+        GM_PT.Printer.warning(
             f"The folder {target_srcdir} already exist. Please rename it or "
             "select another target folder.",
             "Setup_2", True,
@@ -96,7 +93,7 @@ def verify_target(target, target_srcdir, target_mapdir):
         )
 
     if Path(target_mapdir).exists():
-        GM_PT.Printer().warning(
+        GM_PT.Printer.warning(
             f"The folder {target_mapdir} already exist. Please rename it or "
             "select another target folder.",
             "Setup_3", True,
@@ -116,8 +113,8 @@ def main():
     if len(callcommand) == 1:
         print(__doc__)
     else:
-        Files = GM_FH.FileLocations()
-        Setup(callcommand, Files)
+        GM_FH.FileLocations()
+        Setup(callcommand)
 
 
 if __name__ == "__main__":

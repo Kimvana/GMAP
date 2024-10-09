@@ -31,7 +31,7 @@ import GMAP.src.tools.FileHandler as GM_FH
 import GMAP.src.tools.PrintTools as GM_PT
 
 
-def AIM(callcommand, Files):
+def AIM(callcommand):
     GM_PT.devprint("entered main of AIM - yet to be constructed")
 
 
@@ -39,8 +39,8 @@ def main(callcommand):
     if len(callcommand) == 1:
         print(__doc__)
     else:
-        Files = GM_FH.FileLocations()
-        AIM(callcommand, Files)
+        _ = GM_FH.FileLocations()
+        AIM(callcommand)
 
 
 if __name__ == "__main__":

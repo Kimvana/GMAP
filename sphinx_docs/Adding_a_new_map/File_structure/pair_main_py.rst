@@ -47,18 +47,13 @@ It is probable that the map wants to save information between functions, too, ju
 - self.allpairs (type list of tuple of 2 ints) contains all pairs that should be coupled using this pair map. This list has already taken into account any changes due to the function change_coup_type. The data type of this attribute can be changed by a map (preferably in GM_pre_run). This is encouraged if the map is expected to be used often (>~2000 occurences in a single hamiltonian), so the functions doing the coupling calculations can be optimized as well.
 
 
-Files
-======
-An instance of :class:`~GMAP.src.tools.FileHandler.FileLocations`. Stores filepaths and such.
-
-
 Syst
 ====
 An instance of :class:`~GMAP.src.tools.SystemReader.System`. Stores all available information about the MD system used. Think atom-based information on it's name, element, type, the name and number of its residue, molecule, segment. Also charges, positions, masses and such are in here. 
 
 
 .. important:: 
-    When your functions should report/print anything, **do not** use the python build-in function print. Instead, import the GMAP PrintTools module (``from GMAP.src.tools import PrintTools as GM_PT``), from which you can call an instance of the Printer class. This instance is a singleton (so all print settings for that run are already set), so don't change it! But you can have it print (``GM_PT.Printer().print``), or even trigger an error (``GM_PT.Printer().warning``). See :class:`~GMAP.src.tools.PrintTools.Printer` for detailed information on using these functions.
+    When your functions should report/print anything, **do not** use the python build-in function print. Instead, import the GMAP PrintTools module (``from GMAP.src.tools import PrintTools as GM_PT``), from which you can call an instance of the Printer class. This instance is a singleton (so all print settings for that run are already set), so don't change it! But you can have it print (``GM_PT.Printer.print``), or even trigger an error (``GM_PT.Printer.warning``). See :class:`~GMAP.src.tools.PrintTools.Printer` for detailed information on using these functions.
 
 
 *************************
@@ -69,7 +64,7 @@ The function are in the order at which they're called by the program. This means
 
 
 
-GM_adjust_RunPars(Files, Map)
+GM_adjust_RunPars(Map)
 ======================================
 Makes the necessary changes to Map.RunPar.
 
@@ -107,16 +102,13 @@ Available attributes of Map
 
 Parameters
 ----------
-Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-    Contains all currently known paths and other file-related properties.
-    Has to be updated after RunPars is finalized.
 Map : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
 
 
 
-GM_adjust_map_core_raw(Files, Map)
+GM_adjust_map_core_raw(Map)
 ===========================================
 
 Makes the necessary changes to the 'raw' input read from core.txt.
@@ -159,9 +151,6 @@ Available attributes of Map
 
 Parameters
 ----------
-Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-    Contains all currently known paths and other file-related properties.
-    Has to be updated after RunPars is finalized.
 Map : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
@@ -346,7 +335,7 @@ hamiltonian : `np.ndarray`
 
 
 
-GM_post_init(Files, Map, Syst)
+GM_post_init(Map, Syst)
 =======================================
 
 Allows the user to do some final initialization steps. These can include building lookup-tables, or computing some basic properties for later use. This function is called when all initialization is done (maps, MD system, etc).
@@ -395,9 +384,6 @@ Available attributes of Map
 
 Parameters
 ----------
-Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-    Contains all currently known paths and other file-related properties.
-    Has to be updated after RunPars is finalized.
 Map : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.

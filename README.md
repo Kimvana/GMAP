@@ -46,18 +46,22 @@ When you've made some choices to the code, and would like to rebuild the docs, n
 
 ## how to compile C code
 
+- compiled versions of the (VEG) c library are included in the respository. However, these are system dependent and you may need to recompile it for your own system.
+
 ### windows
 
 - make sure to install microsoft visual studio (detailed instructions are a must - AIM repo has them in the manual, page 12).
 - through windows start menu, scroll trough list of programs, select visual studio folder, in there, the desired command prompt. x64 Native Tools for 64 bit windows, x86 Native Tools for 32 bit. __Make sure to open the command prompt in admin mode__.
 - run the following command: ```cl.exe /LD scriptname.cpp``` (generates 4 files)
 - use the .dll file for the program (ignore or delete the other 3 generated ones).
+- change the name of the VEG.dll file to VEG_Win64bit.dll or VEG_Win32bit.dll depending on your system. 
 
 
 ### linux
 
 - open terminal
-- ```g++ -fPIC -shared -o scriptname.so scriptname.cpp```
+- To generally compile a c-library use ```g++ -fPIC -shared -o scriptname.so scriptname.cpp```
+- GMAP required an extension _Linux.so. Specifically the VEG library can be compiled with ```g++ -fPIC -shared -o VEG_Linux.so VEG.cpp``` 
 
 (if installed, using cc instead of g++ also works)
 
@@ -65,5 +69,6 @@ When you've made some choices to the code, and would like to rebuild the docs, n
 ### mac
 
 - open terminal
-- ```cc -fPIC -dynamiclib -o scriptname.dylib scriptname.cpp``` (worked fine with AIM)
+- ```cc -fPIC -dynamiclib -o scriptname.dylib scriptname.cpp``` (works on older macs)
 - ```cc -fPIC -dynamiclib -std=c++11 -stdlib=libc++ -o scriptname.dylib scriptname.cpp``` (needed on Sonoma 14.6.1 to avoid alias warnings)
+- GMAP requires an extension _MacOS.dylib. Specifically the VEG library can be compiled with ```cc -fPIC -dynamiclib -std=c++11 -stdlib=libc++ -o VEG_MacOS.dylib VEG.cpp```
