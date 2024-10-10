@@ -13,7 +13,7 @@ from GMAP.src.tools.PrintTools import Printer
 def _report_unknown_choice():
     """Wrapper for warning call SU_GM_1."""
 
-    Printer().warning(
+    Printer.warning(
         "\nChoice of program wasn't recognized. Please type the following "
         "for more\ninformation on how to use this package:\n\nGMAP\n\n",
         "SU_GM_1", True, GMAPerrclass=GmapAttributeError
@@ -35,18 +35,17 @@ def cmd_interface(callcommand):
     """
 
     # The very first initialization the program needs/assumes. Also initializes
-    # the printing tool (Printer()).
-    Files = GM_FH.FileLocations()
-    Files.save_callcommand(callcommand)
+    # the printing tool (Printer).
+    GM_FH.FileLocations()
 
     # Deduce whether we should be running in safe mode / dark mode.
     # These 'special' flags should be caught separately to avoid issues like
     # 'GMAP -nodm' throwing an error.
     all_args = calldict(callcommand)
     safe_mode, dark_mode = get_safe_dark(all_args)
-    Printer().setenv(safe_mode, dark_mode)
+    Printer.setenv(safe_mode, dark_mode)
 
-    print_logo(Files)  # Print the GMAP logo + base text below
+    print_logo()  # Print the GMAP logo + base text below
 
     # get first entry form args dict -> the GMAP call (before first parameter)
     gmapcall, extras = next(iter(all_args.items()))
@@ -65,7 +64,7 @@ def cmd_interface(callcommand):
         cmd_to_help(allhelps, subch)
 
     elif choice in GMAP.alltools:
-        cmd_to_tools(Files, allhelps, callcommand, choice, subch)
+        cmd_to_tools(allhelps, callcommand, choice, subch)
 
     else:
         _report_unknown_choice()
@@ -158,37 +157,31 @@ def get_safe_dark(all_args):
     return safe_mode, dark_mode
 
 
-def print_logo(Files):
+def print_logo():
     """Prints the program logo and corresponding text.
-
-    Parameters
-    ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties. Has to be updated after RunPars is finalized.
     """
 
     # Now, load/print logo!
-    with open(Files.script_dir / "logo.txt") as lfile:
+    with open(GM_FH.FileLocations.script_dir / "logo.txt") as lfile:
         logostr = lfile.read()
 
     # convert abbr to actual color markers
-    colors = Printer().colors
+    colors = Printer.colors
     logostr = logostr.replace("P", colors.pink_hc)
     logostr = logostr.replace("G", colors.green_hc)
     logostr += colors.clear
 
-    Printer().print(1, "\n\n" + logostr + "\n")
-    Printer().print(
+    Printer.print(1, "\n\n" + logostr + "\n")
+    Printer.print(
         1,
         "\nFor the most up-to-date version of GMAP, reporting bugs/issues, "
         "suggesting improvements for the program, questions, or any other "
         "kind of feedback, go to github.com/Kimvana/GMAP\n"
     )
 
-    Printer().print(
+    Printer.print(
         1,
-        f"\nRunning the following job:\n{Files.callcommand}\n"
+        f"\nRunning the following job:\n{GM_FH.FileLocations.callcommand}\n"
     )
 
 
@@ -204,7 +197,7 @@ def cmd_to_help(allhelps, subch):
         Used by user to indicate intent.
     """
 
-    printer = Printer()
+    printer = Printer
     if subch.lower() in allhelps:
         printer.print(0, GMAP.__doc__)
         printer.quit_early()
@@ -216,14 +209,11 @@ def cmd_to_help(allhelps, subch):
         _report_unknown_choice()
 
 
-def cmd_to_tools(Files, allhelps, callcommand, choice, subch):
+def cmd_to_tools(allhelps, callcommand, choice, subch):
     """Determines which tool to invoke.
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties. Has to be updated after RunPars is finalized.
     allhelps : list of str
         All items in this list are strings the user might use to get
         help to be printed.
@@ -236,13 +226,13 @@ def cmd_to_tools(Files, allhelps, callcommand, choice, subch):
         Used by user to indicate intent.
     """
 
-    printer = Printer()
+    printer = Printer
     modch = getattr(GMAP, choice)
     if subch.lower() in allhelps:
         printer.print(0, modch.__doc__)
         printer.quit_early()
     else:
-        getattr(modch, choice)(callcommand[1:], Files)
+        getattr(modch, choice)(callcommand[1:])
 
 
 def main():

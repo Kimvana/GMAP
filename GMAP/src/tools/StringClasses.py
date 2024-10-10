@@ -47,7 +47,7 @@ class ErrCode(str):
         # type checking
         selfsplit = self.split("_")
         if len(selfsplit) != 3:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 f"\n{self} is assumed to be an error code, but does not have "
                 "3 parts separated by underscores. Please make sure to only "
                 "compare valid error codes.",
@@ -55,7 +55,7 @@ class ErrCode(str):
             )
 
         if not isinstance(other, str):
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 f"\n{other} is assumed to be an error code, but is not a "
                 "string, so this method cannot be used. Please make sure to "
                 "only compare strings or ErrCodes.",
@@ -63,7 +63,7 @@ class ErrCode(str):
             )
         othersplit = other.split("_")
         if len(othersplit) != 3:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 f"\n{other} is assumed to be an error code, but does not have "
                 "3 parts separated by underscores. Please make sure to only "
                 "compare valid error codes.",
@@ -330,7 +330,7 @@ class ColStr(str):
             newlist = [">".join(string_list[0])]  # the '>' isn't color-closing
             for item in string_list[1:]:
                 newlist.append(getattr(
-                    GM_PT.Printer()._colors, item[0]) + item[1])
+                    GM_PT.Printer._colors, item[0]) + item[1])
             colstr = ColStr("").join(newlist)
 
         # If we want 24bit, we can stay with the current ANSI codes.
@@ -386,7 +386,7 @@ class ColStr(str):
                 case "38":  # foreground - 5 items including this one
                     curr_color = color_split[:5]
                     if len(curr_color) != 5:  # premature end of list
-                        GM_PT.Printer().warning(warning_msg, "PT_CC_1", True)
+                        GM_PT.Printer.warning(warning_msg, "PT_CC_1", True)
 
                     new_col, bright = GM_MF.convert_color_24_4(*curr_color[2:])
                     color_new.append(str(30 + new_col))
@@ -397,7 +397,7 @@ class ColStr(str):
                 case "48":  # background - 5 items including this one
                     curr_color = color_split[:5]
                     if len(curr_color) != 5:  # premature end of list
-                        GM_PT.Printer().warning(warning_msg, "PT_CC_1", True)
+                        GM_PT.Printer.warning(warning_msg, "PT_CC_1", True)
 
                     new_col = GM_MF.convert_color_24_4(*curr_color[2:])[0]
                     color_new.append(str(40 + new_col))
@@ -405,7 +405,7 @@ class ColStr(str):
                     color_split = color_split[5:]
 
                 case _:
-                    GM_PT.Printer().warning(warning_msg, "PT_CC_1", True)
+                    GM_PT.Printer.warning(warning_msg, "PT_CC_1", True)
 
         return ";".join(color_new)
 
@@ -547,7 +547,7 @@ class Header():
         corner_char="+", alignment="centered", maxwidth=79, color_border=None,
         color_text=None, special=None
     ):
-        cols = GM_PT.Printer().colors
+        cols = GM_PT.Printer.colors
         # prepare input
         color_border = cols.green_lc if color_border is None else color_border
         color_text = cols.clear if color_text is None else color_text
@@ -569,10 +569,18 @@ class Header():
         self.header = self.finalize(
             color_border, color_text, padding_char, padding)
 
-        self.s = str(self)
+    def __add__(self, other):
+        return ColStr(self) + other
+
+    def __radd__(self, other):
+        return other + ColStr(self)
 
     def __str__(self):
         return str(self.header)
+
+    @property
+    def s(self):
+        return str(self)
 
     def format_title(self, maxwidth, n_padding):
         """Prepare the title text for the header
@@ -897,6 +905,6 @@ class Header():
                 color_border + rght + "\n")  # right border
 
         # underline
-        header += color_border + self.under + GM_PT.Printer().colors.clear
+        header += color_border + self.under + GM_PT.Printer.colors.clear
 
         return header

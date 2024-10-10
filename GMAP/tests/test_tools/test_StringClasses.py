@@ -13,7 +13,6 @@ import pytest
 # local imports
 import GMAP.src.tools.ColorSchemes as GM_CS
 import GMAP.src.tools.Exceptions as GM_Ex
-import GMAP.src.tools.FileHandler as GM_FH
 import GMAP.src.tools.StringClasses as GM_SC
 
 
@@ -26,7 +25,6 @@ class TestErrCode:
         assert not GM_SC.ErrCode("BB__33") == "AA_BB_33"
 
     def test_CT_EC_1(self):
-        init()
         with pytest.raises(GM_Ex.GmapTypeError, match="CT_EC_1$"):
             assert GM_SC.ErrCode("AA_BB_33") == 5
 
@@ -34,7 +32,6 @@ class TestErrCode:
             assert 5 == GM_SC.ErrCode("AA_BB_33")
 
     def test_CT_EC_2(self):
-        init()
         with pytest.raises(GM_Ex.GmapValueError, match="CT_EC_2$"):
             assert GM_SC.ErrCode("AA_BB_33") == "5"
         with pytest.raises(GM_Ex.GmapValueError, match="CT_EC_2$"):
@@ -49,7 +46,6 @@ class TestColStr():
         assert "A" + GM_SC.ColStr("B") == GM_SC.ColStr("AB")
 
     def test_getitem(self):
-        init()
         colstr = self.get_rainbowstr()
         colors = GM_CS.DarkModeColors
         h = "H"
@@ -88,7 +84,6 @@ class TestColStr():
             "\033[43mHello\033[0m")
 
     def test_PT_CC_1(self):
-        init()
         with pytest.raises(GM_Ex.GMAPexception, match="PT_CC_1$"):
             _ = GM_SC.ColStr("\033[38;2;0mHello\033[0m").change_color("4bit")
 
@@ -180,7 +175,3 @@ class TestHeader:
         assert head.specials_replace("l", {"V": [[2], [4], [6, 8]]}, line) == (
             [GM_SC.ColStr(char) for char in "--V-V-VV--"]
         )
-
-
-def init():
-    _ = GM_FH.FileLocations()

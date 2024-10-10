@@ -27,7 +27,7 @@ import AmideSC_code.parameter_changer as MC_PC
 # a detected parameter, a different choice is preferred. This function
 # allows to make a different choice, **in the same format as the file**.
 # if more complex behaviour is desired, a separate function is needed.
-def GM_adjust_map_core_raw(Files, map_):
+def GM_adjust_map_core_raw(map_):
     """Makes the necessary changes to the 'raw' input read from core.txt.
 
     Is expected to not return anything - return value is not caught.
@@ -47,10 +47,6 @@ def GM_adjust_map_core_raw(Files, map_):
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties.
-        Has to be updated after RunPars is finalized.
     map_ : :class:`~GMAP.src.tools.MapReader.Map`
         The object that stores everything the program currently knows
         about this map.
@@ -62,10 +58,10 @@ def GM_adjust_map_core_raw(Files, map_):
     # still to do:
     # dipoles, doublepos, xyz?? (or fixed across all maps?)
 
-    MC_PC.adjust_map_core_raw(Files, map_)
+    MC_PC.adjust_map_core_raw(map_)
 
 
-def GM_adjust_oscillators(Files, map_, system, oscillator_list):
+def GM_adjust_oscillators(map_, system, oscillator_list):
     """Makes the necessary changes to the list of oscillators.
 
     The program finds all oscillators mathing the instructions from
@@ -88,10 +84,6 @@ def GM_adjust_oscillators(Files, map_, system, oscillator_list):
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties.
-        Has to be updated after RunPars is finalized.
     Map : :class:`~GMAP.src.tools.MapReader.Map`
         The object that stores everything the program currently knows
         about this map.
@@ -128,7 +120,7 @@ def GM_adjust_oscillators(Files, map_, system, oscillator_list):
 # A place to do further initialization if a map requires it. Think of
 # things like building further lookup tables, for instance.
 # (for AmideBB - find neighbours!)
-def GM_post_init(files, map_, system):
+def GM_post_init(map_, system):
     # map_.Core.dipole_gas_phase_array = np.array(map_.Core.dipole_gas_phase)
     # if map_.RunPars.dipole_map_choice == "Jansen":
     #     map_.code.GM_calculate_dipole = (

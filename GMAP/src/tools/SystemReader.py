@@ -18,10 +18,6 @@ class System:
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties.
-        Has to be updated after RunPars is finalized.
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
@@ -114,7 +110,7 @@ class System:
         All oscillators, but grouped by the map they belong to.
     """
 
-    def __init__(self, Files, RunPars):
+    def __init__(self, RunPars):
         self.universe = gen_universe(RunPars)  # MDA universe creation
         self.set_properties()  # Extract numpy arrays from MDA universe
         self.basic_boxchecks(RunPars)  # see if box has correct size and charge
@@ -122,7 +118,7 @@ class System:
         self.find_influencers(RunPars)  # Find all influencing atoms
 
         # detect all valid oscillators and introduce them to the maps
-        self.find_oscillators(Files, RunPars)
+        self.find_oscillators(RunPars)
 
         # sort all oscillators, make usable lookup-tables. Also, determine
         # correct coupling map for each oscillator pair (and build tables
@@ -152,7 +148,7 @@ class System:
 
         self.rightangled = check_box_rightangled(self.universe)
         if not self.rightangled:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nSubmitted MD system is not of cubic, tetragonal or "
                 "orthorhombic symmetry. In the current state, this program "
                 "only supports right-angled systems.",
@@ -168,7 +164,7 @@ class System:
             if not RunPars.detected_requires_bonds:
                 pass
             else:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     "\nSubmitted MD system does not contain any "
                     "information on "
                     "bonds, but the requested maps do require this. Either "
@@ -241,7 +237,7 @@ class System:
                 # yes, we could just force atomnum to match ix. But if this
                 # MD software does this differently, it might very well do
                 # other things differently as well, so please, check that!
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     f"\nThe atom number of the atom at position {ix} "
                     "does "
                     "not match its position in the list.",
@@ -296,10 +292,10 @@ class System:
                     group_def, groupdict, map_.corepath
                 )
 
-        cb = GM_PT.Printer().colors.green_lc
-        ct = GM_PT.Printer().colors.clear
+        cb = GM_PT.Printer.colors.green_lc
+        ct = GM_PT.Printer.colors.clear
         line = f"{cb}════{ct}"
-        GM_PT.Printer().print(
+        GM_PT.Printer.print(
             1, f"\n{line} Influencers {line}", detailed_instructions=[1])
         GM_PT.header(2, "Influencers", "doublebox")
 
@@ -314,7 +310,7 @@ class System:
             influencers_not_included = groupdict["All"] - choice
             if len(influencers_not_included) == 0:
                 influencers_not_included.add("None")
-            GM_PT.Printer().print(
+            GM_PT.Printer.print(
                 1,
                 "Residue names included in influencers:\n"
                 + ", ".join(choice) +
@@ -327,7 +323,7 @@ class System:
             try:
                 atgroup = self.universe.select_atoms(RunPars.influencers)
             except Exception as ex:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     "\nSome problem occured while selecting atoms for the "
                     "influencers",
                     "SU_NP_6", True, exception=ex
@@ -342,7 +338,7 @@ class System:
             if "choice" in choice:
                 choice = choice["choice"]
             else:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     "\nWhen using a file to specify influencers, the final "
                     "choice of influencers must be given using the group "
                     "'choice'.",
@@ -352,7 +348,7 @@ class System:
             influencers_not_included = groupdict["All"] - choice
             if len(influencers_not_included) == 0:
                 influencers_not_included.add("None")
-            GM_PT.Printer().print(
+            GM_PT.Printer.print(
                 1,
                 "Residue names included in influencers:\n"
                 + ", ".join(choice) +
@@ -366,7 +362,7 @@ class System:
         )
         if len(atixprint[1]) == 0:
             atixprint[1].append("None")
-        GM_PT.Printer().print(
+        GM_PT.Printer.print(
             3,
             "\nAtoms included in influencers:\n"
             + ", ".join(atixprint[0]) +
@@ -380,7 +376,7 @@ class System:
         self.n_influencers = np.shape(self.influencers_atix)[0]
         self.influencers_atix_c = np.ctypeslib.as_ctypes(self.influencers_atix)
 
-    def find_oscillators(self, Files, RunPars):
+    def find_oscillators(self, RunPars):
         """Finds all the oscillators in the MD system
 
         Before an oscillator is considered 'found', it has to match the
@@ -397,10 +393,6 @@ class System:
 
         Parameters
         ----------
-        Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-            Contains all currently known paths and other file-related
-            properties.
-            Has to be updated after RunPars is finalized.
         RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
             The 'main' RunPars instance containing all the basic
             run-defining parameters.
@@ -438,7 +430,7 @@ class System:
         for oscillators in allgroups:
             map_ = oscillators[0].Map
             checked = map_.code.GM_adjust_oscillators(
-                Files, map_, self, oscillators
+                map_, self, oscillators
             )
             if checked:
                 checked_oscillators.append(checked)
@@ -810,7 +802,7 @@ class System:
                     ):
                         all_req_maps.append(req_coupmap)
                         mapseq = ", ".join(all_req_maps)
-                        GM_PT.Printer().warning(
+                        GM_PT.Printer.warning(
                             "\nAn issue occurred when determining which "
                             "coupling method should be used to couple the "
                             "following two oscillators:\n"
@@ -873,7 +865,7 @@ class System:
         date.
         """
 
-        printer = GM_PT.Printer()
+        printer = GM_PT.Printer
 
         printer.add_time(4, "positions and box:", "PosBox", "ms")
         self.positions = self.universe.atoms.positions.astype('float32')
@@ -899,10 +891,10 @@ class System:
             run-defining parameters.
         """
 
-        cb = GM_PT.Printer().colors.green_lc
-        ct = GM_PT.Printer().colors.clear
+        cb = GM_PT.Printer.colors.green_lc
+        ct = GM_PT.Printer.colors.clear
         line = f"{cb}════{ct}"
-        GM_PT.Printer().print(
+        GM_PT.Printer.print(
             1, f"\n{line} MD system analysis {line}",
             detailed_instructions=[1])
         GM_PT.header(2, "MD system analysis", "doublebox")
@@ -914,13 +906,13 @@ class System:
             for map_ in RunPars.requested_mapdict.values()]
 
         # This should be printed if and only if verbose is set to 1.
-        GM_PT.Printer().print(1, "\n".join(toprint), detailed_instructions=[1])
+        GM_PT.Printer.print(1, "\n".join(toprint), detailed_instructions=[1])
 
         # let each map decide how to report their oscillators.
         for mapname in self.oscillators_ordered.keys():
             map_ = RunPars.requested_mapdict[mapname]
             toprint = map_.code.GM_report_system(map_, self)
-            GM_PT.Printer().print(2, toprint)
+            GM_PT.Printer.print(2, toprint)
 
         GM_PT.footer(2, "MD system analysis", "doublebox")
 
@@ -1265,7 +1257,7 @@ def gen_universe(RunPars):
             guess_bonds=RunPars.guess_bonds
         )
     except FileNotFoundError as ex:
-        GM_PT.Printer().warning(
+        GM_PT.Printer.warning(
             "\nCould not find the topology or trajectory file. "
             "Please make sure "
             "the names are correct.",
@@ -1273,7 +1265,7 @@ def gen_universe(RunPars):
             GMAPerrclass=GM_Ex.GmapFileNotFoundError
         )
     except ValueError as ex:
-        GM_PT.Printer().warning(
+        GM_PT.Printer.warning(
             "\nThe given topology and/or trajectory files are of the "
             "wrong type."
             " Please remember that only certain file types and combinations "
@@ -1281,7 +1273,7 @@ def gen_universe(RunPars):
             "MD_SU_1", True, exception=ex, GMAPerrclass=GM_Ex.GmapValueError
         )
     except Exception as ex:
-        GM_PT.Printer().warning(
+        GM_PT.Printer.warning(
             "\nThe given topology and/or trajectory files could not be "
             "interpreted.",
             "MD_SU_1", True, exception=ex, GMAPerrclass=GM_Ex.GmapMDFileError
@@ -1342,14 +1334,14 @@ def check_box_charge(RunPars, charges):
     if abs(total_charge) > threshold:
         # if charge is not basically integer:
         if abs(round(total_charge) - total_charge) > threshold:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nThe total charge of the MD system deviates too far from an "
                 "integer number. Check whether the files are correct, and "
                 "whether the chosen threshold is relevant for this system.",
                 "MD_SU_3", True, GMAPerrclass=GM_Ex.GmapParameterError
             )
         else:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nThe total charge of the MD system is of integer, but not "
                 "neutral value. Check whether the files are correct - usually "
                 "md systems have a neutral charge. The program will continue, "

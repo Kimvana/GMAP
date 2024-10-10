@@ -202,7 +202,7 @@ def interpret_position(map_, details, parname):
         exec(codestring)
     except Exception as ex:
         corefile = (map_.directory / 'core.txt').resolve()
-        GM_PT.Printer().warning(
+        GM_PT.Printer.warning(
             f"\nThe file {corefile} does not contain a valid definition of "
             f"{parname}.",
             "MI_MC_9", exception=ex
@@ -257,7 +257,7 @@ def get_get_dipole_dir(map_):
         exec(codestring)
     except Exception as ex:
         corefile = (map_.directory / 'core.txt').resolve()
-        GM_PT.Printer().warning(
+        GM_PT.Printer.warning(
             f"\nThe file {corefile} does not contain a valid definition of "
             "r_vec and/or r_pos.",
             "MI_MC_9", exception=ex
@@ -356,7 +356,7 @@ def get_get_rotation_matrix(map_):
         exec(codestring)
     except Exception as ex:
         corefile = (map_.directory / 'core.txt').resolve()
-        GM_PT.Printer().warning(
+        GM_PT.Printer.warning(
             f"\nThe file {corefile} does not contain a valid definition of "
             "x_uvec, y_uvec and/or z_uvec.",
             "MI_MC_9", exception=ex

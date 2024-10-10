@@ -51,15 +51,17 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
                 "as the VEG c-library. However, the file is invalid. "
             )
             self.clib = ct.CDLL(str(RunPars.VEG_clib_file))
-        except FileNotFoundError as ex:
-            GM_PT.Printer().warning(
-                msg, "CL_VG_1", True, exception=ex,
-                GMAPerrclass=GM_Ex.GmapFileNotFoundError
-            )
+#        except FileNotFoundError as ex:
+#            GM_PT.Printer.warning(
+#                msg, "CL_VG_1", True, exception=ex,
+#                GMAPerrclass=GM_Ex.GmapFileNotFoundError
+#            )
         except Exception as ex:
             # OSError for invalid file (VEG.obj)
             # No others found yet.
-            GM_PT.Printer().warning(
+            # On windows no existing file give FileNotFoundError
+            # On linux/mac this will be a OSError
+            GM_PT.Printer.warning(
                 msg, "CL_VG_1", True, exception=ex,
                 GMAPerrclass=GM_Ex.GmapOSError
             )

@@ -52,7 +52,7 @@ class Printer(metaclass=GM_CT.Singleton):
         color names.
     _colors : :class:`~GMAP.src.tools.ColorSchemes.PrinterColors`
         The actual colors to be used. Contains a dict to translate the
-        unique color names of self.colors to ANSI escape codes.
+        unique color names of cls.colors to ANSI escape codes.
     line_length : int
         The desired line length for both the command line and log files.
     dont_report_error : list of \
@@ -77,6 +77,7 @@ class Printer(metaclass=GM_CT.Singleton):
     """
 
     def __init__(self, Files):
+        cls = self.__class__
         # The requested log file name/location is not immediately known, but
         # we still want to log information of the run. As long as the logfile
         # isn't found (/known), put info in the backlog instead of immediately
@@ -85,35 +86,34 @@ class Printer(metaclass=GM_CT.Singleton):
 
         # this can be done through self.program_state
         # self.logfilefound = False
-        self.logfile = Files.cwd / f"crash_{Files.now_str}.log"
-        self.backlog = []
+        cls.logfile = Files.cwd / f"crash_{Files._now_str}.log"
+        cls.backlog = []
 
         # 'startup' for initial part of code
         # 'demo' for when running in demo mode
         # 'running' for when running normally
-        self.program_state = "startup"
-        self.color_mode = "24bit"  # safe mode will overwrite this!
-        self.colors = GM_CS.StandInColors  # should be used by callers
-        self._colors = GM_CS.DarkModeColors  # default colors for early prints
-        self.line_length = 79
+        cls.program_state = "startup"
+        cls.color_mode = "24bit"  # safe mode will overwrite this!
+        cls.colors = GM_CS.StandInColors  # should be used by callers
+        cls._colors = GM_CS.DarkModeColors  # default colors for early prints
+        cls.line_length = 79
 
         # error codes which shouldn't be printed by warning.
-        self.dont_report_error = []
+        cls.dont_report_error = []
 
-        self.Timer = Timer(start=Files.start)
-
-        Files.set_exec_os()
+        cls.Timer = Timer(start=Files.start)
 
         self.syspathcopy = Files.syspathcopy
 
         # to have some kind of default - will be changed as soon as parameter
         # choices are known.
-        self.verbose = 3
-        self.verbose_logfile = 4
-        self.preline = []
+        cls.verbose = 3
+        cls.verbose_logfile = 4
+        cls.preline = []
 
+    @classmethod
     def print(
-        self, verbose_level, *toprint, instruction="pf", line_length=None,
+        cls, verbose_level, *toprint, instruction="pf", line_length=None,
         detailed_instructions=None, sep=" ", **kwargs
     ):
         """Called when something needs to be printed.
@@ -155,8 +155,8 @@ class Printer(metaclass=GM_CT.Singleton):
 
         # This means that RunPars hasn't been completed yet, and many print
         # settings are still unknown. So if we don't have to print, don't!
-        if self.program_state == "startup":
-            self.backlog.append([
+        if cls.program_state == "startup":
+            cls.backlog.append([
                 verbose_level, toprint, kwargs | {
                     "instruction": instruction,
                     "line_length": line_length,
@@ -166,7 +166,7 @@ class Printer(metaclass=GM_CT.Singleton):
             return
 
         if line_length is None:
-            line_length = self.line_length
+            line_length = cls.line_length
         if detailed_instructions is None:
             detailed_instructions = []
         toprint = [str(item) for item in toprint]
@@ -176,34 +176,35 @@ class Printer(metaclass=GM_CT.Singleton):
         # print to command line
         if (
             "p" in instruction
-            and verbose_level <= self.verbose
+            and verbose_level <= cls.verbose
             and (  # no specific verbose instr, or our specific one is in there
-                (self.verbose in detailed_instructions)
+                (cls.verbose in detailed_instructions)
                 is not all_verbose.isdisjoint(detailed_instructions))
         ):
-            message = self._print_preparation(
-                self.verbose, toprint, line_length, self.color_mode)
+            message = cls._print_preparation(
+                cls.verbose, toprint, line_length, cls.color_mode)
             print(message, **kwargs)
 
         # print to file
         if (
             "f" in instruction
-            and verbose_level <= self.verbose_logfile
+            and verbose_level <= cls.verbose_logfile
             and (  # no specific verbose instr, or our specific one is in there
-                (self.verbose_logfile in detailed_instructions)
+                (cls.verbose_logfile in detailed_instructions)
                 is not all_verbose.isdisjoint(detailed_instructions))
         ):
-            with open(self.logfile, "a", encoding="utf-8") as fhand:
+            with open(cls.logfile, "a", encoding="utf-8") as fhand:
                 # change color to white here so color codes/markers are not
                 # present in the log files
-                message = self._print_preparation(
-                    self.verbose_logfile, toprint, line_length, "white")
+                message = cls._print_preparation(
+                    cls.verbose_logfile, toprint, line_length, "white")
                 print(message, file=fhand, **kwargs)
 
-    def _print_preparation(self, verbose, message, line_length, color_mode):
+    @classmethod
+    def _print_preparation(cls, verbose, message, line_length, color_mode):
         """Format prints so they can be shown.
 
-        After self.print() has decided that something should indeed be
+        After cls.print() has decided that something should indeed be
         printed, this function is called. It does all the formatting
         and makeup of the information that should be printed:
 
@@ -245,7 +246,7 @@ class Printer(metaclass=GM_CT.Singleton):
         # Figure out (the length of) printpreline, and change its color to
         # the desired color (so they can be returned directly).
         printpreline = GM_SC.ColStr("").join(
-            [item[1] for item in self.preline if verbose in item[0]])
+            [item[1] for item in cls.preline if verbose in item[0]])
         printpreline = printpreline.change_color(color_mode)
         prelinelen = len(printpreline)
 
@@ -260,38 +261,41 @@ class Printer(metaclass=GM_CT.Singleton):
 
         return message
 
-    def quit_early(self):
+    @classmethod
+    def quit_early(cls):
         """Called when the program is quitted early
 
         Prints the backlog if there is any.
         """
 
-        if self.backlog:
-            self.print_backlog()
-            sys.path = self.syspathcopy
+        if cls.backlog:
+            cls.print_backlog()
+            sys.path = cls.syspathcopy
 
-    def print_backlog(self):
+    @classmethod
+    def print_backlog(cls):
         """Prints the backlog so the program can stop.
 
         When called in startup mode, verbose and verbose_log are set to 3,
         the crash logfile is used, and the entire backlog is worked through.
         """
 
-        if self.program_state == "startup":
-            self.program_state = "running"
+        if cls.program_state == "startup":
+            cls.program_state = "running"
 
         # create the file (clear it if it exists). File equivalent of
         # creating an empty list.
-        with open(self.logfile, "w") as _:
+        with open(cls.logfile, "w") as _:
             pass
 
-        for print_instructions in self.backlog:
+        for print_instructions in cls.backlog:
             args = (print_instructions[0],) + print_instructions[1]
-            self.print(*args, **print_instructions[2])
-        self.backlog = []
+            cls.print(*args, **print_instructions[2])
+        cls.backlog = []
 
+    @classmethod
     def warning(
-        self, message, error_code, exitbool=False, exception=None,
+        cls, message, error_code, exitbool=False, exception=None,
         GMAPerrclass=None
     ):
         """Warning system. Prints the message, and allows to force-quit after.
@@ -326,55 +330,56 @@ class Printer(metaclass=GM_CT.Singleton):
 
         # might seem backwards, but we should report if the error wasn't
         # silenced.
-        if GM_SC.ErrCode(error_code) not in self.dont_report_error:
+        if GM_SC.ErrCode(error_code) not in cls.dont_report_error:
             if exitbool:
                 printinstruct = "f"
             else:
                 message = (
-                    f"\n{self.colors.red_hc}WARNING:" + self.colors.red_todef
-                    + message + self.colors.clear)
+                    f"\n{cls.colors.red_hc}WARNING:" + cls.colors.red_todef
+                    + message + cls.colors.clear)
                 printinstruct = "pf"
 
             error_message = message
-            self.print(0, message, instruction=printinstruct)
+            cls.print(0, message, instruction=printinstruct)
 
             # print the traceback in exactly the same way as it would be
             # thrown into the command line.
             if exception:
                 traceprint = TbEx.from_exception(exception).format()
                 msg = (
-                    "\n" + self.colors.red_todef + "".join(traceprint)
-                    + self.colors.clear)
-                self.print(4, msg, instruction=printinstruct)
-                if self.verbose == 4:
+                    "\n" + cls.colors.red_todef + "".join(traceprint)
+                    + cls.colors.clear)
+                cls.print(4, msg, instruction=printinstruct)
+                if cls.verbose == 4:
                     error_message += msg
 
             msg = (
                 " More information can be found in the documentation "
                 "user pages using the following error "
-                f"code: {self.colors.clear} {error_code}"
+                f"code: {cls.colors.clear} {error_code}"
             )
-            self.print(
-                0, self.colors.red_todef + msg,
+            cls.print(
+                0, cls.colors.red_todef + msg,
                 instruction=printinstruct)
             error_message += msg
 
         if exitbool:
-            if self.backlog:
-                self.print_backlog()
+            if cls.backlog:
+                cls.print_backlog()
             # We want an empty line before the error
-            self.print(0, f"\n{self.colors.red_hc}", instruction="p", end="")
+            cls.print(0, f"\n{cls.colors.red_hc}", instruction="p", end="")
             error_message = (
-                self.colors.red_todef + error_message
-            ).change_color(self.color_mode)
+                cls.colors.red_todef + error_message
+            ).change_color(cls.color_mode)
             raise GMAPerrclass(error_message, error_code, exception)
 
-    def setenv(self, safe_mode, dark_mode):
+    @classmethod
+    def setenv(cls, safe_mode, dark_mode):
         """Similar to set_state, set safe_mode and dark_mode
 
         The provided choices for safe mode and dark mode are stored in
         the Printer object for later use. These two have to be treated
-        separate from those in self.set_state, as they have to be set
+        separate from those in cls.set_state, as they have to be set
         at the very beginning of the program, so errors can be printed
         accordingly.
 
@@ -387,19 +392,20 @@ class Printer(metaclass=GM_CT.Singleton):
             mode. Influences the color palette used.
         """
 
-        self.safe_mode = safe_mode
-        self.dark_mode = dark_mode
+        cls.safe_mode = safe_mode
+        cls.dark_mode = dark_mode
 
         if safe_mode:
             # in case some terminal cannot handle other colors
-            self.color_mode = "white"
-        if self.dark_mode:
-            self._colors = GM_CS.DarkModeColors
+            cls.color_mode = "white"
+        if cls.dark_mode:
+            cls._colors = GM_CS.DarkModeColors
         else:
-            self._colors = GM_CS.LightModeColors
+            cls._colors = GM_CS.LightModeColors
 
+    @classmethod
     def set_state(
-        self, new_state, verbose=None, verbose_logfile=None, color_mode=None,
+        cls, new_state, verbose=None, verbose_logfile=None, color_mode=None,
         line_length=None, new_logfile=None, new_dont_report_error=None
     ):
         """Change the current state of Printer
@@ -430,24 +436,25 @@ class Printer(metaclass=GM_CT.Singleton):
             These error codes shouldn't be reported on in the future.
         """
 
-        self.program_state = new_state
+        cls.program_state = new_state
         if verbose is not None:
-            self.verbose = verbose
+            cls.verbose = verbose
         if verbose_logfile is not None:
-            self.verbose_logfile = verbose_logfile
-        if (color_mode is not None) and (not self.safe_mode):
-            self.color_mode = color_mode
+            cls.verbose_logfile = verbose_logfile
+        if (color_mode is not None) and (not cls.safe_mode):
+            cls.color_mode = color_mode
         if line_length is not None:
-            self.line_length = line_length
+            cls.line_length = line_length
         if new_dont_report_error is not None:
-            self.dont_report_error = new_dont_report_error
+            cls.dont_report_error = new_dont_report_error
         if new_logfile is not None:
-            self.logfile = new_logfile
-            self.print_backlog()
+            cls.logfile = new_logfile
+            cls.print_backlog()
         # color_test()
         # GM_Pl.plot_color_conv()
 
-    def add_time(self, verbose_level, msg, label, precision='s'):
+    @classmethod
+    def add_time(cls, verbose_level, msg, label, precision='s'):
         """Adds a timestamp to the program output to track speed.
 
         Parameters
@@ -464,12 +471,12 @@ class Printer(metaclass=GM_CT.Singleton):
             To what precision the time should be reported.
         """
 
-        self.Timer.add_time(label)
+        cls.Timer.add_time(label)
         now = datetime.datetime.now().strftime("%a %d %H:%M")
-        runtime = time_to_str(self.Timer.get_time(label), precision)
-        self.print(
+        runtime = time_to_str(cls.Timer.get_time(label), precision)
+        cls.print(
             verbose_level,
-            f"{self.colors.blue_hc}[{now}] {self.colors.clear}{runtime}:  "
+            f"{cls.colors.blue_hc}[{now}] {cls.colors.clear}{runtime}:  "
             f"{msg}"
         )
 
@@ -634,9 +641,9 @@ def color_test():  # run this one with word_wrap to 150 (8 colors per row)
     step = 16
     range_ = [*range(0, 255, step)] + [255]
     for r in range_:
-        Printer().print(
+        Printer.print(
             0, f"\nRed value: {r}", instruction="p", line_length=130)
-        Printer().print(
+        Printer.print(
             0, " Blue -> " + "".join(
                 [f"{ix:<7}" for ix in range_])
             + "\nGreen", instruction="p", line_length=130)
@@ -648,7 +655,7 @@ def color_test():  # run this one with word_wrap to 150 (8 colors per row)
                 string += shortstr
                 string += shortstr.change_color("4bit")
                 string += " "
-            Printer().print(0, string, instruction="p", line_length=130)
+            Printer.print(0, string, instruction="p", line_length=130)
         if r == 128:
             break
 
@@ -797,12 +804,12 @@ def header(
     """
 
     if "color_border" not in kwargs or kwargs["color_border"] is None:
-        cb = Printer().colors.green_lc
+        cb = Printer.colors.green_lc
 
     if "color_text" not in kwargs or kwargs["color_text"] is None:
-        _ = Printer().colors.clear
+        _ = Printer.colors.clear
 
-    cc = Printer().colors.clear
+    cc = Printer.colors.clear
 
     if newlines is None:
         match preset:
@@ -817,9 +824,9 @@ def header(
             if preset == "custom":
                 title = GM_SC.Header(title, **kwargs).s
             head += title
-            Printer().print(verbose, head, **kwargs)
+            Printer.print(verbose, head, **kwargs)
             if preline is not None:
-                Printer().preline.append([[*range(verbose, 5)], preline])
+                Printer.preline.append([[*range(verbose, 5)], preline])
         case "doublebox" | "doublebox_bare":
             if preset == "doublebox":
                 special = {"u": {"replace": {"╦": [[1]]}}}
@@ -830,12 +837,12 @@ def header(
                 underline_char="═", left_char="║", right_char="║",
                 corner_char="╔╗╚╝", special=special
             ).s
-            Printer().print(verbose, head, **kwargs)
+            Printer.print(verbose, head, **kwargs)
             if preset != "doublebox_bare":
-                Printer().preline.append([
+                Printer.preline.append([
                     [*range(verbose, 5)], cb + " ║ " + cc])
     if newlines[1] > 0:
-        Printer().print(verbose, "\n" * (newlines[1] - 1), **kwargs)
+        Printer.print(verbose, "\n" * (newlines[1] - 1), **kwargs)
 
 
 def footer(
@@ -889,12 +896,12 @@ def footer(
     """
 
     if "color_border" not in kwargs or kwargs["color_border"] is None:
-        cb = Printer().colors.green_lc
+        cb = Printer.colors.green_lc
 
     if "color_text" not in kwargs or kwargs["color_text"] is None:
-        ct = Printer().colors.clear
+        ct = Printer.colors.clear
 
-    cc = Printer().colors.clear
+    cc = Printer.colors.clear
 
     if newlines is None:
         match preset:
@@ -905,7 +912,7 @@ def footer(
 
     if newlines[0] > 0:
         foot = "\n" * (newlines[0] - 1)
-        Printer().print(verbose, foot, **kwargs)
+        Printer.print(verbose, foot, **kwargs)
     match preset:
         case "nohead" | "custom":
             if preset == "custom":
@@ -913,19 +920,19 @@ def footer(
             else:
                 title = ""
             if preline is not None:
-                if Printer().preline[-1][1] == preline:
-                    _ = Printer().preline.pop()
+                if Printer.preline[-1][1] == preline:
+                    _ = Printer.preline.pop()
         case "doublebox_bare":
             title = ""
         case "doublebox":
             title = f" {cb}╚═══{ct} End of {title} {cb}═════{cc}"
             if preset != "doublebox_bare":
-                if Printer().preline[-1][1] == cb + " ║ " + cc:
-                    _ = Printer().preline.pop()
+                if Printer.preline[-1][1] == cb + " ║ " + cc:
+                    _ = Printer.preline.pop()
     if newlines[1] > 0:
         title += "\n" * (newlines[1])
     if title != "":
-        Printer().print(verbose, title, **kwargs)
+        Printer.print(verbose, title, **kwargs)
 
 
 def intlist_to_rangelist(intlist, n_int, make_shadow=True):

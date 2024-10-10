@@ -44,19 +44,13 @@ It is probable that the map wants to save information between functions, too, ju
 - self.rawcore (type dict of str-list pairs) contains the information from core.txt, before parsing. The function GM_adjust_map_core_raw can change this simple structure before it is being parsed into more complex structures and functions later.
 - self.Core (type :class:`~GMAP.src.tools.MapReader.SingleCore`) contains the information from core.txt, after parsing.
 
-
-files
-======
-An instance of :class:`~GMAP.src.tools.FileHandler.FileLocations`. Stores filepaths and such.
-
-
 system
 ======
 An instance of :class:`~GMAP.src.tools.SystemReader.System`. Stores all available information about the MD system used. Think atom-based information on it's name, element, type, the name and number of its residue, molecule, segment. Also charges, positions, masses and such are in here. 
 
 
 .. important:: 
-    When your functions should report/print anything, **do not** use the python build-in function print. Instead, import the GMAP PrintTools module (``from GMAP.src.tools import PrintTools as GM_PT``), from which you can call an instance of the Printer class. This instance is a singleton (so all print settings for that run are already set), so don't change it! But you can have it print (``GM_PT.Printer().print``), or even trigger an error (``GM_PT.Printer().warning``). See :class:`~GMAP.src.tools.PrintTools.Printer` for detailed information on using these functions.
+    When your functions should report/print anything, **do not** use the python build-in function print. Instead, import the GMAP PrintTools module (``from GMAP.src.tools import PrintTools as GM_PT``), from which you can call an instance of the Printer class. This instance is a singleton (so all print settings for that run are already set), so don't change it! But you can have it print (``GM_PT.Printer.print``), or even trigger an error (``GM_PT.Printer.warning``). See :class:`~GMAP.src.tools.PrintTools.Printer` for detailed information on using these functions.
 
 
 *************************
@@ -108,9 +102,6 @@ Available attributes of map\_
 
 Parameters
 ----------
-files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-    Contains all currently known paths and other file-related properties.
-    Has to be updated after RunPars is finalized.
 map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
@@ -124,7 +115,7 @@ Default implementation
 
 .. code-block:: python
 
-    def GM_adjust_RunPars(files, map_):
+    def GM_adjust_RunPars(map_):
         pass
 .. #endregion
 
@@ -174,9 +165,6 @@ Available attributes of map\_
 
 Parameters
 ----------
-files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-    Contains all currently known paths and other file-related properties.
-    Has to be updated after RunPars is finalized.
 map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
@@ -190,7 +178,7 @@ Default implementation
 
 .. code-block:: python
 
-    def GM_adjust_map_core_raw(files, map_):
+    def GM_adjust_map_core_raw(map_):
         pass
 .. #endregion
 
@@ -252,9 +240,6 @@ Available attributes of map\_
 
 Parameters
 ----------
-files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-    Contains all currently known paths and other file-related properties.
-    Has to be updated after RunPars is finalized.
 map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
@@ -273,7 +258,7 @@ Default implementation
 
 .. code-block:: python
 
-    def GM_adjust_oscillators(files, map_, system, oscillator_list):
+    def GM_adjust_oscillators(map_, system, oscillator_list):
         return oscillator_list
 .. #endregion
 
@@ -335,9 +320,6 @@ Available attributes of map\_
 
 Parameters
 ----------
-files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-    Contains all currently known paths and other file-related properties.
-    Has to be updated after RunPars is finalized.
 map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
@@ -353,7 +335,7 @@ Default implementation
 
 .. code-block:: python
 
-    def GM_post_init(files, map_, system)
+    def GM_post_init(map_, system)
         pass
 .. #endregion
 
