@@ -27,10 +27,10 @@ output_data dip ham ene ram pos dbp
 prevent_overwrite False
 
 start_frame 0
-number_frames 100
+number_frames 1
 
 estatic_smooth_range 0
 neutral_charge_threshold 0.01
 
-AmideSC.frequency_map_choice   Jansen
-AmideSC.dipole_map_choice   Jansen
+AmideSC.frequency_map_choice   Tokmakoff
+AmideSC.dipole_map_choice   Torii

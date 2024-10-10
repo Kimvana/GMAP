@@ -13,16 +13,14 @@ import numpy as np
 # GMAP imports
 # import GMAP.src.tools.MathFunctions as GM_MF
 # import GMAP.src.tools.PhysicsFunctions as GM_PF
-from GMAP.src.tools.PrintTools import devprint as dpr
+import GMAP.src.tools.DefaultMapFunctions as GM_DMF
+import GMAP.src.tools.PrintTools as GM_PT
 
 # own module imports
-import testimport
 import AmideSC_code.calculation_methods as MC_CM
 import AmideSC_code.parameter_changer as MC_PC
 # from .MapCode import parameter_changer as MC_PC
 # from .MapCode import calculation_methods as MC_CM
-
-testimport.importtest()
 
 
 # A function to adjust the choices made in core.txt. Perhaps, based on
@@ -64,9 +62,67 @@ def GM_adjust_map_core_raw(Files, map_):
     # still to do:
     # dipoles, doublepos, xyz?? (or fixed across all maps?)
 
-    dpr("entered the AmideSC map core adjustment")
     MC_PC.adjust_map_core_raw(Files, map_)
-    dpr("finished map core adjustment")
+
+
+def GM_adjust_oscillators(Files, map_, system, oscillator_list):
+    """Makes the necessary changes to the list of oscillators.
+
+    The program finds all oscillators mathing the instructions from
+    core.txt. However, there is no way for the program to avoid double
+    counting symmetrical groups (like the cystbridge mockup example).
+    If a map knows its group is symmetrical, this function can be
+    designed to only return half of the inputs.
+
+    Another possible use is for the code of the map to get to know its
+    oscillators. When all oscillators are passed through this function,
+    the (global) atom number of the first atom of this group (for
+    example) can be linked to a specific property the group might need
+    to know. This might be useful if a map needs to cover two very
+    similar oscillators.
+
+    .. note::
+        This function is called separately for each struct that the map
+        defines. So take into account that the function could be called
+        multiple times within a single simulation!
+
+    Parameters
+    ----------
+    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
+        Contains all currently known paths and other file-related
+        properties.
+        Has to be updated after RunPars is finalized.
+    Map : :class:`~GMAP.src.tools.MapReader.Map`
+        The object that stores everything the program currently knows
+        about this map.
+    Syst : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
+    oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        All oscillators belonging to a single struct of this map.
+
+    Returns
+    -------
+    oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        All oscillators belonging to a single struct of this map.
+    """
+
+    if map_.RunPars.residue_order == "resname":
+        return oscillator_list
+
+    # now, choice is 'resnum'. To change order to AIM order:
+    newlist = []
+    while len(oscillator_list) > 0:
+        smallest_ix = 0
+        smallest_resix = 999999999
+        for ix, oscillator in enumerate(oscillator_list):
+            resix = system.resnums[oscillator.used_atoms[0]]
+            if resix < smallest_resix:
+                smallest_resix = resix
+                smallest_ix = ix
+        newlist.append(oscillator_list.pop(smallest_ix))
+    return newlist
 
 
 # A place to do further initialization if a map requires it. Think of
@@ -80,6 +136,37 @@ def GM_post_init(files, map_, system):
     if map_.RunPars.dipole_map_choice == "Torii":
         map_.code.GM_calculate_dipole = MC_CM.calc_dipole_Torii
         map_.Core.dipole_gas_phase = np.float32(map_.Core.dipole_gas_phase)
+
+    map_.code.GM_get_position = get_get_position(map_)
+
+
+def get_get_position(map_):
+    # Same as the built-in, but not shifted to around 0.
+    posline = map_.rawcore["position"]
+
+    codestring = "\ndef GM_get_position"
+    codestring += "(Map, Syst, osc):\n"
+
+    codestring += "    CoM = " + GM_DMF.envelop_int(
+        " ".join(posline), "osc.positions_box[", "]"
+    ) + "\n"
+    # codestring += "    CoM = (CoM - np.floor(CoM + 0.5)) @ Syst.boxvects\n"
+    codestring += "    CoM = (CoM - np.floor(CoM)) @ Syst.boxvects\n"
+    codestring += "    return CoM"
+
+    try:
+        exec(codestring)
+    except Exception as ex:
+        corefile = (map_.directory / 'core.txt').resolve()
+        GM_PT.Printer().warning(
+            f"\nThe file {corefile} does not contain a valid definition of "
+            "position.",
+            "MI_MC_9", exception=ex
+        )
+        return None
+
+    # return GM_get_VEG_ref
+    return locals()["GM_get_position"]
 
 
 def GM_calculate_raman(Map, Syst, osc):

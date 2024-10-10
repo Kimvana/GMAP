@@ -420,11 +420,17 @@ class System:
         # - For the bonds, see which residues they actually connect.
 
         # Find the oscillators as defined in the maps
-        allgroups = [
-            self.find_oscillators_perstruct(struct, map_)
-            for map_ in RunPars.requested_mapdict.values()
-            for struct in map_.Core.functional_group
-        ]
+        allgroups = []
+        for map_ in RunPars.requested_mapdict.values():
+            mapgroups = []
+            for struct in map_.Core.functional_group:
+                mapgroups.extend(self.find_oscillators_perstruct(struct, map_))
+            allgroups.append(mapgroups)
+        # allgroups = [
+        #     self.find_oscillators_perstruct(struct, map_)
+        #     for map_ in RunPars.requested_mapdict.values()
+        #     for struct in map_.Core.functional_group
+        # ]
 
         # feed the found oscillators to the maps, let them have a look
         # at them / edit.

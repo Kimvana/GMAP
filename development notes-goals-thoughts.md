@@ -357,6 +357,10 @@ If you need a place to quickly write something down, do it here! It can be tidie
 
 
 - (KvA) TODO before PR:
+  - write documentation about two new parameters (amideSC and gMAP)
+  - tests for new estatic function, all other new features (but not map)
+  - create issue about slightly differing frequencies from AmideSC map
+  - change documentation on adjust oscillators to reflect new call
   - Have AmideSC raise a warning if the Jansen dipoles are requested without Jansen frequencies.
   - do some testing on how much sys.path is being shared between processes.
   - Does Files have to create Printer? leads to some difficulties as well...

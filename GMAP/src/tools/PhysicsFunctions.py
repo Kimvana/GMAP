@@ -118,7 +118,10 @@ def calc_frame(RunPars, System, outputs):
         if any(data in RunPars.output_data for data in ("ham", "dip", "ene")):
             if oscillator.Map.Core.electrostatic_choice in ("V", "E", "G"):
                 # calculate VEG
-                VEGlib.calcVEG_perres_mm(System, RunPars, oscillator)
+                if RunPars.estatics_method == "perres":
+                    VEGlib.calcVEG_perres_mm(System, RunPars, oscillator)
+                elif RunPars.estatics_method == "perres_nocut":
+                    VEGlib.calcVEG_perres_mm_nocut(System, RunPars, oscillator)
 
             # ROTATE VEG
             if oscillator.Map.Core.electrostatic_choice in ("E", "G"):

@@ -188,7 +188,7 @@ def print_logo(Files):
 
     Printer().print(
         1,
-        f"\nRunning the following job:\n{Files.callcommand}"
+        f"\nRunning the following job:\n{Files.callcommand}\n"
     )
 
 
