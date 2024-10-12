@@ -1583,12 +1583,26 @@ class SingleCore():
                     self.success = False
                     return
 
-    def allow_ranges(self, rawcore, lenlist):
+    def allow_ranges(self, ix_list, lenlist):
+        """Allows the user to select a range of integers to be
+        included in a map. Range of integers should be formatted
+        with a hyphen between two integers of choice.
+        Alternatively, the user may choose to include all atoms
+        by writing the word "All" instead of a range.
+
+        Parameters
+        ----------
+        ix_list : list
+            The list of atom indexes to be used for the map.
+        lenlist : int
+            The length of the atom list to choose from.
+        """
+
         atoms = list()
-        if "all" in (elem.lower() for elem in rawcore): # Case insensitive in
+        if "all" in (elem.lower() for elem in ix_list): # Case insensitive in
             atoms.extend(list(range(0,lenlist)))
         else:
-            for elem in rawcore:
+            for elem in ix_list:
                 if "-" in elem:
                     temp = elem.split("-")  # "10-21" -> ["10","21"]
                     start = int(temp[0])
