@@ -1605,14 +1605,17 @@ class SingleCore():
             for elem in ix_list:
                 if "-" in elem:
                     temp = elem.split("-")  # "10-21" -> ["10","21"]
-                    start = int(temp[0])
-                    end = int(temp[1])
-                    if start > lenlist or end > lenlist:
-                        raise IndexError
-                    if start > end:
-                        atoms.extend(list(range(start, end - 1, -1)))
-                    else:
-                        atoms.extend(list(range(start, end + 1)))
+                    if len(temp) == 2:
+                        start = int(temp[0])
+                        end = int(temp[1])
+                        if start > lenlist or end > lenlist:
+                            raise IndexError
+                        if start > end:
+                            atoms.extend(list(range(start, end - 1, -1)))
+                        else:
+                            atoms.extend(list(range(start, end + 1)))
+                    elif len(temp) != 2:
+                        raise ValueError
                 else:
                     atoms.append(int(elem))
         return atoms
@@ -1669,12 +1672,12 @@ class SingleCore():
                 "\nCould not interpret the choice for the parameter "
                 "'used_atoms'"
                 f" in the file {mapdir / 'core.txt'}. Please make sure the "
-                "choice consists of nothing but numbers separated by spaces.",
+                "choice consists of nothing but numbers separated by spaces and/or "
+                "ranges of integers separated by a hyphen.",
                 "MI_MC_7", exception=ex
             )
             self.success = False
             return
-
 
         if any(
             not all(ix in struct.indices for struct in self.functional_group)

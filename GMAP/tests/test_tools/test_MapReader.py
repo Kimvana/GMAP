@@ -1735,6 +1735,10 @@ class TestSingleCore:
             "MI_MC_7", capfd, "test_MI_MC_7_7", "length_units")
         self.basis_test_MI_MC(
             "MI_MC_7", capfd, "test_MI_MC_7_8", "positions")
+        self.basis_test_MI_MC(
+            "MI_MC_7", capfd, "test_MI_MC_7_9", "estatic_choice")
+        self.basis_test_MI_MC(
+            "MI_MC_7", capfd, "test_MI_MC_7_10", "estatic_choice")
 
     def test_MI_MC_8(self, capfd):
         self.basis_test_MI_MC(
