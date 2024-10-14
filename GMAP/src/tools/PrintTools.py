@@ -270,7 +270,7 @@ class Printer(metaclass=GM_CT.Singleton):
 
         if cls.backlog:
             cls.print_backlog()
-            sys.path = cls.syspathcopy
+            sys.path = list(cls.syspathcopy)
 
     @classmethod
     def print_backlog(cls):

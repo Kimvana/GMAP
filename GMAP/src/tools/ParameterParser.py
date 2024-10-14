@@ -2149,6 +2149,7 @@ class RunPars:
 
         self.resolve_framenums(CmdPars, InPars, DefPars, RefPars)
         self.resolve_couplings(CmdPars, InPars, DefPars)
+        self.resolve_estatics()
 
     def resolve_framenums(self, CmdPars, InPars, DefPars, RefPars):
         """Make sure the combination of frame numbers makes sense.
@@ -2172,17 +2173,6 @@ class RunPars:
             Contains all available parameters from GMAP itself (not
             map-specific)
         """
-
-        # The smoothing should start sooner than we start calculating the
-        # electrostatics to begin with....
-        if self.estatic_smooth_range > (self.estatic_range * 2):
-            GM_PT.Printer.warning(
-                "\nEncountered an issue with the combined choices of "
-                "parameters. The parameter estatic_smooth_range can not "
-                "take a value larger than twice that of estatic_range. "
-                "Please make sure it does not exceed that.",
-                "SU_NP_7", True, GMAPerrclass=GM_Ex.GmapValueError
-            )
 
         # An inconsistency with frame parameters?
         all_parameter_names = ("start_frame", "stop_frame", "number_frames")
@@ -2320,6 +2310,35 @@ class RunPars:
                 self.coupling_v_pair_dict[value].append(key)
             else:
                 self.coupling_v_pair_dict[value] = [key]
+
+    def resolve_estatics(self):
+        """Resolves any issues that can result from estatic choices.
+        """
+
+        # The smoothing can't start sooner than we start calculating the
+        # electrostatics to begin with....
+        if self.estatic_smooth_range > (self.estatic_range * 2):
+            GM_PT.Printer.warning(
+                "\nEncountered an issue with the combined choices of "
+                "parameters. The parameter estatic_smooth_range can not "
+                "take a value larger than twice that of estatic_range. "
+                "Please make sure it does not exceed that.",
+                "SU_NP_7", True, GMAPerrclass=GM_Ex.GmapParameterError
+            )
+
+        if (
+            self.estatics_method.lower() == "perres_nocut"
+            and self.estatic_smooth_range > 0
+        ):
+            GM_PT.Printer.warning(
+                "\nEncountered an issue with the combined choices of "
+                "parameters. The perres_nocut method has been requested as "
+                "choice for estatics_method, while the parameter "
+                "estatic_smooth_range also has a non-zero value. This method "
+                "of calculating electrostatics is, however, not compatible "
+                "with smoothing.",
+                "SU_NP_7", True, GMAPerrclass=GM_Ex.GmapParameterError
+            )
 
     def resolve_errorcodes(self):
         """Fixes any issues due to merging errorcodes from different

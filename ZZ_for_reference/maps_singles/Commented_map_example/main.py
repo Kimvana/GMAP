@@ -16,17 +16,13 @@ import GMAP.src.tools.PhysicsFunctions as GM_PF
 # parameter (especially if theres multiple that are linked), the way
 # RunPar is built might not be correct. In this function, the user can
 # fix that.
-def GM_adjust_RunPars(Files, Map):
+def GM_adjust_RunPars(Map):
     """Makes the necessary changes to Map.RunPar.
 
     Is expected to not return anything - return value is not caught.
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties.
-        Has to be updated after RunPars is finalized.
     Map : :class:`~GMAP.src.tools.MapReader.Map`
         The object that stores everything the program currently knows
         about this map.
@@ -39,7 +35,7 @@ def GM_adjust_RunPars(Files, Map):
 # a detected parameter, a different choice is preferred. This function
 # allows to make a different choice, **in the same format as the file**.
 # if more complex behaviour is desired, a separate function is needed.
-def GM_adjust_map_core_raw(Files, map_):
+def GM_adjust_map_core_raw(map_):
     """Makes the necessary changes to the 'raw' input read from core.txt.
 
     Is expected to not return anything - return value is not caught.
@@ -59,10 +55,6 @@ def GM_adjust_map_core_raw(Files, map_):
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties.
-        Has to be updated after RunPars is finalized.
     map_ : :class:`~GMAP.src.tools.MapReader.Map`
         The object that stores everything the program currently knows
         about this map.
@@ -81,7 +73,7 @@ def GM_adjust_map_core_raw(Files, map_):
 # of oscillators, and is supposed to return a list of oscillators.
 # For example, this function could remove some of the oscillators for
 # some reason, and return the rest.
-def GM_adjust_oscillators(Files, Map, Syst, oscillator_list):
+def GM_adjust_oscillators(Map, Syst, oscillator_list):
     """Makes the necessary changes to the list of oscillators.
 
     The program finds all oscillators mathing the instructions from
@@ -104,10 +96,6 @@ def GM_adjust_oscillators(Files, Map, Syst, oscillator_list):
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties.
-        Has to be updated after RunPars is finalized.
     Map : :class:`~GMAP.src.tools.MapReader.Map`
         The object that stores everything the program currently knows
         about this map.
@@ -130,7 +118,7 @@ def GM_adjust_oscillators(Files, Map, Syst, oscillator_list):
 # A place to do further initialization if a map requires it. Think of
 # things like building further lookup tables, for instance.
 # (for AmideBB - find neighbours!)
-def GM_post_init(files, map_, system):
+def GM_post_init(map_, system):
     pass
 
 
@@ -489,17 +477,13 @@ def placeholder_GM_get_VEG_ref_com(Map, Syst, osc):
 # !!!!!!!!!!!!!!!!!!!!!
 # is this actually needed? Or does this influence the customizable
 # functions only, anyways?
-def GM_adjust_map_core_results(Files, Map):
+def GM_adjust_map_core_results(Map):
     """Makes the necessary changes to the results derived from core.txt
 
     Is expected to not return anything - return value is not caught.
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties.
-        Has to be updated after RunPars is finalized.
     Map : :class:`~GMAP.src.tools.MapReader.Map`
         The object that stores everything the program currently knows
         about this map.

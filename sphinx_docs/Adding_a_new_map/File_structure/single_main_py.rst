@@ -14,6 +14,9 @@ The file can contain other functions (or even call functions from other files in
 - Names starting with "CP\_" - These are reserved for coupling maps. A coupling map might need more information from a single oscillator, which can be retrieved by using these kinds of functions.
 - Any of the names that should be avoided courtesy of general coding good practices.
 
+.. note::
+    If the map ever needs to raise a warning, the error code should be of the following format: ``map_mapname_identifier``. Replace mapname with the name of your map, and identifier with the identifier for this specific warning. If you add warnings, make sure to also provide explanation on these warnings to users!
+
 
 ***************
 Basic structure
@@ -195,7 +198,7 @@ Is expected to return a list of oscillators - by default, it returns oscillator_
 The purpose of a map is to define how to calculate the properties for a certain kind of oscillator. The program will find instances of that oscillator in the MD system based on the choice for 'functional_group' in core.txt. After they've been found, they are passed to this function. The reason for this is twofold. Fistly, this allows the map to change this list if it were necessary (see example uses). Secondly, it allows the map to 'see' the oscillators for the first time, allowing it to identify the type of an oscillator, for example. When all oscillators are passed through this function, the (global) atom number of the first atom of this group (for example) can be linked to a specific property the group might need to know. This might be useful if a map needs to cover two very similar oscillators.
 
 .. note::
-    This function is called separately for each struct that the map defines. So take into account that the function could be called multiple times within a single simulation!
+    This function is called once for each map. This single call will contain all oscillators, sorted by struct (in the same struct order as in which the structs are defined). So take into account that the function could be provided with multiple different structs at a time
 
 
 Example uses

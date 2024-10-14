@@ -15,7 +15,9 @@ Missing tests:
 
 
 # standard library imports
+import datetime
 from pathlib import Path
+import sys
 
 # 3rd party imports
 import numpy as np
@@ -23,8 +25,26 @@ import pytest
 
 # local imports
 import GMAP.src.tools.CodingTools as GM_CT
+import GMAP.src.tools.constants as GM_con
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.FileHandler as GM_FH
+
+
+class TestFileLocations:
+    @pytest.mark.nofiles
+    def test_sinprops(self):
+        now = datetime.datetime.now()
+        files = GM_FH.FileLocations(now=now)
+        cmd = tuple(sys.argv)
+        cmd = (Path(cmd[0]).name,) + cmd[1:]
+        assert files.callcommand == " ".join(cmd)
+        assert files.now_str == now.strftime("%Y-%m-%d_%H-%M-%S")
+        curpath = Path(__file__).resolve()
+        assert files.sourcedir_hc == (
+            curpath / "../../../sourcefiles").resolve()
+        assert files.mapdir_hc == (curpath / "../../../maps").resolve()
+        assert files.exec_os in GM_con.clib_ext_dict.keys()
+        assert files.clib_extension in GM_con.clib_ext_dict.values()
 
 
 def test_get_bare_file():

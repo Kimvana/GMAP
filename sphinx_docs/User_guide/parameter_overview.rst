@@ -156,6 +156,13 @@ There are multiple choices of extension available - the exact set will differ pe
 This file will only be created when 'ham' is among the choices for the parameter output_data.
 
 
+output_estatics_filename
+========================
+| (used by: DEPICT)
+
+The filename of the electrostatics output file, _with_ extension! This file contains electrostatic properties. The path stored here will be assumed to be relative to the directory given in the parameter output_directory when applicable.
+
+
 output_hamiltonian_filename
 ===========================
 | (shorthand: -ohf)
@@ -182,11 +189,28 @@ output_dipole_filename
 The filename of the dipole output file, _without_ extension! Depending on the output format of choice, this file may either be in binary, or in txt format. The path stored here will be assumed to be relative to the directory given in the parameter output_directory when applicable.
 
 
-output_estatics_filename
-========================
-| (used by: DEPICT)
+output_raman_filename
+======================
+| (shorthand: -orf)
+| (used by: GEM)
 
-The filename of the electrostatics output file, _with_ extension! This file contains electrostatic properties. The path stored here will be assumed to be relative to the directory given in the parameter output_directory when applicable.
+The filename of the raman output file, _without_ extension! Depending on the output format of choice, this file may either be in binary, or in txt format. The path stored here will be assumed to be relative to the directory given in the parameter output_directory when applicable.
+
+
+output_positions_filename
+=========================
+| (shorthand: -opf)
+| (used by: GEM)
+
+The filename of the positions output file, _without_ extension! Depending on the output format of choice, this file may either be in binary, or in txt format. The path stored here will be assumed to be relative to the directory given in the parameter output_directory when applicable.
+
+
+output_doublepos_filename
+=========================
+| (shorthand: -opf)
+| (used by: GEM)
+
+The filename of the double positions output file, _without_ extension! Depending on the output format of choice, this file may either be in binary, or in txt format. The path stored here will be assumed to be relative to the directory given in the parameter output_directory when applicable.
 
 
 map_directory
@@ -302,6 +326,21 @@ dipoles_units
 In what units the output dipoles should be written. Cannot be used together with dipoles_multiplier.
 
 dipoles_multiplier
+==================
+| (no shorthand available)
+| (used by: GEM)
+
+The output dipoles (in Debye) will be multiplied by this value before saving. Cannot be used together with dipoles_units.
+
+raman_units
+=============
+| (no shorthand available)
+| (options: Ang3, Bohr3)
+| (used by: GEM)
+
+In what units the output raman tensors should be written. Cannot be used together with raman_multiplier.
+
+raman_multiplier
 ==================
 | (no shorthand available)
 | (used by: GEM)
@@ -447,6 +486,16 @@ In case the influencers should be defined differently from the 'default' method 
 
 .. note::
     The used MDAnalysis functionality can make a noticable impact on calculation times, especially when using the program in parallel (multiple CPUs / cores / nodes). Most usecases should be fine, but if you notice a big difference for your calculations, please reach out to the developers of GMAP.
+
+
+estatics_method
+===============
+| (no shorthand available)
+| (options: perres, perres_nocut)
+| (used by: GEM)
+
+How the elecctrostatics should be calculated. For perres_nocut, if an influencing residue is within range of the oscillating residue, all its atoms can influence all oscillating atoms. This is the way AIM calculated the electrostatic properties. This method ignores any choices made for estatic_smooth_range. 
+For perres, if an influencer is within range of the oscillating residues, its individual atoms are considered. Only the atoms that are within range of the oscillating residue will actually be considered, the others are ignored.
 
 
 neutral_charge_threshold

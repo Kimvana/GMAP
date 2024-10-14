@@ -1,5 +1,8 @@
 
-def adjust_map_core_raw(Files, map_):
+import GMAP.src.tools.PrintTools as GM_PT
+
+
+def adjust_map_core_raw(map_):
     # atom order: CG  OD1  CB  ND2  HD21  HD22
 
     # Based on frequency map choice (Tokmakoff, Skinner, Jansen, Cho, Hirst),
@@ -8,19 +11,26 @@ def adjust_map_core_raw(Files, map_):
 
     # Based on position choice, set the position keywords from the map to
     # different values
-    choice = map_.RunPars.pos_choice
-    match choice:
-        case "C":  # the default
-            map_.rawcore["position"] = ["0"]
-        case "O":
-            map_.rawcore["position"] = ["1"]
-        case "N":
-            map_.rawcore["position"] = ["3"]
-        case "D":
-            map_.rawcore["position"] = ["4"]
-        case "CNO":
-            # map_.rawcore["position"] = ["(0+0.665*1+0.258*3)/1.923"]
-            map_.rawcore["position"] = ["0.077*0+0.665*1+0.258*3"]
+    pardict = {
+        "pos_choice": "position",
+        "dp1_choice": "doublepos_0",
+        "dp2_choice": "doublepos_1"
+    }
+    for parameter in ("pos_choice", "dp1_choice", "dp2_choice"):
+        choice = getattr(map_.RunPars, parameter)
+        rawpar = pardict[parameter]
+        match choice:
+            case "C":  # the default
+                map_.rawcore[rawpar] = ["0"]
+            case "O":
+                map_.rawcore[rawpar] = ["1"]
+            case "N":
+                map_.rawcore[rawpar] = ["3"]
+            case "D":
+                map_.rawcore[rawpar] = ["4"]
+            case "Torii":
+                # map_.rawcore[rawpar] = ["(0+0.665*1+0.258*3)/1.923"]
+                map_.rawcore[rawpar] = ["0.077*0+0.665*1+0.258*3"]
 
     match map_.RunPars.dipole_map_choice:
         case "Torii":
@@ -28,8 +38,16 @@ def adjust_map_core_raw(Files, map_):
             map_.rawcore["dipole_gas_phase"] = ["0.276"]
         case "Jansen":
             if not map_.RunPars.frequency_map_choice == "Jansen":
-                # throw up an error, and set map_.success to false.
-                pass
+                GM_PT.Printer.warning(  # no exitbool - error is not fatal.
+                    "Error in the map AmideSC: The Jansen dipole map was "
+                    "requested without using the Jansen frequency map. Either "
+                    "change your frequency map choice to Jansen, or "
+                    "use a different dipole map.",
+                    "map_AmideSC_1"
+                )
+                # Indicate there is an error with this map, so GMAP shouldn't
+                # use it (GMAP raises fatal error if this map is requested).
+                map_.success = False
     # else: default (xyz jansen_dipoles.txt)
 
 

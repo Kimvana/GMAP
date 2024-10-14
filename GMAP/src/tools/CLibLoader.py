@@ -203,7 +203,7 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
         """
 
         # each input has as a comment the name of that variable in c.
-        self.clib.calcVEG_perres_mm(
+        self.clib.calcVEG_perres_mm_nocut(
             oscillator.electrostatic_atoms_c,  # tocalc
             oscillator.n_estatic_atoms,  # n_osc_ats
             oscillator.VEG_refpos_c,  # spherepos

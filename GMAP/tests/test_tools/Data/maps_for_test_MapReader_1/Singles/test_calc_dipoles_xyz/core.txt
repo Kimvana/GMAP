@@ -27,3 +27,4 @@ position       2
 doublepos_0    3
 doublepos_1    1
 
+assume_length_units    angstrom

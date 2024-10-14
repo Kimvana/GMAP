@@ -357,16 +357,8 @@ If you need a place to quickly write something down, do it here! It can be tidie
 
 
 - (KvA) TODO before PR:
-  - write documentation about two new parameters (amideSC and gMAP)
-  - tests for new estatic function, all other new features (but not map)
-  - create issue about slightly differing frequencies from AmideSC map
-  - change documentation on adjust oscillators to reflect new call
-  - Have AmideSC raise a warning if the Jansen dipoles are requested without Jansen frequencies.
   - do some testing on how much sys.path is being shared between processes.
-  - Does Files have to create Printer? leads to some difficulties as well...
   - AmideSC - main.py - GM_adjust_map_core_raw - freqmap based local atoms!, also assume_length_units, VEG_reference for freqmaps.
-  - AmideSC - main.py - GM_adjust_map_core_raw - create options for dipoles, doublepos (and xyz?)
-  - AmideSC : what if Jansen dipoles, but rest is not jansen? disallow? or change parmatrix to have 'empty' rows, and set estatic_atoms to all 4, and VEG to G?
   - look at test test_parameterparser line 1046 - see comment thomas
 - (KvA) TODO:
   - start on mapdev-checklist. What things should a mapmaker double check before starting the map (and, simultaneously, have map-testing feature do these checks where possible - at least, write down what it should test)

@@ -552,6 +552,15 @@ The program assumes (by default) that maps assume length to be specified in angs
 
 If you use different units, you can do the unit conversion yourself using the function 'post_init()' in the map main.py file.
 
+.. note::
+    There are many ways to indicate angstrom and bohr. While the ones mentioned are preferred, many other alternatives are available. The detection is case insensitive.
+
+    angstrom
+        Angstrom, ang, Ang, a, A, aa, AA
+    
+    bohr
+        Bohr, a0, A0, au, AU
+
 
 ****************
 dipole_gas_phase
