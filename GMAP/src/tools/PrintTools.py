@@ -3,7 +3,7 @@
 import datetime
 import inspect
 import pathlib
-# import sys
+import sys
 import time
 from traceback import TracebackException as TbEx
 
@@ -61,6 +61,8 @@ class Printer(metaclass=GM_CT.Singleton):
         encountered. Silenced fatal errors will still quit the program.
     Timer : :class:`~Timer`
         The timer that keeps track of calculation times.
+    syspathcopy : list
+        A copy of sys.path made when Files was instantiated.
     verbose : int
         How verbose the prints to the command line should be.
     verbose_logfile : int
@@ -100,6 +102,8 @@ class Printer(metaclass=GM_CT.Singleton):
         cls.dont_report_error = []
 
         cls.Timer = Timer(start=Files.start)
+
+        self.syspathcopy = Files.syspathcopy
 
         # to have some kind of default - will be changed as soon as parameter
         # choices are known.
@@ -266,6 +270,7 @@ class Printer(metaclass=GM_CT.Singleton):
 
         if cls.backlog:
             cls.print_backlog()
+            sys.path = list(cls.syspathcopy)
 
     @classmethod
     def print_backlog(cls):
@@ -618,7 +623,7 @@ def color_test():  # run this one with word_wrap to 150 (8 colors per row)
     .. important::
         This function is no longer used, and just here for testing/
         development purposes. There is now a more fancy version:
-        :func: `GMAP.src.tools.Plotter.plot_color_conv`.
+        :func:`GMAP.src.tools.Plotter.plot_color_conv`.
 
         Only when pandas is an issue, or when the commandline
         specifically is desired to generate the output, this function

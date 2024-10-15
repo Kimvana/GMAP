@@ -52,9 +52,11 @@ When you've made some choices to the code, and would like to rebuild the docs, n
 
 - make sure to install microsoft visual studio (detailed instructions are a must - AIM repo has them in the manual, page 12).
 - through windows start menu, scroll trough list of programs, select visual studio folder, in there, the desired command prompt. x64 Native Tools for 64 bit windows, x86 Native Tools for 32 bit. __Make sure to open the command prompt in admin mode__.
-- run the following command: ```cl.exe /LD scriptname.cpp``` (generates 4 files)
+- run one of the following commands: 
+  ```cl.exe /LD /Fe: VEG_Win64bit scriptname.cpp``` (64 bit windows / python installation)
+  ```cl.exe /LD /Fe: VEG_Win32bit scriptname.cpp``` (32 bit windows / python installation)
+  (This step generates 4 files)
 - use the .dll file for the program (ignore or delete the other 3 generated ones).
-- change the name of the VEG.dll file to VEG_Win64bit.dll or VEG_Win32bit.dll depending on your system. 
 
 
 ### linux

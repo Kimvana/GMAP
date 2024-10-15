@@ -1,1 +1,6 @@
-pos_choice[str]    [C] O N D
+frequency_map_choice(fmc)[str]        Tokmakoff [Skinner] Jansen Cho Hirst
+dipole_map_choice(dmc)[str]           [Torii] Jansen
+residue_order[str]                    resname [resnum]
+pos_choice[str]                       [C] O N D Torii
+dp1_choice[str]                       [C] O N D Torii
+dp2_choice[str]                       C O [N] D Torii

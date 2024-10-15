@@ -20,6 +20,8 @@ Installing all programs to create the documentation might be confusing. Besides 
 - `Sphinx and numpydoc <https://codeandchaos.wordpress.com/2012/08/09/sphinx-and-numpydoc/>`__ is the followup to the autodoc tutorial for dummies. Same warnings apply!
 - On the `sphinx theme gallery page <https://sphinx-themes.org/>`__ you can find many more themes to render documentation in.
 - `Sphinx-design <https://sphinx-design.readthedocs.io/en/latest/get_started.html>`__ allows the use of more complex structures in the pages.
+- The VS code extension 'region folding for VS code' by maptz allows one to add custom regions at which to perform code folding. These regions are used in the documentation. It is recommended to add it too, as some documentation pages have VERY many lines, and folding becomes incredibly useful. See VScode installation page for details.
+
 
 
 Setting up

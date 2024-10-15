@@ -16,14 +16,14 @@
 # trajectory_file D:\Data\PhD\Tutorials\C8S3\md_300_1ns_xtc4fs.gro
 
 
-verbose 4
+verbose 3
 verbose_logfile 4
-maps_to_use   AmideBB AmideSC 
-couplings_to_use  None   :All
-couplings_to_use  DipDip  AmideSC:AmideSC
+maps_to_use   AmideSC  # AmideBB
+couplings_to_use  DipDip   :All
+# couplings_to_use  DipDip  AmideSC:AmideSC
 
 output_format txt
-output_data dip ham
+output_data dip ham ene ram pos dbp
 prevent_overwrite False
 
 start_frame 0
@@ -31,3 +31,6 @@ number_frames 100
 
 estatic_smooth_range 0
 neutral_charge_threshold 0.01
+
+AmideSC.frequency_map_choice   Tokmakoff
+AmideSC.dipole_map_choice   Torii

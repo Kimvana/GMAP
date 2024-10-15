@@ -48,6 +48,7 @@ class TestRefPars:
             "command_line_color": ["white", "4bit", "24bit"],
             "output_format": ["bin", "txt"],
             "output_data": ["ham", "dip", "ene", "pos", "dbp", "ram"],
+            "estatics_method": ["perres", "perres_nocut"],
             "hamiltonian_units": ["cm-1", "eV"],
             "energies_units": ["cm-1", "eV"],
             "dipoles_units": ["Debye", "eBohr"],
@@ -106,6 +107,7 @@ class TestRefPars:
             "dont_report_error": ["none"],
             "output_format": ["bin"],
             "output_data": ["ham", "dip", "pos"],
+            "estatics_method": ["perres"],
             "neutral_charge_threshold": [0.0001],
             "guess_bonds": [False],
             "estatic_range": [20.0],
@@ -320,6 +322,7 @@ class TestRefPars:
             "dont_report_error",
             "output_format",
             "output_data",
+            "estatics_method",
             "hamiltonian_units",
             "energies_units",
             "dipoles_units",
@@ -534,6 +537,7 @@ class TestRawPars:
             "dont_report_error": ["none"],
             "output_format": ["bin", "txt"],
             "output_data": ["ham", "dip", "pos"],
+            "estatics_method": ["perres"],
             "neutral_charge_threshold": [0.0001],
             "guess_bonds": [False],
             "estatic_range": [20.0],
@@ -1493,7 +1497,17 @@ class TestRunPars:
             "--estatic_smooth_range", "40"
         ]
         pardict = {"estatic_range": ["10"]}
-        self.systest_runpars(cmdline, "SU_NP_7", GM_Ex.GmapValueError, pardict)
+        self.systest_runpars(
+            cmdline, "SU_NP_7", GM_Ex.GmapParameterError, pardict)
+
+        cmdline = [
+            "--int_test_nodef", "22",
+            "--path_test_nodef", "tests/test_tools/test_MathFunctions.py",
+            "--estatics_method", "perres_nocut"
+        ]
+        pardict = {"estatic_smooth_range": ["20"]}
+        self.systest_runpars(
+            cmdline, "SU_NP_7", GM_Ex.GmapParameterError, pardict)
 
     def test_SU_NP_8(self):
         # invalid length (no couppairs given)

@@ -412,11 +412,17 @@ class System:
         # - For the bonds, see which residues they actually connect.
 
         # Find the oscillators as defined in the maps
-        allgroups = [
-            self.find_oscillators_perstruct(struct, map_)
-            for map_ in RunPars.requested_mapdict.values()
-            for struct in map_.Core.functional_group
-        ]
+        allgroups = []
+        for map_ in RunPars.requested_mapdict.values():
+            mapgroups = []
+            for struct in map_.Core.functional_group:
+                mapgroups.extend(self.find_oscillators_perstruct(struct, map_))
+            allgroups.append(mapgroups)
+        # allgroups = [
+        #     self.find_oscillators_perstruct(struct, map_)
+        #     for map_ in RunPars.requested_mapdict.values()
+        #     for struct in map_.Core.functional_group
+        # ]
 
         # feed the found oscillators to the maps, let them have a look
         # at them / edit.
@@ -1171,8 +1177,8 @@ class Oscillator:
             The object that stores all information on the MD system
         """
 
-        self.positions_box = (
-            Syst.positions[self.used_atoms] @ Syst.boxvects_inv)
+        self.positions = Syst.positions[self.used_atoms]
+        self.positions_box = (self.positions @ Syst.boxvects_inv)
         self.VEG_refpos = self.get_VEG_ref(Syst)
         self.VEG_refpos_c = np.ctypeslib.as_ctypes(self.VEG_refpos)
         if self.Map.Core.electrostatic_choice in ("E", "G"):
