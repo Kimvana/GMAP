@@ -56,29 +56,40 @@ def adjust_mcr_freqchoice(map_):
 
     choice = map_.RunPars.frequency_map_choice
     parname = "frequency_data_file_linear"
+    secpar = "frequency_data_file_linear_prepro"
     match choice:
         case "Skinner":  # the default
             map_.rawcore["electrostatic_atoms"] = ["0", "3"]  # C and N
             map_.rawcore["electrostatic_choice"] = ["E"]
-            map_.rawcore["frequency_gas_phase"] = ["1714"]
+            map_.rawcore["frequency_gas_phase"] = ["1684"]
+            map_.rawcore["frequency_gas_phase_prepro"] = ["1657"]
             map_.rawcore[parname] = ["frequency_maps/Skinner.txt"]
+            map_.rawcore[secpar] = ["frequency_maps/Skinner.txt"]
         case "Tokmakoff":
             map_.rawcore["electrostatic_atoms"] = ["1"]  # Oxygen!
             map_.rawcore["electrostatic_choice"] = ["E"]
-            map_.rawcore["frequency_gas_phase"] = ["1740.3"]
-            map_.rawcore[parname] = ["frequency_maps/Tokmakoff.txt"]
+            map_.rawcore["frequency_gas_phase"] = ["1710.3"]
+            map_.rawcore["frequency_gas_phase_prepro"] = ["1666"]
+            map_.rawcore[parname] = ["frequency_maps/Tokmakoff_gen.txt"]
+            map_.rawcore[secpar] = ["frequency_maps/Tokmakoff_prepro.txt"]
         case "Jansen":
             map_.rawcore["electrostatic_atoms"] = ["0", "1", "3", "4"]
             map_.rawcore["electrostatic_choice"] = ["G"]
-            map_.rawcore["frequency_gas_phase"] = ["1747"]
-            map_.rawcore[parname] = ["frequency_maps/Jansen.txt"]
+            map_.rawcore["frequency_gas_phase"] = ["1717"]
+            map_.rawcore["frequency_gas_phase_prepro"] = ["1690"]
+            map_.rawcore[parname] = ["frequency_maps/Jansen_gen.txt"]
+            map_.rawcore[secpar] = ["frequency_maps/Jansen_prepro.txt"]
         case "Cho":
             map_.rawcore["electrostatic_atoms"] = ["0", "1", "3", "4"]
             map_.rawcore["electrostatic_choice"] = ["V"]
-            map_.rawcore["frequency_gas_phase"] = ["1747"]
+            map_.rawcore["frequency_gas_phase"] = ["1717"]
+            map_.rawcore["frequency_gas_phase_prepro"] = ["1690"]
             map_.rawcore[parname] = ["frequency_maps/Cho.txt"]
+            map_.rawcore[secpar] = ["frequency_maps/Cho.txt"]
         case "Hirst":
             map_.rawcore["electrostatic_atoms"] = ["0", "1", "3", "4"]
             map_.rawcore["electrostatic_choice"] = ["V"]
-            map_.rawcore["frequency_gas_phase"] = ["1747"]
+            map_.rawcore["frequency_gas_phase"] = ["1717"]
+            map_.rawcore["frequency_gas_phase_prepro"] = ["1690"]
             map_.rawcore[parname] = ["frequency_maps/Hirst.txt"]
+            map_.rawcore[secpar] = ["frequency_maps/Hirst.txt"]
