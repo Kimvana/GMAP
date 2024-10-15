@@ -65,7 +65,7 @@ def adjust_mcr_freqchoice(map_):
         case "Tokmakoff":
             map_.rawcore["electrostatic_atoms"] = ["1"]  # Oxygen!
             map_.rawcore["electrostatic_choice"] = ["E"]
-            map_.rawcore["frequency_gas_phase"] = ["1740"]
+            map_.rawcore["frequency_gas_phase"] = ["1740.3"]
             map_.rawcore[parname] = ["frequency_maps/Tokmakoff.txt"]
         case "Jansen":
             map_.rawcore["electrostatic_atoms"] = ["0", "1", "3", "4"]

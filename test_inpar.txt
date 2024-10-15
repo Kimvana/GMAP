@@ -26,6 +26,8 @@ output_format txt
 output_data dip ham ene ram pos dbp
 prevent_overwrite False
 
+estatics_method  perres_nocut
+
 start_frame 0
 number_frames 100
 
