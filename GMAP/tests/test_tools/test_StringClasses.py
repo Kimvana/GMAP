@@ -175,3 +175,15 @@ class TestHeader:
         assert head.specials_replace("l", {"V": [[2], [4], [6, 8]]}, line) == (
             [GM_SC.ColStr(char) for char in "--V-V-VV--"]
         )
+
+    def test_add(self):
+        head = GM_SC.Header("test")
+        colors = GM_CS.StandInColors
+        gr = colors.green_lc
+        cl = colors.clear
+        assert head + "B" == GM_SC.ColStr(
+            f"{gr}----\n{gr}{cl}test{gr}\n{gr}----{cl}B"
+        )
+        assert "B" + head == GM_SC.ColStr(
+            f"B{gr}----\n{gr}{cl}test{gr}\n{gr}----{cl}"
+        )

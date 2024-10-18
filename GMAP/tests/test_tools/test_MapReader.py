@@ -5,7 +5,7 @@ src/tools/PhysicsFunctions.py.
 Missing tests:
 
 (@ August 2nd '24):
-328-336, 1564 (5 missed statements)
+328-336, 1562  (5 missed statements)
 
 (CUHTAT - currently unknown how to access this )
 - Map.append_core() - there was some issue with the corefile (CUHTAT)
@@ -13,7 +13,7 @@ Missing tests:
   Any stuff wrong with the corefile will have its own warning call (and not
   use raise) - MI_MC_5
 - The structure of the map has no bonds (but the parameter giving bonds has
-  been used) (1564)
+  been used) (1562)
 """
 
 

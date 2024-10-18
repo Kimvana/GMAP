@@ -5,7 +5,7 @@ src/tools/PhysicsFunctions.py.
 Missing tests:
 
 (@ September 20th '24):
-111-165, 250-251  (34 missed statements)
+111-168, 250-251  (37 missed statements)
 
 - [WIP] calc_frame not yet tested  (111-165)
 - calc_raman not yet tested (as so custom) (250-251)

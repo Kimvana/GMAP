@@ -86,7 +86,7 @@ class Map():
     """
 
     def __init__(self, mapdir, avail_files):
-        self.directory = mapdir
+        self.directory = mapdir.resolve()
         self.name = mapdir.name
         self.type = mapdir.parent.name
         self.success = True
@@ -236,12 +236,13 @@ class Map():
         if not modpath.is_file():
             return None
 
-        modname = self.name + "_code"
+        modname = self.name + "_mainpy_code"
 
         try:
             spec = importlib.util.spec_from_file_location(modname, modpath)
             module = importlib.util.module_from_spec(spec)
             sys.modules[modname] = module
+            sys.path.insert(1, str(self.directory))
             spec.loader.exec_module(module)
         except Exception as ex:
             GM_PT.Printer.warning(
@@ -1125,6 +1126,8 @@ class SingleCore():
             rawcore, Map.directory)
         if not self.success:
             return
+        if isinstance(self.dipole_gas_phase, list):
+            self.dipole_gas_phase_array = np.array(self.dipole_gas_phase)
 
         (
             self.frequency_gas_phase, self.frequency_data_array_linear,

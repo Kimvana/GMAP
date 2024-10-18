@@ -18,6 +18,14 @@ of points.
             int n_res, int *local_atoms, int n_locals, float r_sphere,
             float r_smooth, float *halfbox, float *boxdims, float *out
         );
+        __declspec(dllexport) void calcVEG_perres_mm_nocut(
+            int *tocalc, int n_osc_ats, float *spherepos, int calc_choice,
+            float *positions, float *charges, int *influencer_atoms,
+            int n_influencers, float *COMs, int *res_first_ix,
+            int *res_last_ix,
+            int n_res, int *local_atoms, int n_locals, float r_sphere,
+            float *halfbox, float *boxdims, float *out
+        );
     }
 #endif
 
@@ -386,13 +394,11 @@ extern "C" {
 
         // get all distances straight
         float maxdist, maxdist2;  // when an atom can have influence
-        float puredist, puredist2;   // when an atom has full influence
+        float puredist;   // when an atom has full influence
 
         maxdist = r_sphere + (r_smooth * 0.5);
         maxdist2 = maxdist * maxdist;
-
         puredist = r_sphere - (r_smooth * 0.5);
-        puredist2 = puredist * puredist;
 
         int resnum, local_search, influencer_search;
         local_search = 0;
@@ -437,6 +443,7 @@ extern "C" {
                     spherepos, &positions[sysix * 3],
                     halfbox, boxdims, diff);
                 dist2 = veclen2(diff);
+
                 if (dist2 > maxdist2) {
                     continue;
                 }
@@ -461,6 +468,179 @@ extern "C" {
         //     // placing the remaining charge on the edge of the sphere.
         //     out[oscix] -= total_charge[oscix] / maxdist;
         // }
+
+        free(refpos);  // free(diff)
+    }
+
+    void calcVEG_perres_mm_nocut(
+        // single-osc parameters
+        int *tocalc,  // the sys-ix of the atoms whose properties are requested
+        int n_osc_ats,  // amount of atoms in the oscillator
+        float *spherepos,  // center of influencersphere
+        int calc_choice,  // V, E, or G?
+
+        // system parameters
+        float *positions, // positions of all atoms in the MD system
+        float *charges,  // charges of all atoms in the MD system
+        int *influencer_atoms,  // all atoms (indices) that are influencers
+        int n_influencers,  // the amount of influencers
+        
+        // residue parameters
+        float *COMs,  // the COM of each residue in the system
+        int *res_first_ix,  // the sysix of first atom in each residue
+        int *res_last_ix,  // the sysix of the last atom in each residue
+        int n_res,  // the amount of residues in the system
+        
+        int *local_atoms,  // the atoms that cannot be influencers
+        int n_locals,  // the amount of local atoms
+        float r_sphere,  // how far away the residue can be
+        float *halfbox,  // half of boxdims
+        float *boxdims,  // the size of the CUBIC box
+        float *out  // output is stored here
+    ) {
+        /*Calculates the potential on any number of points.
+
+        The potential is caused by a group of atoms, each of which is
+        within r_sphere + r_smooth/2 of spherepos. If an atom is given
+        in local_atoms, it should never attribute to the potential,
+        regardless of its distance to spherepos.
+
+        This method takes into account periodic boundary conditions.
+
+        Parameters
+        ----------
+        tocalc : int[n_osc_ats]
+            The indices of the atoms at whose position the potential
+            should be calculated.
+        n_osc_ats : int
+            The amount of atoms of which we want to know the potential
+        spherepos : float[3]
+            The center of the group of charges that may influence the
+            potential on each of the atoms in tocalc
+        calc_choice : int
+            What electrostatic properties should be calculated:
+            0 for nothing (this function should never be called with 0)
+            1 for potential only
+            2 for potential and field
+            3 for potential, field and gradient
+        positions : float[3 * unknown]
+            The positions of all atoms in the MD system. Any provided
+            indices into this function are guaranteed to exist in this
+            array. The size of this array is exactly three times that
+            of charges.
+        charges : float[unknown]
+            The charges of all atoms in the MD system. Any provided
+            indices into this function are guaranteed to exist in this
+            array. The size of this array is exactly one third that
+            of positions.
+        influencer_atoms : int[n_influencers]
+            The indices of the atoms that are allowed to influence the
+            VEG calculated in this function.
+        n_influencers : int
+            The amount of atoms that are considered influencers. This is the
+            length of the influencer_atoms array.
+        COMs : float[3 * n_res]
+            The centre of mass of each residue present in the MD system
+        res_first_ix : int[n_res]
+            The (global/system) index of the first atom of each residue
+            present in the MD system
+        last_first_ix : int[n_res]
+            The (global/system) index of the last atom of each residue
+            present in the MD sytem
+        n_res : int
+            The amount of residues present in the MD system.
+        local_atoms : int[n_locals]
+            These atoms should never contribute to the potential
+            calculated by this function.
+        n_locals : int
+            The amount of atoms that should never contribute to the
+            potential calculated by this function.
+        r_sphere : float
+            The radius of the sphere defining the contributing charges.
+        halfbox, boxdims : float[3]
+            The size of the PBC (MD system size). Halfbox is assumed to
+            equal boxdims/2.
+        out : float[n_osc_atoms]
+            The output array to which all potentials will be written.
+        */
+
+        using VEGfunc = void(*)(float *, float, int, float *);
+        VEGfunc calc_VEG = calcNone;
+        if (calc_choice == 1) {calc_VEG = calcPot;}
+        else if (calc_choice == 2) {calc_VEG = calcField;}
+        else if (calc_choice == 3) {calc_VEG = calcGrad;}
+
+        // build refpos array (positions of osc ats)
+        float *refpos;
+        refpos = (float *)calloc(3*n_osc_ats, sizeof(float));
+        int oscix, sysix, dir;
+        for (oscix = 0; oscix < n_osc_ats; oscix++) {
+            sysix = tocalc[oscix];
+            for (dir = 0; dir < 3; dir++) {
+                refpos[oscix * 3 + dir] = positions[sysix * 3 + dir];
+            }
+        }
+
+        // clear output array
+        // *10, as we want to clear all entries for each oscillator
+        for (oscix = 0; oscix < n_osc_ats * 10; oscix++) {
+            out[oscix] = 0;
+        }
+
+        // get all distances straight
+        float maxdist2;  // when an atom can have influence
+
+        maxdist2 = r_sphere * r_sphere;
+
+        int resnum, local_search, influencer_search;
+        local_search = 0;
+        influencer_search = 0;
+        float diff[3], dist, dist2, smooth_factor, weighted_charge;
+
+        // analyze all surrounding charges on a per-residue basis
+        for (resnum = 0; resnum < n_res; resnum++) {
+            // find distance to residue
+            PBC_diff_cubic(
+                spherepos, &COMs[resnum * 3], halfbox, boxdims, diff);
+            dist2 = veclen2(diff);
+
+            // if the residue is too far away, skip it
+            if (dist2 > maxdist2) {
+                continue;
+            }
+
+            // Loop over the separate atoms of the influencing residue
+            for (
+                sysix = res_first_ix[resnum];
+                sysix <= res_last_ix[resnum];
+                sysix++
+            ) {
+                // if this atom is NOT in influencers, skip!
+                if (!in_ordered_array_int(
+                    influencer_atoms, sysix, influencer_search, n_influencers,
+                    &influencer_search)
+                ) {
+                    continue;
+                }
+
+                // if this atom is in local_atoms, skip!
+                if (in_ordered_array_int(
+                    local_atoms, sysix, local_search, n_locals, &local_search)
+                ) {
+                    continue;
+                }
+
+                // loop over the atoms of the oscillator
+                for (oscix = 0; oscix < n_osc_ats; oscix++) {
+                    // yes, its needed (and allowed/possible) to redo PBCdiff
+                    // and dist(2) again.
+                    PBC_diff_cubic(
+                        &refpos[oscix * 3], &positions[sysix * 3],
+                        halfbox, boxdims, diff);
+                    calc_VEG(diff, charges[sysix], oscix, out);
+                } 
+            }
+        }  // per-residue loop
 
         free(refpos);  // free(diff)
     }

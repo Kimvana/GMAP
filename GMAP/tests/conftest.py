@@ -24,16 +24,25 @@ def my_fixture(request):
 
 # To prevent any created singletons leaking between tests.
 # https://github.com/pytest-dev/pytest-mock/issues/100
-@pytest.fixture()
-def reset_singletons():
-    GM_CT.Singleton._instances = {}
+# @pytest.fixture()
+# def reset_singletons():
+#     GM_CT.Singleton._instances = {}
 
 
-@pytest.fixture()
-def init_files():
-    GM_FH.FileLocations()
+# @pytest.fixture()
+# def init_files():
+#     GM_FH.FileLocations()
 
 
 @pytest.fixture(autouse=True)
-def pre_test(reset_singletons, init_files):
-    pass
+def pre_test(request):
+    GM_CT.Singleton._instances = {}
+    if "nofiles" in request.keywords:
+        return
+    GM_FH.FileLocations()
+
+
+def pytest_configure(config):
+    config.addinivalue_line(
+        "markers", "nofiles: mark test to not auto-load files"
+    )

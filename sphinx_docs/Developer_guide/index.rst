@@ -15,3 +15,4 @@ These pages will contain information specifically for developers of the program.
     program_flow/index
     Code_Style
     print_colors
+    VScode_setup

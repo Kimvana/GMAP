@@ -106,4 +106,6 @@ def test_main():
         "\n", "\r\n").encode('utf-8')
     # On linux/mac
     outbyteslinux = (GM_PT.word_wrap(GMAP.__doc__) + "\n").encode('utf-8')
-    assert captured.stdout.endswith(outbytes) or captured.stdout.endswith(outbyteslinux)
+    assert (
+        captured.stdout.endswith(outbytes)
+        or captured.stdout.endswith(outbyteslinux))
