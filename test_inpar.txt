@@ -18,7 +18,7 @@
 
 verbose 3
 verbose_logfile 4
-maps_to_use   AmideSC  # AmideBB
+maps_to_use   AmideBB  # AmideSC
 couplings_to_use  DipDip   :All
 # couplings_to_use  DipDip  AmideSC:AmideSC
 
@@ -27,7 +27,7 @@ output_data dip ham ene ram pos dbp
 prevent_overwrite False
 
 start_frame 0
-number_frames 100
+number_frames 1
 
 estatic_smooth_range 0
 neutral_charge_threshold 0.01

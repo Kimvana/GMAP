@@ -1,4 +1,8 @@
 
+# 3rd party imports
+import numpy as np
+
+# GMAP imports
 import GMAP.src.tools.PrintTools as GM_PT
 
 
@@ -43,7 +47,7 @@ def adjust_map_core_raw(map_):
                     "requested without using the Jansen frequency map. Either "
                     "change your frequency map choice to Jansen, or "
                     "use a different dipole map.",
-                    "map_AmideSC_1"
+                    "map_AmideBB_1"
                 )
                 # Indicate there is an error with this map, so GMAP shouldn't
                 # use it (GMAP raises fatal error if this map is requested).
@@ -93,3 +97,87 @@ def adjust_mcr_freqchoice(map_):
             map_.rawcore["frequency_gas_phase_prepro"] = ["1690"]
             map_.rawcore[parname] = ["frequency_maps/Hirst.txt"]
             map_.rawcore[secpar] = ["frequency_maps/Hirst.txt"]
+
+
+def oscillator_sorter(map_, system, oscillator_list):
+    # first, label oscillators
+    # used ats order:    res0{C O CA} res1{N H CA}
+    for oscillator in oscillator_list:
+        oscillator.resnames = (
+            system.resnames[oscillator.used_atoms[0]],
+            system.resnames[oscillator.used_atoms[3]]
+        )
+        oscillator.resnums = (
+            system.resnums[oscillator.used_atoms[0]],
+            system.resnums[oscillator.used_atoms[3]]
+        )
+
+    # then, sort oscillators
+    newlist = []
+    if map_.RunPars.residue_order == "resname":
+        all_amino_acid_codes = [
+            "ALA", "ARG", "ASN", "ASP", "CYS", "GLN", "GLU", "GLY",
+            "HIS", "ILE", "LYS", "LEU", "MET",
+            "PHE", "PRO", "SER", "THR", "TRP", "TYR", "VAL"
+        ]
+        for aa1 in all_amino_acid_codes:
+            for aa2 in all_amino_acid_codes:
+                for ix, oscillator in enumerate(oscillator_list):
+                    if oscillator.resnames == (aa1, aa2):
+                        newlist.append(oscillator_list.pop(ix))
+    else:
+        # now, choice is 'resnum'. To change order to AIM order:
+        while len(oscillator_list) > 0:
+            smallest_ix = 0
+            smallest_resix = 999999999
+            for ix, oscillator in enumerate(oscillator_list):
+                resix = system.resnums[oscillator.used_atoms[0]]
+                if resix < smallest_resix:
+                    smallest_resix = resix
+                    smallest_ix = ix
+            newlist.append(oscillator_list.pop(smallest_ix))
+
+    return newlist
+
+
+def initialize_prepro_properties(map_):
+    # For assigning constants, first they must be created
+    try:
+        pp_gasfreq = np.float32(map_.rawcore["frequency_gas_phase_prepro"][0])
+    except Exception as ex:  # no 0th entry, not floatable
+        mapdir = map_.directory
+        GM_PT.Printer.warning(
+            "\nCould not interpret the choice for the parameter "
+            "'frequency_gas_phase_prepro'"
+            f" in the file {mapdir / 'core.txt'}. Please make sure "
+            "the choice consists of a single decimal number.",
+            "MI_MC_7", exception=ex
+        )
+        map_.success = False
+    else:
+        map_.Core.frequency_gas_phase_prepro = pp_gasfreq
+
+    pp_freqarr = map_.Core.parse_frequency_data_file(
+        map_.rawcore, map_.directory, "frequency_data_file_linear_prepro")
+    if pp_freqarr is None:
+        mapdir = map_.directory
+        GM_PT.Printer.warning(
+            "\nCould not interpret the choice for the parameter "
+            "'frequency_data_file_linear_prepro'"
+            f" in the file {mapdir / 'core.txt'}. Please make sure "
+            "the choice consists of a single decimal number.",
+            "MI_MC_7"
+        )
+        map_.success = False
+    else:
+        map_.Core.frequency_data_array_linear_prepro = pp_freqarr
+
+    if not map_.success:
+        GM_PT.Printer.warning(
+            "An issue occurred while initializing the AmideBB map stored at "
+            f"{map_.directory}. Please first try restarting, then "
+            "reinstalling, then contacting the map developer, as this map "
+            "cannot be used like this. See the error above for more "
+            "information. Quitting!",
+            "map_AmideBB_2", True
+        )

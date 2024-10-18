@@ -1,7 +1,19 @@
 
+# 3rd party imports
+import numpy as np
 
-def GM_adjust_map_core_raw(Map):
+# GMAP imports
+import GMAP.src.tools.PrintTools as GM_PT
 
+# own module imports
+import AmideBB_code.calculation_methods as MC_CM
+import AmideBB_code.local_atoms_finder as MC_LAF
+import AmideBB_code.parameter_changer as MC_PC
+
+
+def GM_adjust_map_core_raw(map_):
+
+    # adjusting the names of functional_group
     all_amino_acid_codes = [
         "ARG", "HIS", "LYS", "ASP", "GLU", "SER", "THR", "ASN", "GLN",
         "CYS", "GLY", "PRO", "ALA", "VAL", "ILE", "LEU", "MET", "PHE",
@@ -9,11 +21,229 @@ def GM_adjust_map_core_raw(Map):
     ]
     amino_acids_joined = ",".join(all_amino_acid_codes)
 
-    oldentry = Map.rawcore["functional_group"]
+    oldentry = map_.rawcore["functional_group"]
 
-    Map.rawcore["functional_group"] = [
+    map_.rawcore["functional_group"] = [
         [
             word.replace("anyprot", amino_acids_joined)
             for word in struct
         ] for struct in oldentry
     ]
+
+    MC_PC.adjust_map_core_raw(map_)
+
+
+def GM_adjust_oscillators(map_, system, oscillator_list):
+    """Makes the necessary changes to the list of oscillators.
+
+    The program finds all oscillators mathing the instructions from
+    core.txt. However, there is no way for the program to avoid double
+    counting symmetrical groups (like the cystbridge mockup example).
+    If a map knows its group is symmetrical, this function can be
+    designed to only return half of the inputs.
+
+    Another possible use is for the code of the map to get to know its
+    oscillators. When all oscillators are passed through this function,
+    the (global) atom number of the first atom of this group (for
+    example) can be linked to a specific property the group might need
+    to know. This might be useful if a map needs to cover two very
+    similar oscillators.
+
+    .. note::
+        This function is called separately for each struct that the map
+        defines. So take into account that the function could be called
+        multiple times within a single simulation!
+
+    Parameters
+    ----------
+    Map : :class:`~GMAP.src.tools.MapReader.Map`
+        The object that stores everything the program currently knows
+        about this map.
+    Syst : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
+    oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        All oscillators belonging to a single struct of this map.
+
+    Returns
+    -------
+    oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        All oscillators belonging to a single struct of this map.
+    """
+
+    # Sort oscillators into the correct order
+    oscillator_list = MC_PC.oscillator_sorter(map_, system, oscillator_list)
+
+    # Initialize the prepro data structures
+    MC_PC.initialize_prepro_properties(map_)
+
+    # Assign each oscillator the correct gas phase freq and constants
+    gasfreq = map_.Core.frequency_gas_phase
+    pp_gasfreq = map_.Core.frequency_gas_phase_prepro
+    freqarr = map_.Core.frequency_data_array_linear
+    pp_freqarr = map_.Core.frequency_data_array_linear_prepro
+
+    for oscillator in oscillator_list:
+        # used ats order:    res0{C O CA} res1{N H CA} ({N CD CA} for prepro)
+        if system.atnames[4] == "CD":
+            oscillator.gasfreq = pp_gasfreq
+            oscillator.freqarr = pp_freqarr
+        else:
+            oscillator.gasfreq = gasfreq
+            oscillator.freqarr = freqarr
+
+    return oscillator_list
+
+
+# A place to do further initialization if a map requires it. Think of
+# things like building further lookup tables, for instance.
+# (for AmideBB - find neighbours!)
+def GM_post_init(map_, system):
+    # verify that both dipole maps (if applicable) have the same map choices
+    rps = map_.RunPars
+    main_runpars = map_.RunPars.MainRunPars
+    # is other map present?
+    if "AmideSC" in main_runpars.requested_mapdict.keys():
+        amSC_rps = main_runpars.requested_mapdict["AmideSC"].RunPars
+        if (  # the maps do not match, and they're not allowed to mismatch.
+            amSC_rps.frequency_map_choice != rps.frequency_map_choice
+            and not rps.allow_map_mismatch
+        ):
+            GM_PT.Printer.warning(
+                "Warning! The current calculation makes use of both the "
+                "AmideBB and AmideSC maps, but they make use of different "
+                "frequency maps. For most physical applications, this does "
+                "not make sense. If you are absolutely sure that you want "
+                "the two maps to have different methods, make sure to set "
+                "AmideBB.allow_map_mismatch to true. When in doubt, "
+                "consult the README.",
+                "map_AmideBB_2", True
+            )
+        if (  # the maps do not match, and they're not allowed to mismatch.
+            amSC_rps.dipole_map_choice != rps.dipole_map_choice
+            and not rps.allow_map_mismatch
+        ):
+            GM_PT.Printer.warning(
+                "Warning! The current calculation makes use of both the "
+                "AmideBB and AmideSC maps, but they make use of different "
+                "dipole maps. For most physical applications, this does "
+                "not make sense. If you are absolutely sure that you want "
+                "the two maps to have different methods, make sure to set "
+                "AmideBB.allow_map_mismatch to true. When in doubt, "
+                "consult the README.",
+                "map_AmideBB_2", True
+            )
+
+    # assign correct dipole function
+    if map_.RunPars.dipole_map_choice == "Torii":
+        map_.code.GM_calculate_dipole = MC_CM.calc_dipole_Torii
+        map_.Core.dipole_gas_phase = np.float32(map_.Core.dipole_gas_phase)
+
+    # tell each oscillator what/who it's neighbors are.
+    oscillator_list = system.oscillators_ordered["AmideBB"]
+    # N term is first, C term is last
+    for oscillator in oscillator_list:
+        oscillator.NtermNB = None
+        oscillator.CtermNB = None
+    # used ats order:    res0{C O CA} res1{N H CA} ({N CD CA} for prepro)
+    for Nosc in oscillator_list:
+        for Cosc in oscillator_list:
+            if Nosc.used_atoms[5] == Cosc.used_atoms[2]:
+                Nosc.CtermNB = Cosc
+                Cosc.NtermNB = Nosc
+                break  # Nosc can at most have a single Cterm neighbour
+
+    # now, knowing neighbors, we can determine the local atoms.
+    MC_LAF.find_local_atoms(map_, system, oscillator_list)
+
+
+def GM_str_osc(map_, system, oscillator):
+    at0 = oscillator.used_atoms[0]
+    at3 = oscillator.used_atoms[3]
+    return (
+        # example: binding the residues GLY36 and LYS37
+        f"binding the residues {system.resnames[at0]}{system.resnums[at0]}"
+        f" and {system.resnames[at3]}{system.resnums[at3]}"
+    )
+
+
+def GM_calculate_frequency(map_, system, osc):
+    # this function makes use of the fact that GM_adjust_oscillators
+    # assigns gasfreq and freqarr to each oscillator based on its type
+    # (generic, or pre-proline)
+    return osc.gasfreq + np.sum(np.multiply(osc.VEGout, osc.freqarr))
+
+
+def GM_calculate_raman(Map, Syst, osc):
+    """Returns the raman tensor as a length-6 vector: (xx, xy, xz, yy, yz, zz)
+
+    This method can easily be adapted by other maps for working with raman
+    tensors. Make sure that rotation_matrix is an orthogonal 3*3 numpy array
+    (so, the vectors making it up are orthonormal).
+    Then, the raman_tensor_local can be freely chosen.
+
+    As this is so easily adaptable, this could also be made a standard
+    built-in function for GMAP. The only reason this is not the case
+    currently, is because raman tensors from maps like this are not
+    common yet, so a 'usual' way of determining them has not yet been
+    created. Maybe, they won't stay of fixed magnitude in local coordinates
+    forever, but depend on sth like VEG or atomic distances in the future.
+    """
+
+    # the rotation matrix is available as long as the map specifies
+    # estatic_choice to be E or G (which is the case here). It is made
+    # available immediately at the beginning of the frame.
+    COvec = osc.rotation_matrix[0, :]
+    CNvec = osc.rotation_matrix[1, :]
+    Zvec = osc.rotation_matrix[2, :]
+
+    theta = 34*np.pi/180
+    raman_tensor_local = np.diag([20, 4, 1])
+
+    rotation_matrix = np.zeros((3, 3))
+    rotation_matrix[0] = np.cos(theta) * COvec - np.sin(theta) * CNvec
+    rotation_matrix[1] = np.sin(theta) * COvec + np.cos(theta) * CNvec
+    rotation_matrix[2] = Zvec
+
+    raman_tensor_system = (
+        rotation_matrix.T @ raman_tensor_local @ rotation_matrix)
+
+    # old (AIM) version:
+    # def tp(vect1):  # tensor product
+    #     tensor = np.zeros((6), dtype='float32')
+    #     tensor[:3] = vect1[0]*vect1
+    #     tensor[3:5] = vect1[1]*vect1[1:]
+    #     tensor[5] = vect1[2]*vect1[2]
+    #     return tensor
+    # Rvec = tp(Rtens[0]) * 20 + tp(Rtens[1]) * 4  + tp(Rtens[2])
+    # (here, Rtens is what the current version calls rotation_matrix)
+
+    # now, to numpify this, first, redefine tp.
+    # def tp(vect1):
+    #     return (vect1[:, None] * vect1[None, :])[np.triu_indices(3)]
+
+    # then, we can do the entire array at once:
+    # consts = np.array([20, 4, 1])
+    # Rvec = (
+    #     Rtens[:, :, None] * Rtens[:, None, :] * consts[:, None, None]
+    # ).sum(axis=0)[np.triu_indices(3)]
+
+    # in summation notation (forgetting the triu-indices for flattening):
+    # with A_ij == A[i, j]
+    # Rvec[i, j] = sum{k=1 -> k=3}(Rtens[k, i] * Rtens[k, j] * consts[k])
+
+    # now, is this equivalent to the new method? Lets derive the summation
+    # notation for the new method! (R = rotation matrix, A = local raman tens)
+    # Assuming A is diagonal (so only a[i, i] exist)
+    # Rvec = R.T @ A @ R
+    # Rvec[i, j] = sum{k=1 -> k=3}(R.T[i, k] * (A @ R)[k, j])
+    #            = sum{k=1 -> k=3}(R[k, i] * A[k, k] * R[k, j])
+    # this is the same as the summation for the AIM version!
+
+    # footnote: what is (A @ R)[k, j]?
+    # write it out: (A @ R)[i, j] = sum{k=1 -> k=3}(A[i, k] * R[k, j])
+    # but, as only k==i exists for A (rest is 0), this becomes:
+    # (A @ R)[i, j] = A[i, i] * R[i, j]
+
+    return raman_tensor_system[np.triu_indices(3)]

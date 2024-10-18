@@ -9,12 +9,11 @@ therein) as this file.
 # 3rd party imports
 import numpy as np
 
-
 # GMAP imports
 # import GMAP.src.tools.MathFunctions as GM_MF
 # import GMAP.src.tools.PhysicsFunctions as GM_PF
-import GMAP.src.tools.DefaultMapFunctions as GM_DMF
-import GMAP.src.tools.PrintTools as GM_PT
+# import GMAP.src.tools.DefaultMapFunctions as GM_DMF
+# import GMAP.src.tools.PrintTools as GM_PT
 
 # own module imports
 import AmideSC_code.calculation_methods as MC_CM
@@ -129,36 +128,44 @@ def GM_post_init(map_, system):
         map_.code.GM_calculate_dipole = MC_CM.calc_dipole_Torii
         map_.Core.dipole_gas_phase = np.float32(map_.Core.dipole_gas_phase)
 
-    map_.code.GM_get_position = get_get_position(map_)
+#     map_.code.GM_get_position = get_get_position(map_)
 
 
-def get_get_position(map_):
-    # Same as the built-in, but not shifted to around 0.
-    posline = map_.rawcore["position"]
+def GM_str_osc(map_, system, oscillator):
+    at0 = oscillator.used_atoms[0]
+    return (
+        # living on the residue GLN36
+        f"living on the residue {system.resnames[at0]}{system.resnums[at0]}"
+    )
 
-    codestring = "\ndef GM_get_position"
-    codestring += "(Map, Syst, osc):\n"
 
-    codestring += "    CoM = " + GM_DMF.envelop_int(
-        " ".join(posline), "osc.positions_box[", "]"
-    ) + "\n"
-    # codestring += "    CoM = (CoM - np.floor(CoM + 0.5)) @ Syst.boxvects\n"
-    codestring += "    CoM = (CoM - np.floor(CoM)) @ Syst.boxvects\n"
-    codestring += "    return CoM"
+# def get_get_position(map_):
+#     # Same as the built-in, but not shifted to around 0.
+#     posline = map_.rawcore["position"]
 
-    try:
-        exec(codestring)
-    except Exception as ex:
-        corefile = (map_.directory / 'core.txt').resolve()
-        GM_PT.Printer().warning(
-            f"\nThe file {corefile} does not contain a valid definition of "
-            "position.",
-            "MI_MC_9", exception=ex
-        )
-        return None
+#     codestring = "\ndef GM_get_position"
+#     codestring += "(Map, Syst, osc):\n"
 
-    # return GM_get_VEG_ref
-    return locals()["GM_get_position"]
+#     codestring += "    CoM = " + GM_DMF.envelop_int(
+#         " ".join(posline), "osc.positions_box[", "]"
+#     ) + "\n"
+#     # codestring += "    CoM = (CoM - np.floor(CoM + 0.5)) @ Syst.boxvects\n"
+#     codestring += "    CoM = (CoM - np.floor(CoM)) @ Syst.boxvects\n"
+#     codestring += "    return CoM"
+
+#     try:
+#         exec(codestring)
+#     except Exception as ex:
+#         corefile = (map_.directory / 'core.txt').resolve()
+#         GM_PT.Printer().warning(
+#             f"\nThe file {corefile} does not contain a valid definition of "
+#             "position.",
+#             "MI_MC_9", exception=ex
+#         )
+#         return None
+
+#     # return GM_get_VEG_ref
+#     return locals()["GM_get_position"]
 
 
 def GM_calculate_raman(Map, Syst, osc):
