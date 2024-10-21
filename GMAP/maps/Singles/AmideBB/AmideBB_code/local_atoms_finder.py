@@ -30,7 +30,7 @@ def get_Tokmakoff_locals(oscillator_list):
     # exception to this is the prepros, they shouldn't contain the CD atom.
     for osc in oscillator_list:
         if osc.resnames[1] == "PRO":  # prepro!
-            osc.local_atoms = osc.used_atoms[:4] + osc.used_atoms[5]
+            osc.local_atoms = osc.used_atoms[:4] + [osc.used_atoms[5]]
 
 
 def add_proline_HDs(system, oscillator_list):

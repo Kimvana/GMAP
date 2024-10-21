@@ -27,6 +27,7 @@ r_vec     1-0   # vec from C to O
 r_pos     0     # pos of C
 
 VEG_reference  residues 0
+# VEG_reference position  (0 + 3) / 2.0
 
 type standard
 
