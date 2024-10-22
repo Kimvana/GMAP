@@ -83,6 +83,58 @@ def test_calc_CoM():
 
     assert np.all(GM_PF.calc_CoM(System, atlist).round(4) == ans)
 
+    # ------------------------------------------------------------------
+
+    System = GM_CT.CustomClass(**{
+        # before moving all into (1, 1, 1) box
+        # 55, 110, 95 (close to Y edge on 'top' (max Z) surface)
+        # 55, 110, 105 (still within in Y dir, outside in Z dir)
+        # 45, 110, 95 (Over Y edge (too small x coord to be in box))
+        # 45, 110, 105 (too small x, too large z)
+        # avg (weights 1,2,3,4) -> 48, 110, 101
+
+        # moving it into box (all in 0-1 boxcoord range):
+        # 55, 110, 95 -> 0.064, 0.53, 0.95 -> no translation
+        # 55, 110, 105 -> 0.036, 0.47, 1.05 -> 15 50 5
+        # 45, 110, 95 -> -0.036, 0.53, 0.95 -> 145, 110, 95
+        # 45, 110, 105 -> -0.064, 0.47, 1.05 -> 105 50 5
+        # avg: 48, 100, 101 -> -0.0228, 0.494, 1.01 -> 8 50 1
+        # (avg is shifted to -0.5, 0.5, as answer will be, too)
+        "positions": np.array([
+            [55, 110, 95],
+            [15, 50, 5],
+            [145, 110, 95],
+            [105, 50, 5]
+        ], dtype="float32"),
+        "masses": np.array([1, 2, 3, 4], dtype="float32"),
+        # top view:
+        #               20    ____________
+        #               |    /(top layer)/
+        #   100   _     ____/_______    /
+        #    60   _    /   /_______/___/
+        #             /  (bottom) /
+        #     0   _  /___________/
+        #             |  |  |     |
+        #             0  20  40   100
+        "boxvects": np.array([
+            [100, 0, 0],
+            [20, 100, 0],
+            [40, 60, 100]
+        ], dtype="float32")
+    })
+
+    setattr(
+        System, "boxvects_inv",
+        np.linalg.inv(System.boxvects).astype("float32")
+    )
+
+    atlist = [0, 1, 2, 3]
+
+    ans = np.array(
+        [8, 50, 1], dtype="float32").round(4)
+
+    assert np.all(GM_PF.calc_CoM(System, atlist).round(4) == ans)
+
 
 def test_system_CoM():
     positions = np.array([
