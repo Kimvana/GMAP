@@ -54,6 +54,35 @@ def test_calc_CoM():
 
     assert np.all(GM_PF.calc_CoM(System, atlist).round(4) == ans)
 
+    # ------------------------------------------------------------------
+
+    System = GM_CT.CustomClass(**{
+        "positions": np.array([
+            [80, 92, 76],
+            [12, 16, 4],
+            [96, 96, 96],
+            [10, 10, 10]
+        ], dtype="float32"),
+        "masses": np.array([1, 2, 1, 1], dtype="float32"),  # sum = 38
+        "boxvects": np.array([
+            [100, 0, 0],
+            [0, 100, 0],
+            [0, 0, 100]
+        ], dtype="float32")
+    })
+
+    setattr(
+        System, "boxvects_inv",
+        np.linalg.inv(System.boxvects).astype("float32")
+    )
+
+    atlist = [0, 1, 2, 3]
+
+    ans = np.array(
+        [2, 6, -2], dtype="float32").round(4)
+
+    assert np.all(GM_PF.calc_CoM(System, atlist).round(4) == ans)
+
 
 def test_system_CoM():
     positions = np.array([
