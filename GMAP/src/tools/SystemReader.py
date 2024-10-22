@@ -1216,7 +1216,16 @@ class Oscillator:
         """
 
         self.positions = Syst.positions[self.used_atoms]
+
+        # to get usable box positions, not only convert to box, but also make
+        # sure they are 'centered' around one of the atoms of the molecule.
+        # the assumption here is that all atoms of the molecule are reasonably
+        # close together (at least much closer than a box length)
         self.positions_box = (self.positions @ Syst.boxvects_inv)
+        shift = self.positions_box[0].copy()
+        self.positions_box -= shift
+        self.positions_box -= np.floor(self.positions_box + 0.5) - shift
+
         self.VEG_refpos = self.get_VEG_ref(Syst)
         self.VEG_refpos_c = np.ctypeslib.as_ctypes(self.VEG_refpos)
         if self.Map.Core.electrostatic_choice in ("E", "G"):
