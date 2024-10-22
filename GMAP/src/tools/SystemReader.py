@@ -368,6 +368,9 @@ class System:
                 + ", ".join(influencers_not_included)
             )
 
+        # influencers list must be sorted
+        self.influencers_atix.sort()
+
         # all kinds of influencer parameters
         atixprint = GM_PT.intlist_to_rangelist(
             self.influencers_atix, self.natoms
