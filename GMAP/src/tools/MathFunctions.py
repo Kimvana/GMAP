@@ -88,8 +88,9 @@ def PBC_triclinic(vect, boxvects, boxvects_inv):
         The vector that has been corrected for PBC
     """
 
+    half = np.float32(0.5)
     unit_vec = vect @ boxvects_inv
-    return (unit_vec - np.floor(unit_vec + 0.5)) @ boxvects
+    return (unit_vec - np.floor(unit_vec + half)) @ boxvects
 
 
 @njit
@@ -101,6 +102,12 @@ def PBC_back2box(vect, boxvects):
     half = np.float32(0.5)
     return (vect - np.floor(vect + half)) @ boxvects
 
+
+@njit
+def PBC_boxdiff_triclin(boxvect1, boxvect2, boxvects):
+    half = np.float32(0.5)
+    boxdiff = boxvect1 - boxvect2
+    return (boxdiff - np.floor(boxdiff + half)) @ boxvects
 
 # # currently unused - missing docstring
 # def PBC_diff_triclinic(vect1, vect2, boxvects, boxvects_inv):
@@ -235,6 +242,84 @@ def project(vect1: np.ndarray, vect2: np.ndarray) -> np.ndarray:
     inprod = dotprod(vect1, vect2)/dotprod(vect1, vect1)
     vectout = vect2 - inprod*vect1
     return vectout
+
+
+@njit
+def dihedral(p0, p1, p2, p3, boxvects, boxvects_inv):
+    """
+    Calculates the dihedral angle between the supplied points. The order of the
+    points matters: the calculated angle is the following:
+    When looking at these 4 points such that p2 lies behind p1 (or other way
+    around?), we're concerned with the apparent angle p0, p1, p3 (which is
+    identical to the apparent angle p0, p2, p3).
+    """
+
+    b0 = PBC_triclinic(p0 - p1, boxvects, boxvects_inv)
+    b1 = PBC_triclinic(p2 - p1, boxvects, boxvects_inv)
+    b2 = PBC_triclinic(p3 - p2, boxvects, boxvects_inv)
+
+    # normalize b1 so that it does not influence magnitude of vector
+    # rejections that come next
+    b1 /= vec3_len(b1)
+
+    # = projection of b0 onto plane perpendicular to b1 (= b0 minus component
+    # that aligns with b1)
+    # In principle, v = project(b1, b0) would give the same result. However,
+    # project is more expensive, as it divides by dot(b1, b1). This is
+    # basically normalizing, which is here done prior already.
+    v = b0 - dotprod(b0, b1)*b1
+
+    # = projection of b2 onto plane perpendicular to b1 (= b2 minus component
+    # that aligns with b1)
+    w = b2 - dotprod(b2, b1)*b1
+
+    # angle between v and w in a plane is the torsion angle
+    # v and w may not be normalized but that's fine since tan is y/x
+
+    # np.arctan2: computes angle between the vector pointing to (x, y) and the
+    # vector (1, 0) (x axis). arg1 = y, arg2 = x.
+    x = dotprod(v, w)  # how much v and w align
+    y = dotprod(crossprod(b1, v), w)  # cross rotates v 90 degrees.
+    return np.arctan2(y, x)
+
+
+@njit
+def dihedral_boxcoords(p0, p1, p2, p3, boxvects):
+    """
+    Calculates the dihedral angle between the supplied points. The order of the
+    points matters: the calculated angle is the following:
+    When looking at these 4 points such that p2 lies behind p1 (or other way
+    around?), we're concerned with the apparent angle p0, p1, p3 (which is
+    identical to the apparent angle p0, p2, p3).
+    """
+
+    b0 = PBC_boxdiff_triclin(p0, p1, boxvects)
+    b1 = PBC_boxdiff_triclin(p2, p1, boxvects)
+    b2 = PBC_boxdiff_triclin(p3, p2, boxvects)
+
+    # normalize b1 so that it does not influence magnitude of vector
+    # rejections that come next
+    b1 /= vec3_len(b1)
+
+    # = projection of b0 onto plane perpendicular to b1 (= b0 minus component
+    # that aligns with b1)
+    # In principle, v = project(b1, b0) would give the same result. However,
+    # project is more expensive, as it divides by dot(b1, b1). This is
+    # basically normalizing, which is here done prior already.
+    v = b0 - dotprod(b0, b1)*b1
+
+    # = projection of b2 onto plane perpendicular to b1 (= b2 minus component
+    # that aligns with b1)
+    w = b2 - dotprod(b2, b1)*b1
+
+    # angle between v and w in a plane is the torsion angle
+    # v and w may not be normalized but that's fine since tan is y/x
+
+    # np.arctan2: computes angle between the vector pointing to (x, y) and the
+    # vector (1, 0) (x axis). arg1 = y, arg2 = x.
+    x = dotprod(v, w)  # how much v and w align
+    y = dotprod(crossprod(b1, v), w)  # cross rotates v 90 degrees.
+    return np.arctan2(y, x)
 
 
 def calc_color_dist(r1, g1, b1, r2, g2, b2):

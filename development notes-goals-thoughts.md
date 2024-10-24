@@ -361,8 +361,9 @@ If you need a place to quickly write something down, do it here! It can be tidie
     fhand = fopen(fname, mode); -> create handle (modes as in python)
     fprintf(fhand, *just like printf);
     fclose(fhand);
+  - AmideBB - test correctness answers Skinner, Jansen, Cho, Hirst
+  - AmideSC - test correctness answers Skinner, Jansen, Cho, Hirst
   - AmideBB - implement jansen dipoles in core.txt
-  - AmideBB - seems to not assign proline map values to preproline groups
   - amideBB - the explanation of some parameters is still missing in the readme
   - do some testing on how much sys.path is being shared between processes.
   - AmideSC - main.py - GM_adjust_map_core_raw - freqmap based local atoms!, also assume_length_units, VEG_reference for freqmaps.

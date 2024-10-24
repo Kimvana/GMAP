@@ -7,7 +7,7 @@ import numpy as np
 import sys
 
 
-class Universe():
+class Universe:
     def __init__(self, univ, clibfname, outfiles, smoothing_domain, smoothing, out_name):
         print("start __init__")
         self.universe = univ

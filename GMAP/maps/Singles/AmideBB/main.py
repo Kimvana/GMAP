@@ -4,10 +4,12 @@ import numpy as np
 
 # GMAP imports
 import GMAP.src.tools.PrintTools as GM_PT
+# from GMAP.src.tools.PrintTools import devprint as dpr
 
 # own module imports
 import AmideBB_code.calculation_methods as MC_CM
 import AmideBB_code.local_atoms_finder as MC_LAF
+import AmideBB_code.neighbor_manager as MC_NM
 import AmideBB_code.parameter_changer as MC_PC
 
 
@@ -75,24 +77,6 @@ def GM_adjust_oscillators(map_, system, oscillator_list):
     # Sort oscillators into the correct order
     oscillator_list = MC_PC.oscillator_sorter(map_, system, oscillator_list)
 
-    # Initialize the prepro data structures
-    MC_PC.initialize_prepro_properties(map_)
-
-    # Assign each oscillator the correct gas phase freq and constants
-    gasfreq = map_.Core.frequency_gas_phase
-    pp_gasfreq = map_.Core.frequency_gas_phase_prepro
-    freqarr = map_.Core.frequency_data_array_linear
-    pp_freqarr = map_.Core.frequency_data_array_linear_prepro
-
-    for oscillator in oscillator_list:
-        # used ats order:    res0{C O CA} res1{N H CA} ({N CD CA} for prepro)
-        if system.atnames[4] == "CD":
-            oscillator.gasfreq = pp_gasfreq
-            oscillator.freqarr = pp_freqarr
-        else:
-            oscillator.gasfreq = gasfreq
-            oscillator.freqarr = freqarr
-
     return oscillator_list
 
 
@@ -135,6 +119,10 @@ def GM_post_init(map_, system):
                 "map_AmideBB_2", True
             )
 
+    # Initialize the prepro data structures (those that GMAP did for
+    # non-prepro groups)
+    MC_PC.initialize_prepro_properties(map_)
+
     # assign correct dipole function
     if map_.RunPars.dipole_map_choice == "Torii":
         map_.code.GM_calculate_dipole = MC_CM.calc_dipole_Torii
@@ -157,6 +145,19 @@ def GM_post_init(map_, system):
     # now, knowing neighbors, we can determine the local atoms.
     MC_LAF.find_local_atoms(map_, system, oscillator_list)
 
+    MC_NM.read_maps(map_)
+    MC_CM.determine_maps(oscillator_list, map_, system)
+
+    if not map_.success:
+        GM_PT.Printer.warning(
+            "An issue occurred while initializing the AmideBB map stored at "
+            f"{map_.directory}. Please first try restarting, then "
+            "reinstalling, then contacting the map developer, as this map "
+            "cannot be used like this. See the error above for more "
+            "information. Quitting!",
+            "map_AmideBB_0", True
+        )
+
 
 def GM_str_osc(map_, system, oscillator):
     at0 = oscillator.used_atoms[0]
@@ -169,10 +170,22 @@ def GM_str_osc(map_, system, oscillator):
 
 
 def GM_calculate_frequency(map_, system, osc):
-    # this function makes use of the fact that GM_adjust_oscillators
-    # assigns gasfreq and freqarr to each oscillator based on its type
-    # (generic, or pre-proline)
-    return osc.gasfreq + np.sum(np.multiply(osc.VEGout, osc.freqarr))
+    if osc.resnames[1] == "PRO":
+        gasfreq = map_.Core.frequency_gas_phase_prepro
+        freqarr = map_.Core.frequency_data_array_linear_prepro
+    else:
+        gasfreq = map_.Core.frequency_gas_phase
+        freqarr = map_.Core.frequency_data_array_linear
+
+    freq = gasfreq + np.sum(np.multiply(osc.VEGout, freqarr))
+
+    if (
+        map_.RunPars.frequency_map_choice != "Tokmakoff"
+        and map_.RunPars.consider_nearest_neighbours
+    ):
+        freq += MC_CM.neighbor_influence(map_, system, osc)
+
+    return freq
 
 
 def GM_calculate_raman(Map, Syst, osc):

@@ -137,6 +137,9 @@ class System:
         # for the pairs, too)
         self.order_oscillators(RunPars)
 
+        for oscillator in self.oscillators:
+            oscillator.frame_update(self)
+
         # It would make sense to, just as with influencers, also report all
         # findings to the user (through printing to command line and log file).
         # However, we're not going to do that, as maps might need to do

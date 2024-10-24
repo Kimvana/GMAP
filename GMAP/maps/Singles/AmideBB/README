@@ -83,6 +83,9 @@ AmideBB.allow_map_mismatch
 warnings that can be raised by this map
 ---------------------------------------
 
+map_AmideBB_0
+    This error is raised when the map couldn't be used correctly, either due to a bug, or due to broken files. If the problem persists, even with a freshly re-downloaded and re-installed map, please contact the developers!
+
 map_AmideBB_1
     This error is raised when the Jansen dipole map is requested without the
     Jansen frequency map. The Jansen dipole map may be used if and only if the Jansen frequency map is used in the same run.
@@ -99,3 +102,9 @@ map_AmideBB_2
 
     Another reason is the fact that the two maps have been developed together with the intention of them working together. That means that to obtain the best results with either one, the other is needed, too.
 
+
+map_AmideBB_3
+    This error is raised when any of the neighbour influence maps has the wrong dimensions, or anything else is wrong with the file.
+
+map_AmideBB_4
+    While determining the chirality of residues between two amide oscillators, a residue was found that is not a GLY residue, but neither has a CB atom. Therefore, this cannot be a cannonical aminoacid, or you are using an unexpected nomenclature. If you are sure you are applying the right map to the right system, please get in touch with the map developers to solve this issue.

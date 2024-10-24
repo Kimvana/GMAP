@@ -3,6 +3,7 @@
 import numpy as np
 
 # GMAP imports
+import GMAP.src.tools.constants as GM_con
 import GMAP.src.tools.PrintTools as GM_PT
 
 
@@ -170,14 +171,9 @@ def initialize_prepro_properties(map_):
         )
         map_.success = False
     else:
+        if map_.Core.length_units == "bohr":
+            conv_factor = GM_con.bohr2ang
+            pp_freqarr[:, 0] *= conv_factor
+            pp_freqarr[:, 1:4] *= conv_factor**2
+            pp_freqarr[:, 4:] *= conv_factor**3
         map_.Core.frequency_data_array_linear_prepro = pp_freqarr
-
-    if not map_.success:
-        GM_PT.Printer.warning(
-            "An issue occurred while initializing the AmideBB map stored at "
-            f"{map_.directory}. Please first try restarting, then "
-            "reinstalling, then contacting the map developer, as this map "
-            "cannot be used like this. See the error above for more "
-            "information. Quitting!",
-            "map_AmideBB_2", True
-        )

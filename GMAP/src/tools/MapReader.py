@@ -15,7 +15,7 @@ import GMAP.src.tools.ParameterParser as GM_PP
 import GMAP.src.tools.PrintTools as GM_PT
 
 
-class Map():
+class Map:
     """Contains all information regarding a single map. Base to build
     upon.
 
@@ -994,7 +994,7 @@ class PairMap(Map):
             main_runpars.requested_pairmapdict[mapname] = map_
 
 
-class SingleCore():
+class SingleCore:
     """Contains all information regarding a single core.txt file.
 
     Such a core.txt file is assumed to belong to a singles map.
@@ -2474,7 +2474,7 @@ class SingleCore():
                 return
 
 
-class PairCore():
+class PairCore:
     """Contains all information regarding a single core.txt file.
 
     Such a core.txt file is assumed to belong to a pairs map.
@@ -2707,7 +2707,7 @@ class PairCore():
         return list(chosen_combinations)
 
 
-class Structure():
+class Structure:
     """What an oscillator looks like
 
     output formats:
@@ -2814,7 +2814,7 @@ class Structure():
             self.success = True
 
 
-class Residue():
+class Residue:
     """What a single residue of a structure (template) looks like.
 
     Parameters

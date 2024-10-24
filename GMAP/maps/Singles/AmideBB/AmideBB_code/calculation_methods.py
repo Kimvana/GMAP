@@ -5,6 +5,7 @@ import numpy as np
 
 # gmap imports
 import GMAP.src.tools.MathFunctions as GM_MF
+import GMAP.src.tools.PrintTools as GM_PT
 
 
 def calc_dipole_Torii(map_, system, osc):
@@ -41,3 +42,117 @@ def dipole_Torii(COvec, CNvec, magnitude):
     mi *= magnitude
 
     return mi
+
+
+def neighbor_influence(map_, system, osc):
+    delta = 0
+    if osc.NtermNB is not None:
+        delta += map_.neighbormaps["NtermShift" + osc.Nterm_nnmap].get_delta(
+            osc.NtermNB, osc, system)
+    if osc.CtermNB is not None:
+        delta += map_.neighbormaps["CtermShift" + osc.Cterm_nnmap].get_delta(
+            osc, osc.CtermNB, system)
+    return delta
+
+
+def determine_maps(oscillator_list, map_, system):
+    """
+    For each oscillator, find out what map should be used to consider its
+    N-term and C-term neighbor.
+    """
+
+    for osc in oscillator_list:
+        # N term is first, C term is last
+        if osc.NtermNB is not None:
+            # supply both oscs.
+            osc.Nterm_nnmap = determine_map(osc.NtermNB, osc, map_, system)
+        if osc.CtermNB is not None:
+            osc.Cterm_nnmap = determine_map(osc, osc.CtermNB, map_, system)
+
+
+def determine_map(osc1, osc2, map_, system):
+    # no (pre-)prolines! easy!
+    if "PRO" not in osc2.resnames:
+        return ""
+
+    # for now, the pro-pro case is treated as if it is pro-gly. in the future,
+    # a pro-pro map should be made!
+
+    boxpos = osc1.positions_box
+    COvec = GM_MF.PBC_boxdiff_triclin(boxpos[1], boxpos[0], system.boxvects)
+    NHvec = GM_MF.PBC_boxdiff_triclin(boxpos[4], boxpos[3], system.boxvects)
+
+    # (both pro-pro(should for now be treated as pro-gly) and pro-gly)
+    if osc1.resnames[1] == "PRO":
+        # In the original code, Pro-Pro is actually treated as Gly-Pro
+        if (
+            osc2.resnames[1] == "PRO"
+            and map_.RunPars.legacy_mode == "AmideImaps"
+        ):
+            bondtype = "GP"
+        else:
+            bondtype = "PG"
+    else:
+        bondtype = "GP"
+
+    if bondtype == "GP":
+        if GM_MF.dotprod(COvec, NHvec) < 0:
+            return "_transGly_transPro"
+        else:
+            return "_cisGly_transPro"
+
+    LorD = DLcheck(osc1, osc2, map_, system)  # -1 for D, 1 for L, 0 for nodir
+    if GM_MF.dotprod(COvec, NHvec) < 0:
+        if LorD < 0:
+            return "_transDPro_transGly"
+        else:
+            return "_transPro_transGly"
+    elif LorD < 0:
+        return "_cisDPro_transGly"
+    else:
+        return "_cisPro_transGly"
+
+
+def DLcheck(osc1, osc2, map_, system):
+    # checks whether the amino acid between two oscillators is in L or D
+    # configuration
+
+    if osc2.resnames[0] in ("GLY", "FOR", "ETA", "GL2"):
+        return 0
+
+    atomCA = osc2.positions_box[2]
+    atomC = osc2.positions_box[0]
+    atomN = osc1.positions_box[3]
+
+    first_at = system.residues.first_ix[osc2.resnums[0]]
+    last_at = system.residues.last_ix[osc2.resnums[0]]
+    for atix, atname in enumerate(system.atnames[first_at:last_at+1]):
+        if atname == "CB":
+            atomCBix = atix
+            break
+    else:
+        GM_PT.Printer.warning(
+            "Warning! The residue between the following two oscillators "
+            "does not have a CB atom, and thus its chirality cannot be "
+            f"determined:\n{osc1}\n{osc2}\nPlease make sure you're applying "
+            "the correct map to the correct system. If this map erraneously "
+            "detects something it shouldn't, please contact the developers!",
+            "map_AmideBB_4"
+        )
+        map_.success = False
+        return 0
+    shift = atomC
+    atomCB = system.positions[atomCBix] @ system.boxvects_inv - shift
+    atomCB -= np.floor(atomCB + 0.5) - shift
+
+    # used ats order:    res0{C O CA} res1{N H CA} ({N CD CA} for prepro)
+    # osc1 is first, osc2 is last
+    CACvec = GM_MF.PBC_boxdiff_triclin(atomC, atomCA, system.boxvects)
+    CANvec = GM_MF.PBC_boxdiff_triclin(atomN, atomCA, system.boxvects)
+    CACBvec = GM_MF.PBC_boxdiff_triclin(atomCB, atomCA, system.boxvects)
+
+    CxN = GM_MF.crossprod(CACvec, CANvec)
+    if GM_MF.dotprod(CxN, CACBvec) > 0:
+        return -1
+    else:
+        return 1

@@ -18,7 +18,7 @@
 
 verbose 3
 verbose_logfile 4
-maps_to_use   AmideSC  # AmideSC
+maps_to_use   AmideBB  # AmideSC
 couplings_to_use  DipDip   :All
 # couplings_to_use  DipDip  AmideSC:AmideSC
 
@@ -38,6 +38,6 @@ neutral_charge_threshold 0.01
 AmideSC.frequency_map_choice   Tokmakoff
 AmideSC.dipole_map_choice   Torii
 
-AmideBB.frequency_map_choice Tokmakoff
+AmideBB.frequency_map_choice Jansen
 
 # influencers_blacklist SOL | CL

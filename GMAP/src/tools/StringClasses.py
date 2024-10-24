@@ -441,7 +441,7 @@ class ColStr(str):
         return outcolstr
 
 
-class Header():
+class Header:
     """Returns a pretty header for distinguishing prints
 
     The header will be under and/or overlined with the character

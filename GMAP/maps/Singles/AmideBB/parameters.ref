@@ -5,5 +5,6 @@ pos_choice[str]                          [C] O N D Torii
 dp1_choice[str]                          [C] O N D Torii
 dp2_choice[str]                          C O [N] D Torii
 consider_nearest_neighbours(cnn)[bool]   True
+legacy_mode[str]                         [None] AIM AmideImaps
 
 allow_map_mismatch[bool]                 False
