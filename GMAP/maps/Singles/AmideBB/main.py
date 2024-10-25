@@ -118,6 +118,20 @@ def GM_post_init(map_, system):
                 "consult the README.",
                 "map_AmideBB_2", True
             )
+        if (  # the maps do not match, and they're not allowed to mismatch.
+            amSC_rps.legacy_mode != rps.legacy_mode
+            and not rps.allow_map_mismatch
+        ):
+            GM_PT.Printer.warning(
+                "Warning! The current calculation makes use of both the "
+                "AmideBB and AmideSC maps, but they try to emulate different "
+                "versions. For most physical applications, this does "
+                "not make sense. If you are absolutely sure that you want "
+                "the two maps to follow different methods, make sure to set "
+                "AmideBB.allow_map_mismatch to true. When in doubt, "
+                "consult the README.",
+                "map_AmideBB_2", True
+            )
 
     # Initialize the prepro data structures (those that GMAP did for
     # non-prepro groups)
@@ -127,6 +141,12 @@ def GM_post_init(map_, system):
     if map_.RunPars.dipole_map_choice == "Torii":
         map_.code.GM_calculate_dipole = MC_CM.calc_dipole_Torii
         map_.Core.dipole_gas_phase = np.float32(map_.Core.dipole_gas_phase)
+    else:
+        map_.code.GM_calculate_dipole = MC_CM.calc_dipole_Jansen
+
+    if map_.RunPars.legacy_mode == "AIM":
+        map_.code.GM_get_position_DMF = map_.code.GM_get_position
+        map_.code.GM_get_position = MC_CM.get_position
 
     # tell each oscillator what/who it's neighbors are.
     oscillator_list = system.oscillators_ordered["AmideBB"]

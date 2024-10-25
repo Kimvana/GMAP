@@ -20,7 +20,9 @@ def find_local_atoms(map_, system, oscillator_list):
             if osc.CtermNB is not None:
                 osc.local_atoms.extend(get_Cterm_locals(osc.CtermNB))
             osc.local_atoms.extend(get_proline_atoms(system, osc))
-            osc.local_atoms.extend(get_CA_hydrogen_atoms(system, osc))
+
+    for osc in oscillator_list:
+        osc.local_atoms.extend(get_CA_hydrogen_atoms(map_, system, osc))
 
     # bring updates to c-friendly versions of the local_atoms list
     for oscillator in oscillator_list:
@@ -102,13 +104,14 @@ def get_proline_atoms(system, osc):
     return proline_atoms
 
 
-def get_CA_hydrogen_atoms(system, osc):
+def get_CA_hydrogen_atoms(map_, system, osc):
     CA_hydrogen_atoms = []
     resnums = list(osc.resnums)
-    if osc.CtermNB is not None:
-        resnums.append(osc.CtermNB.resnums[1])
-    if osc.NtermNB is not None and system.types[0][:4] != "opls":
-        resnums.append(osc.NtermNB.resnums[0])
+    if map_.RunPars.consider_nearest_neighbours:
+        if osc.CtermNB is not None:
+            resnums.append(osc.CtermNB.resnums[1])
+        if osc.NtermNB is not None and system.types[0][:4] != "opls":
+            resnums.append(osc.NtermNB.resnums[0])
 
     for resnum in resnums:
         firstix = system.residues.first_ix[resnum]

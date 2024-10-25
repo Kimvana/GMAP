@@ -128,6 +128,10 @@ def GM_post_init(map_, system):
         map_.code.GM_calculate_dipole = MC_CM.calc_dipole_Torii
         map_.Core.dipole_gas_phase = np.float32(map_.Core.dipole_gas_phase)
 
+    if map_.RunPars.legacy_mode == "AIM":
+        map_.code.GM_get_position_DMF = map_.code.GM_get_position
+        map_.code.GM_get_position = MC_CM.get_position
+
 #     map_.code.GM_get_position = get_get_position(map_)
 
 

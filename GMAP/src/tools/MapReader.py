@@ -2045,8 +2045,7 @@ class SingleCore:
             return None, None
 
         try:
-            fdata = np.genfromtxt(
-                fname, "float32", missing_values=0, ndmin=2)
+            fdata = np.genfromtxt(fname, "float32", missing_values=0, ndmin=2)
         except Exception as ex:  # numpy had some issue
             GM_PT.Printer.warning(
                 "\nNumpy could not interpret the contents of the file "

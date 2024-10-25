@@ -1,4 +1,7 @@
 
+# standard library imports
+from pathlib import Path
+
 # 3rd party imports
 import numpy as np
 
@@ -177,3 +180,33 @@ def initialize_prepro_properties(map_):
             pp_freqarr[:, 1:4] *= conv_factor**2
             pp_freqarr[:, 4:] *= conv_factor**3
         map_.Core.frequency_data_array_linear_prepro = pp_freqarr
+
+    map_.Core.dipole_gas_phase_prepro = [np.float32(item) for item in [
+        -0.268549, 0.086947, 0.0]]
+    map_.Core.dipole_gas_phase_array_prepro = np.array(
+        map_.Core.dipole_gas_phase_prepro)
+    try:
+        fname = "jansen_dipoles_prepro.txt"
+        fname = (Path(__file__).resolve().parent.parent / fname).resolve()
+        fdata = np.genfromtxt(fname, "float32", missing_values=0, ndmin=2)
+    except Exception as ex:
+        GM_PT.Printer.warning(
+            "\nNumpy could not interpret the contents of the file "
+            f"{fname}. Please make sure the file contains only decimal "
+            "numbers in a grid.",
+            "MI_MC_7", exception=ex
+        )
+        map_.success = False
+        return
+
+    dip_arr = map_.Core.confirm_array_size(fdata, 10, 12, fname)
+    if not map_.success:
+        return
+
+    map_.Core.dipole_data_array_prepro = dip_arr.reshape((3, -1, 10))
+
+    if map_.Core.length_units == "bohr":
+        conv_factor = GM_con.bohr2ang
+        map_.Core.dipole_data_array_prepro[:, :, 0] *= conv_factor
+        map_.Core.dipole_data_array_prepro[:, :, 1:4] *= conv_factor**2
+        map_.Core.dipole_data_array_prepro[:, :, 4:] *= conv_factor**3

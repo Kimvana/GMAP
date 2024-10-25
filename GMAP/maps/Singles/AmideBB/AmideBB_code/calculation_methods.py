@@ -44,6 +44,32 @@ def dipole_Torii(COvec, CNvec, magnitude):
     return mi
 
 
+def calc_dipole_Jansen(map_, system, osc):
+    _, r_pos = map_.code.GM_get_dipole_dir(map_, system, osc)
+    if osc.resnames[1] == "PRO":
+        gasdip = map_.Core.dipole_gas_phase_array_prepro
+        diparr = map_.Core.dipole_data_array_prepro
+    else:
+        gasdip = map_.Core.dipole_gas_phase_array
+        diparr = map_.Core.dipole_data_array
+    print(osc.oscix, gasdip)
+    xyz_local = gasdip + np.sum(
+        np.multiply(osc.VEGout[None, :, :], diparr), axis=(1, 2))
+    xyz_cartesian = np.dot(xyz_local, osc.rotation_matrix)
+    return xyz_cartesian, r_pos
+
+
+def get_position(map_, system, osc):
+    # position is correct, but shifted to wrong box
+    pos = map_.code.GM_get_position_DMF(map_, system, osc)
+
+    # now, shift it to the correct box
+    boxpos = pos @ system.boxvects_inv
+    boxpos -= np.floor(boxpos)
+
+    return boxpos @ system.boxvects
+
+
 def neighbor_influence(map_, system, osc):
     delta = 0
     if osc.NtermNB is not None:
@@ -126,7 +152,10 @@ def DLcheck(osc1, osc2, map_, system):
 
     first_at = system.residues.first_ix[osc2.resnums[0]]
     last_at = system.residues.last_ix[osc2.resnums[0]]
-    for atix, atname in enumerate(system.atnames[first_at:last_at+1]):
+    for atix, atname in zip(
+        system.atnums[first_at:last_at+1],
+        system.atnames[first_at:last_at+1]
+    ):
         if atname == "CB":
             atomCBix = atix
             break

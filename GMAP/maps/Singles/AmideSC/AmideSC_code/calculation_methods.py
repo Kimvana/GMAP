@@ -3,7 +3,7 @@
 from numba import njit
 import numpy as np
 
-# gmap imports
+# GMAP imports
 import GMAP.src.tools.MathFunctions as GM_MF
 
 
@@ -55,3 +55,14 @@ def dipole_Torii(COvec, CNvec, magnitude):
     mi *= magnitude
 
     return mi
+
+
+def get_position(map_, system, osc):
+    # position is correct, but shifted to wrong box
+    pos = map_.code.GM_get_position_DMF(map_, system, osc)
+
+    # now, shift it to the correct box
+    boxpos = pos @ system.boxvects_inv
+    boxpos -= np.floor(boxpos)
+
+    return boxpos @ system.boxvects

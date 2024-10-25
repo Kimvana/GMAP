@@ -31,7 +31,8 @@ VEG_reference  residues 0
 
 type standard
 
-dipole_gas_phase       0.3
+dipole_gas_phase        0.242141  -0.085961   0
+dipole_data_file        xyz jansen_dipoles_gen.txt   
 
 frequency_gas_phase    1684
 frequency_data_file_linear    Skinner.txt
