@@ -2,9 +2,9 @@
 Setup
 #####
 
-Setup.py contains two functions, Setup(callcommand, Files, Printer) and verify_target(target, target_srcdir, target_mapdir, Printer). If verify_target finds a mistake, it will terminate the program and inform the user. By calling GMAP Setup [target_map], first Setup is invoked.
+Setup.py contains two functions, Setup(callcommand, Printer) and verify_target(target, target_srcdir, target_mapdir, Printer). If verify_target finds a mistake, it will terminate the program and inform the user. By calling GMAP Setup [target_map], first Setup is invoked.
 
-Setup.Setup(callcommand, Files, Printer):
+Setup.Setup(callcommand, Printer):
  - Set Printer instance variables to correct values to allow for printing.
  - Extract the target folder, the folder where the user wants to copy to, from callcommand.
  - Create the paths that will lead to where sourcefiles_copy and maps_copy will exist.

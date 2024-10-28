@@ -1,0 +1,8 @@
+# Every row corresponds to the next atom in electrostatic_atoms.
+# Every column to an electrostatic property, in the following order:
+# V, E_x, E_y, E_z, G_xx, G_yy, G_zz, G_xy, G_xz, G_yz
+
+0.0 2187.981361 171.018234 0.0 0.0 0.0 -89.972485 -3953.881768 0.0 0.0 
+0.0 990.000538 898.349883 0.0 0.0 0.0 433.581356 -469.379969 0.0 0.0
+0.0 470.338924 -805.084517 0.0 0.0 0.0 -1070.88411 -4141.117612 0.0 0.0 
+0.0 230.233667 -1854.836375 0.0 0.0 0.0 -454.777068 -2049.384247 0.0 0.0

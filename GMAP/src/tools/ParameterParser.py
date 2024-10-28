@@ -6,7 +6,7 @@ from pathlib import Path
 import numpy as np
 
 # local imports
-import GMAP.src.tools.CodingTools as GM_CT
+import GMAP.src.tools.StringClasses as GM_SC
 import GMAP.src.tools.constants as GM_con
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.FileHandler as GM_FH
@@ -17,18 +17,18 @@ import GMAP.src.tools.PrintTools as GM_PT
 class RefPars:
     """Deals with reference parameters
 
-    To allow for easier use of the program, users are not required to specify
-    a choice for
-    each separate parameter. However, the program needs a default choice for
-    each parameter. Instead of hard-coding these choices (or parameters in
-    general), they are specified in a file. The reference file not only
-    contains default choices, but also defines what the expected datatype
-    for each choice is.
+    To allow for easier use of the program, users are not required to
+    specify a choice for each separate parameter. However, the program
+    needs a default choice for each parameter. Instead of hard-coding
+    these choices (or parameters in general), they are specified in a
+    file. The reference file not only contains default choices, but also
+    defines what the expected datatype for each choice is.
 
-    Each map (see :ref:`adding a new map<UserGuide_page_adding_map>`) can
-    also have it's own selection of parameters, stored in its own parameter
-    file. See :ref:`parameters.ref<UserGuide_page_map_parameters>` for
-    an explanation of the expected format.
+    Each map (see :ref:`adding a new map<UserGuide_page_adding_map>`)
+    can also have it's own selection of parameters, stored in its own
+    parameter file. See
+    :ref:`parameters.ref<UserGuide_page_map_parameters>` for an
+    explanation of the expected format.
 
     .. note ::
         Users of the program are probably looking for the
@@ -37,7 +37,8 @@ class RefPars:
     Parameters
     ----------
     fname : pathlib.Path
-        The absolute path to the file that contains all desired parameters
+        The absolute path to the file that contains all desired
+        parameters
     is_main : bool, default=True
         Whether this refpars object is the main one.
 
@@ -46,53 +47,55 @@ class RefPars:
     RawPars
         The class containing parameter choices from other sources
     RunPars
-        The class containing the final parameter choices after combining all
-        input sources.
+        The class containing the final parameter choices after combining
+        all input sources.
 
     Attributes
     ----------
     fname : pathlib.Path
-        The absolute path to the file that contains all desired parameters
+        The absolute path to the file that contains all desired
+        parameters
     nondefcount : int
-        The amount of path-type parameters encountered that have no choice
-        determined in the reference parameter file. Every time one is found,
-        this number is used to generate a temporary filename so the run can
-        continue. Then, the number is incremented by one to prevent duplicate
-        file names.
+        The amount of path-type parameters encountered that have no
+        choice determined in the reference parameter file. Every time
+        one is found, this number is used to generate a temporary
+        filename so the run can continue. Then, the number is
+        incremented by one to prevent duplicate file names.
     options : dict
         Some parameters don't allow free choice, but instead require you
         to pick from a certain list. `options` contains that list. Its
-        keys are the parameter names, the values are the choices available
-        for that specific parameter.
+        keys are the parameter names, the values are the choices
+        available for that specific parameter.
     choices : dict
-        Each parameter requires a choice. Default choices are stored in here.
-        The keys are the parameter names, the values are the default choice(s)
-        for each parameter. Note that for some parameters, it doesn't make
-        sense for there to be a default choice, these are excluded from this
-        dict, and can be found in the attribute `not_expected_in_deffile`.
+        Each parameter requires a choice. Default choices are stored in
+        here. The keys are the parameter names, the values are the
+        default choice(s) for each parameter. Note that for some
+        parameters, it doesn't make sense for there to be a default
+        choice, these are excluded from this dict, and can be found in
+        the attribute `not_expected_in_deffile`.
     shorthands : dict
-        Some parameters have very long names, which makes them annoying to
-        specify on the command line. In the reffile a shorthand version of
-        their name can be supplied, which the user can use instead. This dict
-        stores the given shorthands as keys, the corresponding parameters they
-        belong to are stored as values.
+        Some parameters have very long names, which makes them annoying
+        to specify on the command line. In the reffile a shorthand
+        version of their name can be supplied, which the user can use
+        instead. This dict stores the given shorthands as keys, the
+        corresponding parameters they belong to are stored as values.
     organized_filepars : dict
-        Some file paths are expected relative to their corresponding directory
-        (although this behaviour can always be omitted by using absolute
-        paths for the files). This dict stores for each directory-specifying
-        parameter (keys) which file-specifying paramters are expected relative
-        to it (values)
+        Some file paths are expected relative to their corresponding
+        directory (although this behaviour can always be omitted by
+        using absolute paths for the files). This dict stores for each
+        directory-specifying parameter (keys) which file-specifying
+        parameters are expected relative to it (values)
     organized_filepars_id : dict
-        The behaviour described under the attribute `organized_filepars` is
-        made possible by supplying each directory (and its files) an
-        identifying shorthand. This dict stores the ids as keys, and their
-        respective directory-specifying parameter as values.
+        The behaviour described under the attribute `organized_filepars`
+        is made possible by supplying each directory (and its files) an
+        identifying shorthand. This dict stores the ids as keys, and
+        their respective directory-specifying parameter as values.
     allfilepars : list of str
         contains all parameters of type path.
     filepars_create : list of str
         Contains the parameters which have a path/filename that is not
-        expected to exist when first starting the program, but rather will be
-        created during runtime
+        expected to exist when first starting the program, but rather
+        will be created during runtime
     intpars : list of str
         contains all parameters with a choice of type int.
     floatpars : list of str
@@ -102,12 +105,12 @@ class RefPars:
     strpars : list of str
         contains all parameters with a choice of type str.
     not_expected_in_deffile : list of str
-        A list of parameters which are not expected (and allowed) to define a
-        choice in reference (or default) parameter files.
+        A list of parameters which are not expected (and allowed) to
+        define a choice in reference (or default) parameter files.
     maybe_list : list of str
-        Some parameters allow more than one choice to be given. All these
-        parameters are stored in this list, but must also be stored depending
-        on the expected type of the items in the list.
+        Some parameters allow more than one choice to be given. All
+        these parameters are stored in this list, but must also be
+        stored depending on the expected type of the items in the list.
 
     """
 
@@ -128,7 +131,7 @@ class RefPars:
         # path-type parameters cannot also request a choice.
         for parname in self.allfilepars:
             if parname in self.options:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     "\nDue to path conflicts, reference files may not "
                     "contain options for path-type parameters. "
                     f"The affected file is {self.fname}",
@@ -142,15 +145,18 @@ class RefPars:
     @classmethod
     def add_reffile(cls, fname, base_RefPars):
         """
-        When the default parameter file given by the user is of .ref format
-        instead of .txt, it ends up here. How are .ref files treated different?
-            - most importantly: format! A .ref file is formatted differently
-              from a .txt.
-            - While a .txt only stores the choice for each parameter, the .ref
-              also stores the allowed options. This would allow users to impose
-              stricter limits. Is this actually useful???
+        When the default parameter file given by the user is of .ref
+        format instead of .txt, it ends up here. How are .ref files
+        treated different? ::
+
+            - most importantly: format! A .ref file is formatted
+              differently from a .txt.
+            - While a .txt only stores the choice for each parameter,
+              the .ref also stores the allowed options. This would allow
+              users to impose stricter limits. Is this actually useful???
         """
-        GM_PT.Printer().warning(
+
+        GM_PT.Printer.warning(
             "\nNot implemented yet!",
             "SU_FP_1", True, GMAPerrclass=GM_Ex.GmapNotImplementedError
         )
@@ -158,9 +164,8 @@ class RefPars:
     def add_groups(self):
         """ Initializes all attributes collecting parameter names
 
-        This method is called by self.__init__. For explanation/list of the
-        generated attributes, see :class:`RefPars`
-
+        This method is called by self.__init__. For explanation/list of
+        the generated attributes, see :class:`RefPars`
         """
 
         self.options = {}  # key = parname, val = possible options
@@ -200,9 +205,9 @@ class RefPars:
     def parse_refparfile(self, func):
         """ Apply provided function on each line of the file
 
-        Loops through lines of given file. Each line is stripped of comments,
-        and empty lines are ignored. For each remaining line, the function
-        func is called.
+        Loops through lines of given file. Each line is stripped of
+        comments, and empty lines are ignored. For each remaining line,
+        the function func is called.
 
         Parameters
         ----------
@@ -219,7 +224,7 @@ class RefPars:
 
                 linelist = line.split()
                 if len(linelist) == 1:
-                    GM_PT.Printer().warning(
+                    GM_PT.Printer.warning(
                         "\nThe following problem occured when reading the "
                         f"reference parameter file {self.fname}"
                         "\n\nOne of the lines contains only one item, while "
@@ -238,8 +243,8 @@ class RefPars:
         Parameters
         ----------
         line : str
-            The line of text that must be parsed - just here for printing
-            purposes.
+            The line of text that must be parsed - just here for
+            printing purposes.
         linelist : list of str
             same contents as line, but processed and split into a format
             usable for :meth:`parse_line_type`.
@@ -252,7 +257,7 @@ class RefPars:
                 GMAPerr = GM_Ex.GmapTypeError
             else:
                 GMAPerr = GM_Ex.GmapKeyError
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nCould not interpret the parameter name on the following "
                 f"line:\n{line}"
                 "\nwhile reading the following file as reference "
@@ -261,7 +266,7 @@ class RefPars:
                 "SU_FP_3", True, exception=ex, GMAPerrclass=GMAPerr
             )
         except Exception as ex:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nEncountered an error while parsing the parameter name "
                 "on the "
                 f"following line:\n{line}"
@@ -273,7 +278,8 @@ class RefPars:
             )
 
     def parse_line_type(self, linelist):
-        """Extracts the type of the parameter specified on the given line
+        """Extracts the type of the parameter specified on the given
+        line
 
         By analyzing the type-code specified in the parameter.ref file,
         figures out what type is expected, and adds the (also extracted)
@@ -283,8 +289,8 @@ class RefPars:
         Parameters
         ----------
         linelist : list of str
-            The contents of a single line in the parameters.ref file, but
-            processed and split into a usable format.
+            The contents of a single line in the parameters.ref file,
+            but processed and split into a usable format.
         """
 
         parname_raw = linelist[0]
@@ -298,7 +304,6 @@ class RefPars:
             self.not_expected_in_deffile.append(parname)
 
         # see if parameter might accept choice as list
-
         if partype[0] == "list":
             self.maybe_list.append(parname)
             del partype[0]
@@ -339,8 +344,8 @@ class RefPars:
         Parameters
         ----------
         line : str
-            The line of text that must be parsed - just here for printing
-            purposes.
+            The line of text that must be parsed - just here for
+            printing purposes.
         linelist : list of str
             same contents as line, but processed and split into a format
             usable for :meth:`parse_line_choice`.
@@ -349,7 +354,7 @@ class RefPars:
         try:
             self.parse_line_choice(linelist)
         except ValueError as ex:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nCould not interpret the parameter choice on the following "
                 f"line:\n{line}"
                 "\nwhile reading the following file as reference "
@@ -359,7 +364,7 @@ class RefPars:
                 GMAPerrclass=GM_Ex.GmapValueError
             )
         except IndexError as ex:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nDetected a wrong amount of choices for the parameter "
                 "choice "
                 f"on the following line:\n{line}"
@@ -369,7 +374,7 @@ class RefPars:
                 GMAPerrclass=GM_Ex.GmapIndexError
             )
         except Exception as ex:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nEncountered an error while parsing the parameter choice on "
                 f"the following line:\n{line}"
                 "\nwhile reading the following file as reference "
@@ -380,18 +385,19 @@ class RefPars:
             )
 
     def parse_line_choice(self, linelist):
-        """Extract the choice for a parameter specified on the given line
+        """Extract the choice for a parameter specified on the given
+        line
 
         Analizes all information regarding the choice and options. Also
         converts any choice/option into the datatype recognized by
-        :meth:`parse_line_type`. Stores found information in self.options
-        and self.choices.
+        :meth:`parse_line_type`. Stores found information in
+        self.options and self.choices.
 
         Parameters
         ----------
         linelist : list of str
-            The contents of a single line in the parameters.ref file, but
-            processed and split into a usable format.
+            The contents of a single line in the parameters.ref file,
+            but processed and split into a usable format.
         """
 
         # extract the parameter name we're looking at
@@ -469,7 +475,7 @@ class RefPars:
             if parameter in ("influencers_whitelist", "influencers_blacklist"):
                 break
         else:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nEncountered an issue with the following reference "
                 "parameter "
                 f"file: {self.fname}. The file should contain the parameters "
@@ -487,13 +493,17 @@ class RefPars:
                 parameter
             ] + [")"]
 
+        # safe mode!
+        if self.choices["safe_mode"] == [True]:
+            self.choices["command_line_color"] = ["white"]
+
         # error codes - make sure they're of the correct format (2 _)
         for error_code in self.choices["dont_report_error"]:
             if error_code.lower() == "none":
                 continue
             error_code = error_code.split("_")
             if len(error_code) != 3:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     "\nEncountered an issue with the following reference "
                     f"parameter file: {self.fname}. Any error codes "
                     "provided should contain two underscores, even if "
@@ -504,7 +514,7 @@ class RefPars:
         # Checking radii for estatic sphere
         estatic_range = self.choices.get("estatic_range", [1])[0]
         if estatic_range < 0:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nEncountered an issue with the following parameter source: "
                 f"{self.fname}. The parameter estatic_range can only take a "
                 "positive value, but a negative one was detected. Please make "
@@ -513,13 +523,18 @@ class RefPars:
             )
         estatic_smooth_range = self.choices.get("estatic_smooth_range", [1])[0]
         if estatic_smooth_range < 0:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nEncountered an issue with the following parameter source: "
                 f"{self.fname}. The parameter estatic_smooth_range can only "
                 "take a positive value, but a negative one was detected. "
                 "Please make sure it has a positive value.",
                 "SU_FP_7", True, GMAPerrclass=GM_Ex.GmapValueError
             )
+
+        self.choices["VEG_clib_file"] = [Path(
+            str(*self.choices["VEG_clib_file"])
+            + GM_FH.FileLocations.clib_extension
+        )]
 
         if self.choices["hamiltonian_units"][0] == "cm-1":
             self.choices["hamiltonian_multiplier"] = [1]
@@ -566,9 +581,9 @@ class RefPars:
         """Extracts parameter name, shorthand and type from key in file
 
         The key (first part of a line) in the file storing the reference
-        parameters has a more complex shape, so it can also encode a shorthand
-        if needed, and the type the choice for this parameter is expected to
-        have. This method extracts those parts.
+        parameters has a more complex shape, so it can also encode a
+        shorthand if needed, and the type the choice for this parameter
+        is expected to have. This method extracts those parts.
 
         Parameters
         ----------
@@ -581,12 +596,12 @@ class RefPars:
             The actual parameter name (the one users will provide when
             providing inputs)
         key_shorthand : str
-            The shorthand that can be used on the command line for providing
-            a choice for this parameter
+            The shorthand that can be used on the command line for
+            providing a choice for this parameter
         key_dtype : list of str
             The datatype expected for this parameter. See
-            :ref:`parameters.ref<UserGuide_page_map_parameters>` for more
-            explanation on datatypes.
+            :ref:`parameters.ref<UserGuide_page_map_parameters>` for
+            more explanation on datatypes.
         """
 
         if "(" in string:
@@ -603,14 +618,15 @@ class RefPars:
 class RawPars:
     """Stores a set of choices from a single source
 
-    Choices can be specified in multiple places. Command line, input parameter
-    file, or a default parameter file. Each of those sources gets its own
-    instance of this class, storing the choices specified in that source.
+    Choices can be specified in multiple places. Command line, input
+    parameter file, or a default parameter file. Each of those sources
+    gets its own instance of this class, storing the choices specified
+    in that source.
 
     .. warning ::
-        The basic __init__ of this class is not meant to be used standalone.
-        Instead, this class is supposed to be used through any of the following
-        constructing classmethods:
+        The basic __init__ of this class is not meant to be used
+        standalone. Instead, this class is supposed to be used through
+        any of the following constructing classmethods:
         :meth:`from_dict`, :meth:`from_file`, :meth:`from_cmdline`
 
     Parameters
@@ -618,16 +634,16 @@ class RawPars:
     fname : str
         The name of the file whose contents are stored
     is_default : bool
-        Whether the file is a default parameter file. In other words, the file
-        is expected to be complete.
+        Whether the file is a default parameter file. In other words,
+        the file is expected to be complete.
 
-            Note that 'Complete' can mean multiple things. Here, we expect
-            only that all
-            parameters given in the GMAP reference parameter file are present
-            (except those marked as not being allowed to be in there).
-            However, if even a single parameter from a certain map is included
-            in the file, *all* parameters from that specific map must be
-            present.
+            Note that 'Complete' can mean multiple things. Here, we
+            expect only that all parameters given in the GMAP reference
+            parameter file are present (except those marked as not being
+            allowed to be in there).
+            However, if even a single parameter from a certain map is
+            included in the file, *all* parameters from that specific
+            map must be present.
     given_dict : dict
         The parameters (keys) and their choices (values).
     RefPars : :class:`RefPars`
@@ -636,34 +652,34 @@ class RawPars:
     See Also
     --------
     RefPars
-        The class containing all available parameters, and extra information
-        about them
+        The class containing all available parameters, and extra
+        information about them
     RunPars
-        The class containing the final parameters choices after combining all
-        input sources.
+        The class containing the final parameters choices after
+        combining all input sources.
 
     Attributes
     ----------
     fname : pathlib.Path or str
-        The absolute path to the file that contains the parameter choices. In
-        case the source is not a file but the command line, the path is the
-        string 'command line' instead.
+        The absolute path to the file that contains the parameter
+        choices. In case the source is not a file but the command line,
+        the path is the string 'command line' instead.
     is_default : bool
         Whether the set of parameter choices is supposed to be complete.
     choices : dict
-        Stores parameter names as keys, and the choice for the parameter as
-        values. Beware the exact typing: **all** parameters (not only
-        list-type ones) have their choice stored as a list. The items in the
-        list are of the correct type.
+        Stores parameter names as keys, and the choice for the parameter
+        as values. Beware the exact typing: **all** parameters (not only
+        list-type ones) have their choice stored as a list. The items in
+        the list are of the correct type.
     not_found : dict
-        When a source is first analyzed for parameters, only the GMAP-based
-        parameters are known. Therefore, inherently, any map-specific
-        parameters cannot be recognized/identified, and parsed. During the
-        first pass, any map-specific-looking parameters are stored in here,
-        so they can be analyzed during a second pass. Keys in this dictionary
-        are the full parameter names (including the map-name), values are the
-        not-so-parsed choices.
-
+        When a source is first analyzed for parameters, only the
+        GMAP-based parameters are known. Therefore, inherently, any
+        map-specific parameters cannot be recognized/identified, and
+        parsed. During the first pass, any map-specific-looking
+        parameters are stored in here, so they can be analyzed during a
+        second pass. Keys in this dictionary are the full parameter
+        names (including the map-name), values are the not-so-parsed
+        choices.
     """
 
     def __init__(self, fname, is_default, given_dict, RefPars):
@@ -698,7 +714,8 @@ class RawPars:
         """Create an instance of this class for parameters stored in a dict.
 
         .. seealso ::
-            :meth:`create_empty`, :meth:`from_file`, :meth:`from_cmdline`
+            :meth:`create_empty`, :meth:`from_file`,
+            :meth:`from_cmdline`
 
         Parameters
         ----------
@@ -706,9 +723,9 @@ class RawPars:
             The name of the file from which the data in `given_dict` was
             obtained
         given_dict : dict
-            Contains parameter choices. Keys are the parameter names (str),
-            values are lists containing all choices (str). Lists are still
-            expected when there are 0 or 1 choices.
+            Contains parameter choices. Keys are the parameter names
+            (str), values are lists containing all choices (str). Lists
+            are still expected when there are 0 or 1 choices.
         RefPars : :class:`RefPars`
             Contains all parameters that might be found in `given_dict`.
         is_default : bool
@@ -718,12 +735,12 @@ class RawPars:
         Returns
         -------
         instance : :class:`RawPars`
-            A newly generated instance with all choices parsed and stored.
+            A newly generated instance with all choices parsed and
+            stored.
         """
 
         if len(given_dict) == 0:
-            instance = cls.create_empty()
-            return instance
+            return cls.create_empty()
 
         return cls(fname, is_default, given_dict, RefPars)
 
@@ -734,7 +751,8 @@ class RawPars:
         First obtains a dict from the file, then uses :meth:`from_dict`
 
         .. seealso ::
-            :meth:`create_empty`, :meth:`from_dict`, :meth:`from_cmdline`
+            :meth:`create_empty`, :meth:`from_dict`,
+            :meth:`from_cmdline`
 
         Parameters
         ----------
@@ -749,7 +767,8 @@ class RawPars:
         Returns
         -------
         instance : :class:`RawPars`
-            A newly generated instance with all choices parsed and stored.
+            A newly generated instance with all choices parsed and
+            stored.
         """
 
         with open(fname) as file:
@@ -764,11 +783,13 @@ class RawPars:
     def from_cmdline(
         cls, cmdargs, RefPars, maprefpars_dict, is_default
     ):
-        """Create an instance of this class for parameters in the command line
+        """Create an instance of this class for parameters in the
+        command line
 
-        A method more different from the others, as it has to do some parsing,
-        too. Also immediately deals with map-specific parameters, while
-        instances created from other sources need an extra pass for those.
+        A method more different from the others, as it has to do some
+        parsing, too. Also immediately deals with map-specific
+        parameters, while instances created from other sources need an
+        extra pass for those.
 
         .. seealso ::
             :meth:`create_empty`, :meth:`from_dict`, :meth:`from_file`
@@ -780,8 +801,9 @@ class RawPars:
         RefPars : :class:`RefPars`
             Contains all parameters that might be found in `given_dict`.
         maprefpars_dict : dict
-            A dictionary containing the RefPars objects for all recognized
-            maps. Keys are the map names, values are their RefPars object.
+            A dictionary containing the RefPars objects for all
+            recognized maps. Keys are the map names, values are their
+            RefPars object.
         is_default : bool
             Whether this is a default file (i.e. complete, see
             :class:`RawPars`)
@@ -789,7 +811,8 @@ class RawPars:
         Returns
         -------
         instance : :class:`RawPars`
-            A newly generated instance with all choices parsed and stored.
+            A newly generated instance with all choices parsed and
+            stored.
         """
 
         # In order to read the command line, we need to know whether a
@@ -807,7 +830,7 @@ class RawPars:
 
             #   - hyphens
             if not cmdargs[0].startswith("-"):
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     "\nThe name of a parameter specified on the command line "
                     "should be preceeded with '-'.",
                     "SU_WP_1", True, GMAPerrclass=GM_Ex.GmapFileSyntaxError
@@ -822,7 +845,7 @@ class RawPars:
                 curpar, curpar_tocheck, refpars_to_use, None, False
             )[1]
             if not found:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     f"\nThe parameter {curpar} as specified on the command "
                     "line is not recognised. Please make sure you spelled "
                     "it correctly.",
@@ -848,11 +871,11 @@ class RawPars:
     def parse_cmd_parname(curparraw, RefPars, maprefpars_dict):
         """Identifies a parameter name specified on the command line
 
-        Removes hyphens, figures out whether the name is shorthand or not,
-        whether it belongs to the base program, or one of the maps, and
-        whether (in the case of bools) the parameter is inverted using the
-        nobool format. If it is, this invertion is not cancelled, the 'no'
-        part is left in place.
+        Removes hyphens, figures out whether the name is shorthand or
+        not, whether it belongs to the base program, or one of the maps,
+        and whether (in the case of bools) the parameter is inverted
+        using the nobool format. If it is, this invertion is not
+        cancelled, the 'no' part is left in place.
 
         Parameters
         ----------
@@ -861,19 +884,22 @@ class RawPars:
         RefPars : :class:`RefPars`
             Contains all parameters that might be found in `given_dict`.
         maprefpars_dict : dict
-            A dictionary containing the RefPars objects for all recognized
-            maps. Keys are the map names, values are their RefPars object.
+            A dictionary containing the RefPars objects for all
+            recognized maps. Keys are the map names, values are their
+            RefPars object.
 
         Returns
         -------
         curpar : str
-            The full name of the parameter. Basically mapname.parname. If
-            the parameter belongs to the main program, this is just parname.
+            The full name of the parameter. Basically mapname.parname.
+            If the parameter belongs to the main program, this is just
+            parname.
         curpar_to_check : str
-            The name of the parameter, without the map prefix - as it should
-            be looked up in the refpars object.
+            The name of the parameter, without the map prefix - as it
+            should be looked up in the refpars object.
         RefParsToUse : :class:`RefPars`
-            The RefPars object to which the recognized parameter belongs.
+            The RefPars object to which the recognized parameter
+            belongs.
         """
 
         curpar = curparraw.lstrip("-")
@@ -896,7 +922,7 @@ class RawPars:
                 RefParsToUse = maprefpars_dict[curpar_list[0]]
                 curpar_tocheck = curpar_list[1]
             except KeyError as ex:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     warntext, "SU_WP_2", True, exception=ex,
                     GMAPerrclass=GM_Ex.GmapKeyError
                 )
@@ -930,7 +956,7 @@ class RawPars:
                     warncode = "SU_WP_2"
                 else:
                     warncode = "SU_WP_3"
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     warntext, warncode, True, exception=ex,
                     GMAPerrclass=GM_Ex.GmapKeyError
                 )
@@ -953,19 +979,22 @@ class RawPars:
         cmdargs : list of str
             A slice from the list generated using sys.argv
         curpar : str
-            The full name of the parameter. Basically mapname.parname. If
-            the parameter belongs to the main program, this is just parname.
+            The full name of the parameter. Basically mapname.parname.
+            If the parameter belongs to the main program, this is just
+            parname.
         curpar_to_check : str
-            The name of the parameter, without the map prefix - as it should
-            be looked up in the refpars object.
+            The name of the parameter, without the map prefix - as it
+            should be looked up in the refpars object.
         RefParsToUse : :class:`RefPars`
-            The RefPars object to which the recognized parameter belongs.
+            The RefPars object to which the recognized parameter
+            belongs.
 
         Returns
         -------
         choice : list of str
-            The choice that was submitted on the command line, parsed to the
-            same format as the values in the dict from a parameter file.
+            The choice that was submitted on the command line, parsed to
+            the same format as the values in the dict from a parameter
+            file.
         """
 
         if curpar_tocheck in RefParsToUse.maybe_list:
@@ -973,7 +1002,7 @@ class RawPars:
             try:
                 choice = [cmdargs.pop(0)]
             except IndexError as ex:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     f"\nThe parameter {curpar} specified in the command "
                     "line requires a choice to be given.",
                     "SU_WP_4", True, exception=ex,
@@ -988,13 +1017,13 @@ class RawPars:
                 try:
                     choice.append(cmdargs.pop(0))
                 except IndexError:
-                    GM_PT.Printer().warning(
+                    GM_PT.Printer.warning(
                         warntext, "SU_WP_5", True,
                         GMAPerrclass=GM_Ex.GmapIndexError
                     )
 
                 if choice[-1].startswith("-"):
-                    GM_PT.Printer().warning(
+                    GM_PT.Printer.warning(
                         warntext, "SU_WP_5", True,
                         GMAPerrclass=GM_Ex.GmapFileSyntaxError
                     )
@@ -1015,18 +1044,20 @@ class RawPars:
         return choice
 
     def extract_choices(self, given_dict, RefPars):
-        """Takes each parameter and their choice from the dict for parsing
+        """Takes each parameter and their choice from the dict for
+        parsing
 
-        Each pair is forwarded to the correct location for further parsing.
-        Does not deal in-depth with map-specific parameters, unless the
-        :class:`RawPars` instance is created specifically for that map.
+        Each pair is forwarded to the correct location for further
+        parsing. Does not deal in-depth with map-specific parameters,
+        unless the :class:`RawPars` instance is created specifically for
+        that map.
 
         Parameters
         ----------
         given_dict : dict
-            Contains parameter choices. Keys are the parameter names (str),
-            values are lists containing all choices (str). Lists are still
-            expected when there are 0 or 1 choices.
+            Contains parameter choices. Keys are the parameter names
+            (str), values are lists containing all choices (str). Lists
+            are still expected when there are 0 or 1 choices.
         RefPars : :class:`RefPars`
             Contains all parameters that might be found in `given_dict`.
         """
@@ -1055,7 +1086,7 @@ class RawPars:
                     # if for a map, re-find map name!
                     mapname = RefPars.fname.parent.name
                     parname = mapname + "." + parname
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     f"\nUnknown parameter {parname} found in the file "
                     f"{self.fname}. "
                     "Please make sure you spelled it correctly.",
@@ -1068,8 +1099,8 @@ class RawPars:
         Checks performed:
             - Are there exactly enough choices given?
             - Can all choices be converted into the correct datatype?
-            - If there is a limited set of options to chose from - is the
-              provided choice allowed?
+            - If there is a limited set of options to chose from - is
+              the provided choice allowed?
 
         Parameters
         ----------
@@ -1084,8 +1115,9 @@ class RawPars:
         Returns
         -------
         choice : list of any
-            A homogenous list, containing the same information as supplied
-            as the parameter `choice`, but converted to the correct datatype.
+            A homogenous list, containing the same information as
+            supplied as the parameter `choice`, but converted to the
+            correct datatype.
         """
 
         if RefPars.is_main:
@@ -1094,7 +1126,7 @@ class RawPars:
             printname = RefPars.fname.parent.name + "." + parname
         if len(choice) == 0:
             if self.is_default:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     f"\nNo choice detected for the parameter {printname} "
                     f"specified in the file {self.fname}. "
                     "All parameters must be specified for the file to be "
@@ -1105,7 +1137,7 @@ class RawPars:
             elif parname in RefPars.boolpars:
                 choice.append("true")
             else:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     f"\nNo choice detected for the parameter {printname} "
                     f"specified in the file {self.fname}. "
                     "Either remove the parameter line, or make a choice.",
@@ -1114,7 +1146,7 @@ class RawPars:
 
         # if we expect a single choice, but multiple were given
         elif len(choice) > 1 and parname not in RefPars.maybe_list:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 f"\nToo many choices given for the parameter {printname} "
                 f"specified in the file {self.fname}. "
                 "Please only specify one.",
@@ -1157,7 +1189,7 @@ class RawPars:
                 x.lower() not in trueicators and x.lower() not in falseicators
                 for x in choice
             ):
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     errortext1, "SU_WP_10", True,
                     GMAPerrclass=GM_Ex.GmapValueError
                 )
@@ -1166,7 +1198,7 @@ class RawPars:
         try:
             choice = [usetype(x) for x in choice]
         except Exception:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 errortext2, "SU_WP_12", True,
                 GMAPerrclass=GM_Ex.GmapTypeError
             )
@@ -1177,7 +1209,7 @@ class RawPars:
         if any(
             opt not in RefPars.options[parname] for opt in choice
         ):
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 errortext1, "SU_WP_11", True,
                 GMAPerrclass=GM_Ex.GmapValueError
             )
@@ -1188,13 +1220,15 @@ class RawPars:
         self, parname_full, parname_refpars, RefPars, choice,
         do_verify=True
     ):
-        """See if the given parameter exists within the supplied RefPars.
+        """See if the given parameter exists within the supplied
+        RefPars.
 
         After :meth:`extract_choices` found a
-        parameter/choice pair that says it should be present in the supplied
-        RefPars, it is given to this function to see whether it actually does.
-        If so (and if requested), :meth:`verify_choice` is called to see if
-        the supplied choice is valid, too.
+        parameter/choice pair that says it should be present in the
+        supplied RefPars, it is given to this function to see whether it
+        actually does.
+        If so (and if requested), :meth:`verify_choice` is called to see
+        if the supplied choice is valid, too.
 
         Parameters
         ----------
@@ -1203,7 +1237,8 @@ class RawPars:
         parname_refpars : str
             The parameter name as we expect to find it within RefPars
         RefPars : :class:`RefPars`
-            The reference parameters in which the given parameter should occur
+            The reference parameters in which the given parameter should
+            occur
         choice : list
             The choice supplied as input
         do_verify : bool, default=True
@@ -1212,14 +1247,14 @@ class RawPars:
         Returns
         -------
         choice : list
-            The choice as returned by :meth:`verify_choice` if requested,
-            otherwise as supplied
+            The choice as returned by :meth:`verify_choice` if
+            requested, otherwise as supplied
         found : bool
             Whether the requested parameter was found to exist.
         parname_refpars : str
-            The name that we should look for in refpars. Most notably, if
-            the supplied parameter was of nobool, the no is removed in this
-            output.
+            The name that we should look for in refpars. Most notably,
+            if the supplied parameter was of nobool, the no is removed
+            in this output.
         """
 
         found = False
@@ -1242,7 +1277,7 @@ class RawPars:
         elif parname_refpars in RefPars.not_expected_in_deffile:
             found = True
             if self.is_default and len(choice) != 0:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     f"\nA choice for the parameter {parname_full} is "
                     "specified "
                     f"in the default parameter file {self.fname}. "
@@ -1291,12 +1326,12 @@ class RawPars:
     def check_completeness(self, RefPars):
         """Check if all required parameters are present
 
-        When the file is marked as being default, this method makes sure that
-        all parameters are present.
+        When the file is marked as being default, this method makes sure
+        that all parameters are present.
 
-        If a default parameter file contains any map-related choices, then
-        this function is called with the RefPars of that specific map, as it
-        then must contain all choices for that map.
+        If a default parameter file contains any map-related choices,
+        then this function is called with the RefPars of that specific
+        map, as it then must contain all choices for that map.
 
         Parameters
         ----------
@@ -1312,7 +1347,7 @@ class RawPars:
                     # if for a map, re-find map name!
                     mapname = RefPars.fname.parent.name
                     parname = mapname + "." + parname
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     f"\nNo entry found for the parameter {parname} in the "
                     f"default parameter file {self.fname}. "
                     "All parameters must be specified for default files to "
@@ -1335,7 +1370,7 @@ class RawPars:
         ) for parameter in self.choices])
 
         if n_present > 1 and not self.is_default:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nEncountered an issue with the following parameter source: "
                 f"{self.fname}. The source should contain only one of the "
                 "parameters 'influencers_whitelist', 'influencers_blacklist', "
@@ -1358,6 +1393,11 @@ class RawPars:
                 self.choices["influencers_select_atoms"]
             )
 
+        # safe mode!
+        if "safe_mode" in self.choices:
+            if self.choices["safe_mode"] == [True]:
+                self.choices["command_line_color"] = ["white"]
+
         # error codes - make sure they're of the correct format (2 _)
         error_codes = self.choices.get("dont_report_error", ["None"])
         for error_code in error_codes:
@@ -1365,7 +1405,7 @@ class RawPars:
                 continue
             error_code = error_code.split("_")
             if len(error_code) != 3:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     "\nEncountered an issue with the following parameter "
                     f"source: {self.fname}. Any error codes "
                     "provided should contain two underscores, even if "
@@ -1376,7 +1416,7 @@ class RawPars:
         # Checking radii for estatic sphere
         estatic_range = self.choices.get("estatic_range", [1])[0]
         if estatic_range < 0:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nEncountered an issue with the following parameter source: "
                 f"{self.fname}. The parameter estatic_range can only take a "
                 "positive value, but a negative one was detected. Please make "
@@ -1385,13 +1425,20 @@ class RawPars:
             )
         estatic_smooth_range = self.choices.get("estatic_smooth_range", [1])[0]
         if estatic_smooth_range < 0:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nEncountered an issue with the following parameter source: "
                 f"{self.fname}. The parameter estatic_smooth_range can only "
                 "take a positive value, but a negative one was detected. "
                 "Please make sure it has a positive value.",
                 "SU_WP_11", True, GMAPerrclass=GM_Ex.GmapValueError
             )
+
+        # Add c library extension
+        if self.choices.get("VEG_clib_file") is not None:
+            self.choices["VEG_clib_file"] = [Path(
+                str(*self.choices["VEG_clib_file"])
+                + GM_FH.FileLocations.clib_extension
+            )]
 
         # next - frame numbers!
         start_frame = self.choices.get("start_frame", [None])[0]
@@ -1414,18 +1461,18 @@ class RawPars:
 
         if n_pars == 3:
             if start_frame + number_frames != stop_frame:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     msg, "SU_WP_17", True,
                     GMAPerrclass=GM_Ex.GmapParameterError
                 )
         elif n_pars == 2:
             if start_frame is None and stop_frame < number_frames:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     msg, "SU_WP_17", True,
                     GMAPerrclass=GM_Ex.GmapParameterError
                 )
             elif number_frames is None and stop_frame < start_frame:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     msg, "SU_WP_17", True,
                     GMAPerrclass=GM_Ex.GmapParameterError
                 )
@@ -1437,7 +1484,7 @@ class RawPars:
             if self.is_default:  # for default, use multiplier
                 pass
             elif "hamiltonian_multiplier" in self.choices:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     "\nEncountered an issue with the following parameter "
                     f"source: {self.fname}. The source should contain only "
                     "one of the parameters 'hamiltonian_units' and "
@@ -1454,7 +1501,7 @@ class RawPars:
             if self.is_default:  # for default, use multiplier
                 pass
             elif "energies_multiplier" in self.choices:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     "\nEncountered an issue with the following parameter "
                     f"source: {self.fname}. The source should contain only "
                     "one of the parameters 'energies_units' and "
@@ -1471,7 +1518,7 @@ class RawPars:
             if self.is_default:  # for default, use multiplier
                 pass
             elif "dipoles_multiplier" in self.choices:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     "\nEncountered an issue with the following parameter "
                     f"source: {self.fname}. The source should contain only "
                     "one of the parameters 'dipoles_units' and "
@@ -1488,7 +1535,7 @@ class RawPars:
             if self.is_default:  # for default, use multiplier
                 pass
             elif "raman_multiplier" in self.choices:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     "\nEncountered an issue with the following parameter "
                     f"source: {self.fname}. The source should contain only "
                     "one of the parameters 'raman_units' and "
@@ -1505,7 +1552,7 @@ class RawPars:
             if self.is_default:  # for default, use multiplier
                 pass
             elif "positions_multiplier" in self.choices:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     "\nEncountered an issue with the following parameter "
                     f"source: {self.fname}. The source should contain only "
                     "one of the parameters 'positions_units' and "
@@ -1526,7 +1573,7 @@ class RawPars:
             if self.is_default:  # for default, use multiplier
                 pass
             elif "doublepos_multiplier" in self.choices:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     "\nEncountered an issue with the following parameter "
                     f"source: {self.fname}. The source should contain only "
                     "one of the parameters 'doublepos_units' and "
@@ -1551,11 +1598,12 @@ class RawPars:
         every available instance of
         :class:`~GMAP.src.tools.MapReader.Map`. Any parameters
         recognised there were removed from
-        the `not_found` dictionary, so it should be empty, if all parameters
-        were understood. Here we check if that is indeed the case.
+        the `not_found` dictionary, so it should be empty, if all
+        parameters were understood. Here we check if that is indeed the
+        case.
         """
         if len(self.not_found.keys()) != 0:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 f"\nUnknown parameter {list(self.not_found.keys())[0]} "
                 "found in "
                 "the "
@@ -1568,55 +1616,56 @@ class RawPars:
 class RunPars:
     """Stores the final choices used for the calculation
 
-    Choices can be specified in multiple places. In the end, they have to be
-    combined into a single set containing all parameters. This might mean
-    that a single parameter is defined multiple times, each different. This
-    is the intended order of places to look for choices: choices from the
-    command line go first. Anything not specified there will be attempted to
-    be retrieved from the input parameter file. Anything that is still missing
-    will be retrieved from the default parameter file, and the final missing
-    values will be retrieved from the reference parameter file.
+    Choices can be specified in multiple places. In the end, they have
+    to be combined into a single set containing all parameters. This
+    might mean that a single parameter is defined multiple times, each
+    different. This is the intended order of places to look for choices:
+    choices from the command line go first. Anything not specified there
+    will be attempted to be retrieved from the input parameter file.
+    Anything that is still missing will be retrieved from the default
+    parameter file, and the final missing values will be retrieved from
+    the reference parameter file.
 
-    But shouldn't the default file contain all parameters, making the choices
-    in the reference file redundant? Yes, for GMAP parameters, but no, not
-    necessarily for map parameters. The default file doesn't have to contain
-    any of those, so those still have to be retrieved from the (map specific)
-    reference parameter file.
+    But shouldn't the default file contain all parameters, making the
+    choices in the reference file redundant? Yes, for GMAP parameters,
+    but no, not necessarily for map parameters. The default file doesn't
+    have to contain any of those, so those still have to be retrieved
+    from the (map specific) reference parameter file.
 
     .. note::
-        This class has many attributes, all variable: each parameter in RefPars
-        becomes an attribute. Same name, same capitalization, same everything.
+        This class has many attributes, all variable: each parameter in
+        RefPars becomes an attribute. Same name, same capitalization,
+        same everything.
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related properties.
-        Has to be updated after RunPars is finalized.
     CmdPars : :class:`RawPars`
         Contains any parameter choices made on the command line
     InPars : :class:`RawPars`
         Contains any parameter choices made in the input parameter file
     DefPars : :class:`RawPars` or :class:`RefPars`
-        Contains all default parameter choices. Might be RefPars, might be
-        from a separate default parameters file.
+        Contains all default parameter choices. Might be RefPars, might
+        be from a separate default parameters file.
     RefPars : :class:`RefPars`
-        Contains all available parameters from GMAP itself (not map-specific)
+        Contains all available parameters from GMAP itself (not
+        map-specific)
     is_main : bool
-        Whether this instance of RunPar belongs to the main program (and thus
-        contains parameters about the runtime itself) - indicated by 'True',
-        or if it belongs to an instance of
+        Whether this instance of RunPar belongs to the main program (and
+        thus contains parameters about the runtime itself) - indicated
+        by 'True', or if it belongs to an instance of
         :class:`~GMAP.src.tools.MapReader.Map` - indicated by 'False'.
     MainRunPars : :class:`RunPars` or None, default=None
         The instance of RunPars that is the main (and thus contains the
         main parameters). If the main instance is still being created,
-        None will be passed (or assumed) instead, and 'self' will be used.
+        None will be passed (or assumed) instead, and 'self' will be
+        used.
 
 
     See Also
     --------
     RefPars
-        The class containing all available parameters, and extra information
-        about them
+        The class containing all available parameters, and extra
+        information about them
     RawPars
         The class containing parameter choices from other sources
 
@@ -1624,14 +1673,14 @@ class RunPars:
     Attributes
     ----------
     is_main : bool
-        Whether this instance of RunPar belongs to the main program (and thus
-        contains parameters about the runtime itself) - indicated by 'True',
-        or if it belongs to an instance of
+        Whether this instance of RunPar belongs to the main program (and
+        thus contains parameters about the runtime itself) - indicated
+        by 'True', or if it belongs to an instance of
         :class:`~GMAP.src.tools.MapReader.Map` - indicated by 'False'.
     MainRunPars : :class:`RunPars`
         The instance of RunPars that is the main (and thus contains the
-        main parameters). When assigning this attribute to the 'main' instance,
-        'self' will be used.
+        main parameters). When assigning this attribute to the 'main'
+        instance, 'self' will be used.
     detected_requires_bonds : bool
         Whether (one of) the maps requested for use require(s) bonds
     available_maps_singles : dict of str: \
@@ -1646,23 +1695,29 @@ class RunPars:
     available_maps_pairs : dict of str: \
         :class:`~GMAP.src.tools.MapReader.PairMap` pairs
         The pairmaps that are available during the calculation. If any
-        pairmap requires another, it must be present in at least this list.
+        pairmap requires another, it must be present in at least this
+        list.
     requested_pairmapdict : dict of str: \
         :class:`~GMAP.src.tools.MapReader.PairMap` pairs
-        The pair maps that should be applied during the calculation. This
-        must be a subset of available_maps_pairs.
+        The pair maps that should be applied during the calculation.
+        This must be a subset of available_maps_pairs.
     pair_v_coupling_dict : dict of (tuple of str): str pairs
-        For each possible pair of oscillator(types), get the coupling map name
+        For each possible pair of oscillator(types), get the coupling
+        map name
     coupling_v_pair_dict : dict of str: tuple of str pairs
         For each requested coupling map, get the pairs of oscillators it
         couples
     available_outputs : tuple of str
-        What kinds of output the user can request the program to generate.
-        Is a copy of RefPars.options["output_data"].
+        What kinds of output the user can request the program to
+        generate. Is a copy of RefPars.options["output_data"].
+    defparfilename : `pathlib.Path`
+        The name of the default parameter file used.
+    inparfilename : `pathlib.Path`
+        The name of the input parameter file used.
     """
 
     def __init__(
-        self, Files, CmdPars, InPars, DefPars, RefPars, is_main,
+        self, CmdPars, InPars, DefPars, RefPars, is_main,
         MainRunPars=None
     ):
         self.is_main = is_main
@@ -1676,12 +1731,14 @@ class RunPars:
         self.get_pars(CmdPars, InPars, DefPars, RefPars)
 
         # Extract all parameters that are a file
-        self.get_files(Files, CmdPars, InPars, DefPars, RefPars)
+        self.get_files(CmdPars, InPars, DefPars, RefPars)
 
         if self.is_main:
             self.resolve_errorcodes()
-            GM_PT.Printer().set_state(
+            GM_PT.Printer.setenv(self.safe_mode, self.dark_mode)
+            GM_PT.Printer.set_state(
                 "running", self.verbose, self.verbose_logfile,
+                self.command_line_color, self.command_line_length,
                 self.log_filename, self.dont_report_error
             )
 
@@ -1692,10 +1749,11 @@ class RunPars:
     def get_pars(self, CmdPars, InPars, DefPars, RefPars):
         """Sets attribute for each non-path parameter.
 
-        Following the order mentioned in `RunPars`, extracts the choice for
-        each non-path type parameter found in RefPars. For each of these
-        parameters which is not allowed to have multiple choices, the choice
-        is extracted from the list and stored without that list.
+        Following the order mentioned in `RunPars`, extracts the choice
+        for each non-path type parameter found in RefPars. For each of
+        these parameters which is not allowed to have multiple choices,
+        the choice is extracted from the list and stored without that
+        list.
 
         .. seealso::
             :meth:`get_files`
@@ -1706,10 +1764,11 @@ class RunPars:
         CmdPars : :class:`RawPars`
             Contains any parameter choices made on the command line
         InPars : :class:`RawPars`
-            Contains any parameter choices made in the input parameter file
+            Contains any parameter choices made in the input parameter
+            file
         DefPars : :class:`RawPars` or :class:`RefPars`
-            Contains all default parameter choices. Might be RefPars, might be
-            from a separate default parameters file.
+            Contains all default parameter choices. Might be RefPars,
+            might be from a separate default parameters file.
         RefPars : :class:`RefPars`
             Contains all available parameters from GMAP itself (not
             map-specific)
@@ -1730,7 +1789,7 @@ class RunPars:
                 if parname in source.choices:
                     choice = source.choices[parname]
             if choice is None:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     f"\nNo choice for the parameter {parname} could be found. "
                     "Please specify a choice on either the command line, or "
                     "in the input file. ",
@@ -1741,11 +1800,11 @@ class RunPars:
 
             setattr(self, parname, choice)
 
-    def get_files(self, Files, CmdPars, InPars, DefPars, RefPars):
+    def get_files(self, CmdPars, InPars, DefPars, RefPars):
         """Sets attribute for each path parameter
 
-        Following the order mentioned in `RunPars`, extracts the choice for
-        each path type parameter found in RefPars.
+        Following the order mentioned in `RunPars`, extracts the choice
+        for each path type parameter found in RefPars.
 
         .. seealso::
             :meth:`get_pars`
@@ -1753,17 +1812,14 @@ class RunPars:
 
         Parameters
         ----------
-        Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-            Contains all currently known paths and other file-related
-            properties.
-            Has to be updated after RunPars is finalized.
         CmdPars : :class:`RawPars`
             Contains any parameter choices made on the command line
         InPars : :class:`RawPars`
-            Contains any parameter choices made in the input parameter file
+            Contains any parameter choices made in the input parameter
+            file
         DefPars : :class:`RawPars` or :class:`RefPars`
-            Contains all default parameter choices. Might be RefPars, might be
-            from a separate default parameters file.
+            Contains all default parameter choices. Might be RefPars,
+            might be from a separate default parameters file.
         RefPars : :class:`RefPars`
             Contains all available parameters from GMAP itself (not
             map-specific)
@@ -1771,14 +1827,14 @@ class RunPars:
 
         # deal with all files that are organized
         self.get_ordered_files(
-            Files, CmdPars, InPars, DefPars, RefPars
+            CmdPars, InPars, DefPars, RefPars
         )
 
         if self.is_main:
             # deal with map_directory separately
             file_hc = RefPars.choices["map_directory"]
             names = GM_FH.get_bare_file(
-                Files, "map_directory", file_hc, RefPars.fname.parent,
+                "map_directory", file_hc, RefPars.fname.parent,
                 CmdPars.choices,
                 [InPars.choices, DefPars.choices],
                 [InPars.fname, DefPars.fname]
@@ -1789,7 +1845,7 @@ class RunPars:
                 setattr(self, "map_directory", names)
             else:
                 names = [str(file) for file in names]
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     f"\nThe directory {', '.join(names)} was requested for "
                     "the "
                     f"parameter map_directory, but could not be found, or is "
@@ -1808,13 +1864,13 @@ class RunPars:
                 file_hc = None
             try:
                 names = GM_FH.get_bare_file(
-                    Files, parname, file_hc, RefPars.fname.parent,
+                    parname, file_hc, RefPars.fname.parent,
                     CmdPars.choices,
                     [InPars.choices, DefPars.choices],
                     [InPars.fname, DefPars.fname]
                 )
             except Exception as ex:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     f"\nNo choice for the parameter {parname} could be found. "
                     "Please specify a choice on either the command line, or "
                     "in the input file. ",
@@ -1837,7 +1893,7 @@ class RunPars:
             if not file_found:
                 names = [str(file) for file in names]
                 if self.is_main:
-                    GM_PT.Printer().warning(
+                    GM_PT.Printer.warning(
                         f"\nThe file(s) {', '.join(names)} was requested for "
                         "the "
                         f"parameter {parname}, "
@@ -1847,7 +1903,7 @@ class RunPars:
                         GMAPerrclass=GM_Ex.GmapFileNotFoundError
                     )
                 else:
-                    GM_PT.Printer().warning(
+                    GM_PT.Printer.warning(
                         f"\nThe file(s) {', '.join(names)} was requested for "
                         "the "
                         f"parameter {parname}, for the map "
@@ -1864,14 +1920,15 @@ class RunPars:
                 setattr(self, parname, files_found[0])
 
     def get_ordered_files(
-        self, Files, CmdPars, InPars, DefPars, RefPars
+        self, CmdPars, InPars, DefPars, RefPars
     ):
         """Sets attribute for each ordered-path parameter
 
-        The paths to these files are more complicated, as they are relative
-        to a directory, but it is not required for both the directory-, and
-        file-specifying parameters to be present. For an overview how the
-        files are selected, see the development-notes file.
+        The paths to these files are more complicated, as they are
+        relative to a directory, but it is not required for both the
+        directory-, and file-specifying parameters to be present. For an
+        overview how the files are selected, see the development-notes
+        file.
 
         .. seealso::
             :meth:`get_files`
@@ -1879,17 +1936,14 @@ class RunPars:
 
         Parameters
         ----------
-        Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-            Contains all currently known paths and other file-related
-            properties.
-            Has to be updated after RunPars is finalized.
         CmdPars : :class:`RawPars`
             Contains any parameter choices made on the command line
         InPars : :class:`RawPars`
-            Contains any parameter choices made in the input parameter file
+            Contains any parameter choices made in the input parameter
+            file
         DefPars : :class:`RawPars` or :class:`RefPars`
-            Contains all default parameter choices. Might be RefPars, might be
-            from a separate default parameters file.
+            Contains all default parameter choices. Might be RefPars,
+            might be from a separate default parameters file.
         RefPars : :class:`RefPars`
             Contains all available parameters from GMAP itself (not
             map-specific)
@@ -1909,11 +1963,11 @@ class RunPars:
             try:
                 dir_hc = RefPars.choices[dir_parname][0]
             except Exception:
-                dir_hc = Files.cwd
+                dir_hc = GM_FH.FileLocations.cwd
 
             # What directory are we based on?
             dir_hc = GM_FH.get_bare_file(
-                Files, dir_parname, [dir_hc], RefPars.fname.parent,
+                dir_parname, [dir_hc], RefPars.fname.parent,
                 CmdPars.choices, dirlist, fnamelist
             )
             name = dir_hc[0].resolve()
@@ -1923,7 +1977,7 @@ class RunPars:
                 setattr(self, dir_parname, name)
             else:
                 if self.is_main:
-                    GM_PT.Printer().warning(
+                    GM_PT.Printer.warning(
                         f"\nThe directory {name.resolve()} was requested for "
                         "the "
                         f"parameter {dir_parname}, but could not be found, or "
@@ -1934,7 +1988,7 @@ class RunPars:
                         GMAPerrclass=GM_Ex.GmapNotADirectoryError
                     )
                 else:
-                    GM_PT.Printer().warning(
+                    GM_PT.Printer.warning(
                         f"\nThe directory {name.resolve()} was requested for "
                         "the "
                         f"parameter {dir_parname}, for the map "
@@ -1964,7 +2018,7 @@ class RunPars:
                     RefPars.nondefcount += 1
 
                 files_found = GM_FH.get_file(
-                    Files, dir_parname, file_parname, dir_hc[0], files_hc,
+                    dir_parname, file_parname, dir_hc[0], files_hc,
                     CmdPars.choices, dirlist, fnamelist
                 )[0]
 
@@ -1990,7 +2044,7 @@ class RunPars:
                 # if any of the files for this parameter are missing
                 if not file_found:
                     names = [str(file) for file in names]
-                    GM_PT.Printer().warning(
+                    GM_PT.Printer.warning(
                         f"\nThe file(s) {'.'.join(names)} was requested "
                         "for the parameter "
                         f"{file_parname}, but could not be found, or is not a "
@@ -2083,10 +2137,11 @@ class RunPars:
         CmdPars : :class:`RawPars`
             Contains any parameter choices made on the command line
         InPars : :class:`RawPars`
-            Contains any parameter choices made in the input parameter file
+            Contains any parameter choices made in the input parameter
+            file
         DefPars : :class:`RawPars` or :class:`RefPars`
-            Contains all default parameter choices. Might be RefPars, might be
-            from a separate default parameters file.
+            Contains all default parameter choices. Might be RefPars,
+            might be from a separate default parameters file.
         RefPars : :class:`RefPars`
             Contains all available parameters from GMAP itself (not
             map-specific)
@@ -2094,6 +2149,7 @@ class RunPars:
 
         self.resolve_framenums(CmdPars, InPars, DefPars, RefPars)
         self.resolve_couplings(CmdPars, InPars, DefPars)
+        self.resolve_estatics()
 
     def resolve_framenums(self, CmdPars, InPars, DefPars, RefPars):
         """Make sure the combination of frame numbers makes sense.
@@ -2108,25 +2164,15 @@ class RunPars:
         CmdPars : :class:`RawPars`
             Contains any parameter choices made on the command line
         InPars : :class:`RawPars`
-            Contains any parameter choices made in the input parameter file
+            Contains any parameter choices made in the input parameter
+            file
         DefPars : :class:`RawPars` or :class:`RefPars`
-            Contains all default parameter choices. Might be RefPars, might be
-            from a separate default parameters file.
+            Contains all default parameter choices. Might be RefPars,
+            might be from a separate default parameters file.
         RefPars : :class:`RefPars`
             Contains all available parameters from GMAP itself (not
             map-specific)
         """
-
-        # The smoothing should start sooner than we start calculating the
-        # electrostatics to begin with....
-        if self.estatic_smooth_range > (self.estatic_range * 2):
-            GM_PT.Printer().warning(
-                "\nEncountered an issue with the combined choices of "
-                "parameters. The parameter estatic_smooth_range can not "
-                "take a value larger than twice that of estatic_range. "
-                "Please make sure it does not exceed that.",
-                "SU_NP_7", True, GMAPerrclass=GM_Ex.GmapValueError
-            )
 
         # An inconsistency with frame parameters?
         all_parameter_names = ("start_frame", "stop_frame", "number_frames")
@@ -2197,10 +2243,11 @@ class RunPars:
         CmdPars : :class:`RawPars`
             Contains any parameter choices made on the command line
         InPars : :class:`RawPars`
-            Contains any parameter choices made in the input parameter file
+            Contains any parameter choices made in the input parameter
+            file
         DefPars : :class:`RawPars` or :class:`RefPars`
-            Contains all default parameter choices. Might be RefPars, might be
-            from a separate default parameters file.
+            Contains all default parameter choices. Might be RefPars,
+            might be from a separate default parameters file.
         """
 
         couplist = []
@@ -2227,7 +2274,7 @@ class RunPars:
         # contains information about a single coupling map.
         for coupline in couplist:
             if len(coupline) < 2:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     "\nThe parameter couplings_to_use must always take 2 or "
                     "more "
                     "arguments, but only one was provided. Please make sure "
@@ -2246,7 +2293,7 @@ class RunPars:
 
         if failed_couppairs:
             joined = '\n'.join(failed_couppairs)
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nAll arguments for the parameter couplings_to_use "
                 "(EXCEPT the first one) represent a pair of groups to "
                 "couple. The following groups received coupling instructions, "
@@ -2264,18 +2311,53 @@ class RunPars:
             else:
                 self.coupling_v_pair_dict[value] = [key]
 
+    def resolve_estatics(self):
+        """Resolves any issues that can result from estatic choices.
+        """
+
+        # The smoothing can't start sooner than we start calculating the
+        # electrostatics to begin with....
+        if self.estatic_smooth_range > (self.estatic_range * 2):
+            GM_PT.Printer.warning(
+                "\nEncountered an issue with the combined choices of "
+                "parameters. The parameter estatic_smooth_range can not "
+                "take a value larger than twice that of estatic_range. "
+                "Please make sure it does not exceed that.",
+                "SU_NP_7", True, GMAPerrclass=GM_Ex.GmapParameterError
+            )
+
+        if (
+            self.estatics_method.lower() == "perres_nocut"
+            and self.estatic_smooth_range > 0
+        ):
+            GM_PT.Printer.warning(
+                "\nEncountered an issue with the combined choices of "
+                "parameters. The perres_nocut method has been requested as "
+                "choice for estatics_method, while the parameter "
+                "estatic_smooth_range also has a non-zero value. This method "
+                "of calculating electrostatics is, however, not compatible "
+                "with smoothing.",
+                "SU_NP_7", True, GMAPerrclass=GM_Ex.GmapParameterError
+            )
+
     def resolve_errorcodes(self):
+        """Fixes any issues due to merging errorcodes from different
+        parameter sources
+
+        The sources may contain 'none' as a valid choice, indicating no
+        errors should be suppressed. However, this none should not
+        remain in the list used by the program, so it is stripped here.
+        """
+
         # due to tests in RefPars and RawPars, we now know that the codes
         # either are 'none', or a true code. Remove the none's, and change
         # data type for valid comparisons later.
         self.dont_report_error = [
-            GM_CT.ErrCode(error) for error in self.dont_report_error
+            GM_SC.ErrCode(error) for error in self.dont_report_error
             if error.lower() != "none"
         ]
 
-    def interpret_coupling_pairstr(
-        self, pairstr, failed_couppairs, coupmap
-    ):
+    def interpret_coupling_pairstr(self, pairstr, failed_couppairs, coupmap):
         """Helper for self.resolve_couplings - processes a single pair.
 
         Edits the coupling dictionary directly in place.
@@ -2283,20 +2365,21 @@ class RunPars:
         Parameters
         ----------
         pairstr : str
-            the string from the rawpars files indicating the single pair to
-            be processed here. Might take a few formats:
+            the string from the rawpars files indicating the single pair
+            to be processed here. Might take a few formats:
 
             - oscname:oscname  indicates a specific pair of oscillators
             - oscname: indicates any pair containing that oscillator
             - :all indicates all pairs
             - :same indicates all pairs of oscillators of the same type
-            - :diff indicates all pairs of oscillators of a different type
+            - :diff indicates all pairs of oscillators of a different
+              type
         failed_couppairs : list of str
             All pairs that contain an oscillator type not requested by
             the parameter maps_to_use. These are not added to the dict.
         coupmap : str or None
-            The coupling map that should be used for the pairs denoted using
-            pairstr
+            The coupling map that should be used for the pairs denoted
+            using pairstr
 
         returns
         -------
@@ -2324,7 +2407,7 @@ class RunPars:
 
         pair = pairstr.split(":")
         if len(pair) != 2:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nAll arguments for the parameter couplings_to_use "
                 "(EXCEPT the first one) must contain one ':'. This "
                 "is not the case. Please make sure to have exactly "
@@ -2332,7 +2415,7 @@ class RunPars:
                 GMAPerrclass=GM_Ex.GmapFileSyntaxError
             )
         if len(pair[0]) == 0:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nAll arguments for the parameter couplings_to_use "
                 "(EXCEPT the first one) represent a pair of groups to "
                 "couple. While the second group is optional, the "
@@ -2363,7 +2446,8 @@ class RunPars:
 
     # Called by GEM.trj_loop()
     def manage_dtypes(self):
-        """Convert any values that might need it to the correct datatype.
+        """Convert any values that might need it to the correct
+        datatype.
 
         This is mostly in preparation for numba and/or c algorithms that
         are not capable of dealing with the uncertain (system-dependent)
@@ -2374,22 +2458,19 @@ class RunPars:
         self.estatic_smooth_range = np.float32(self.estatic_smooth_range)
 
 
-def get_parameters(Files, in_parfile, argslist):
+def get_parameters(in_parfile, argslist):
     """Collect all provided parameters, and store them.
 
     Parameters are defined (along with default choices) in the reference
     parameter file. Users can have a different set of defaults defined
-    in the default parameter file, and specific choices for this (set of)
-    runs in the input parameter file and the command line. This function
-    uses the functionality in src/tools/ParameterParser.py to collect
-    all choices, and construct a final set of choices from them. All
-    generated options are then returned.
+    in the default parameter file, and specific choices for this (set
+    of) runs in the input parameter file and the command line. This
+    function uses the functionality in src/tools/ParameterParser.py to
+    collect all choices, and construct a final set of choices from them.
+    All generated options are then returned.
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related properties.
-        Has to be updated after RunPars is finalized.
     in_parfile : `pathlib.Path`
         The path to the requested input parameter file.
     argslist : list of str
@@ -2399,27 +2480,28 @@ def get_parameters(Files, in_parfile, argslist):
     Returns
     -------
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
-        The 'main' RunPars instance containing all the basic run-defining
-        parameters.
+        The 'main' RunPars instance containing all the basic
+        run-defining parameters.
     Singles_mapdict : dict of str: \
         :class:`~GMAP.src.tools.MapReader.SingleMap` pairs
-        Stores all the :class:`~GMAP.src.tools.MapReader.SingleMap` objects for
-        each map supplied. The keys are the Map.name attributes corresponding
-        to the maps stored as values.
+        Stores all the :class:`~GMAP.src.tools.MapReader.SingleMap`
+        objects for each map supplied. The keys are the Map.name
+        attributes corresponding to the maps stored as values.
     Pairs_mapdict : dict of str: \
         :class:`~GMAP.src.tools.MapReader.PairMap` pairs
-        Stores all the :class:`~GMAP.src.tools.MapReader.PairMap` objects for
-        each map supplied. The keys are the Map.name attributes corresponding
-        to the maps stored as values.
+        Stores all the :class:`~GMAP.src.tools.MapReader.PairMap`
+        objects for each map supplied. The keys are the Map.name
+        attributes corresponding to the maps stored as values.
     CmdPars : :class:`RawPars`
         Contains any parameter choices made on the command line
     InPars : :class:`RawPars`
         Contains any parameter choices made in the input parameter file
     DefPars : :class:`RawPars` or :class:`RefPars`
-        Contains all default parameter choices. Might be RefPars, might be
-        from a separate default parameters file.
+        Contains all default parameter choices. Might be RefPars, might
+        be from a separate default parameters file.
     RefPars : :class:`RefPars`
-        Contains all available parameters from GMAP itself (not map-specific)
+        Contains all available parameters from GMAP itself
+        (not map-specific)
     """
 
     # very basic parsing of cmd
@@ -2445,17 +2527,18 @@ def get_parameters(Files, in_parfile, argslist):
             in_pardict = get_pardict(file)
         # step 5 (find which defpar to use)
         def_parfile = GM_FH.get_def_parfile(
-            Files, temp_cmd_pardict, in_parfile, in_pardict
+            temp_cmd_pardict, in_parfile, in_pardict
         )
     else:
         # step 5 (find which defpar to use)
-        def_parfile = GM_FH.get_def_parfile(Files, temp_cmd_pardict)
+        def_parfile = GM_FH.get_def_parfile(temp_cmd_pardict)
 
     # as get_def_parfile also checks for the presence of the hard-coded
     # reference parameter file (regardless of program flow), no need to do
     # it again.
     # step 6 (find refparfile)
-    ref_parfile = Files.sourcedir_hc / Files.refparfilename_hc
+    files = GM_FH.FileLocations
+    ref_parfile = files.sourcedir_hc / files.refparfilename_hc
     # step 7 (parse refparfile)
     GM_FH.check_file_readability(ref_parfile)  # check if file is UTF8
     RefPars_ = RefPars(ref_parfile, True)
@@ -2473,8 +2556,8 @@ def get_parameters(Files, in_parfile, argslist):
     elif def_parfile.suffix == ".ref":
         DefPars = RefPars.add_reffile(def_parfile, RefPars_)
     else:
-        GM_PT.Printer().warning(
-            f"The requested default parameter file {def_parfile} is of the "
+        GM_PT.Printer.warning(
+            f"\nThe requested default parameter file {def_parfile} is of the "
             "wrong file format. "
             "Please refer to the manual to see what file types are supported.",
             "SU_GEM_1", True, GMAPerrclass=GM_Ex.GmapFileSyntaxError
@@ -2488,7 +2571,7 @@ def get_parameters(Files, in_parfile, argslist):
         InPars = RawPars.create_empty()
 
     # step 10 (find mapdir in cmdline > inparfile > defparfile)
-    mapdirs = find_mapdir(Files, argslist, InPars, DefPars)
+    mapdirs = find_mapdir(argslist, InPars, DefPars)
 
     # step 11 (for each map, parse parameters.ref, if present)
     singles_mapdict = GM_MR.scan_mapdirs(mapdirs, "Singles")
@@ -2515,11 +2598,14 @@ def get_parameters(Files, in_parfile, argslist):
         DefPars.finalize_map_pars()
 
     RunPars_ = RunPars(
-        Files, CmdPars, InPars, DefPars, RefPars_, True
+        CmdPars, InPars, DefPars, RefPars_, True
     )
 
     for map_ in all_mapdict.values():
-        map_.find_runpars(Files, RunPars_)
+        map_.find_runpars(RunPars_)
+
+    RunPars_.defparfilename = DefPars.fname
+    RunPars_.inparfilename = InPars.fname
 
     return (
         RunPars_, singles_mapdict, pairs_mapdict, CmdPars, InPars, DefPars,
@@ -2561,7 +2647,7 @@ def add_missing_frame_parameter(pardict):
 
 
 def parse_commandline(
-    Files, callcommand, alljobs, helpcall, expect_inputfile=False,
+    callcommand, alljobs, helpcall, expect_inputfile=False,
     expect_parameters=False
 ):
     """Extracts the groups of information from the command line.
@@ -2571,29 +2657,26 @@ def parse_commandline(
     [0] should contain the name of the tool used. eg. GEM, AIM.
     [1] should contain the requested job from the tool. eg. run, demo.
     (if expect_inputfile == True) the filename of the input file to use
-    (if expect_parameters == True) the further parameters to use. Optional
-    Parameters specified on the command line must have the parameter name
-    preceded with '-'.
+    (if expect_parameters == True) the further parameters to use.
+    Optional Parameters specified on the command line must have the
+    parameter name preceded with '-'.
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related properties.
-        Has to be updated after RunPars is finalized.
     callcommand : list
         A slice from the output of sys.argv
     alljobs : list of str
         The kind of jobs the program is able to do
     helpcall : str
-        Example of how to call the program to get the help, to help the user
-        getting the command parsed here correct.
+        Example of how to call the program to get the help, to help the
+        user getting the command parsed here correct.
     expect_inputfile : bool, default=False
-        Whether the supplied command will contain the path to an input file,
-        too.
+        Whether the supplied command will contain the path to an input
+        file, too.
     expect_parameters : bool, default=False
-        Whether the supplied command is allowed to have extra parameters. If
-        it is not, any that might be present will just be ignored. If it is,
-        it is not required to have any.
+        Whether the supplied command is allowed to have extra
+        parameters. If it is not, any that might be present will just be
+        ignored. If it is, it is not required to have any.
 
     Returns
     -------
@@ -2609,7 +2692,7 @@ def parse_commandline(
     job = callcommand[1]
 
     if job.lower() not in alljobs:
-        GM_PT.Printer().warning(
+        GM_PT.Printer.warning(
             f"\nChoice '{job}' was not recognized. "
             "Please type the following to see all available options:"
             f"\n\n{helpcall}\n",
@@ -2619,14 +2702,14 @@ def parse_commandline(
     if expect_inputfile:
         # if we expect an input filename, but it isn't there, error!
         if len(callcommand) < 3:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 f"\n{job} requires an input file. Quitting!", "SU_PP_2", True,
                 GMAPerrclass=GM_Ex.GmapParameterError
             )
 
-        in_parfile = (Files.cwd / callcommand[2]).resolve()
+        in_parfile = (GM_FH.FileLocations.cwd / callcommand[2]).resolve()
         if not (in_parfile.exists() and in_parfile.is_file()):
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 f"\nThe requested input parameter file {in_parfile} could not "
                 "be found, or is not a file. "
                 "Please make sure you specified it correctly.\n",
@@ -2646,7 +2729,8 @@ def parse_commandline(
 
 
 def find_defparfile_in_cmd(argslist):
-    """Finds any parameters pertaining to default parfile in command line
+    """Finds any parameters pertaining to default parfile in command
+    line
 
     Given an argslist (the part of sys.argv that should/could contain
     arguments), see if there is anything hinting at a default parameter
@@ -2655,14 +2739,16 @@ def find_defparfile_in_cmd(argslist):
     Parameters:
     -----------
     argslist : list of str
-        The part of the output of sys.argv that contains parameter choices
+        The part of the output of sys.argv that contains parameter
+        choices
 
     Returns
     -------
     pardict : dict
-        The dictionary containing all relevant parameter choices. Keys are the
-        parameter names, values are their choices.
+        The dictionary containing all relevant parameter choices. Keys
+        are the parameter names, values are their choices.
     """
+
     pardict = {}
 
     srcdir_names = ("--source_directory", "-sd")
@@ -2688,7 +2774,8 @@ def find_par_in_cmd(argslist, flags, parname, is_list=False):
     Parameters
     ----------
     argslist : list of str
-        The part of the output of sys.argv that contains parameter choices
+        The part of the output of sys.argv that contains parameter
+        choices
     flags : tup of str
         The parameter names that might be used for this parameter
     parname : str
@@ -2713,7 +2800,7 @@ def find_par_in_cmd(argslist, flags, parname, is_list=False):
                 pass
 
         if totalcount > 1:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nThe program was called with more than one setting "
                 f"for {parname}. "
                 "Please make sure your command contains this parameter at "
@@ -2725,10 +2812,10 @@ def find_par_in_cmd(argslist, flags, parname, is_list=False):
         try:
             choice = [argslist[ix + 1]]
         except IndexError:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 warntext, "SU_WP_4", True, GMAPerrclass=GM_Ex.GmapIndexError)
         if choice[0].startswith("-"):
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 warntext, "SU_WP_4", True,
                 GMAPerrclass=GM_Ex.GmapFileSyntaxError
             )
@@ -2744,12 +2831,12 @@ def find_par_in_cmd(argslist, flags, parname, is_list=False):
                     choice.append(argslist[ix + adder])
                     adder += 1
                 except IndexError:
-                    GM_PT.Printer().warning(
+                    GM_PT.Printer.warning(
                         warntext, "SU_WP_5", True,
                         GMAPerrclass=GM_Ex.GmapIndexError
                     )
                 if choice[-1].startswith("-"):
-                    GM_PT.Printer().warning(
+                    GM_PT.Printer.warning(
                         warntext, "SU_WP_5", True,
                         GMAPerrclass=GM_Ex.GmapFileSyntaxError
                     )
@@ -2758,30 +2845,30 @@ def find_par_in_cmd(argslist, flags, parname, is_list=False):
         return choice
 
 
-def find_mapdir(Files, argslist, InPars, DefPars):
-    """Extracts choice for the parameter map_directory from the command line.
+def find_mapdir(argslist, InPars, DefPars):
+    """Extracts choice for the parameter map_directory from the command
+    line.
 
-    If the choice has been found, checks whether it exists. If it does not,
-    triggers warning and stops the program.
+    If the choice has been found, checks whether it exists. If it does
+    not, triggers warning and stops the program.
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related properties.
-        Has to be updated after RunPars is finalized.
     argslist : list of str
-        The part of the output of sys.argv that contains parameter choices.
+        The part of the output of sys.argv that contains parameter
+        choices.
     InPars : :class:`RawPars`
         Contains any parameter choices made in the input parameter file
     DefPars : :class:`RawPars` or :class:`RefPars`
-        Contains all default parameter choices. Might be RefPars, might be
-        from a separate default parameters file.
+        Contains all default parameter choices. Might be RefPars, might
+        be from a separate default parameters file.
 
     Returns
     -------
     map_dirs : list of pathlib.Path
         All locations that were requested.
     """
+
     map_flags = ("--map_directory", "-md")
     cmd_mapdir = find_par_in_cmd(
         argslist, map_flags, "map_directory", is_list=True
@@ -2789,7 +2876,8 @@ def find_mapdir(Files, argslist, InPars, DefPars):
     # if cmd supplied, check if exists
     if cmd_mapdir:
         mapdirs = directory_list_checker(
-            Files.cwd, cmd_mapdir, "map_directory", "the command line"
+            GM_FH.FileLocations.cwd, cmd_mapdir, "map_directory",
+            "the command line"
         )
 
     elif InPars and "map_directory" in InPars.choices:
@@ -2812,7 +2900,8 @@ def find_mapdir(Files, argslist, InPars, DefPars):
 
 
 def directory_list_checker(parent, direclist, parname, source):
-    """Checks whether each of the given paths exists, and is a directory.
+    """Checks whether each of the given paths exists, and is a
+    directory.
 
     Parameters
     ----------
@@ -2828,15 +2917,16 @@ def directory_list_checker(parent, direclist, parname, source):
     Returns
     -------
     dirs : list of pathlib.Path
-        The same paths as provided using the parameter `direclist`, but now
-        absolute.
+        The same paths as provided using the parameter `direclist`, but
+        now absolute.
     """
+
     dirs = [parent / direc for direc in direclist]
     failed = [str(direc.resolve()) for direc in dirs if not direc.is_dir()]
     if len(failed) > 0:
         # not using fstrings here, as backslashes arent supported in
         # fstrings before python 3.12.
-        GM_PT.Printer().warning(
+        GM_PT.Printer.warning(
             f"\nThe following choice(s) for {parname} found in {source} "
             "either "
             "do not exist, or are not directories:\n"
@@ -2850,9 +2940,9 @@ def directory_list_checker(parent, direclist, parname, source):
 def get_pardict(iterable, compounds=None):
     """Takes an iterable, and returns it in dict form.
 
-    Each iteration of the iterable is subjected to .split(); the zeroeth item
-    becomes the key, the list of the remaining items (or empty list) becomes
-    the value.
+    Each iteration of the iterable is subjected to .split(); the zeroeth
+    item becomes the key, the list of the remaining items (or empty
+    list) becomes the value.
     All keys and items in value lists are strings - the contents are NOT
     interpreted, and converted to correct datatypes.
 
@@ -2866,9 +2956,8 @@ def get_pardict(iterable, compounds=None):
     Returns
     -------
     outdict : dict
-        The new information. Keys are the zeroeth item, values are lists of the
-        remaining items.
-
+        The new information. Keys are the zeroeth item, values are lists
+        of the remaining items.
     """
 
     if compounds is None:
@@ -2904,6 +2993,7 @@ def cleanline(line, escape_char="#"):
     escape_char : str, default="#"
         The character that indicates that a comment started.
     """
+
     return line.split(escape_char)[0]
 
 
@@ -2970,8 +3060,8 @@ def parse_influencerfile_line(line, groupdict, fname):
     problem_chars = [char for char in line if char not in allowed_chars]
 
     if problem_chars:
-        GM_PT.Printer().warning(
-            f"The influencers file {fname} contains one or more invalid "
+        GM_PT.Printer.warning(
+            f"\nThe influencers file {fname} contains one or more invalid "
             "characters. Make sure the following characters are not present: "
             f"{''.join(problem_chars)}.",
             "SU_NP_4", True, GMAPerrclass=GM_Ex.GmapFileSyntaxError
@@ -3011,7 +3101,7 @@ def parse_influencerfile_line(line, groupdict, fname):
     try:
         exec(final_choice)
     except Exception as ex:
-        GM_PT.Printer().warning(
+        GM_PT.Printer.warning(
             f"\nThe file {fname} has a problem with one of the definitions "
             "of parameters. See the error for more information.",
             "SU_NP_5", True, exception=ex,
@@ -3021,7 +3111,7 @@ def parse_influencerfile_line(line, groupdict, fname):
     try:
         newset = locals()["build_set"](groupdict)
     except Exception as ex:
-        GM_PT.Printer().warning(
+        GM_PT.Printer.warning(
             f"\nThe file {fname} has a problem with one of the definitions "
             "of parameters. See the error for more information.",
             "SU_NP_5", True, exception=ex,
@@ -3032,7 +3122,8 @@ def parse_influencerfile_line(line, groupdict, fname):
 
 
 def parse_influencer_par(string):
-    """Allows different selection language for influencers given as parameter.
+    """Allows different selection language for influencers given as
+    parameter.
 
     Influencers can be given as a separate file, where, using the python
     set syntax, all kinds of groups can be defined. However, when the

@@ -16,6 +16,71 @@ Please note that when paths are supplied, they should either be absolute, or spe
 Some parameters store paths that can be relative to a directory stored in a different parameter. Where this is the case, this is denoted. Please note that when a file path and a directory path are given, the file path is assumed relative to the directory path. If only the file path is given, it is assumed relative to the source. If only the directory is given, file paths from lower-precedence sources are assumed relative to it.
 
 
+**********************
+Parameters for visuals
+**********************
+
+These change how GMAP looks in the command line.
+
+verbose
+=======
+| (no shorthand available)
+| (options: 0, 1, 2, 3, 4)
+| (used by: GEM, DEPICT)
+
+How verbose the prints to the command line should be. When 0 is chosen, nothing but errors will be reported. Different from the parameter verbose_logfile
+
+
+safe_mode
+=========
+| (shorthand: -safe)
+| (options: true, t, false, f)
+| (used by: GEM, DEPICT)
+
+Whether to run the program in safe mode. If weird errors occur, it might be wise to specify this **directly on the command line**. Currently only influences the color palette used.
+
+
+dark_mode
+=========
+| (shorthand: -dm)
+| (options: true, t, false, f)
+| (used by: GEM, DEPICT)
+
+Whether to run the program in dark mode. Dark mode means that the colors are chosen for good visibility on a dark background. When turned off, the colors are chosen for good visibility on a light background. Has no influence if the program is set to black-white only.
+
+
+command_line_color
+==================
+| (no shorthand available)
+| (options: white, 4bit, 24bit)
+| (used by: GEM, DEPICT)
+
+What color palette to use. White uses black or white letters (the opposite of the background of the command line). 4bit uses `the 4bit ANSI colors <https://en.wikipedia.org/wiki/ANSI_escape_code#Colors>`__, 24bit uses the full color spectrum.
+
+These colors will not be used for writing the log file.
+
+.. tip::
+    Do you have some vision issues (like limited color vision)? Then, 4bit colors will probably work better for you than 24bit ones, as the 4bit color usage has been designed with color blindness in mind.
+
+    We know vision issues are a spectrum, and many people experience them differently. We truly appreciate any feedback on the 4bit color usage! Please note that we cannot pick `the 16 colors used <https://en.wikipedia.org/wiki/ANSI_escape_code#Colors>`__, but we can choose which to use!
+
+.. tip::
+    You can still use colors while running an automated job on a high-performance cluster! Most likely, you will then not see the command line (for long jobs) directly, it will be written to an output file instead (like slurm.out). To open/view these files with colors active, use the following command::
+        less -R [filename]  (unix)
+        more -R [filename]  (windows)
+
+
+command_line_length
+===================
+| (no whorthand available)
+| (used by: GEM, DEPICT)
+
+How long lines are allowed to be. If a line turns out longer, the program will automatically attempt to wrap it at a whitespace. If a single 'word' (like file locations) is too long, it will not be cut off.
+
+Applies both to the command line output, as to the files written by the program.
+
+
+
 *************************
 parameters for file paths
 *************************
@@ -91,6 +156,13 @@ There are multiple choices of extension available - the exact set will differ pe
 This file will only be created when 'ham' is among the choices for the parameter output_data.
 
 
+output_estatics_filename
+========================
+| (used by: DEPICT)
+
+The filename of the electrostatics output file, _with_ extension! This file contains electrostatic properties. The path stored here will be assumed to be relative to the directory given in the parameter output_directory when applicable.
+
+
 output_hamiltonian_filename
 ===========================
 | (shorthand: -ohf)
@@ -117,11 +189,28 @@ output_dipole_filename
 The filename of the dipole output file, _without_ extension! Depending on the output format of choice, this file may either be in binary, or in txt format. The path stored here will be assumed to be relative to the directory given in the parameter output_directory when applicable.
 
 
-output_estatics_filename
-========================
-| (used by: DEPICT)
+output_raman_filename
+======================
+| (shorthand: -orf)
+| (used by: GEM)
 
-The filename of the electrostatics output file, _with_ extension! This file contains electrostatic properties. The path stored here will be assumed to be relative to the directory given in the parameter output_directory when applicable.
+The filename of the raman output file, _without_ extension! Depending on the output format of choice, this file may either be in binary, or in txt format. The path stored here will be assumed to be relative to the directory given in the parameter output_directory when applicable.
+
+
+output_positions_filename
+=========================
+| (shorthand: -opf)
+| (used by: GEM)
+
+The filename of the positions output file, _without_ extension! Depending on the output format of choice, this file may either be in binary, or in txt format. The path stored here will be assumed to be relative to the directory given in the parameter output_directory when applicable.
+
+
+output_doublepos_filename
+=========================
+| (shorthand: -opf)
+| (used by: GEM)
+
+The filename of the double positions output file, _without_ extension! Depending on the output format of choice, this file may either be in binary, or in txt format. The path stored here will be assumed to be relative to the directory given in the parameter output_directory when applicable.
 
 
 map_directory
@@ -153,22 +242,13 @@ parameters for how to write files
 *********************************
 
 
-verbose
-=======
-| (no shorthand available)
-| (options: 0, 1, 2, 3, 4)
-| (used by: GEM, DEPICT)
-
-How verbose the prints to the command line should be. When 0 is chosen, nothing but errors will be reported.
-
-
 verbose_logfile
 ===============
 | (no shorthand available)
 | (options: 0, 1, 2, 3, 4)
 | (used by: GEM, DEPICT)
 
-How verbose the prints to the log file should be.
+How verbose the prints to the log file should be. Different from the parameter verbose.
 
 
 dont_report_error
@@ -198,6 +278,7 @@ In what format the output files should be created. Bin for binary format, txt fo
 
 
 .. _UserGuide_page_parameter_overview_output_data:
+
 output_data
 ===========
 | (no shorthand available)
@@ -245,6 +326,21 @@ dipoles_units
 In what units the output dipoles should be written. Cannot be used together with dipoles_multiplier.
 
 dipoles_multiplier
+==================
+| (no shorthand available)
+| (used by: GEM)
+
+The output dipoles (in Debye) will be multiplied by this value before saving. Cannot be used together with dipoles_units.
+
+raman_units
+=============
+| (no shorthand available)
+| (options: Ang3, Bohr3)
+| (used by: GEM)
+
+In what units the output raman tensors should be written. Cannot be used together with raman_multiplier.
+
+raman_multiplier
 ==================
 | (no shorthand available)
 | (used by: GEM)
@@ -390,6 +486,16 @@ In case the influencers should be defined differently from the 'default' method 
 
 .. note::
     The used MDAnalysis functionality can make a noticable impact on calculation times, especially when using the program in parallel (multiple CPUs / cores / nodes). Most usecases should be fine, but if you notice a big difference for your calculations, please reach out to the developers of GMAP.
+
+
+estatics_method
+===============
+| (no shorthand available)
+| (options: perres, perres_nocut)
+| (used by: GEM)
+
+How the elecctrostatics should be calculated. For perres_nocut, if an influencing residue is within range of the oscillating residue, all its atoms can influence all oscillating atoms. This is the way AIM calculated the electrostatic properties. This method ignores any choices made for estatic_smooth_range. 
+For perres, if an influencer is within range of the oscillating residues, its individual atoms are considered. Only the atoms that are within range of the oscillating residue will actually be considered, the others are ignored.
 
 
 neutral_charge_threshold

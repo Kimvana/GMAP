@@ -7,6 +7,7 @@ import pytest
 
 # local imports
 import GMAP.src.tools.CodingTools as GM_CT
+import GMAP.src.tools.FileHandler as GM_FH
 
 
 # To report to the user that this file is present and active
@@ -23,12 +24,25 @@ def my_fixture(request):
 
 # To prevent any created singletons leaking between tests.
 # https://github.com/pytest-dev/pytest-mock/issues/100
+# @pytest.fixture()
+# def reset_singletons():
+#     GM_CT.Singleton._instances = {}
+
+
+# @pytest.fixture()
+# def init_files():
+#     GM_FH.FileLocations()
+
+
 @pytest.fixture(autouse=True)
-def reset_singletons():
+def pre_test(request):
     GM_CT.Singleton._instances = {}
+    if "nofiles" in request.keywords:
+        return
+    GM_FH.FileLocations()
 
 
-# If this name can be used as an input name to a test, this file is found
-@pytest.fixture(autouse=True)
-def fixt_test_presence():
-    pass
+def pytest_configure(config):
+    config.addinivalue_line(
+        "markers", "nofiles: mark test to not auto-load files"
+    )

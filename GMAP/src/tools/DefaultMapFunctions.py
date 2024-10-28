@@ -6,7 +6,6 @@ import numpy as np
 import GMAP.src.tools.MathFunctions as GM_MF
 import GMAP.src.tools.PhysicsFunctions as GM_PF
 import GMAP.src.tools.PrintTools as GM_PT
-# from GMAP.src.tools.PrintTools import devprint as dpr
 
 
 class NewModule:
@@ -61,8 +60,16 @@ def get_prep_coupling():
 
 
 def get_str_osc():
-    def base_str_getter(Syst, Map, osc):
+    def base_str_getter(Map, Syst, osc):
         return f"living on residue number {Syst.resnums[osc.used_atoms[0]]}"
+    return base_str_getter
+
+
+def get_report_system():
+    def base_str_getter(Map, Syst):
+        name = Map.name + ":"
+        amount = len(Syst.oscillators_ordered[Map.name])
+        return f"{name: <21} {amount: >4}"
     return base_str_getter
 
 
@@ -195,7 +202,7 @@ def interpret_position(map_, details, parname):
         exec(codestring)
     except Exception as ex:
         corefile = (map_.directory / 'core.txt').resolve()
-        GM_PT.Printer().warning(
+        GM_PT.Printer.warning(
             f"\nThe file {corefile} does not contain a valid definition of "
             f"{parname}.",
             "MI_MC_9", exception=ex
@@ -250,7 +257,7 @@ def get_get_dipole_dir(map_):
         exec(codestring)
     except Exception as ex:
         corefile = (map_.directory / 'core.txt').resolve()
-        GM_PT.Printer().warning(
+        GM_PT.Printer.warning(
             f"\nThe file {corefile} does not contain a valid definition of "
             "r_vec and/or r_pos.",
             "MI_MC_9", exception=ex
@@ -266,7 +273,8 @@ def get_get_dipole_mag():
     returns
     -------
     GM_get_dipole_mag : function
-        The function that can be used to get the magnitude of a dipole moment.
+        The function that can be used to get the magnitude of a dipole
+        moment.
     """
 
     def GM_get_dipole_mag(Map, Syst, osc):
@@ -293,7 +301,8 @@ def get_get_rotation_matrix(map_):
     returns
     -------
     GM_get_rotation_matrix : function
-        The function that every oscillator will call to get its rotaion matrix
+        The function that every oscillator will call to get its rotaion
+        matrix
     """
 
     allparnames = ("x_uvec", "y_uvec", "z_uvec")
@@ -347,7 +356,7 @@ def get_get_rotation_matrix(map_):
         exec(codestring)
     except Exception as ex:
         corefile = (map_.directory / 'core.txt').resolve()
-        GM_PT.Printer().warning(
+        GM_PT.Printer.warning(
             f"\nThe file {corefile} does not contain a valid definition of "
             "x_uvec, y_uvec and/or z_uvec.",
             "MI_MC_9", exception=ex
@@ -389,11 +398,15 @@ def get_calculate_dipole(map_):
     # (this one ignores the earlier given r_vec)
     def GM_get_dipole_vxyz(Map, Syst, osc):
         _, r_pos = Map.code.GM_get_dipole_dir(Map, Syst, osc)
-        xyz = [
-            uses_maps(omega, [osc.VEGout], [arr]) for omega, arr in zip(
-                Map.Core.dipole_gas_phase, Map.Core.dipole_data_array)
-        ]
-        xyz_local = np.array(xyz, dtype="float32")
+        # xyz = [
+        #     uses_maps(omega, [osc.VEGout], [arr]) for omega, arr in zip(
+        #         Map.Core.dipole_gas_phase, Map.Core.dipole_data_array)
+        # ]
+        # xyz_local = np.array(xyz, dtype="float32")
+        xyz_local = Map.Core.dipole_gas_phase_array + np.sum(
+            np.multiply(osc.VEGout[None, :, :], Map.Core.dipole_data_array),
+            axis=(1, 2)
+        )
         xyz_cartesian = np.dot(xyz_local, osc.rotation_matrix)
         return xyz_cartesian, r_pos
 
@@ -423,7 +436,8 @@ def get_calculate_frequency(map_):
     returns
     -------
     GM_calculate_frequency : function
-        The function that every oscillator will call to get its frequency
+        The function that every oscillator will call to get its
+        frequency
     """
 
     def GM_calculate_freq_base(Map, Syst, osc):
@@ -482,7 +496,8 @@ def get_get_doublepos(map_):
     """Default for obtaining the double positions.
 
     By default, the author of a map uses the oscillator-indices to
-    indicate what positions (e.g. just an atom index) should be returned.
+    indicate what positions (e.g. just an atom index) should be
+    returned.
     Those instructions are interpreted here and converted to a function
     that can be used during runs.
     """
@@ -531,7 +546,8 @@ def uses_maps(gas_freq, VEGs, mapconsts_list):
 
 
 def envelop_int(string, pre, post):
-    """Envelops any integer (but not float) found in string with pre and post.
+    """Envelops any integer (but not float) found in string with pre and
+    post.
 
     Currently, python built-in and numpy functions are supported.
 

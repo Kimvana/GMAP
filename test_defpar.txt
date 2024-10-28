@@ -2,7 +2,7 @@ topology_file                GMAP/sourcefiles/pdb_1AKI.tpr
 trajectory_file              GMAP/sourcefiles/pdb_1AKI_50frame.xtc
 
 source_directory                GMAP/sourcefiles
-VEG_clib_file                   VEG.dll
+VEG_clib_file                   VEG
 log_filename                    log.log
 
 output_legend_filename          legend.txt
@@ -26,10 +26,15 @@ influencers_select_atoms        segid *
 
 verbose 3
 verbose_logfile 4
+safe_mode                       False
+dark_mode                       True
+command_line_color              24bit
+command_line_length             79
 prevent_overwrite False
 dont_report_error                       none
 output_format                           bin txt
 output_data                             ham dip pos
+estatics_method                         perres
 
 neutral_charge_threshold                   0.0001
 guess_bonds                                False

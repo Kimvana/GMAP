@@ -5,7 +5,7 @@ src/tools/PhysicsFunctions.py.
 Missing tests:
 
 (@ August 2nd '24):
-328-336, 1564 (5 missed statements)
+328-336, 1562  (5 missed statements)
 
 (CUHTAT - currently unknown how to access this )
 - Map.append_core() - there was some issue with the corefile (CUHTAT)
@@ -13,7 +13,7 @@ Missing tests:
   Any stuff wrong with the corefile will have its own warning call (and not
   use raise) - MI_MC_5
 - The structure of the map has no bonds (but the parameter giving bonds has
-  been used) (1564)
+  been used) (1562)
 """
 
 
@@ -27,7 +27,6 @@ import numpy as np
 # local imports
 import GMAP.src.tools.DefaultMapFunctions as GM_DMF
 import GMAP.src.tools.Exceptions as GM_Ex
-import GMAP.src.tools.FileHandler as GM_FH
 import GMAP.src.tools.MathFunctions as GM_MF
 import GMAP.src.tools.MapReader as GM_MR
 import GMAP.src.tools.ParameterParser as GM_PP
@@ -40,7 +39,7 @@ class TestCode:
         ]
         inpardict = {}
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(cmdline, inpardict, finish_before="extract_code")
 
@@ -57,7 +56,7 @@ class TestCode:
         ]
         inpardict = {}
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(cmdline, inpardict, finish_before="extract_code")
 
@@ -76,7 +75,7 @@ class TestCode:
         mapname = "test_extract_code"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="adjust_RunPars",
@@ -85,7 +84,7 @@ class TestCode:
         map_ = mapdict[mapname]
 
         assert RunPars.neutral_charge_threshold == 0.0001
-        map_.code.GM_adjust_RunPars(Files, map_)
+        map_.code.GM_adjust_RunPars(map_)
         assert RunPars.neutral_charge_threshold == 0.02
 
     def test_GM_adjust_RunPars_default(self):
@@ -96,7 +95,7 @@ class TestCode:
         mapname = "test_extract_code_nocode"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="adjust_RunPars",
@@ -125,7 +124,7 @@ class TestCode:
         mapname = "test_find_core"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="find_core", mapname=mapname
@@ -159,7 +158,7 @@ class TestCode:
             + b'\xFA' + b'\xFB' + b'\xFC' + b'\xFD' + b'\xFE' + b'\xFF')
         fhand.close()
 
-        (_, _, _, _, _, _, mapdict, pairs_mapdict) = basic_setup(
+        (_, _, _, _, _, mapdict, pairs_mapdict) = basic_setup(
             cmdline, inpardict, finish_before="append_core", mapname=mapname
         )
         map_ = mapdict[mapname]
@@ -177,7 +176,7 @@ class TestCode:
         mapname = "test_appending"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="append_core", mapname=mapname
@@ -200,7 +199,7 @@ class TestCode:
         mapname = "test_Core"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -227,7 +226,7 @@ class TestCode:
             inpardict = {}
             mapname = f"test_MI_MC_6_{i}"
 
-            (_, _, _, _, _, _, mapdict, _) = basic_setup(
+            (_, _, _, _, _, mapdict, _) = basic_setup(
                 cmdline, inpardict, finish_before="Core", mapname=mapname
             )
             map_ = mapdict[mapname]
@@ -243,7 +242,7 @@ class TestCode:
         ]
         inpardict = {}
         mapname = "test_MI_MC_2"
-        (_, _, _, _, _, _, mapdict, _) = basic_setup(
+        (_, _, _, _, _, mapdict, _) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
         )
         map_ = mapdict[mapname]
@@ -259,7 +258,7 @@ class TestCode:
         ]
         inpardict = {}
         mapname = "test_estatic_None"
-        (_, _, _, _, _, _, mapdict, _) = basic_setup(
+        (_, _, _, _, _, mapdict, _) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
         )
         map_ = mapdict[mapname]
@@ -278,7 +277,7 @@ class TestCode:
         mapname = "test_code_build_1"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="code_add_builds",
@@ -337,7 +336,7 @@ class TestCode:
         mapname = "test_code_build_2"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="code_add_builds",
@@ -404,7 +403,7 @@ class TestCode:
         mapname = "test_code_build_3"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="code_add_builds",
@@ -469,13 +468,13 @@ class TestCode:
         mapname = "test_code_build_1"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="extract_code", mapname=mapname
         )
         map_ = mapdict[mapname]
-        map_.initialize(Files)
+        map_.initialize()
 
         assert map_.success
 
@@ -488,13 +487,13 @@ class TestCode:
         mapname = "test_MI_MR_2"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="extract_code", mapname=mapname
         )
         map_ = mapdict[mapname]
-        map_.initialize(Files)
+        map_.initialize()
 
         assert not map_.success
 
@@ -510,13 +509,13 @@ class TestCode:
         mapname = "test_MI_MR_6"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="extract_code", mapname=mapname
         )
         map_ = mapdict[mapname]
-        map_.initialize(Files)
+        map_.initialize()
 
         assert not map_.success
 
@@ -532,13 +531,13 @@ class TestCode:
         mapname = "test_MI_MC_1"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="extract_code", mapname=mapname
         )
         map_ = mapdict[mapname]
-        map_.initialize(Files)
+        map_.initialize()
 
         assert not map_.success
 
@@ -554,13 +553,13 @@ class TestCode:
         mapname = "test_MI_MC_10_1"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="extract_code", mapname=mapname
         )
         map_ = mapdict[mapname]
-        map_.initialize(Files)
+        map_.initialize()
 
         assert not map_.success
 
@@ -575,7 +574,7 @@ class TestCode:
         mapname = "test_MI_MC_6_5"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="code_add_builds",
@@ -596,7 +595,7 @@ class TestCode:
         mapname = "test_MI_MC_9_1"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="code_add_builds",
@@ -618,7 +617,7 @@ class TestCode:
         mapname = "test_MI_MC_9_2"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="code_add_builds",
@@ -639,7 +638,7 @@ class TestCode:
         mapname = "test_MI_MC_10_1"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="code_add_builds",
@@ -661,7 +660,7 @@ class TestCode:
         mapname = "test_MI_MC_10_2"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="code_add_builds",
@@ -682,7 +681,7 @@ class TestCode:
         mapname = "test_MI_MR_1"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(cmdline, inpardict, finish_before="extract_code")
 
@@ -702,7 +701,7 @@ class TestCode:
         mapname = "test_MI_MR_2"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="find_core", mapname=mapname
@@ -724,7 +723,7 @@ class TestCode:
         mapname = "test_MI_MR_3_1"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="find_core", mapname=mapname
@@ -745,7 +744,7 @@ class TestCode:
         mapname = "test_MI_MR_3_2"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="append_core", mapname=mapname
@@ -767,7 +766,7 @@ class TestCode:
         mapname = "test_MI_MR_4"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="find_core", mapname=mapname
@@ -789,7 +788,7 @@ class TestCode:
         mapname = "test_MI_MR_6"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="append_core", mapname=mapname
@@ -811,13 +810,13 @@ class TestCode:
         mapname = "test_MI_MR_7"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="extract_code", mapname=mapname
         )
         map_ = mapdict[mapname]
-        map_.initialize(Files)
+        map_.initialize()
         out, _ = capfd.readouterr()
         assert out.endswith("MI_MR_7\n")
 
@@ -831,27 +830,27 @@ class TestPairMap:
         file.unlink(missing_ok=True)
 
         out = self.run_basic_pairmap("nocore")
-        coupmap = out[7]["nocore"]
+        coupmap = out[6]["nocore"]
         assert coupmap.success is True
 
     def test_pair_nocode(self):
         out = self.run_basic_pairmap("nocode")
-        coupmap = out[7]["nocode"]
+        coupmap = out[6]["nocode"]
         assert coupmap.success is True
 
     def test_pair_faultycore(self):
         out = self.run_basic_pairmap("faulty_core")
-        coupmap = out[7]["faulty_core"]
+        coupmap = out[6]["faulty_core"]
         assert coupmap.success is False
 
     def test_pair_faultyappend(self):
         out = self.run_basic_pairmap("faulty_append_core")
-        coupmap = out[7]["faulty_append_core"]
+        coupmap = out[6]["faulty_append_core"]
         assert coupmap.success is False
 
     def test_missing_singles(self, capsys):
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = self.run_basic_pairmap("missing_singles")
 
@@ -869,7 +868,7 @@ class TestPairMap:
 
     def test_missing_pairs(self, capsys):
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = self.run_basic_pairmap("missing_pairs")
 
@@ -887,11 +886,11 @@ class TestPairMap:
 
     def test_BWlists(self):
         out = self.run_basic_pairmap("allWL_AmBL")
-        coupmap = out[7]["allWL_AmBL"]
+        coupmap = out[6]["allWL_AmBL"]
         assert coupmap.Core.allowed_singles == []
 
         out = self.run_basic_pairmap("AmWL_nBL")
-        coupmap = out[7]["AmWL_nBL"]
+        coupmap = out[6]["AmWL_nBL"]
         assert coupmap.Core.allowed_singles == ["AmideSC"]
 
     def test_valid_combinations(self):
@@ -907,22 +906,22 @@ class TestPairMap:
         ]
         inpardict = {}
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="extract_code", mapname="x"
         )
-        GM_MR.manage_maps_singles(Files, RunPars, mapdict)
+        GM_MR.manage_maps_singles(RunPars, mapdict)
 
         coupmap = pairs_mapdict["test_valid_combinations_all"]
-        coupmap.initialize(Files)
+        coupmap.initialize()
         all_singles = ["AmideSC1", "AmideSC2", "AmideSC3", "AmideSC4"]
         for osc1 in all_singles:
             for osc2 in all_singles:
                 assert (osc1, osc2) in coupmap.Core.valid_combinations
 
         coupmap = pairs_mapdict["test_valid_combinations_diff"]
-        coupmap.initialize(Files)
+        coupmap.initialize()
         all_singles = ["AmideSC1", "AmideSC2", "AmideSC3", "AmideSC4"]
         for osc1 in all_singles:
             for osc2 in all_singles:
@@ -932,7 +931,7 @@ class TestPairMap:
                     assert (osc1, osc2) in coupmap.Core.valid_combinations
 
         coupmap = pairs_mapdict["test_valid_combinations_same_spec"]
-        coupmap.initialize(Files)
+        coupmap.initialize()
         all_singles = ["AmideSC1", "AmideSC2", "AmideSC3", "AmideSC4"]
         for osc1 in all_singles:
             for osc2 in all_singles:
@@ -956,19 +955,19 @@ class TestPairMap:
 
     def test_MI_MM_3(self, capsys):
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = self.run_basic_pairmap("test_MI_MM_3")
         with pytest.raises(GM_Ex.GmapKeyError, match="MI_MM_3$"):
-            GM_MR.manage_maps_pairs(Files, RunPars, pairs_mapdict)
+            GM_MR.manage_maps_pairs(RunPars, pairs_mapdict)
 
     def test_MI_MM_4(self, capsys):
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = self.run_basic_pairmap("test_MI_MM_4")
         with pytest.raises(GM_Ex.GmapKeyError, match="MI_MM_4$"):
-            GM_MR.manage_maps_pairs(Files, RunPars, pairs_mapdict)
+            GM_MR.manage_maps_pairs(RunPars, pairs_mapdict)
 
     def run_basic_pairmap(self, mapname):
         cmdline = [
@@ -979,17 +978,17 @@ class TestPairMap:
         ]
         inpardict = {}
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="extract_code", mapname=mapname
         )
 
-        GM_MR.manage_maps_singles(Files, RunPars, mapdict)
-        pairs_mapdict[mapname].initialize(Files)
+        GM_MR.manage_maps_singles(RunPars, mapdict)
+        pairs_mapdict[mapname].initialize()
 
         return (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         )
 
@@ -1001,7 +1000,7 @@ class TestPairMap:
     #     inpardict = {}
 
     #     (
-    #         Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+    #         RunPars, RefPars, DefPars, InPars, CmdPars,
     #         mapdict, pairs_mapdict
     #     ) = basic_setup(
     #         cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -1026,7 +1025,7 @@ class TestSingleCore:
         mapname = "test_Core"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -1088,7 +1087,7 @@ class TestSingleCore:
         mapname = "test_funcgroupfile"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -1127,7 +1126,7 @@ class TestSingleCore:
         mapname = "test_funcgroup_bonded"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -1192,7 +1191,7 @@ class TestSingleCore:
         mapname = "test_Core"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -1212,7 +1211,7 @@ class TestSingleCore:
         mapname = "test_Core"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -1233,7 +1232,7 @@ class TestSingleCore:
         mapname = "test_estatic_None"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -1254,7 +1253,7 @@ class TestSingleCore:
         mapname = "test_Core"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -1277,7 +1276,7 @@ class TestSingleCore:
         mapname = "test_estatic_None"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -1299,7 +1298,7 @@ class TestSingleCore:
         mapname = "test_Core"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -1321,7 +1320,7 @@ class TestSingleCore:
         mapname = "test_estatic_None"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -1343,7 +1342,7 @@ class TestSingleCore:
         mapname = "test_estat_choice_V"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -1365,7 +1364,7 @@ class TestSingleCore:
         mapname = "test_Core"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -1386,7 +1385,7 @@ class TestSingleCore:
         mapname = "test_local_None"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -1407,7 +1406,7 @@ class TestSingleCore:
         mapname = "test_dipoles_datafile_maglong"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -1431,7 +1430,7 @@ class TestSingleCore:
         mapname = "test_dipoles_datafile_xyzgood"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -1462,7 +1461,7 @@ class TestSingleCore:
         mapname = "test_dipoles_datafile_NA"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -1484,7 +1483,7 @@ class TestSingleCore:
         mapname = "test_dipoles_datafile_magG"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -1505,7 +1504,7 @@ class TestSingleCore:
         mapname = "test_dipoles_datafile_maglong"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -1532,7 +1531,7 @@ class TestSingleCore:
         mapname = "test_dipoles_datafile_NA"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -1554,7 +1553,7 @@ class TestSingleCore:
         mapname = "test_dipoles_datafile_magG"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -1575,7 +1574,7 @@ class TestSingleCore:
         mapname = "test_bohr_const"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -1630,7 +1629,7 @@ class TestSingleCore:
         mapname = "test_bohr_const2"
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -1662,7 +1661,7 @@ class TestSingleCore:
         inpardict = {}
         mapname = "test_posonly"
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -1786,7 +1785,7 @@ class TestSingleCore:
             mapname = "test_" + errcode
 
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -1819,12 +1818,12 @@ def test_coup_map_dependence(capfd):
         "couplings_to_use": [["NeedsBoth", ":All"]]
     }
     (
-        Files, RunPars, RefPars, DefPars, InPars,
+        RunPars, RefPars, DefPars, InPars,
         CmdPars, singles_mapdict, pairs_mapdict
     ) = basic_setup(cmdline, inpardict, finish_before="extract_code")
 
-    GM_MR.manage_maps_singles(Files, RunPars, singles_mapdict)
-    GM_MR.manage_maps_pairs(Files, RunPars, pairs_mapdict)
+    GM_MR.manage_maps_singles(RunPars, singles_mapdict)
+    GM_MR.manage_maps_pairs(RunPars, pairs_mapdict)
 
     assert len(RunPars.requested_mapdict) == 1
     assert len(RunPars.requested_pairmapdict) == 1
@@ -1838,11 +1837,11 @@ def test_manage_maps_singles():
         "maps_to_use": maplist
     }
     (
-        Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+        RunPars, RefPars, DefPars, InPars, CmdPars,
         mapdict, pairs_mapdict
     ) = basic_setup([], inpars, finish_before="extract_code")
 
-    GM_MR.manage_maps_singles(Files, RunPars, mapdict)
+    GM_MR.manage_maps_singles(RunPars, mapdict)
 
     assert all(
         key in RunPars.requested_mapdict.keys()
@@ -1857,11 +1856,11 @@ def test_manage_maps_singles():
         "maps_to_use": maplist
     }
     (
-        Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+        RunPars, RefPars, DefPars, InPars, CmdPars,
         mapdict, pairs_mapdict
     ) = basic_setup([], inpars, finish_before="extract_code")
 
-    GM_MR.manage_maps_singles(Files, RunPars, mapdict)
+    GM_MR.manage_maps_singles(RunPars, mapdict)
 
     assert all(
         key in RunPars.requested_mapdict.keys()
@@ -1877,11 +1876,11 @@ def test_manage_maps_pairs():
         "couplings_to_use": [["None", "AmideSC:AmideBB"], ["DipDip", ":same"]]
     }
     (
-        Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+        RunPars, RefPars, DefPars, InPars, CmdPars,
         mapdict, pairs_mapdict
     ) = basic_setup([], inpars, finish_before="extract_code")
-    GM_MR.manage_maps_singles(Files, RunPars, mapdict)
-    GM_MR.manage_maps_pairs(Files, RunPars, pairs_mapdict)
+    GM_MR.manage_maps_singles(RunPars, mapdict)
+    GM_MR.manage_maps_pairs(RunPars, pairs_mapdict)
 
 
 def test_scan_mapdirs():
@@ -1899,10 +1898,10 @@ def test_map_vac_freq_dip():
         "map_directory": ["Data/maps_for_test_MapReader_1"]
     }
     (
-        Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+        RunPars, RefPars, DefPars, InPars, CmdPars,
         mapdict, pairs_mapdict
     ) = basic_setup([], inpars, finish_before="extract_code")
-    GM_MR.manage_maps_singles(Files, RunPars, mapdict)
+    GM_MR.manage_maps_singles(RunPars, mapdict)
 
     map_ = mapdict["test_vac_dipfreq"]
     # dipole_gas_phase      0.3
@@ -1921,12 +1920,12 @@ def test_MI_MM_1(capsys):
         "maps_to_use": maplist
     }
     (
-        Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+        RunPars, RefPars, DefPars, InPars, CmdPars,
         mapdict, pairs_mapdict
     ) = basic_setup([], inpars, finish_before="extract_code")
 
     with pytest.raises(GM_Ex.GmapKeyError, match="MI_MM_1$"):
-        GM_MR.manage_maps_singles(Files, RunPars, mapdict)
+        GM_MR.manage_maps_singles(RunPars, mapdict)
 
     # ------------------------------------------------------------------
 
@@ -1936,13 +1935,13 @@ def test_MI_MM_1(capsys):
         "couplings_to_use": [["doesntexist", ":All"]]
     }
     (
-        Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+        RunPars, RefPars, DefPars, InPars, CmdPars,
         mapdict, pairs_mapdict
     ) = basic_setup([], inpars, finish_before="extract_code")
-    GM_MR.manage_maps_singles(Files, RunPars, mapdict)
+    GM_MR.manage_maps_singles(RunPars, mapdict)
 
     with pytest.raises(GM_Ex.GmapKeyError, match="MI_MM_1$"):
-        GM_MR.manage_maps_pairs(Files, RunPars, pairs_mapdict)
+        GM_MR.manage_maps_pairs(RunPars, pairs_mapdict)
 
 
 def test_MI_MM_2(capsys):
@@ -1955,13 +1954,13 @@ def test_MI_MM_2(capsys):
         "couplings_to_use": [["NeedsBoth", ":All"]]
     }
     (
-        Files, RunPars, RefPars, DefPars, InPars,
+        RunPars, RefPars, DefPars, InPars,
         CmdPars, singles_mapdict, pairs_mapdict
     ) = basic_setup(cmdline, inpardict, finish_before="extract_code")
 
-    GM_MR.manage_maps_singles(Files, RunPars, singles_mapdict)
+    GM_MR.manage_maps_singles(RunPars, singles_mapdict)
     with pytest.raises(GM_Ex.GmapKeyError, match="MI_MM_2$"):
-        GM_MR.manage_maps_pairs(Files, RunPars, pairs_mapdict)
+        GM_MR.manage_maps_pairs(RunPars, pairs_mapdict)
 
     # ------------------------------------------------------------------
 
@@ -1973,13 +1972,13 @@ def test_MI_MM_2(capsys):
         "couplings_to_use": [["NeedsBoth", ":All"]]
     }
     (
-        Files, RunPars, RefPars, DefPars, InPars,
+        RunPars, RefPars, DefPars, InPars,
         CmdPars, singles_mapdict, pairs_mapdict
     ) = basic_setup(cmdline, inpardict, finish_before="extract_code")
 
-    GM_MR.manage_maps_singles(Files, RunPars, singles_mapdict)
+    GM_MR.manage_maps_singles(RunPars, singles_mapdict)
     with pytest.raises(GM_Ex.GmapKeyError, match="MI_MM_2$"):
-        GM_MR.manage_maps_pairs(Files, RunPars, pairs_mapdict)
+        GM_MR.manage_maps_pairs(RunPars, pairs_mapdict)
 
 
 def test_MI_MM_5(capsys):
@@ -1991,12 +1990,12 @@ def test_MI_MM_5(capsys):
         "maps_to_use": maplist
     }
     (
-        Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+        RunPars, RefPars, DefPars, InPars, CmdPars,
         mapdict, pairs_mapdict
     ) = basic_setup(cmdline, inpars, finish_before="extract_code")
 
     with pytest.raises(GM_Ex.GmapKeyError, match="MI_MM_5$"):
-        GM_MR.manage_maps_singles(Files, RunPars, mapdict)
+        GM_MR.manage_maps_singles(RunPars, mapdict)
 
 
 def basic_setup(
@@ -2015,8 +2014,6 @@ def basic_setup(
     if refparfilename is None:
         refparfilename = Path("sourcefiles/reference_parameters.ref")
 
-    Files = GM_FH.FileLocations()
-
     RefPars = GM_PP.RefPars(refparfilename, True)
     if defparfilename:
         DefPars = GM_PP.RawPars.from_file(
@@ -2029,7 +2026,7 @@ def basic_setup(
         curpath, inpardict, RefPars, False
     )
 
-    mapdirs = GM_PP.find_mapdir(Files, cmdline, InPars, DefPars)
+    mapdirs = GM_PP.find_mapdir(cmdline, InPars, DefPars)
     singles_mapdict = GM_MR.scan_mapdirs(mapdirs, "Singles")
     pairs_mapdict = GM_MR.scan_mapdirs(mapdirs, "Pairs")
     mapdict = singles_mapdict | pairs_mapdict
@@ -2052,14 +2049,14 @@ def basic_setup(
         DefPars.finalize_map_pars()
 
     RunPars = GM_PP.RunPars(
-        Files, CmdPars, InPars, DefPars, RefPars, True
+        CmdPars, InPars, DefPars, RefPars, True
     )
 
     for map_ in mapdict.values():
-        map_.find_runpars(Files, RunPars)
+        map_.find_runpars(RunPars)
 
     returntuple = (
-        Files, RunPars, RefPars, DefPars, InPars,
+        RunPars, RefPars, DefPars, InPars,
         CmdPars, singles_mapdict, pairs_mapdict
     )
 
@@ -2082,7 +2079,7 @@ def basic_setup(
         return returntuple
     # ------------------------------------------------------------------
 
-    map_.code.GM_adjust_RunPars(Files, map_)
+    map_.code.GM_adjust_RunPars(map_)
 
     if finish_before == "find_core":
         return returntuple
@@ -2095,7 +2092,7 @@ def basic_setup(
     # ------------------------------------------------------------------
 
     map_.append_core()
-    map_.code.GM_adjust_map_core_raw(Files, map_)
+    map_.code.GM_adjust_map_core_raw(map_)
 
     if finish_before == "Core":
         return returntuple

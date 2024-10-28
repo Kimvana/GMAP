@@ -5,7 +5,7 @@ User guide
 These pages will contain information relevant for common use of the program.
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 4
     
     Warning_overview
     specifying_parameters

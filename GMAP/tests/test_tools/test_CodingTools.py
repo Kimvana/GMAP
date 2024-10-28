@@ -1,46 +1,52 @@
 """
 Tests all the functions/classes/methods in the file:
-src/tools/CodingTools.py.
+src/tools/CmdInterface.py.
 
 Missing tests:
 
-(@ August 6th '24):
-  none  (0 missed statements)
+(@ Sept 20th '24):
+  (0 missed statements)
+
+- None!
 
 """
 
-# 3rd party imports
+# Standard library imports
 import pytest
 
-# local imports
+# Local imports
 import GMAP.src.tools.CodingTools as GM_CT
-import GMAP.src.tools.Exceptions as GM_Ex
-import GMAP.src.tools.FileHandler as GM_FH
 
 
-class TestErrCode:
-    def test_equalities(self):
-        assert GM_CT.ErrCode("AA_BB_33") == "AA_BB_33"
-        assert GM_CT.ErrCode("AA_BB_") == "AA_BB_33"
-        assert GM_CT.ErrCode("AA__33") == "AA_BB_33"
-        assert GM_CT.ErrCode("BB__33") != "AA_BB_33"
-        assert not GM_CT.ErrCode("BB__33") == "AA_BB_33"
+class TestFrozenDict:
+    def test_retrieve(self):
+        mydict = {2: 3, 4: 5}
+        frozendict = GM_CT.FrozenDict(mydict)
+        assert mydict[2] == frozendict[2]
 
-    def test_CT_EC_1(self):
-        init()
-        with pytest.raises(GM_Ex.GmapTypeError, match="CT_EC_1$"):
-            assert GM_CT.ErrCode("AA_BB_33") == 5
+    def test_add(self):
+        mydict = {2: 3, 4: 5}
+        frozendict = GM_CT.FrozenDict(mydict)
+        mydict = {1: 0, 0: 1}
+        with pytest.raises(TypeError):
+            _ = frozendict + mydict
 
-        with pytest.raises(GM_Ex.GmapTypeError, match="CT_EC_1$"):
-            assert 5 == GM_CT.ErrCode("AA_BB_33")
+    def test_radd(self):
+        mydict = {2: 3, 4: 5}
+        frozendict = GM_CT.FrozenDict(mydict)
+        mydict = {1: 0, 0: 1}
+        with pytest.raises(TypeError):
+            _ = mydict + frozendict
 
-    def test_CT_EC_2(self):
-        init()
-        with pytest.raises(GM_Ex.GmapValueError, match="CT_EC_2$"):
-            assert GM_CT.ErrCode("AA_BB_33") == "5"
-        with pytest.raises(GM_Ex.GmapValueError, match="CT_EC_2$"):
-            assert GM_CT.ErrCode("5") == "AA_BB_33"
+    def test_setitem(self):
+        mydict = {2: 3, 4: 5}
+        frozendict = GM_CT.FrozenDict(mydict)
+        with pytest.raises(TypeError):
+            frozendict[1] = 1
 
-
-def init():
-    _ = GM_FH.FileLocations()
+    def test_update(self):
+        mydict = {2: 3, 4: 5}
+        frozendict = GM_CT.FrozenDict(mydict)
+        mydict = {1: 0, 0: 1}
+        with pytest.raises(TypeError):
+            frozendict.update(mydict)

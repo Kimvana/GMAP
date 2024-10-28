@@ -16,17 +16,13 @@ from GMAP.src.tools import MathFunctions as GM_MF
 # parameter (especially if theres multiple that are linked), the way
 # RunPar is built might not be correct. In this function, the user can
 # fix that.
-def GM_adjust_RunPars(Files, Map):
+def GM_adjust_RunPars(Map):
     """Makes the necessary changes to Map.RunPar.
 
     Is expected to not return anything - return value is not caught.
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties.
-        Has to be updated after RunPars is finalized.
     Map : :class:`~GMAP.src.tools.MapReader.Map`
         The object that stores everything the program currently knows
         about this map.
@@ -39,7 +35,7 @@ def GM_adjust_RunPars(Files, Map):
 # a detected parameter, a different choice is preferred. This function
 # allows to make a different choice, **in the same format as the file**.
 # if more complex behaviour is desired, a separate function is needed.
-def GM_adjust_map_core_raw(Files, Map):
+def GM_adjust_map_core_raw(Map):
     """Makes the necessary changes to the 'raw' input read from core.txt.
 
     Is expected to not return anything - return value is not caught.
@@ -59,10 +55,6 @@ def GM_adjust_map_core_raw(Files, Map):
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties.
-        Has to be updated after RunPars is finalized.
     Map : :class:`~GMAP.src.tools.MapReader.Map`
         The object that stores everything the program currently knows
         about this map.
@@ -151,7 +143,7 @@ def calc_coupling(oscix1, oscix2, pos_arr, vec_arr, boxvects):
 # (for AmideBB - find neighbours!)
 # (Or, for couplings that MUST get information from an oscillator,
 # check if that specific function exists)
-def GM_post_init(Files, Map, Syst):
+def GM_post_init(Map, Syst):
     pass
 
 

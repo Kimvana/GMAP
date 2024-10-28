@@ -15,11 +15,12 @@ import GMAP.src.tools.ParameterParser as GM_PP
 import GMAP.src.tools.PrintTools as GM_PT
 
 class Map():
-    """Contains all information regarding a single map. Base to build upon.
+    """Contains all information regarding a single map. Base to build
+    upon.
 
-    In this context, a map is as defined in the computational spectroscopy
-    community - a way of estimating the properties of a functional group. It
-    is not a python object.
+    In this context, a map is as defined in the computational
+    spectroscopy community - a way of estimating the properties of a
+    functional group. It is not a python object.
 
     .. note ::
         Users of the program are probably looking for the
@@ -58,12 +59,12 @@ class Map():
         The object storing all parameters provided on the command line
         that belong to this map.
     InPars : :class:`~GMAP.src.tools.ParameterParser.RawPars`
-        The object storing all parameters provided in the input parameter
-        file that belong to this map.
+        The object storing all parameters provided in the input
+        parameter file that belong to this map.
     DefPars : :class:`~GMAP.src.tools.ParameterParser.RawPars`
-        The object storing all parameters provided in the default parameter
-        file that belong to this map. If no such file was provided, an
-        empty instance is used instead.
+        The object storing all parameters provided in the default
+        parameter file that belong to this map. If no such file was
+        provided, an empty instance is used instead.
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
         The RunPars instance containing all the basic run-defining
         parameters that belong to this map.
@@ -79,14 +80,12 @@ class Map():
 
     Notes
     -----
-
     .. seealso ::
         :class:`~GMAP.src.tools.ParameterParser.RefPars`
-
     """
 
     def __init__(self, mapdir, avail_files):
-        self.directory = mapdir
+        self.directory = mapdir.resolve()
         self.name = mapdir.name
         self.type = mapdir.parent.name
         self.success = True
@@ -99,10 +98,10 @@ class Map():
         has them, they are supposed to be in a reference parameter file
         of the same format as the one of GEM itself.
 
-        Looks inside `self.directory` for a file of the name `parameters.ref`,
-        If found, the resulting
-        :class:`~GMAP.src.tools.ParameterParser.RefPars` object is stored as
-        the `self.RefPars` attribute.
+        Looks inside `self.directory` for a file of the name
+        `parameters.ref`, If found, the resulting
+        :class:`~GMAP.src.tools.ParameterParser.RefPars` object is
+        stored as the `self.RefPars` attribute.
         """
 
         refparfilename = self.directory / "parameters.ref"
@@ -118,21 +117,24 @@ class Map():
         """Creates CmdPars, InPars and DefPars objects for this map instance.
 
         Searches through the provided CmdPars, InPars and DefPars to see
-        whether there are any map-type parameters belonging to this map. If
-        so, they are taken from there, put in the map-specific instances for
-        CmdPars, InPars and DefPars, and then removed from the source (as the
-        source will be checked for emptiness at the end).
+        whether there are any map-type parameters belonging to this map.
+        If so, they are taken from there, put in the map-specific
+        instances for CmdPars, InPars and DefPars, and then removed from
+        the source (as the source will be checked for emptiness at the
+        end).
 
         Parameters
         ----------
         CmdPars : :class:`~GMAP.src.tools.ParameterParser.RawPars`
-            The object storing all parameters provided on the command line.
+            The object storing all parameters provided on the command
+            line.
         InPars : :class:`~GMAP.src.tools.ParameterParser.RawPars`
-            The object storing all parameters provided in the input parameter
-            file.
+            The object storing all parameters provided in the input
+            parameter file.
         DefPars : :class:`~GMAP.src.tools.ParameterParser.RawPars`
-            The object storing all parameters provided in the default parameter
-            file. If no such file was provided, RefPars is used instead.
+            The object storing all parameters provided in the default
+            parameter file. If no such file was provided, RefPars is
+            used instead.
         """
 
         # for each parameter source, extract all choices belonging to this
@@ -168,13 +170,14 @@ class Map():
             self.DefPars = GM_PP.RawPars.create_empty()
 
     def extract_notfound(self, RawParInst):
-        """Find all parameters of this map in the given RawPars instance.
+        """Find all parameters of this map in the given RawPars
+        instance.
 
         Parameters
         ----------
         RawParInst : :class:`~GMAP.src.tools.ParameterParser.RawPars`
-            The instance through which to look for parameters that belong
-            to this map.
+            The instance through which to look for parameters that
+            belong to this map.
 
         Returns
         -------
@@ -186,7 +189,7 @@ class Map():
         for parname, choice in RawParInst.not_found.items():
             parnamelist = parname.split(".")
             if len(parnamelist) != 2:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     "\nNames of map-specific parameters cannot contain a '.'.",
                     "SU_MR_1", True, GMAPerrclass=GM_Ex.GmapValueError
                 )
@@ -196,27 +199,23 @@ class Map():
 
         return map_pars
 
-    def find_runpars(self, Files, RunPars):
+    def find_runpars(self, RunPars):
         """Create a RunPars instance for this map.
 
-        Just like the main code, a map has a RefPars, DefPars, Inpars and
-        CmdPars instance, that all need to be combined into a RunPars
-        instance to be used further in the code.
+        Just like the main code, a map has a RefPars, DefPars, Inpars
+        and CmdPars instance, that all need to be combined into a
+        RunPars instance to be used further in the code.
 
         Parameters
         ----------
-        Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-            Contains all currently known paths and other file-related
-            properties.
-            Has to be updated after RunPars is finalized.
         RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
-            The 'main' RunPars instance containing all the basic run-defining
-            parameters.
+            The 'main' RunPars instance containing all the basic
+            run-defining parameters.
         """
 
         if self.RefPars:
             self.RunPars = GM_PP.RunPars(
-                Files, self.CmdPars, self.InPars, self.DefPars,
+                self.CmdPars, self.InPars, self.DefPars,
                 self.RefPars, False, MainRunPars=RunPars
             )
 
@@ -236,15 +235,16 @@ class Map():
         if not modpath.is_file():
             return None
 
-        modname = self.name + "_code"
+        modname = self.name + "_mainpy_code"
 
         try:
             spec = importlib.util.spec_from_file_location(modname, modpath)
             module = importlib.util.module_from_spec(spec)
             sys.modules[modname] = module
+            sys.path.insert(1, str(self.directory))
             spec.loader.exec_module(module)
         except Exception as ex:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nA problem occured while reading in the code for the map "
                 f"{self.name}, defined at "
                 f"{str(self.directory.resolve())}. "
@@ -315,7 +315,7 @@ class Map():
                         self.success = False
                         return
                 except IndexError as ex:
-                    GM_PT.Printer().warning(
+                    GM_PT.Printer.warning(
                         f"\nA file of the name {name} was requested to be "
                         "added "
                         f"to the file {self.corepath}. However, no file of "
@@ -325,7 +325,7 @@ class Map():
                     self.success = False
                     return
                 except Exception as ex:
-                    GM_PT.Printer().warning(
+                    GM_PT.Printer.warning(
                         f"\nThe file {fpaths[0]} was requested to be added to "
                         f"the file {self.corepath}. However, an issue "
                         "occured, so it cannot be added.",
@@ -361,7 +361,7 @@ class Map():
         if not filepath.is_file():
             # This file is mandatory for singles maps
             if isinstance(self, SingleMap):
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     f"\nCould not find the file {filepath}. This file is "
                     "required for the map to function. Please consult the "
                     "information of this map, or contact the developer of "
@@ -425,8 +425,8 @@ class Map():
     def cleanline(line):
         """Cleans up a line from core.txt for parsing
 
-        If there is a '#' on the line, ignore it and everything after it.
-        Interpret multiple whitespaces back-to-back as a single one.
+        If there is a '#' on the line, ignore it and everything after
+        it. Interpret multiple whitespaces back-to-back as a single one.
 
         Parameters
         ----------
@@ -436,8 +436,10 @@ class Map():
         Returns
         -------
         line : list of str
-            The 'words' on the line. Each item is anything but whitespace.
+            The 'words' on the line. Each item is anything but
+            whitespace.
         """
+
         line = GM_PP.cleanline(line)
         line = line.strip().split()
         line = [x for x in line if x]
@@ -450,8 +452,8 @@ class Map():
         Parameters
         ----------
         line : list of str
-            A cleaned version of the line. Already split into a list, all
-            whitespaces removed.
+            A cleaned version of the line. Already split into a list,
+            all whitespaces removed.
         file_contents : dict of str - list of str pairs
             The contents of the file, not yet analyzed for validity.
             Here, it is still incomplete, being built by this function
@@ -471,7 +473,7 @@ class Map():
         choice = line[1:]
 
         if not choice:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 f"\nNo choice detected for parameter {keyword} in the file "
                 f"{filepath}. This issue must be fixed before this map can "
                 "be used.",
@@ -491,7 +493,7 @@ class Map():
             file_contents[keyword] = choice
             return file_contents
         else:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 f"\nThe parameter {keyword} appeared more than once in "
                 "the file "
                 f"{filepath}. It may only occur once. This issue must be "
@@ -502,7 +504,7 @@ class Map():
 
 
 class SingleMap(Map):
-    def initialize(self, Files):
+    def initialize(self):
         """Initializes the map.
 
         Initializing is a multi-step process:
@@ -517,13 +519,6 @@ class SingleMap(Map):
         - Parse the final choice of rawcore to Core
         - If not present in self.code, create functions for
           GM_calculate_dipole and GM_get_rotation matrix based on core.
-
-        Parameters
-        ----------
-        Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-            Contains all currently known paths and other file-related
-            properties.
-            Has to be updated after RunPars is finalized.
         """
 
         self.code = self.extract_code()
@@ -539,7 +534,7 @@ class SingleMap(Map):
             "adjust_map_core_raw",
             "adjust_oscillators"
         ))
-        self.code.GM_adjust_RunPars(Files, self)
+        self.code.GM_adjust_RunPars(self)
 
         # simple parse of core.txt
         self.rawcore = self.find_core()
@@ -552,7 +547,7 @@ class SingleMap(Map):
             return
 
         # allow the contents of core.txt to be changed
-        self.code.GM_adjust_map_core_raw(Files, self)
+        self.code.GM_adjust_map_core_raw(self)
 
         self.Core = SingleCore(self)
         if not self.Core.success:
@@ -583,6 +578,7 @@ class SingleMap(Map):
         self.complete_code((
             "str_osc",
             "post_init",
+            "report_system",
             "pre_run",
             "pre_frame",
             "post_frame",
@@ -610,7 +606,7 @@ class SingleMap(Map):
             ):
                 needed_by = ("ham", "dip", "ene")
                 if self.Core.can_output.intersection(needed_by):
-                    GM_PT.Printer().warning(
+                    GM_PT.Printer.warning(
                         f"\nThe file {self.corepath} does not contain a "
                         "definition of "
                         "r_vec and/or r_pos. These two variables have to be "
@@ -639,11 +635,11 @@ class SingleMap(Map):
             )
             nvars = sum([vec + "_uvec" in self.rawcore for vec in "xyz"])
             if self.Core.type == 'standard' and nvars != 2:
-                GM_PT.Printer().warning(msg, "MI_MC_10")
+                GM_PT.Printer.warning(msg, "MI_MC_10")
                 self.success = False
                 return
             elif self.Core.type == 'linear' and nvars != 1:
-                GM_PT.Printer().warning(msg, "MI_MC_10")
+                GM_PT.Printer.warning(msg, "MI_MC_10")
                 self.success = False
                 return
             functs_to_build.append("get_rotation_matrix")
@@ -663,7 +659,7 @@ class SingleMap(Map):
             self.Core.can_output.intersection(["ram"])
             and not hasattr(self.code, "GM_calculate_raman")
         ):
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 f"\nThe map {self.name} stored in {self.directory} does not "
                 "provide the function 'GM_calculate_raman' while its choice "
                 "for can_output does indicate it can compute raman tensors. "
@@ -679,12 +675,6 @@ class PairMap(Map):
 
     Any attributes listed for Map are not separately listed here.
 
-    Parameters
-    ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related properties.
-        Has to be updated after RunPars is finalized.
-
     Attributes
     ----------
     allpairs : list of tuple of 2 ints
@@ -694,7 +684,7 @@ class PairMap(Map):
         this can severely impact calculation times.
     """
 
-    def initialize(self, Files):
+    def initialize(self):
         """Initializes the map.
 
         Initializing is a multi-step process:
@@ -709,13 +699,6 @@ class PairMap(Map):
         - Parse the final choice of rawcore to Core
         - If not present in self.code, create functions for all missing
           behaviour
-
-        Parameters
-        ----------
-        Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-            Contains all currently known paths and other file-related
-            properties.
-            Has to be updated after RunPars is finalized.
         """
 
         self.code = self.extract_code()
@@ -726,7 +709,7 @@ class PairMap(Map):
             "adjust_RunPars",
             "adjust_map_core_raw"
         ))
-        self.code.GM_adjust_RunPars(Files, self)
+        self.code.GM_adjust_RunPars(self)
 
         # simple parse of core.txt
         self.rawcore = self.find_core()
@@ -739,7 +722,7 @@ class PairMap(Map):
             return
 
         # allow the contents of core.txt to be changed
-        self.code.GM_adjust_map_core_raw(Files, self)
+        self.code.GM_adjust_map_core_raw(self)
 
         self.Core = PairCore(self)
         if not self.Core.success:
@@ -748,11 +731,11 @@ class PairMap(Map):
 
         # self.complete_code(("needs_mapfunc",))
         # self.required_functions = self.code.GM_needs_mapfunc(
-        #     Files, self)
+        #     self)
 
         # self.complete_code(("needs_keyword",))
         # self.required_keywords = self.code.GM_needs_keyword(
-        #     Files, self)
+        #     self)
 
         # Add in the remaining code
         self.complete_code((
@@ -780,12 +763,12 @@ class PairMap(Map):
         Parameters
         ----------
         main_runpars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
-            The 'main' RunPars instance containing all the basic run-defining
-            parameters.
+            The 'main' RunPars instance containing all the basic
+            run-defining parameters.
         requester : str or NoneType, default=None
             The map requesting the map we're checking. This is needed
-            to avoid the confusion of a map not directly requested by the
-            user throwing errors.
+            to avoid the confusion of a map not directly requested by
+            the user throwing errors.
         """
 
         # this map might have some requirements, see if they are present
@@ -801,7 +784,7 @@ class PairMap(Map):
             if map_ not in main_runpars.available_maps_singles
         ]
         if missing_maps:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 basestr + "requires the map(s) "
                 f"{', '.join(missing_maps)}, but these are not available to "
                 "the program. Either they are not present, or an error was "
@@ -836,20 +819,21 @@ class PairMap(Map):
         that one is meant for checking whether the initally assigned
         maps have all their requirements met. But they can request other
         pairmaps to do their job. In that case, a map might have a
-        specific reference for a specific case, so it does not make sense
-        to have all pairs (or, singles within them) to conform to all
-        rules for all pairs. That is why we do those checks again here,
-        on a per-oscillator basis (after sorting everything out).
+        specific reference for a specific case, so it does not make
+        sense to have all pairs (or, singles within them) to conform to
+        all rules for all pairs. That is why we do those checks again
+        here, on a per-oscillator basis (after sorting everything out).
 
         Parameters
         ----------
         main_runpars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
-            The 'main' RunPars instance containing all the basic run-defining
-            parameters.
-        oscillators : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+            The 'main' RunPars instance containing all the basic
+            run-defining parameters.
+        oscillators : list of \
+        :class:`~GMAP.src.tools.SystemReader.Oscillator`
             The map requesting the map we're checking. This is needed
-            to avoid the confusion of a map not directly requested by the
-            user throwing errors.
+            to avoid the confusion of a map not directly requested by
+            the user throwing errors.
         """
 
         all_singles_used = set()
@@ -879,10 +863,11 @@ class PairMap(Map):
         Parameters
         ----------
         main_runpars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
-            The 'main' RunPars instance containing all the basic run-defining
-            parameters.
+            The 'main' RunPars instance containing all the basic
+            run-defining parameters.
         singles_to_check : iterable of str
-            The names of the singles that should be checked for validity.
+            The names of the singles that should be checked for
+            validity.
         printstr : str
             What should be shown as the name of this coupling map.
         """
@@ -900,7 +885,7 @@ class PairMap(Map):
                 for pair in missing_maps
             ]
             basestrings = '\n'.join(basestrings)
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 printstr + "was requested for use in calculating "
                 "couplings. It requires any singles maps it couples to contain"
                 " (a) certain keyword(s), but the following maps are missing "
@@ -923,10 +908,11 @@ class PairMap(Map):
         Parameters
         ----------
         main_runpars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
-            The 'main' RunPars instance containing all the basic run-defining
-            parameters.
+            The 'main' RunPars instance containing all the basic
+            run-defining parameters.
         singles_to_check : iterable of str
-            The names of the singles that should be checked for validity.
+            The names of the singles that should be checked for
+            validity.
         printstr : str
             What should be shown as the name of this coupling map.
         """
@@ -945,7 +931,7 @@ class PairMap(Map):
                 for pair in missing_maps
             ]
             basestrings = '\n'.join(basestrings)
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 printstr + "was requested for use in calculating "
                 "couplings. It requires any singles maps it couples to contain"
                 " (a) certain function(s) in the main.py file, but the "
@@ -971,8 +957,8 @@ class PairMap(Map):
         Parameters
         ----------
         main_runpars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
-            The 'main' RunPars instance containing all the basic run-defining
-            parameters.
+            The 'main' RunPars instance containing all the basic
+            run-defining parameters.
         """
 
         # we need these maps, but they weren't directly requested by the user
@@ -988,7 +974,7 @@ class PairMap(Map):
                 if map_ not in main_runpars.available_maps_pairs
             ]
             if missing_maps:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     f"\nThe map {self.name} requires the map(s) "
                     f"{', '.join(missing_maps)}, but these are not available "
                     "to the program. Either they are not present, or an error "
@@ -1015,7 +1001,8 @@ class SingleCore():
     Parameters
     ----------
     Map : :class:`~GMAP.src.tools.MapReader.SingleMap`
-        The object that stores the map which this core.txt file belongs to.
+        The object that stores the map which this core.txt file belongs
+        to.
 
     Attributes
     ----------
@@ -1040,9 +1027,9 @@ class SingleCore():
     requires_bonds : bool
         Whether this map requires atombond information.
     used_atoms : list of int
-        The indices of the atoms in functional_group that should actually
-        be stored for later use. The indices are the positions of the
-        atoms in functional_group, starting counting at 0.
+        The indices of the atoms in functional_group that should
+        actually be stored for later use. The indices are the positions
+        of the atoms in functional_group, starting counting at 0.
     electrostatic_atoms : list of int
         The indices of the atoms in used_atoms that should actually
         be used in electrostatic calculations. The indices are the
@@ -1138,6 +1125,8 @@ class SingleCore():
             rawcore, Map.directory)
         if not self.success:
             return
+        if isinstance(self.dipole_gas_phase, list):
+            self.dipole_gas_phase_array = np.array(self.dipole_gas_phase)
 
         (
             self.frequency_gas_phase, self.frequency_data_array_linear,
@@ -1180,7 +1169,7 @@ class SingleCore():
         """
 
         if "can_output" not in rawcore:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nCould not find the parameter 'can_output' in the file "
                 f"{mapdir / 'core.txt'}. Without it, the map cannot "
                 "function. Please make sure it is present.",
@@ -1195,7 +1184,7 @@ class SingleCore():
         if not set(map_can_do).issubset(set(options)):
             difference = ", ".join(set(map_can_do) - set(options))
             allowed = ", ".join(options)
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nThe parameter 'can_output' in the file "
                 f"{mapdir / 'core.txt'} can only take specific options. The "
                 "following of those provided are not amongst the available "
@@ -1209,15 +1198,16 @@ class SingleCore():
         return set(map_can_do)
 
     def parse_functional_group(self, rawcore, mapdir):
-        """Parses the input for keywords functional_group(_file) in core.txt
+        """Parses the input for keywords functional_group(_file) in
+        core.txt
 
-        Choice for the functional group is stored in self.functional_group.
-        This attribute is a list(1) of lists(2) of lists(3) of strings.
-        Each of the lists numbered 2 corresponds to a possible defnition -
-        either a line in core.txt, or a section (labelled newstruct) in
-        the functgroup file.
-        Each of the lists numbered 3 corresponds to a residue (in
-        case it is the first) or atom to be named.
+        Choice for the functional group is stored in
+        self.functional_group. This attribute is a list(1) of lists(2)
+        of lists(3) of strings. Each of the lists numbered 2 corresponds
+        to a possible defnition - either a line in core.txt, or a
+        section (labelled newstruct) in the functgroup file.
+        Each of the lists numbered 3 corresponds to a residue (in case
+        it is the first) or atom to be named.
         Each of the items in the lists numbered 3 corresponds to a
         possible name for that object.
 
@@ -1235,7 +1225,7 @@ class SingleCore():
 
         # step 1: make sure the functional group is defined unambiguously.
         if funcgroup_par in rawcore and fgfile_par in rawcore:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 f"\nFound both the parameters '{funcgroup_par}' and "
                 f"'{fgfile_par}' in the file {corefile}. Only one "
                 "of these two is allowed.",
@@ -1245,7 +1235,7 @@ class SingleCore():
             return
 
         if funcgroup_par not in rawcore and fgfile_par not in rawcore:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 f"\nFound neither the parameter '{funcgroup_par}' nor the "
                 f"parameter '{fgfile_par}' in the file {corefile}. However, "
                 "at least one of them is necessary for the map to function.",
@@ -1259,7 +1249,7 @@ class SingleCore():
         if fgfile_par in rawcore:
             fname = (mapdir / rawcore[fgfile_par][0]).resolve()
             if not fname.is_file():
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     f"\nThe file {corefile} wants to use the file {fname}"
                     " to define the functional groups for that map. "
                     "However, this file does not exist.",
@@ -1281,7 +1271,7 @@ class SingleCore():
         if error_code[0] != 0:
             self.success = False
             errstring = "-".join([str(num) for num in error_code])
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 f"\nThe file {corefile} contains a definition of "
                 "functional_group that cannot be interpreted. A hint of what "
                 f"went wrong is this extra code: {errstring}. Please see the "
@@ -1318,7 +1308,7 @@ class SingleCore():
         ]
 
         if any(not item.success for item in self.functional_group):
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 f"\nThe file {corefile} contains an invalid definition of "
                 "functional_group. At least one of the definitions consists "
                 "of multiple residues, but not all residues are bonded to "
@@ -1330,7 +1320,8 @@ class SingleCore():
 
     @staticmethod
     def funcgroupfile_to_infile(fname):
-        """Parses the functional_group_file from a map into infile format.
+        """Parses the functional_group_file from a map into infile
+        format.
 
         Parameters
         ----------
@@ -1340,9 +1331,9 @@ class SingleCore():
         Returns
         -------
         file_contents : list of list of str
-            The contents of the file parsed into the same format as would
-            have been obtained when the molecule would have been defined in
-            the file itself
+            The contents of the file parsed into the same format as
+            would have been obtained when the molecule would have been
+            defined in the file itself
         """
 
         file_contents = []
@@ -1381,9 +1372,9 @@ class SingleCore():
           - Each item in list(1) corresponds to a single line/newstruct
             (depends of source) and is itself a list(2).
           - Each item in list(2) corresponds to a single residue, and is
-            itself a list of 2 items. The first item contains the residue
-            name (is a list of str), the second item contains the atom
-            names. The second item is itself a list(3).
+            itself a list of 2 items. The first item contains the
+            residue name (is a list of str), the second item contains
+            the atom names. The second item is itself a list(3).
           - Each item in list(3) corresponds to an atom and is itself a
             list of str.
 
@@ -1517,7 +1508,7 @@ class SingleCore():
         # each item is already a bond
         for bond in bonds:
             if "-" not in bond:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     f"\nThe file {corefile} contains a definition of "
                     "functional_group_bonds that cannot be interpreted. "
                     "Please make sure that the bond is defined using a "
@@ -1528,7 +1519,7 @@ class SingleCore():
                 return
             bond = bond.split("-")
             if len(bond) != 2:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     f"\nThe file {corefile} contains a definition of "
                     "functional_group_bonds that cannot be interpreted. "
                     "Please make sure that the bond consists of exactly "
@@ -1541,7 +1532,7 @@ class SingleCore():
             try:
                 bond = [int(num) for num in bond]
             except Exception as ex:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     f"\nThe file {corefile} contains a definition of "
                     "functional_group_bonds that cannot be interpreted. "
                     "Please make sure that the definition contains only "
@@ -1573,7 +1564,7 @@ class SingleCore():
             number_atoms = sum([len(res[1]) for res in struct])
             for bond in bonds:
                 if any(ix >= number_atoms for ix in bond):
-                    GM_PT.Printer().warning(
+                    GM_PT.Printer.warning(
                         f"\nThe file {corefile} contains a definition of "
                         "functional_group_bonds that cannot be interpreted. "
                         "Please make sure that the indices point to atoms "
@@ -1633,14 +1624,15 @@ class SingleCore():
         Returns
         -------
         used_atoms : list of int
-            The indices of the atoms in functional_group that should actually
-            be stored for later use. The indices are the positions of the
-            atoms in functional_group, starting counting at 0.
+            The indices of the atoms in functional_group that should
+            actually be stored for later use. The indices are the
+            positions of the atoms in functional_group, starting
+            counting at 0.
         """
 
         # see if it exists
         if "used_atoms" not in rawcore:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nCould not find the parameter 'used_atoms' in the file "
                 f"{mapdir / 'core.txt'}. Without it, the map cannot "
                 "function. Please make sure it is present.",
@@ -1668,7 +1660,7 @@ class SingleCore():
 
 
         except Exception as ex:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nCould not interpret the choice for the parameter "
                 "'used_atoms'"
                 f" in the file {mapdir / 'core.txt'}. Please make sure the "
@@ -1683,7 +1675,7 @@ class SingleCore():
             not all(ix in struct.indices for struct in self.functional_group)
             for ix in used_atoms
         ):
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nCould not interpret the choice for the parameter "
                 "'used_atoms'"
                 f" in the file {mapdir / 'core.txt'}. Please make sure the "
@@ -1715,7 +1707,7 @@ class SingleCore():
 
         # see if it exists
         if "electrostatic_choice" not in rawcore:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nCould not find the parameter 'electrostatic_choice' in the "
                 f"file {mapdir / 'core.txt'}. Without it, the map cannot "
                 "function. Please make sure it is present.",
@@ -1728,7 +1720,7 @@ class SingleCore():
         if choice.lower() == "none":
             return None
         elif choice.upper() not in ("V", "E", "G"):
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nCould not interpret the choice for the parameter "
                 "'electrostatic_choice'"
                 f" in the file {mapdir / 'core.txt'}. Please make sure the "
@@ -1754,14 +1746,15 @@ class SingleCore():
         estatic_atoms : list of int
             The indices of the atoms in used_atoms that should actually
             be used in electrostatic calculations. The indices are the
-            positions of the atoms in used_atoms, starting counting at 0.
+            positions of the atoms in used_atoms, starting counting at
+            0.
         """
 
         # see if it exists
         if "electrostatic_atoms" not in rawcore:
             if not self.electrostatic_choice:
                 return []
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nCould not find the parameter 'electrostatic_atoms' in the "
                 f"file {mapdir / 'core.txt'}. Without it, the map cannot "
                 "function. Please make sure it is present.",
@@ -1775,7 +1768,7 @@ class SingleCore():
             u_a_len = len(self.used_atoms)  # Use the shortest structure
             estatic_atoms = self.allow_ranges(rawcore["electrostatic_atoms"], u_a_len)
         except Exception as ex:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nCould not interpret the choice for the parameter "
                 "'electrostatic_atoms'"
                 f" in the file {mapdir / 'core.txt'}. Please make sure "
@@ -1789,7 +1782,7 @@ class SingleCore():
         # now, see if choice is valid
         maxlen = len(self.used_atoms)
         if any(ix >= maxlen for ix in estatic_atoms):
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nCould not interpret the choice for the parameter "
                 "'electrostatic_atoms'"
                 f" in the file {mapdir / 'core.txt'}. Please make sure the "
@@ -1817,14 +1810,15 @@ class SingleCore():
         local_atoms : list of int
             The indices of the atoms in used_atoms that should actually
             be used in electrostatic calculations. The indices are the
-            positions of the atoms in used_atoms, starting counting at 0.
+            positions of the atoms in used_atoms, starting counting at
+            0.
         """
 
         # see if it exists
         if "local_atoms" not in rawcore:
             if not self.electrostatic_choice:
                 return []
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nCould not find the parameter 'local_atoms' in the "
                 f"file {mapdir / 'core.txt'}. Without it, the map cannot "
                 "function. Please make sure it is present.",
@@ -1842,7 +1836,7 @@ class SingleCore():
             if rawcore["local_atoms"][0].lower() == "none":
                 local_atoms = []
             else:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     "\nCould not interpret the choice for the parameter "
                     "'local_atoms'"
                     f" in the file {mapdir / 'core.txt'}. Please make sure "
@@ -1856,7 +1850,7 @@ class SingleCore():
         # now, see if choice is valid
         maxlen = len(self.used_atoms)
         if any(ix >= maxlen for ix in local_atoms):
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nCould not interpret the choice for the parameter "
                 "'local_atoms'"
                 f" in the file {mapdir / 'core.txt'}. Please make sure the "
@@ -1891,7 +1885,7 @@ class SingleCore():
             if self.electrostatic_choice in (None, "V"):
                 return None
 
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nCould not find the parameter 'type' in the "
                 f"file {mapdir / 'core.txt'}. Without it, the map cannot "
                 "function. Please make sure it is present.",
@@ -1902,7 +1896,7 @@ class SingleCore():
 
         choice = rawcore["type"][0]
         if choice.lower() not in ("standard", "linear"):
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nCould not interpret the choice for the parameter "
                 "'type'"
                 f" in the file {mapdir / 'core.txt'}. Please make sure the "
@@ -1939,7 +1933,7 @@ class SingleCore():
         if "VEG_reference" not in rawcore:
             if not self.electrostatic_choice:
                 return None
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nCould not find the parameter 'VEG_reference' in the "
                 f"file {mapdir / 'core.txt'}. Without it, the map cannot "
                 "function. Please make sure it is present.",
@@ -1951,7 +1945,7 @@ class SingleCore():
         # We need a valid keyword
         choice = rawcore["VEG_reference"][0]
         if choice.lower() not in ("residues", "position", "com"):
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nCould not interpret the choice for the parameter "
                 "'VEG_reference'"
                 f" in the file {mapdir / 'core.txt'}. Please make sure the "
@@ -1970,7 +1964,7 @@ class SingleCore():
                 tryint(val) for val in rawcore["VEG_reference"][1:]
             ))
         ):
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nCould not interpret the choice for the parameter "
                 "'VEG_reference'"
                 f" in the file {mapdir / 'core.txt'}. Please make sure the "
@@ -1994,16 +1988,17 @@ class SingleCore():
         Returns
         -------
         dipole_gas_phase : `np.float32`
-            What the base magnitude for the dipole should be. The program
-            can either use this as-is, or in combination with the contents
-            from a given file.
+            What the base magnitude for the dipole should be. The
+            program can either use this as-is, or in combination with
+            the contents from a given file.
         fdata : `np.ndarray` or None
-            An array of shape (n_estatic_ats, 10) or (3, n_estatic_ats, 10),
-            with padded zeros for any columns that are not required.
-            The 2D array is returned when the file is for magnitude, the 3D
-            when the file is for xyz separately.
-            If the parameter 'dipole_data_file' does not occur in the file
-            core.txt, None is returned instead.
+            An array of shape (n_estatic_ats, 10) or (3, n_estatic_ats,
+            10), with padded zeros for any columns that are not
+            required.
+            The 2D array is returned when the file is for magnitude, the
+            3D when the file is for xyz separately. If the parameter
+            'dipole_data_file' does not occur in the file core.txt, None
+            is returned instead.
         """
 
         # First, get the (gas phase) magnitude of the dipole, this must
@@ -2013,7 +2008,7 @@ class SingleCore():
             needed_by = ("ham", "dip", "ene")
             if self.can_output.isdisjoint(needed_by):
                 return None, None
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nCould not find the parameter 'dipole_gas_phase' in the "
                 f"file {mapdir / 'core.txt'}. Without it, the map cannot "
                 "function. Please make sure it is present.",
@@ -2027,7 +2022,7 @@ class SingleCore():
                 np.float32(num) for num in rawcore["dipole_gas_phase"]
             ]
         except Exception as ex:  # no 0th entry, not floatable
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nCould not interpret the choice for the parameter "
                 "'dipole_gas_phase'"
                 f" in the file {mapdir / 'core.txt'}. Please make sure "
@@ -2067,7 +2062,7 @@ class SingleCore():
                 choice = "mag"
             case "xyz":
                 if len(dipole_gas_phase) != 3:
-                    GM_PT.Printer().warning(
+                    GM_PT.Printer.warning(
                         "\nInvalid choice for the parameter 'dipole_gas_phase'"
                         f" in the file {mapdir / 'core.txt'}. Please make "
                         "sure the choice consists of three decimal numbers.",
@@ -2077,19 +2072,19 @@ class SingleCore():
                     return None, None
                 choice = "xyz"
             case _:
-                GM_PT.Printer().warning(warntext, "MI_MC_8")
+                GM_PT.Printer.warning(warntext, "MI_MC_8")
                 self.success = False
                 return None, None
 
         if len(rawcore["dipole_data_file"]) != 2:
-            GM_PT.Printer().warning(warntext, "MI_MC_8")
+            GM_PT.Printer.warning(warntext, "MI_MC_8")
             self.success = False
             return None, None
 
         # if the parameter exists, but the specified file does not:
         fname = (mapdir / rawcore["dipole_data_file"][1]).resolve()
         if not fname.is_file():
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 f"\nThe file {mapdir / 'core.txt'} wants to use the file "
                 f"{fname}"
                 " to define the dependency of the dipole moment on the "
@@ -2104,7 +2099,7 @@ class SingleCore():
             fdata = np.genfromtxt(
                 fname, "float32", missing_values=0, ndmin=2)
         except Exception as ex:  # numpy had some issue
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nNumpy could not interpret the contents of the file "
                 f"{fname}. Please make sure the file contains only decimal "
                 "numbers in a grid.",
@@ -2152,8 +2147,8 @@ class SingleCore():
         -------
         frequency_gas_phase : `np.float32`
             What the base value for the frequency should be. The program
-            can either use this as-is, or in combination with the contents
-            from a given file.
+            can either use this as-is, or in combination with the
+            contents from a given file.
         linear_array : `np.ndarray` or None
             An array of shape (n_estatic_ats, 10),
             with padded zeros for any columns that are not required.
@@ -2162,8 +2157,8 @@ class SingleCore():
         quadratic_array : `np.ndarray` or None
             An array of shape (n_estatic_ats, 10),
             with padded zeros for any columns that are not required.
-            If the parameter 'frequency_data_file_quadratic' does not occur
-            in the file core.txt, None is returned instead.
+            If the parameter 'frequency_data_file_quadratic' does not
+            occur in the file core.txt, None is returned instead.
         """
 
         frequency_gas_phase = self.parse_frequency_gas_phase(
@@ -2195,15 +2190,15 @@ class SingleCore():
         -------
         frequency_gas_phase : `np.float32`
             What the base value for the frequency should be. The program
-            can either use this as-is, or in combination with the contents
-            from a given file.
+            can either use this as-is, or in combination with the
+            contents from a given file.
         """
 
         if "frequency_gas_phase" not in rawcore:
             needed_by = ("ham", "ene")
             if self.can_output.isdisjoint(needed_by):
                 return None
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nCould not find the parameter 'frequency_gas_phase' in the "
                 f"file {mapdir / 'core.txt'}. Without it, the map cannot "
                 "function. Please make sure it is present.",
@@ -2215,7 +2210,7 @@ class SingleCore():
         try:
             frequency_gas_phase = np.float32(rawcore["frequency_gas_phase"][0])
         except Exception as ex:  # no 0th entry, not floatable
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nCould not interpret the choice for the parameter "
                 "'frequency_gas_phase'"
                 f" in the file {mapdir / 'core.txt'}. Please make sure "
@@ -2269,7 +2264,7 @@ class SingleCore():
         # if the parameter exists, but the specified file does not:
         fname = (mapdir / rawcore[parname][0]).resolve()
         if not fname.is_file():
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 f"\nThe file {mapdir / 'core.txt'} wants to use the file "
                 f"{fname}"
                 " to define the dependency of the frequency on the "
@@ -2283,7 +2278,7 @@ class SingleCore():
             fdata = np.genfromtxt(
                 fname, "float32", missing_values=0, ndmin=2)
         except Exception as ex:  # numpy had some issue
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nNumpy could not interpret the contents of the file "
                 f"{fname}. Please make sure the file contains only decimal "
                 "numbers in a grid.",
@@ -2312,7 +2307,8 @@ class SingleCore():
         return array
 
     def confirm_array_size(self, array, deswidth, desheight, fname):
-        """Makes sure that the array from the file is of the correct shape.
+        """Makes sure that the array from the file is of the correct
+        shape.
 
         If not, self.success is set to false and None is immediately
         returned, kicking of the abortion all the way up the call chain.
@@ -2333,8 +2329,8 @@ class SingleCore():
         -------
         array : `np.ndarray` or None
             None is returned if the input array was too small along at
-            least one dimension. If the array is larger in any dimension,
-            it is cropped to fit the dimensions exactly.
+            least one dimension. If the array is larger in any
+            dimension, it is cropped to fit the dimensions exactly.
             Finally, if the desired width was smaller than 10, the width
             (after any possible cropping) is extended to 10, by padding
             extra zeros.
@@ -2361,7 +2357,8 @@ class SingleCore():
     def report_array_size(foundlen, deslen, dir_, fname, fdata):
         """Reports on the size of the array, and cuts when necessary.
 
-        This is a helper function for the method :meth:`confirm_array_size`.
+        This is a helper function for the method
+        :meth:`confirm_array_size`.
 
         Parameters
         ----------
@@ -2370,8 +2367,8 @@ class SingleCore():
         deslen : int
             The desired size in that same dimension.
         dir_ : str
-            What dimension we are looking at, in a human-readable format.
-            Must be either 'rows' or 'columns'.
+            What dimension we are looking at, in a human-readable
+            format. Must be either 'rows' or 'columns'.
         fname : `pathlib.Path`
             The filename of the file the array is from.
         fdata : `np.ndarray`
@@ -2383,11 +2380,12 @@ class SingleCore():
         success : bool
             False if foundlen < deslen, True otherwise.
         fdata : `np.ndarray`
-            The input fdata array, but cropped in case foundlen > deslen.
+            The input fdata array, but cropped in case
+            foundlen > deslen.
         """
 
         if foundlen < deslen:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 f"\nThere was a problem with the contents of the file {fname}"
                 ". Please make sure the file has the correct amount of "
                 f"{dir_}.\n"
@@ -2398,7 +2396,7 @@ class SingleCore():
             return False, fdata
 
         elif foundlen > deslen:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 f"\nFound unexpected contents for the file {fname}. There "
                 f"were {foundlen} {dir_} found, but only {deslen} {dir_} are "
                 f"needed. The first {deslen} {dir_} will be used for the "
@@ -2439,7 +2437,7 @@ class SingleCore():
         elif choice.lower() in ("bohr", "a0", "au"):
             return "bohr"
         else:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nCould not interpret the choice for the parameter "
                 "'assume_length_units'"
                 f" in the file {mapdir / 'core.txt'}. Please make sure "
@@ -2517,7 +2515,7 @@ class SingleCore():
             if self.can_output.isdisjoint(needed_by):
                 return ""
             if parname not in rawcore:
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     f"\nCould not find the parameter '{parname}' in the "
                     f"file {mapdir / 'core.txt'}. Without it, the map cannot "
                     "function. Please make sure it is present.",
@@ -2535,7 +2533,8 @@ class PairCore():
     Parameters
     ----------
     Map : :class:`~GMAP.src.tools.MapReader.SingleMap`
-        The object that stores the map which this core.txt file belongs to.
+        The object that stores the map which this core.txt file belongs
+        to.
 
     Attributes
     ----------
@@ -2554,6 +2553,7 @@ class PairCore():
         be equal) of oscillator. It corresponds to a certain type of
         pair that can be coupled using this map.
     """
+
     def __init__(self, Map):
         rawcore = Map.rawcore
         self.success = True
@@ -2578,7 +2578,8 @@ class PairCore():
             return
 
     def parse_optional_string_list(self, rawcore, keyword):
-        """A base function for reading an optional list_str keyword choice.
+        """A base function for reading an optional list_str keyword
+        choice.
 
         The core.txt file for pairmaps contains quite some keywords for
         which the choice will be one or more strings. This function
@@ -2632,8 +2633,9 @@ class PairCore():
         -------
         chosen_groups : list of str
             The names of singles maps that are allowed to be coupled by
-            this map. This list is built by combining the black-/whitelist
-            requirements from this map with all requested singles maps.
+            this map. This list is built by combining the
+            black-/whitelist requirements from this map with all
+            requested singles maps.
         """
 
         whitelist = self.parse_optional_string_list(
@@ -2689,9 +2691,9 @@ class PairCore():
         Returns
         -------
         chosen_combinations : list of tuple of str
-            Each tuple has two strings, the names of two kinds (could both
-            be equal) of oscillator. It corresponds to a certain type of
-            pair that can be coupled using this map.
+            Each tuple has two strings, the names of two kinds
+            (could both be equal) of oscillator. It corresponds to a
+            certain type of pair that can be coupled using this map.
         """
 
         possible_combinations = []
@@ -2722,7 +2724,7 @@ class PairCore():
 
                 splitted = word.split(":")
                 if len(splitted) != 2:
-                    GM_PT.Printer().warning(
+                    GM_PT.Printer.warning(
                         "\nAll arguments for the keyword 'valid_combinations' "
                         f"for the pairs map {mapdir.name} must contain "
                         "exactly one ':'. This is, however, not the case. "
@@ -2732,7 +2734,7 @@ class PairCore():
                     self.success = False
                     return
                 if len(splitted[0]) == 0:
-                    GM_PT.Printer().warning(
+                    GM_PT.Printer.warning(
                         "\nEach argument for the keyword 'valid_combinations' "
                         f"for the pairs map {mapdir.name} represents a pair "
                         "of groups to couple. While the second group is "
@@ -2892,32 +2894,30 @@ class Residue():
         return f"{self.__class__.__name__}({repr(mylist)})"
 
 
-def manage_maps_singles(Files, RunPars, mapdict):
+def manage_maps_singles(RunPars, mapdict):
     """Initializes and manages the detected maps in singles.
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related properties.
-        Has to be updated after RunPars is finalized.
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
-        The 'main' RunPars instance containing all the basic run-defining
-        parameters.
-    mapdict : dict of str: :class:`~GMAP.src.tools.MapReader.SingleMap` pairs
-        Stores all the :class:`~GMAP.src.tools.MapReader.SingleMap` objects for
-        each map supplied. The keys are the Map.name attributes corresponding
-        to the maps stored as values.
+        The 'main' RunPars instance containing all the basic
+        run-defining parameters.
+    mapdict : dict of str: :class:`~GMAP.src.tools.MapReader.SingleMap`\
+    pairs
+        Stores all the :class:`~GMAP.src.tools.MapReader.SingleMap`
+        objects for each map supplied. The keys are the Map.name
+        attributes corresponding to the maps stored as values.
     """
 
     for map_ in mapdict.values():
-        map_.initialize(Files)
+        map_.initialize()
 
     mapdict = {map_.name: map_ for map_ in mapdict.values() if map_.success}
     RunPars.available_maps_singles = mapdict
 
     for map_choice in RunPars.maps_to_use:
         if map_choice not in mapdict:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 f"\nThe map {map_choice} was requested for use. However, it "
                 "either does not exist, or the map was loaded unsuccessfully "
                 "due to issues with its definition.",
@@ -2930,7 +2930,7 @@ def manage_maps_singles(Files, RunPars, mapdict):
             difference = ", ".join(
                 set(RunPars.output_data) - map_.Core.can_output)
             goal = ", ".join(RunPars.output_data)
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 f"\nThe map {map_choice} was requested for use in calculating "
                 f"{goal}. However, it cannot calculate the following output "
                 f"type(s): {difference}. Please either calculate fewer "
@@ -2949,25 +2949,23 @@ def manage_maps_singles(Files, RunPars, mapdict):
         RunPars.detected_requires_bonds = False
 
 
-def manage_maps_pairs(Files, RunPars, mapdict):
+def manage_maps_pairs(RunPars, mapdict):
     """Initializes and manages the detected maps in singles.
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related properties.
-        Has to be updated after RunPars is finalized.
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
-        The 'main' RunPars instance containing all the basic run-defining
-        parameters.
-    mapdict : dict of str: :class:`~GMAP.src.tools.MapReader.PairMap` pairs
-        Stores all the :class:`~GMAP.src.tools.MapReader.PairMap` objects for
-        each map supplied. The keys are the Map.name attributes corresponding
-        to the maps stored as values.
+        The 'main' RunPars instance containing all the basic
+        run-defining parameters.
+    mapdict : dict of str: :class:`~GMAP.src.tools.MapReader.PairMap`\
+    pairs
+        Stores all the :class:`~GMAP.src.tools.MapReader.PairMap`
+        objects for each map supplied. The keys are the Map.name
+        attributes corresponding to the maps stored as values.
     """
 
     for map_ in mapdict.values():
-        map_.initialize(Files)
+        map_.initialize()
 
     mapdict = {map_.name: map_ for map_ in mapdict.values() if map_.success}
     RunPars.available_maps_pairs = mapdict
@@ -2975,7 +2973,7 @@ def manage_maps_pairs(Files, RunPars, mapdict):
     for coupmapname, pairs in RunPars.coupling_v_pair_dict.items():
         # check if the requested map exists
         if coupmapname not in mapdict and coupmapname is not None:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 f"\nThe map {coupmapname} was requested for use in "
                 "couplings. However, it "
                 "either does not exist, or the map was loaded unsuccessfully "
@@ -2993,7 +2991,7 @@ def manage_maps_pairs(Files, RunPars, mapdict):
                 osc for osc in pair if osc not in coupmap.Core.allowed_singles]
             if wrong_singles:
                 printstr = " and ".join(pair)
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     f"\nThe map {coupmapname} was requested for use in "
                     "couplings. "
                     f"However, it cannot deal with singles of type {printstr}"
@@ -3004,7 +3002,7 @@ def manage_maps_pairs(Files, RunPars, mapdict):
             # check if the map can deal with this exact coupling
             if pair not in coupmap.Core.valid_combinations:
                 printstr = " and ".join(pair)
-                GM_PT.Printer().warning(
+                GM_PT.Printer.warning(
                     f"\nThe map {coupmapname} was requested for use in "
                     "couplings. "
                     f"However, it cannot couple oscillators of type {printstr}"
@@ -3064,17 +3062,18 @@ def manage_maps_pairs(Files, RunPars, mapdict):
 def scan_mapdirs(mapdirs, maptype):
     """Gives a list of newly-generated Map objects
 
-    Given a list of paths (each representing a map directory), create a Map
-    object for each map found, which will be filled later.
+    Given a list of paths (each representing a map directory), create a
+    Map object for each map found, which will be filled later.
 
     Parameters
     ----------
     mapdirs : list of pathlib.Path
-        A list of directories which should be scanned for maps. This object
-        is created by :func:`~GMAP.src.tools.ParameterParser.find_mapdir`.
+        A list of directories which should be scanned for maps. This
+        object is created by
+        :func:`~GMAP.src.tools.ParameterParser.find_mapdir`.
     maptype : str
-        Either 'Singles' for getting singles maps, or 'Pairs' for getting
-        pairs maps.
+        Either 'Singles' for getting singles maps, or 'Pairs' for
+        getting pairs maps.
 
     Returns
     -------

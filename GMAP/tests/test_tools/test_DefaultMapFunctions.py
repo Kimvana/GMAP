@@ -75,8 +75,16 @@ def test_get_str_osc():
     osc1 = GM_CT.CustomClass(**{"used_atoms": [0, 1, 2]})
     osc2 = GM_CT.CustomClass(**{"used_atoms": [3, 4, 5]})
     Syst = GM_CT.CustomClass(**{"resnums": [0, 0, 0, 1, 1, 1]})
-    assert newfunc(Syst, None, osc1) == "living on residue number 0"
-    assert newfunc(Syst, None, osc2) == "living on residue number 1"
+    assert newfunc(None, Syst, osc1) == "living on residue number 0"
+    assert newfunc(None, Syst, osc2) == "living on residue number 1"
+
+
+def test_report_system():
+    newfunc = GM_DMF.get_report_system()
+    map_ = GM_CT.CustomClass(**{"name": "A map for testing"})
+    syst = GM_CT.CustomClass(**{"oscillators_ordered": {
+        "A map for testing": [3, 5, 1, 8, 9]}})
+    assert newfunc(map_, syst) == "A map for testing:       5"
 
 
 def test_get_get_VEG_ref():
@@ -86,7 +94,6 @@ def test_get_get_VEG_ref():
             "VEG_reference": VEGref_res
         }
     })
-    _ = GM_FH.FileLocations()  # still needed for initialization
 
     mainfunc = GM_DMF.get_get_VEG_ref(map_)
     subfunc = GM_DMF.VEG_from_residues(VEGref_res[1:])
@@ -112,7 +119,6 @@ def test_VEG_from_residues():
             "VEG_reference": VEGref_res
         }
     })
-    _ = GM_FH.FileLocations()  # still needed for initialization
     subfunc = GM_DMF.VEG_from_residues(["0", "2"])
 
     Syst = get_syst_VEGtests()
@@ -131,7 +137,6 @@ def test_VEG_from_com():
             "VEG_reference": VEGref_CoM
         }
     })
-    _ = GM_FH.FileLocations()  # still needed for initialization
 
     subfunc = GM_DMF.VEG_from_com(["0", "2"])
 
@@ -151,7 +156,6 @@ def test_interpret_position():
             "VEG_reference": VEGref_pos
         }
     })
-    _ = GM_FH.FileLocations()  # still needed for initialization
     subfunc = GM_DMF.interpret_position(map_, VEGref_pos[1:], "VEG_reference")
 
     Syst = get_syst_VEGtests()
@@ -168,16 +172,15 @@ def test_interpret_position():
 def test_MI_MC_9(capsys):
     # too few opening brackets (should be 4 instead of two)
     VEGref_pos = ["position", "((0+1)/2.0)+2)/2.0)"]
-    Files = GM_FH.FileLocations()
 
     map_ = GM_CT.CustomClass(**{
         "rawcore": {
             "VEG_reference": VEGref_pos
         },
-        "directory": Files.cwd
+        "directory": GM_FH.FileLocations.cwd
     })
     _ = GM_DMF.interpret_position(map_, VEGref_pos[1:], "VEG_reference")
-    GM_PT.Printer().print_backlog()
+    GM_PT.Printer.print_backlog()
     captured = capsys.readouterr()
     assert captured.out.endswith("MI_MC_9\n")
 

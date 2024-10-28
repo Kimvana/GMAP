@@ -2,7 +2,7 @@
 tests missing:
 
 (@ July 22nd '24):
-141, 152-157, 230, 525, 1157, 1201 (9 missed statements)
+141, 152-157, 230, 525, 1157, 1201 (23 missed statements)
 
 - non-rightangled system    (141, 1201)
 - MDA system without bond information (both testing it with, and without
@@ -34,7 +34,7 @@ class TestSystem:
     def test_set_properties(self):
         mapname = "test_code_build_1"
         (
-            Files, RunPars, RefPars, DefPars, InPars,
+            RunPars, RefPars, DefPars, InPars,
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname)
 
@@ -103,7 +103,7 @@ class TestSystem:
             "--influencers_whitelist", ":protein_cannonical", "CL\\;"
         ]
         (
-            Files, RunPars, RefPars, DefPars, InPars,
+            RunPars, RefPars, DefPars, InPars,
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
@@ -125,7 +125,7 @@ class TestSystem:
             "--influencers_select_atoms", "protein", "or", "resname", "CL\\;"
         ]
         (
-            Files, RunPars, RefPars, DefPars, InPars,
+            RunPars, RefPars, DefPars, InPars,
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
@@ -148,7 +148,7 @@ class TestSystem:
             "--verbose", "4"
         ]
         (
-            Files, RunPars, RefPars, DefPars, InPars,
+            RunPars, RefPars, DefPars, InPars,
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
@@ -171,11 +171,11 @@ class TestSystem:
             "--influencers_whitelist", ":protein_cannonical", "CL\\;"
         ]
         (
-            Files, RunPars, RefPars, DefPars, InPars,
+            RunPars, RefPars, DefPars, InPars,
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
-        System = GM_SR.System(Files, RunPars)
+        System = GM_SR.System(RunPars)
 
         assert len(System.oscillators) == 17
 
@@ -188,11 +188,11 @@ class TestSystem:
             "--influencers_whitelist", ":protein_cannonical", "CL\\;"
         ]
         (
-            Files, RunPars, RefPars, DefPars, InPars,
+            RunPars, RefPars, DefPars, InPars,
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
-        System = GM_SR.System(Files, RunPars)
+        System = GM_SR.System(RunPars)
 
         assert len(System.oscillators) == 145
 
@@ -200,11 +200,11 @@ class TestSystem:
         # just AmideSC
         mapname = "AmideSC"
         (
-            Files, RunPars, RefPars, DefPars, InPars,
+            RunPars, RefPars, DefPars, InPars,
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname)
 
-        System = GM_SR.System(Files, RunPars)
+        System = GM_SR.System(RunPars)
 
         assert len(System.oscillators) == 17
 
@@ -212,11 +212,11 @@ class TestSystem:
         # This is a map of a triple ALA subchain - only 1 present in 1AKI
         mapname = "test_multiple_res_osc"
         (
-            Files, RunPars, RefPars, DefPars, InPars,
+            RunPars, RefPars, DefPars, InPars,
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname)
 
-        System = GM_SR.System(Files, RunPars)
+        System = GM_SR.System(RunPars)
         System.update_properties()
 
         assert len(System.oscillators) == 1
@@ -247,7 +247,7 @@ class TestSystem:
             "--verbose", "4"
         ]
         (
-            Files, RunPars, RefPars, DefPars, InPars,
+            RunPars, RefPars, DefPars, InPars,
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
@@ -266,7 +266,7 @@ class TestSystem:
             "--influencers_select_atoms", "or", "resname", "CL\\;"
         ]
         (
-            Files, RunPars, RefPars, DefPars, InPars,
+            RunPars, RefPars, DefPars, InPars,
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
@@ -286,12 +286,12 @@ class TestSystem:
             "--couplings_to_use", "AneedsB", ":All\\;"
         ]
         (
-            Files, RunPars, RefPars, DefPars, InPars,
+            RunPars, RefPars, DefPars, InPars,
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
         with pytest.raises(GM_Ex.GmapParameterError, match="MD_SU_6$"):
-            _ = GM_SR.System(Files, RunPars)
+            _ = GM_SR.System(RunPars)
 
 
 class TestOscillator:
@@ -302,11 +302,11 @@ class TestOscillator:
             "--influencers_whitelist", ":protein_cannonical", "CL\\;"
         ]
         (
-            Files, RunPars, RefPars, DefPars, InPars,
+            RunPars, RefPars, DefPars, InPars,
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
-        System = GM_SR.System(Files, RunPars)
+        System = GM_SR.System(RunPars)
         oscstr = str(System.oscillators[0])
         exp = "Oscillator of type AmideSC living on residue number 18"
         assert oscstr == exp
@@ -335,7 +335,7 @@ def test_gen_universe():
         "trajectory_file": ["../../sourcefiles/pdb_1AKI_50frame.xtc"]
     }
     (
-        Files, RunPars, RefPars, DefPars, InPars,
+        RunPars, RefPars, DefPars, InPars,
         CmdPars, mapdict, pairs_mapdict
     ) = parameter_getter(mapname, inpardict=inpardict)
 
@@ -359,7 +359,7 @@ def test_check_box_charge():
     inpardict = {"neutral_charge_threshold": ["0.001"]}
 
     (
-        Files, RunPars, RefPars, DefPars, InPars,
+        RunPars, RefPars, DefPars, InPars,
         CmdPars, mapdict, pairs_mapdict
     ) = parameter_getter(mapname, inpardict=inpardict)
 
@@ -384,7 +384,7 @@ def test_MD_SU_1():
     }
 
     (
-        Files, RunPars, RefPars, DefPars, InPars,
+        RunPars, RefPars, DefPars, InPars,
         CmdPars, mapdict, pairs_mapdict
     ) = parameter_getter(mapname, cmdline, inpardict)
 
@@ -400,7 +400,7 @@ def test_MD_SU_1():
     }
 
     (
-        Files, RunPars, RefPars, DefPars, InPars,
+        RunPars, RefPars, DefPars, InPars,
         CmdPars, mapdict, pairs_mapdict
     ) = parameter_getter(mapname, inpardict=inpardict)
 
@@ -414,7 +414,7 @@ def test_MD_SU_3(capsys):
     inpardict = {"neutral_charge_threshold": ["0.001"]}
 
     (
-        Files, RunPars, RefPars, DefPars, InPars,
+        RunPars, RefPars, DefPars, InPars,
         CmdPars, mapdict, pairs_mapdict
     ) = parameter_getter(mapname, inpardict=inpardict)
 
@@ -461,14 +461,14 @@ def parameter_getter(mapname, cmdline=None, inpardict=None):
 
     # generate parameter structures
     (
-        Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+        RunPars, RefPars, DefPars, InPars, CmdPars,
         mapdict, pairs_mapdict
     ) = basic_setup(
         cmdline, inpardict, mapname=mapname, finish_before="extract_code")
 
     # # process maps
     # for map_ in mapdict.values():
-    #     map_.initialize(Files)
+    #     map_.initialize()
     # # Ditch all maps that contain problems/flaws/issues
     # mapdict = {map_.name: map_ for map_ in mapdict.values() if map_.success}
     # for map_choice in RunPars.maps_to_use:
@@ -484,10 +484,10 @@ def parameter_getter(mapname, cmdline=None, inpardict=None):
     # else:
     #     RunPars.detected_requires_bonds = False
 
-    GM_MR.manage_maps_singles(Files, RunPars, mapdict)
-    GM_MR.manage_maps_pairs(Files, RunPars, pairs_mapdict)
+    GM_MR.manage_maps_singles(RunPars, mapdict)
+    GM_MR.manage_maps_pairs(RunPars, pairs_mapdict)
 
     return (
-        Files, RunPars, RefPars, DefPars, InPars,
+        RunPars, RefPars, DefPars, InPars,
         CmdPars, mapdict, pairs_mapdict
     )
