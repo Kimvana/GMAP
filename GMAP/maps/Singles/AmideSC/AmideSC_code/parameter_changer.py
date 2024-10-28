@@ -4,6 +4,15 @@ import GMAP.src.tools.PrintTools as GM_PT
 
 
 def adjust_map_core_raw(map_):
+    """Changes some choices in core.txt to match the chosen maps
+
+    Parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+        The object that stores everything the program currently knows
+        about this map.
+    """
+
     # atom order: CG  OD1  CB  ND2  HD21  HD22
 
     # Based on frequency map choice (Tokmakoff, Skinner, Jansen, Cho, Hirst),
@@ -53,6 +62,15 @@ def adjust_map_core_raw(map_):
 
 
 def adjust_mcr_freqchoice(map_):
+    """Makes changes to core.txt based on frequency map choice.
+
+    Parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+        The object that stores everything the program currently knows
+        about this map.
+    """
+
     # atom order: CG  OD1  CB  ND2  HD21  HD22
 
     choice = map_.RunPars.frequency_map_choice

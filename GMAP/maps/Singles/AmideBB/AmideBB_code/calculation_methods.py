@@ -9,6 +9,28 @@ import GMAP.src.tools.PrintTools as GM_PT
 
 
 def calc_dipole_Torii(map_, system, osc):
+    """Calculate the Torii dipole moment for a given oscillator
+
+    Parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+        The map instance which this function will belong to.
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The class containing all the information on the system of the
+        MD trajectory.
+    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        The specific oscillator for which the transformation is required.
+
+    Returns
+    -------
+    r_vec : `np.ndarray`
+        A length-3 vector containing the direction of the dipole moment.
+        The vector must be normalized.
+    r_pos : `np.ndarray`
+        A length-3 vector containing the position of the dipole moment.
+        The vector must lie within the simulation box.
+    """
+
     rotmat = osc.rotation_matrix
     COvec = rotmat[0]
     CNvec = rotmat[1]
@@ -27,6 +49,21 @@ def dipole_Torii(COvec, CNvec, magnitude):
     """Calculates the dipole moment using the Torii method.
 
     Method taken from AIM.
+
+    Parameters
+    ----------
+    COvec : `np.ndarray`
+        The vector pointing from the carbon to the oxygen atom
+    CNvec : `np.ndarray`
+        The vector pointing from the carbon to the nitrogen atom
+    magnitude : `np.float32`
+        The length that the vector is supposed to have.
+
+    Returns
+    -------
+    mi : `np.ndarray`
+        A length-3 vector containing the direction of the dipole moment.
+        The vector must be normalized.
     """
 
     # itheta = 1/0.17632698  ## 1/tan(10 degrees expressed in radians)
@@ -45,6 +82,28 @@ def dipole_Torii(COvec, CNvec, magnitude):
 
 
 def calc_dipole_Jansen(map_, system, osc):
+    """Calculate the Jansen dipole moment for a given oscillator
+
+    Parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+        The map instance which this function will belong to.
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The class containing all the information on the system of the
+        MD trajectory.
+    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        The specific oscillator for which the transformation is required.
+
+    Returns
+    -------
+    r_vec : `np.ndarray`
+        A length-3 vector containing the direction of the dipole moment.
+        The vector must be normalized.
+    r_pos : `np.ndarray`
+        A length-3 vector containing the position of the dipole moment.
+        The vector must lie within the simulation box.
+    """
+
     _, r_pos = map_.code.GM_get_dipole_dir(map_, system, osc)
     if osc.resnames[1] == "PRO":
         gasdip = map_.Core.dipole_gas_phase_array_prepro
@@ -60,6 +119,24 @@ def calc_dipole_Jansen(map_, system, osc):
 
 
 def get_position(map_, system, osc):
+    """Determine the position for a given oscillator
+
+    Parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+        The map instance which this function will belong to.
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The class containing all the information on the system of the
+        MD trajectory.
+    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        The specific oscillator for which the transformation is required.
+
+    Returns
+    -------
+    position : `np.ndarray`
+        A length-3 vector containing the position of the oscillator.
+    """
+
     # position is correct, but shifted to wrong box
     pos = map_.code.GM_get_position_DMF(map_, system, osc)
 
@@ -71,6 +148,24 @@ def get_position(map_, system, osc):
 
 
 def neighbor_influence(map_, system, osc):
+    """Calculates how much the frequency should be shifted due to neighbors
+
+    Parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+        The map instance which this function will belong to.
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The class containing all the information on the system of the
+        MD trajectory.
+    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        The specific oscillator for which the transformation is required.
+
+    Returns
+    -------
+    delta : float
+        The shift that should be added to the frequency
+    """
+
     delta = 0
     if osc.NtermNB is not None:
         delta += map_.neighbormaps["NtermShift" + osc.Nterm_nnmap].get_delta(
@@ -85,6 +180,20 @@ def determine_maps(oscillator_list, map_, system):
     """
     For each oscillator, find out what map should be used to consider its
     N-term and C-term neighbor.
+
+    The determined maps are saved as an attribute of the oscillators.
+
+    Parameters
+    ----------
+    oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        All oscillators belonging to a single struct of this map.
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+        The object that stores everything the program currently knows
+        about this map.
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
     """
 
     for osc in oscillator_list:
@@ -97,6 +206,29 @@ def determine_maps(oscillator_list, map_, system):
 
 
 def determine_map(osc1, osc2, map_, system):
+    """Determines which nearest-neighbor map should be used for this
+    pair of oscillators
+
+    Parameters
+    ----------
+    osc1, osc2 : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        The specific oscillators for which the neighbour mapping is
+        determined.
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+        The object that stores everything the program currently knows
+        about this map.
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
+
+    Returns
+    -------
+    mapname : str
+        The name (without 'Nterm' or 'Cterm' prefix) of the map that
+        fits the given pair.
+    """
+
     # no (pre-)prolines! easy!
     if "PRO" not in osc2.resnames:
         return ""
@@ -140,6 +272,29 @@ def determine_map(osc1, osc2, map_, system):
 
 
 def DLcheck(osc1, osc2, map_, system):
+    """Determine of an amino acid is of D or L chirality
+
+    Parameters
+    ----------
+    osc1, osc2 : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        The oscillators surrounding the amino acid in question
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+        The object that stores everything the program currently knows
+        about this map.
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
+
+    Returns
+    -------
+    chirality : int
+        Whether the amino acid is in D or L configuration.
+        -1 is returned for D (special), 1 is returned for L (default for
+        most organisms), 0 is returned for groups where the CA atom
+        is not chiral (like glycine for example)
+    """
+
     # checks whether the amino acid between two oscillators is in L or D
     # configuration
 

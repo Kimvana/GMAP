@@ -102,6 +102,10 @@ def test_D_pos(tmp_path):
     core_test_positions("D", tmp_path, 0.000004)
 
 
+def test_raman(tmp_path):
+    core_test_raman("", tmp_path, 0.00005)
+
+
 def core_test_frequencies(mapname, NNtreat, tmp_path, limit):
     # This runs GMAP to create the results
     curdir = Path(__file__).resolve().parent
@@ -188,6 +192,23 @@ def core_test_positions(atom, tmp_path, limit):
     dipold = read_dippos(
         (curdir / f"data/{atom}-pos_AIM_V1-0-2_AtomPos.txt").resolve(),
         128, 3)
+    core_compare_dippos(dipold, dipnew, limit)
+
+
+def core_test_raman(fbonus, tmp_path, limit):
+    # This runs GMAP to create the results
+    curdir = Path(__file__).resolve().parent
+    GM_CI.cmd_interface([
+        "GMAP", "GEM", "run",
+        str((curdir / "data/basic_parameters.txt").resolve()),
+        "--output_data", "ram\\;",
+        "--output_directory", str(tmp_path.resolve()),
+        "--log_directory", str(tmp_path.resolve())
+    ])
+    dipnew = read_dippos((tmp_path / "raman_tensor.txt").resolve(), 128, 6)
+    dipold = read_dippos(
+        (curdir / f"data/Raman{fbonus}_AIM_V1-0-2_RamanTensor.txt").resolve(),
+        128, 6)
     core_compare_dippos(dipold, dipnew, limit)
 
 

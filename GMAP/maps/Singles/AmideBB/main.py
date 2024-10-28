@@ -14,6 +14,28 @@ import AmideBB_code.parameter_changer as MC_PC
 
 
 def GM_adjust_map_core_raw(map_):
+    """Makes the necessary changes to the 'raw' input read from core.txt.
+
+    Is expected to not return anything - return value is not caught.
+
+    The core.txt file is stored in Map.rawcore. It has not yet been
+    parsed, just loaded into a dictionary. In this dictionary, each
+    keyword is its own dictionary key. Most keywords can only occur once
+    in the file - those have a list of the 'words' on the line as
+    their value. The parameters that are allowed to occur more than once
+    have a list as value, in which other lists appear - one for each
+    line.
+
+    The core.txt file has to be changed because the parameters of this
+    map allow to change between models, each of which has their own
+    files.
+
+    Parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+        The object that stores everything the program currently knows
+        about this map.
+    """
 
     # adjusting the names of functional_group
     all_amino_acid_codes = [
@@ -84,6 +106,28 @@ def GM_adjust_oscillators(map_, system, oscillator_list):
 # things like building further lookup tables, for instance.
 # (for AmideBB - find neighbours!)
 def GM_post_init(map_, system):
+    """Do some final initializations that need to happen before the
+    calculation starts.
+
+    Checks include:
+    - comparing RunPars of this map to that of AmideSC, if the latter is
+      present and active
+    - initializing the prepro properties/files
+    - Assigning the correct functions based on the parameter choices
+    - Finding and assigning the neighbours of each group
+    - Identifying all atoms local to each oscillator.
+
+    Parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+        The object that stores everything the program currently knows
+        about this map.
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
+    """
+
     # verify that both dipole maps (if applicable) have the same map choices
     rps = map_.RunPars
     main_runpars = map_.RunPars.MainRunPars
@@ -180,6 +224,28 @@ def GM_post_init(map_, system):
 
 
 def GM_str_osc(map_, system, oscillator):
+    """Explains how an oscillator should be printed.
+
+    Example print: 'binding the residues GLY36 and LYS37'
+
+    Parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+        The object that stores everything the program currently knows
+        about this map.
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
+    oscillator : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        The specific oscillator for which the string is required.
+
+    Returns
+    -------
+    string : str
+        The string that should be printed.
+    """
+
     at0 = oscillator.used_atoms[0]
     at3 = oscillator.used_atoms[3]
     return (
@@ -190,6 +256,26 @@ def GM_str_osc(map_, system, oscillator):
 
 
 def GM_calculate_frequency(map_, system, osc):
+    """Calculates the oscillating frequency for a given oscillator
+
+    Parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+        The object that stores everything the program currently knows
+        about this map.
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
+    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        The specific oscillator for which the frequency is required.
+
+    Returns
+    -------
+    freq : float
+        The frequency calculated for this oscillator this frame.
+    """
+
     if osc.resnames[1] == "PRO":
         gasfreq = map_.Core.frequency_gas_phase_prepro
         freqarr = map_.Core.frequency_data_array_linear_prepro
@@ -208,7 +294,7 @@ def GM_calculate_frequency(map_, system, osc):
     return freq
 
 
-def GM_calculate_raman(Map, Syst, osc):
+def GM_calculate_raman(map_, system, osc):
     """Returns the raman tensor as a length-6 vector: (xx, xy, xz, yy, yz, zz)
 
     This method can easily be adapted by other maps for working with raman
@@ -222,6 +308,21 @@ def GM_calculate_raman(Map, Syst, osc):
     common yet, so a 'usual' way of determining them has not yet been
     created. Maybe, they won't stay of fixed magnitude in local coordinates
     forever, but depend on sth like VEG or atomic distances in the future.
+
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+        The object that stores everything the program currently knows
+        about this map.
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
+    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        The specific oscillator for which the transformation is required.
+
+    Returns
+    -------
+    raman_tensor : `np.ndarray`
+        The raman tensor calculated for this oscillator this frame.
     """
 
     # the rotation matrix is available as long as the map specifies

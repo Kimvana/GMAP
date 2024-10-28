@@ -73,6 +73,27 @@ AmideBB.dp2_choice
 
     When saving the doublepos of this group, what position should be taken as second position. The first four options save the position of that atom, Torii saves the position at which the Torii dipoles are assumed. This is in between the CNO atoms: 0.077*C + 0.665*O + 0.258*N
 
+AmideBB.consider_nearest_neighbours
+    shorthand: AmideBB.cnn
+    options: True, False (default = True)
+
+    When calculating the electrostatic properties, the environment contains charges that are allowed to influence those properties. But how do we treat charges very close by? The system is a protein, with small residues, so there are very similar charges very close to the treated oscillator.
+    If this parameter is set to true, the neighbouring residues are excluded from the standard electrostatics calculation, and treated with specially designed maps instead. These maps add a shift to the calculated frequency based on the ramachandran angles between the different residues.
+
+    !!! IMPORTANT !!!
+    This setting changes how the electrostatic properties are calculated, and therefore has an influence on all electrostatics-dependent properties (Jansen dipoles included).
+
+    The Tokmakoff map is not allowed to be influenced by this setting, it never uses this special extra map. The Jansen maps (both frequency and dipole) are designed with it in mind, so give less accurate results if this is turned off.
+
+AmideBB.legacy_mode
+    no shorthand
+    options: None, AIM, AmideImaps (default = None)
+
+    Whether to recreate the results as produced by the precursors of this package. These are the differences:
+
+    - All positions lie between 0 and the box size for AIM, while None and AmideImaps have them lie between -0.5 and 0.5 times the box size.
+    - When there are two prolines back to back, what map is used changes a little bit between modes. AmideImaps assigned a Gly-Pro map for those cases, while AIM and None assign a Pro-Gly map.
+
 AmideBB.allow_map_mismatch
     no shorthand
     options: true, false (default = false)

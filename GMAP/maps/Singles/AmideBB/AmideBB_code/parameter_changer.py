@@ -11,6 +11,15 @@ import GMAP.src.tools.PrintTools as GM_PT
 
 
 def adjust_map_core_raw(map_):
+    """Changes some choices in core.txt to match the chosen maps
+
+    Parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+        The object that stores everything the program currently knows
+        about this map.
+    """
+
     # atom order: CG  OD1  CB  ND2  HD21  HD22
 
     # Based on frequency map choice (Tokmakoff, Skinner, Jansen, Cho, Hirst),
@@ -60,6 +69,15 @@ def adjust_map_core_raw(map_):
 
 
 def adjust_mcr_freqchoice(map_):
+    """Makes changes to core.txt based on frequency map choice.
+
+    Parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+        The object that stores everything the program currently knows
+        about this map.
+    """
+
     # atom order: CG  OD1  CB  ND2  HD21  HD22
 
     choice = map_.RunPars.frequency_map_choice
@@ -104,6 +122,27 @@ def adjust_mcr_freqchoice(map_):
 
 
 def oscillator_sorter(map_, system, oscillator_list):
+    """Sorts the oscillators into the desired order.
+
+    Parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+        The object that stores everything the program currently knows
+        about this map.
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
+    oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        All oscillators belonging to a single struct of this map.
+
+    Returns
+    -------
+    newlist : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        The same oscillators as in oscillator list, but in the desired
+        order.
+    """
+
     # first, label oscillators
     # used ats order:    res0{C O CA} res1{N H CA}
     for oscillator in oscillator_list:
@@ -145,6 +184,18 @@ def oscillator_sorter(map_, system, oscillator_list):
 
 
 def initialize_prepro_properties(map_):
+    """Read and parse the data from prepro map files.
+
+    Normally, GMAP automatically parses the data files, but this map
+    needs multiple, so these extras need to be done manually.
+
+    Parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+        The object that stores everything the program currently knows
+        about this map.
+    """
+
     # For assigning constants, first they must be created
     try:
         pp_gasfreq = np.float32(map_.rawcore["frequency_gas_phase_prepro"][0])

@@ -3,6 +3,21 @@
 
 
 def find_local_atoms(map_, system, oscillator_list):
+    """Finds the local atoms for all oscillators in this map.
+
+    Parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+        The object that stores everything the program currently knows
+        about this map.
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
+    oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        All oscillators belonging to a single struct of this map.
+    """
+
     if map_.RunPars.frequency_map_choice == "Tokmakoff":
         get_Tokmakoff_locals(oscillator_list)
 
@@ -30,6 +45,14 @@ def find_local_atoms(map_, system, oscillator_list):
 
 
 def get_Tokmakoff_locals(oscillator_list):
+    """Get all atoms that are considered local for the Tokmakoff map.
+
+    Parameters
+    ----------
+    oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        All oscillators belonging to a single struct of this map.
+    """
+
     # For Tokmakoff, the locals == used_atoms (as in core.txt). The only
     # exception to this is the prepros, they shouldn't contain the CD atom.
     for osc in oscillator_list:
@@ -38,6 +61,18 @@ def get_Tokmakoff_locals(oscillator_list):
 
 
 def add_proline_HDs(system, oscillator_list):
+    """Get all HD atoms for all prolines in the system.
+
+    Parameters
+    ----------
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
+    oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        All oscillators belonging to a single struct of this map.
+    """
+
     sysres = system.residues
     for osc in oscillator_list:
         if osc.resnames[1] == "PRO":
@@ -55,6 +90,18 @@ def add_proline_HDs(system, oscillator_list):
 
 
 def get_Nterm_locals(system, osc):
+    """Get all local atoms on the Nterm side of the oscillator
+
+    Parameters
+    ----------
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
+    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        The oscillator for which these local atoms need to be found
+    """
+
     # for the opls forcefield, the non-CA atoms of the N term neighbour should
     # be added to locals. Otherwise, all atoms of the N term neighbour should
     # be added to locals
@@ -65,6 +112,18 @@ def get_Nterm_locals(system, osc):
 
 
 def get_Cterm_locals(osc):
+    """Get all local atoms on the Cterm side of the oscillator
+
+    Parameters
+    ----------
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
+    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        The oscillator for which these local atoms need to be found
+    """
+
     # ETA residue is different (not yet implemented in detection)
     if osc.resnames[1] == "ETA":
         local_ix = osc.used_atoms[0:5]
@@ -74,6 +133,18 @@ def get_Cterm_locals(osc):
 
 
 def get_proline_atoms(system, osc):
+    """Add all atoms in neighbouring prolines to the locals
+
+    Parameters
+    ----------
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
+    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        The oscillator for which these local atoms need to be found
+    """
+
     # any atoms in proline residues should be taken to be local, too. This
     # could be either of this oscillators residues, or the one after.
     resnums = list(osc.resnums)
@@ -105,6 +176,21 @@ def get_proline_atoms(system, osc):
 
 
 def get_CA_hydrogen_atoms(map_, system, osc):
+    """Get all hydrogen atoms on all CA atoms already in locals
+
+    Parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+        The object that stores everything the program currently knows
+        about this map.
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
+    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        The oscillator for which these local atoms need to be found
+    """
+
     CA_hydrogen_atoms = []
     resnums = list(osc.resnums)
     if map_.RunPars.consider_nearest_neighbours:
