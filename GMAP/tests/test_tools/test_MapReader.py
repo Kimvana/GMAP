@@ -1142,6 +1142,47 @@ class TestSingleCore:
         found_bonds = [struct.bonds for struct in Corebase.functional_group]
         assert found_bonds == [[[6, 13]]]
 
+    def test_allow_ranges(self):
+        # Should test for cases: "All", "alL", "0-12","0-6,5-11","13-10", "5101870-3"
+        cmdline = [
+            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+        ]
+        inpardict = {}
+        mapname = "test_AllowRanges"
+        (
+            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            mapdict, pairs_mapdict
+        ) = basic_setup(
+            cmdline, inpardict, finish_before="Core", mapname=mapname
+        )
+        map_ = mapdict[mapname]
+        CoreBase = basic_setup_core(map_, finish_before="used_atoms")
+        setattr(CoreBase, "used_atoms", CoreBase.parse_used_atoms(
+            map_.rawcore, map_.directory
+        ))
+        assert CoreBase.used_atoms == [5, 3, 7, 8, 9, 10, 11, 12, 13]
+
+        map_.rawcore["used_atoms"] = ["All"]
+        CoreBase = basic_setup_core(map_, finish_before="used_atoms")
+        setattr(CoreBase, "used_atoms", CoreBase.parse_used_atoms(
+            map_.rawcore, map_.directory
+        ))
+        assert CoreBase.used_atoms == [i for i in range(14)]
+
+        map_.rawcore["used_atoms"] = ["0-12"]
+        CoreBase = basic_setup_core(map_, finish_before="used_atoms")
+        setattr(CoreBase, "used_atoms", CoreBase.parse_used_atoms(
+            map_.rawcore, map_.directory
+        ))
+        assert CoreBase.used_atoms == [i for i in range(13)]
+
+        map_.rawcore["used_atoms"] = ["12-0"]
+        CoreBase = basic_setup_core(map_, finish_before="used_atoms")
+        setattr(CoreBase, "used_atoms", CoreBase.parse_used_atoms(
+            map_.rawcore, map_.directory
+        ))
+        assert CoreBase.used_atoms == [i for i in range(12,-1,-1)]
+
     def test_parse_used_atoms(self):
         cmdline = [
             "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
@@ -1693,6 +1734,10 @@ class TestSingleCore:
             "MI_MC_7", capfd, "test_MI_MC_7_7", "length_units")
         self.basis_test_MI_MC(
             "MI_MC_7", capfd, "test_MI_MC_7_8", "positions")
+        self.basis_test_MI_MC(
+            "MI_MC_7", capfd, "test_MI_MC_7_9", "estatic_choice")
+        self.basis_test_MI_MC(
+            "MI_MC_7", capfd, "test_MI_MC_7_10", "estatic_choice")
 
     def test_MI_MC_8(self, capfd):
         self.basis_test_MI_MC(
@@ -1719,6 +1764,8 @@ class TestSingleCore:
             "MI_MC_8", capfd, "test_MI_MC_8_11", "frequency")
         self.basis_test_MI_MC(
             "MI_MC_8", capfd, "test_MI_MC_8_12", "length_units")
+        self.basis_test_MI_MC(
+            "MI_MC_8", capfd, "test_MI_MC_8_13", "estatic_choice")
 
     def test_MI_MC_9(self, capfd):
         self.basis_test_MI_MC("MI_MC_9", capfd, finish_before="used_atoms")

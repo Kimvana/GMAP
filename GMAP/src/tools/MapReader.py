@@ -1575,6 +1575,43 @@ class SingleCore:
                     self.success = False
                     return
 
+    def allow_ranges(self, ix_list, lenlist):
+        """Allows the user to select a range of integers to be
+        included in a map. Range of integers should be formatted
+        with a hyphen between two integers of choice.
+        Alternatively, the user may choose to include all atoms
+        by writing the word "All" instead of a range.
+
+        Parameters
+        ----------
+        ix_list : list
+            The list of atom indexes to be used for the map.
+        lenlist : int
+            The length of the atom list to choose from.
+        """
+
+        atoms = list()
+        if "all" in (elem.lower() for elem in ix_list):  # Case insensitive in
+            atoms.extend(list(range(0, lenlist)))
+        else:
+            for elem in ix_list:
+                if "-" in elem:
+                    temp = elem.split("-")  # "10-21" -> ["10","21"]
+                    if len(temp) == 2:
+                        start = int(temp[0])
+                        end = int(temp[1])
+                        if start > lenlist or end > lenlist:
+                            raise IndexError
+                        if start > end:
+                            atoms.extend(list(range(start, end - 1, -1)))
+                        else:
+                            atoms.extend(list(range(start, end + 1)))
+                    elif len(temp) != 2:
+                        raise ValueError
+                else:
+                    atoms.append(int(elem))
+        return atoms
+
     def parse_used_atoms(self, rawcore, mapdir):
         """Parse the choice for the parameter used_atoms
 
@@ -1607,13 +1644,29 @@ class SingleCore:
 
         # convert to ints
         try:
-            used_atoms = [int(num) for num in rawcore["used_atoms"]]
+            # Note: rawcore["used_atoms"] is a list of whatever comes after
+            #       used_atoms in the core.txt file used
+            minLen = min([  # Use the shortest structure
+                len(struct.indices) for struct in self.functional_group])
+            used_atoms = self.allow_ranges(rawcore["used_atoms"], minLen)
+
+        except IndexError as IErr:
+            GM_PT.Printer.warning(
+                "\nChoice of parameter 'used_atoms' is out of bounds. "
+                f"In the file {mapdir / 'core.txt'}. Please make sure the "
+                "choice is within bounds.",
+                "MI_MC_8", exception=IErr
+            )
+            self.success = False
+            return
+
         except Exception as ex:
             GM_PT.Printer.warning(
                 "\nCould not interpret the choice for the parameter "
                 "'used_atoms'"
                 f" in the file {mapdir / 'core.txt'}. Please make sure the "
-                "choice consists of nothing but numbers separated by spaces.",
+                "choice consists of nothing but numbers separated by spaces"
+                "and/or ranges of integers separated by a hyphen.",
                 "MI_MC_7", exception=ex
             )
             self.success = False
@@ -1713,9 +1766,9 @@ class SingleCore:
 
         # convert to ints
         try:
-            estatic_atoms = [
-                int(num) for num in rawcore["electrostatic_atoms"]
-            ]
+            u_a_len = len(self.used_atoms)  # Use the shortest structure
+            estatic_atoms = self.allow_ranges(
+                rawcore["electrostatic_atoms"], u_a_len)
         except Exception as ex:
             GM_PT.Printer.warning(
                 "\nCould not interpret the choice for the parameter "
@@ -1778,9 +1831,9 @@ class SingleCore:
 
         # convert to ints
         try:
-            local_atoms = [
-                int(num) for num in rawcore["local_atoms"]
-            ]
+            u_a_len = len(self.used_atoms)  # Use the shortest structure
+            local_atoms = self.allow_ranges(rawcore["local_atoms"], u_a_len)
+
         except Exception as ex:
             if rawcore["local_atoms"][0].lower() == "none":
                 local_atoms = []
