@@ -1652,7 +1652,7 @@ class SingleCore():
 
         except IndexError as IErr:
             GM_PT.Printer.warning(
-                "\nChoice of parameter 'used_atoms' is out of bounds. " 
+                "\nChoice of parameter 'used_atoms' is out of bounds. "
                 f"In the file {mapdir / 'core.txt'}. Please make sure the "
                 "choice is within bounds.",
                 "MI_MC_8", exception=IErr
