@@ -14,6 +14,7 @@ import GMAP.src.tools.FileHandler as GM_FH
 import GMAP.src.tools.ParameterParser as GM_PP
 import GMAP.src.tools.PrintTools as GM_PT
 
+
 class Map():
     """Contains all information regarding a single map. Base to build
     upon.
@@ -1590,8 +1591,8 @@ class SingleCore():
         """
 
         atoms = list()
-        if "all" in (elem.lower() for elem in ix_list): # Case insensitive in
-            atoms.extend(list(range(0,lenlist)))
+        if "all" in (elem.lower() for elem in ix_list):  # Case insensitive in
+            atoms.extend(list(range(0, lenlist)))
         else:
             for elem in ix_list:
                 if "-" in elem:
@@ -1645,11 +1646,12 @@ class SingleCore():
         try:
             # Note: rawcore["used_atoms"] is a list of whatever comes after
             #       used_atoms in the core.txt file used
-            minLen = min([len(struct.indices) for struct in self.functional_group])  # Use the shortest structure
+            minLen = min([  # Use the shortest structure
+                len(struct.indices) for struct in self.functional_group])
             used_atoms = self.allow_ranges(rawcore["used_atoms"], minLen)
 
         except IndexError as IErr:
-            GM_PT.Printer().warning(
+            GM_PT.Printer.warning(
                 "\nChoice of parameter 'used_atoms' is out of bounds. " 
                 f"In the file {mapdir / 'core.txt'}. Please make sure the "
                 "choice is within bounds.",
@@ -1658,14 +1660,13 @@ class SingleCore():
             self.success = False
             return
 
-
         except Exception as ex:
             GM_PT.Printer.warning(
                 "\nCould not interpret the choice for the parameter "
                 "'used_atoms'"
                 f" in the file {mapdir / 'core.txt'}. Please make sure the "
-                "choice consists of nothing but numbers separated by spaces and/or "
-                "ranges of integers separated by a hyphen.",
+                "choice consists of nothing but numbers separated by spaces"
+                "and/or ranges of integers separated by a hyphen.",
                 "MI_MC_7", exception=ex
             )
             self.success = False
@@ -1766,7 +1767,8 @@ class SingleCore():
         # convert to ints
         try:
             u_a_len = len(self.used_atoms)  # Use the shortest structure
-            estatic_atoms = self.allow_ranges(rawcore["electrostatic_atoms"], u_a_len)
+            estatic_atoms = self.allow_ranges(
+                rawcore["electrostatic_atoms"], u_a_len)
         except Exception as ex:
             GM_PT.Printer.warning(
                 "\nCould not interpret the choice for the parameter "
@@ -1826,7 +1828,7 @@ class SingleCore():
             )
             self.success = False
             return
-            
+
         # convert to ints
         try:
             u_a_len = len(self.used_atoms)  # Use the shortest structure
