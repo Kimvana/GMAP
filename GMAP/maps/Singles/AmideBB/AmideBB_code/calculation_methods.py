@@ -31,21 +31,24 @@ def calc_dipole_Torii(map_, system, osc):
         The vector must lie within the simulation box.
     """
 
-    rotmat = osc.rotation_matrix
-    COvec = rotmat[0]
-    CNvec = rotmat[1]
+    pos_C_box = osc.positions_box[0]
+    pos_O_box = osc.positions_box[1]
+    pos_N_box = osc.positions_box[3]
+    COvec = GM_MF.PBC_boxdiff_triclin(pos_O_box, pos_C_box, system.boxvects)
+    CNvec = GM_MF.PBC_boxdiff_triclin(pos_N_box, pos_C_box, system.boxvects)
 
     # position of dipole vector
     r_pos = osc.positions[0] + 0.665*COvec + 0.258*CNvec
 
     # dipole moment vector itself
-    r_vec = dipole_Torii(COvec, CNvec, map_.Core.dipole_gas_phase)
+    r_vec = dipole_Torii(
+        COvec, CNvec, map_.Core.dipole_Torii_angle, map_.Core.dipole_gas_phase)
 
     return r_vec, r_pos
 
 
 @njit
-def dipole_Torii(COvec, CNvec, magnitude):
+def dipole_Torii(COvec, CNvec, itheta, magnitude):
     """Calculates the dipole moment using the Torii method.
 
     Method taken from AIM.
@@ -67,7 +70,7 @@ def dipole_Torii(COvec, CNvec, magnitude):
     """
 
     # itheta = 1/0.17632698  ## 1/tan(10 degrees expressed in radians)
-    itheta = 5.6712818196
+    # itheta = 5.6712818196
 
     dri = 0.665*COvec + 0.258*CNvec
 

@@ -50,7 +50,11 @@ def plot_coupling_choices(RunPars, System):
     nosc = System.nosc  # amount of oscillators
 
     # Obtain colors for plotting
-    ncoupmaps = len(RunPars.requested_pairmapdict)
+    presentcoupmaps = [
+        coupmap for coupmap in RunPars.requested_pairmapdict.values()
+        if len(coupmap.allpairs) != 0]
+    ncoupmaps = len(presentcoupmaps)
+    # ncoupmaps = len(RunPars.requested_pairmapdict)
     if ncoupmaps > 28:  # the discrete rainbow can support 28 colors max.
         colors = GM_CS.DiscreteRainbowGenerator().get_color_list_from_int(
             28, "rgbarrfloat32")
@@ -62,7 +66,9 @@ def plot_coupling_choices(RunPars, System):
     # Build the image
     coupmap_image = np.zeros((nosc, nosc, 3), dtype="float32")
     coupmap_image[:, :] = no_data
-    for ix, coupmap in enumerate(RunPars.requested_pairmapdict.values()):
+    for ix, coupmap in enumerate(presentcoupmaps):
+        if len(coupmap.allpairs) == 0:
+            continue
         rows, cols = np.array(coupmap.allpairs).T
         coupmap_image[rows, cols, :] = colors[ix % 28]
         coupmap_image[cols, rows, :] = colors[ix % 28]
@@ -78,7 +84,8 @@ def plot_coupling_choices(RunPars, System):
     # Add the legend
     colors = np.concatenate((no_data, colors))
     handles = [Rectangle((0, 0), 1, 1, color=col) for col in colors]
-    labels = ["no coupling"] + list(RunPars.requested_pairmapdict.keys())
+    labels = ["no coupling"] + [coupmap.name for coupmap in presentcoupmaps]
+    # labels = ["no coupling"] + list(RunPars.requested_pairmapdict.keys())
     ax.legend(handles, labels)
 
     # Save the figure

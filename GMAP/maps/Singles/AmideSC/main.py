@@ -10,6 +10,7 @@ therein) as this file.
 import numpy as np
 
 # GMAP imports
+import GMAP.src.tools.constants as GM_con
 # import GMAP.src.tools.MathFunctions as GM_MF
 # import GMAP.src.tools.PhysicsFunctions as GM_PF
 # import GMAP.src.tools.DefaultMapFunctions as GM_DMF
@@ -144,6 +145,8 @@ def GM_post_init(map_, system):
     if map_.RunPars.dipole_map_choice == "Torii":
         map_.code.GM_calculate_dipole = MC_CM.calc_dipole_Torii
         map_.Core.dipole_gas_phase = np.float32(map_.Core.dipole_gas_phase)
+        map_.Core.dipole_Torii_angle = np.float32(
+            1 / np.tan(GM_con.deg2rad * map_.RunPars.Torii_dipole_angle))
 
     if map_.RunPars.legacy_mode == "AIM":
         map_.code.GM_get_position_DMF = map_.code.GM_get_position

@@ -3,6 +3,7 @@
 import numpy as np
 
 # GMAP imports
+import GMAP.src.tools.constants as GM_con
 import GMAP.src.tools.PrintTools as GM_PT
 # from GMAP.src.tools.PrintTools import devprint as dpr
 
@@ -99,6 +100,19 @@ def GM_adjust_oscillators(map_, system, oscillator_list):
     # Sort oscillators into the correct order
     oscillator_list = MC_PC.oscillator_sorter(map_, system, oscillator_list)
 
+    # tell each oscillator what/who it's neighbors are.
+    # N term is first, C term is last
+    for oscillator in oscillator_list:
+        oscillator.NtermNB = None
+        oscillator.CtermNB = None
+    # used ats order:    res0{C O CA} res1{N H CA} ({N CD CA} for prepro)
+    for Nosc in oscillator_list:
+        for Cosc in oscillator_list:
+            if Nosc.used_atoms[5] == Cosc.used_atoms[2]:
+                Nosc.CtermNB = Cosc
+                Cosc.NtermNB = Nosc
+                break  # Nosc can at most have a single Cterm neighbour
+
     return oscillator_list
 
 
@@ -185,6 +199,8 @@ def GM_post_init(map_, system):
     if map_.RunPars.dipole_map_choice == "Torii":
         map_.code.GM_calculate_dipole = MC_CM.calc_dipole_Torii
         map_.Core.dipole_gas_phase = np.float32(map_.Core.dipole_gas_phase)
+        map_.Core.dipole_Torii_angle = np.float32(
+            1 / np.tan(GM_con.deg2rad * map_.RunPars.Torii_dipole_angle))
     else:
         map_.code.GM_calculate_dipole = MC_CM.calc_dipole_Jansen
 
@@ -192,21 +208,8 @@ def GM_post_init(map_, system):
         map_.code.GM_get_position_DMF = map_.code.GM_get_position
         map_.code.GM_get_position = MC_CM.get_position
 
-    # tell each oscillator what/who it's neighbors are.
-    oscillator_list = system.oscillators_ordered["AmideBB"]
-    # N term is first, C term is last
-    for oscillator in oscillator_list:
-        oscillator.NtermNB = None
-        oscillator.CtermNB = None
-    # used ats order:    res0{C O CA} res1{N H CA} ({N CD CA} for prepro)
-    for Nosc in oscillator_list:
-        for Cosc in oscillator_list:
-            if Nosc.used_atoms[5] == Cosc.used_atoms[2]:
-                Nosc.CtermNB = Cosc
-                Cosc.NtermNB = Nosc
-                break  # Nosc can at most have a single Cterm neighbour
-
     # now, knowing neighbors, we can determine the local atoms.
+    oscillator_list = system.oscillators_ordered["AmideBB"]
     MC_LAF.find_local_atoms(map_, system, oscillator_list)
 
     MC_NM.read_maps(map_)
