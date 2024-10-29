@@ -279,7 +279,7 @@ class ContinuousColorScheme(mplC.ListedColormap):
         self.name = name
 
 
-class DiscreteRainbowGenerator():
+class DiscreteRainbowGenerator:
     """Can generate the requested amount of colors equidistant along a
     rainbow.
 

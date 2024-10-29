@@ -308,7 +308,7 @@ class TestOscillator:
 
         System = GM_SR.System(RunPars)
         oscstr = str(System.oscillators[0])
-        exp = "Oscillator of type AmideSC living on residue number 18"
+        exp = "Oscillator of type AmideSC living on the residue ASN18"
         assert oscstr == exp
 
     def test_rotate_VEG(self):

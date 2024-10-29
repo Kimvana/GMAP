@@ -24,7 +24,7 @@ Be aware that the maps used in this overarching map have been designed to be use
 - In general, the OPLS-AA forcefield is recommended, except for the Tokmakoff map, which has been designed for the CHARMM-27 forcefield.
 - The Jansen dipole map should only be used together with the Jansen frequency map (this is enforced by this map).
 - It is common to also calculate couplings when working with amides. This should be done with one of the specially-designed amide coupling maps. See (https://doi.org/10.1021/acs.jctc.6b00420) to find out what coupling map is best for your usecase.
-
+- The peaks for these systems take up the same spectral space as backbone amides, so to get better agreement with experiment, you'll probably want to use the backbone map along this one.
 
 
 Available parameters
@@ -76,6 +76,12 @@ AmideSC.dp2_choice
     options: C, O, N, D, Torii (default = N)
 
     When saving the doublepos of this group, what position should be taken as second position. The first four options save the position of that atom, Torii saves the position at which the Torii dipoles are assumed. This is in between the CNO atoms: 0.077*C + 0.665*O + 0.258*N
+
+AmideSC.legacy_mode
+    no shorthand
+    options: None, AIM, AmideImaps
+
+    There are some small differences between the different programs. For this map, the differences are very small: in the case this parameter is set to AIM, the positions are slightly different. Imagine the MD calculations returning a cubic box with all sides of length 100. When GMAP returns the positions, all components will lie between -50 and 50. However, when AIM returns the positions, all components will fall between 0 and 100.
 
 
 

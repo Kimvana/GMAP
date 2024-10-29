@@ -38,7 +38,7 @@ class TestErrCode:
             assert GM_SC.ErrCode("5") == "AA_BB_33"
 
 
-class TestColStr():
+class TestColStr:
     def test_add(self):
         assert GM_SC.ColStr("A") + "B" == GM_SC.ColStr("AB")
 

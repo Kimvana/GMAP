@@ -29,7 +29,6 @@ can_output         ham ene dip pos dbp ram
 
 functional_group        [ASN]    CG  OD1  CB  ND2  HD21  HD22
 functional_group        [GLN]    CD  OE1  CG  NE2  HE21  HE22
-# functional_group_file   funcgroup.txt
 
 # --------------------------
 
@@ -93,7 +92,7 @@ frequency_data_file_linear     Skinner.txt
 # Torii dipole function is used, which has a magnitude of 0.276 and varying
 # direction. It has no dipoles file.
 dipole_gas_phase        0.242141  -0.085961   0
-dipole_data_file        xyz jansen_dipoles.txt   
+dipole_data_file        xyz jansen_dipoles_gen.txt   
 
 # ------------------------
 

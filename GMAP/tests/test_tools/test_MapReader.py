@@ -1143,14 +1143,15 @@ class TestSingleCore:
         assert found_bonds == [[[6, 13]]]
 
     def test_allow_ranges(self):
-        # Should test for cases: "All", "alL", "0-12","0-6,5-11","13-10", "5101870-3"
+        # Should test for cases:
+        # "All", "alL", "0-12","0-6,5-11","13-10", "5101870-3"
         cmdline = [
             "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
         ]
         inpardict = {}
         mapname = "test_AllowRanges"
         (
-            Files, RunPars, RefPars, DefPars, InPars, CmdPars,
+            RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = basic_setup(
             cmdline, inpardict, finish_before="Core", mapname=mapname
@@ -1181,7 +1182,7 @@ class TestSingleCore:
         setattr(CoreBase, "used_atoms", CoreBase.parse_used_atoms(
             map_.rawcore, map_.directory
         ))
-        assert CoreBase.used_atoms == [i for i in range(12,-1,-1)]
+        assert CoreBase.used_atoms == [i for i in range(12, -1, -1)]
 
     def test_parse_used_atoms(self):
         cmdline = [
