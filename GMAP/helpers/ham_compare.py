@@ -1,6 +1,9 @@
 """
 The purpose of this script is to compare two hamiltonians to see whether
 they're equal, and if not, indicate where / by how much.
+
+Something similar is now implemented for the tests of the singles maps
+AmideBB and AmideSC.
 """
 
 import sys

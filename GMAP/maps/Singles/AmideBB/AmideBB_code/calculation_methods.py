@@ -31,9 +31,13 @@ def calc_dipole_Torii(map_, system, osc):
         The vector must lie within the simulation box.
     """
 
-    rotmat = osc.rotation_matrix
-    COvec = rotmat[0]
-    CNvec = rotmat[1]
+    pos_C_box = osc.positions_box[0]
+    pos_O_box = osc.positions_box[1]
+    pos_N_box = osc.positions_box[3]
+    COvec = GM_MF.PBC_boxdiff_triclin(pos_O_box, pos_C_box, system.boxvects)
+    COvec /= GM_MF.vec3_len(COvec)
+    CNvec = GM_MF.PBC_boxdiff_triclin(pos_N_box, pos_C_box, system.boxvects)
+    CNvec /= GM_MF.vec3_len(CNvec)
 
     # position of dipole vector
     r_pos = osc.positions[0] + 0.665*COvec + 0.258*CNvec
@@ -48,7 +52,8 @@ def calc_dipole_Torii(map_, system, osc):
 def dipole_Torii(COvec, CNvec, magnitude):
     """Calculates the dipole moment using the Torii method.
 
-    Method taken from AIM.
+    Method taken from AIM. When using this method, make sure the input
+    vectors COvec and CNvec are normalized.
 
     Parameters
     ----------

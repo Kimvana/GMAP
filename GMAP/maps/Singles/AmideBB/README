@@ -9,20 +9,19 @@ sections:
 intended use
 ------------
 
-This map is intended for use with amide (~N(D)C(=O)~) (smiles notation) groups, specifically those that live in proteins, in the backbones. In other words, it looks for the amide units formed through linking amino acids.
+This map is intended for use with amide (~N(D)C(=O)~) (smiles notation) groups, specifically those that are found in the protein backbone. In other words, it looks for the amide units formed through linking amino acids.
 
-The goal is to calculate the absorption frequency of the Amide I mode, where the C=O bond stretches.
+The goal is to calculate the absorption frequency of the Amide I mode, which is dominated by the C=O stretch.
 
-The notation is not wrong - these maps assume in their frequency calculations that this is a deuterated group. If non-deuterated values are desired, the resulting spectrum should be blue-shifted by about 10 cm-1. (https://doi.org/10.1063/5.0064518)
-
+Strictly speaking, amide I' is used for the deuterated vibrations as found when the protein is solvated in heave water. Amide I is used for the vibration with hygrogenated nitrogen as found when the protein is solvated in H2O. The maps in this file perform the amide I' calculation (so the deuterated form). If non-deuterated values are desired, the resulting spectrum should be blue-shifted by about 10 cm-1. (https://doi.org/10.1063/5.0064518)
 
 
 how to use
 ----------
 
-Be aware that the maps used in this overarching map have been designed to be used in combination with certain other maps, or with certain force fields. While a map should still work with a different forcefield, it is still highly recommended to use the intended/tested combinations. 
+Be aware that the maps used in this overarching map have been designed to be used in combination with specific other maps, or with specific force fields. While a map should still work with a different forcefield, it is still highly recommended to use the intended/tested combinations or validate the alternative choice before using it. 
 - In general, the OPLS-AA forcefield is recommended, except for the Tokmakoff map, which has been designed for the CHARMM-27 forcefield.
-- The Jansen dipole map should only be used together with the Jansen frequency map (this is enforced by this map).
+- The Jansen dipole map should always be used together with the Jansen frequency map (this is enforced by this map).
 - It is common to also calculate couplings when working with amides. This should be done with one of the specially-designed amide coupling maps. See (https://doi.org/10.1021/acs.jctc.6b00420) to find out what coupling map is best for your usecase.
 - The peaks for these systems take up the same spectral space as sidechain amides, so to get better agreement with experiment, you'll probably want to use the sidechain map along this one.
 
