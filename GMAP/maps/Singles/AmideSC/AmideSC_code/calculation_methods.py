@@ -3,25 +3,33 @@
 from numba import njit
 import numpy as np
 
-# gmap imports
+# GMAP imports
 import GMAP.src.tools.MathFunctions as GM_MF
 
 
-# def calc_dipole_Jansen(map_, system, osc):
-#     map_.Core.dipole_gas_phase_array   # gas phase
-#     map_.Core.dipole_data_array   # arrays.
-
-#     r_pos = osc.positions[0] + 0.868 * osc.rotation_matrix[0]
-
-#     r_vec = map_.Core.dipole_gas_phase_array + np.sum(
-#         np.multiply(osc.VEGout[None, :, :], map_.Core.dipole_data_array),
-#         axis=(1, 2)
-#     )
-
-#     return r_vec, r_pos
-
-
 def calc_dipole_Torii(map_, system, osc):
+    """Calculate the Torii dipole moment for a given oscillator
+
+    Parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+        The map instance which this function will belong to.
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The class containing all the information on the system of the
+        MD trajectory.
+    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        The specific oscillator for which the transformation is required.
+
+    Returns
+    -------
+    r_vec : `np.ndarray`
+        A length-3 vector containing the direction of the dipole moment.
+        The vector must be normalized.
+    r_pos : `np.ndarray`
+        A length-3 vector containing the position of the dipole moment.
+        The vector must lie within the simulation box.
+    """
+
     rotmat = osc.rotation_matrix
     COvec = rotmat[0]
     CNvec = rotmat[1]
@@ -40,6 +48,21 @@ def dipole_Torii(COvec, CNvec, magnitude):
     """Calculates the dipole moment using the Torii method.
 
     Method taken from AIM.
+
+    Parameters
+    ----------
+    COvec : `np.ndarray`
+        The vector pointing from the carbon to the oxygen atom
+    CNvec : `np.ndarray`
+        The vector pointing from the carbon to the nitrogen atom
+    magnitude : `np.float32`
+        The length that the vector is supposed to have.
+
+    Returns
+    -------
+    mi : `np.ndarray`
+        A length-3 vector containing the direction of the dipole moment.
+        The vector must be normalized.
     """
 
     # itheta = 1/0.17632698  ## 1/tan(10 degrees expressed in radians)
@@ -55,3 +78,32 @@ def dipole_Torii(COvec, CNvec, magnitude):
     mi *= magnitude
 
     return mi
+
+
+def get_position(map_, system, osc):
+    """Determine the position for a given oscillator
+
+    Parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+        The map instance which this function will belong to.
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The class containing all the information on the system of the
+        MD trajectory.
+    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        The specific oscillator for which the transformation is required.
+
+    Returns
+    -------
+    position : `np.ndarray`
+        A length-3 vector containing the position of the oscillator.
+    """
+
+    # position is correct, but shifted to wrong box
+    pos = map_.code.GM_get_position_DMF(map_, system, osc)
+
+    # now, shift it to the correct box
+    boxpos = pos @ system.boxvects_inv
+    boxpos -= np.floor(boxpos)
+
+    return boxpos @ system.boxvects

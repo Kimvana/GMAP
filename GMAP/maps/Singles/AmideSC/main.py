@@ -9,12 +9,11 @@ therein) as this file.
 # 3rd party imports
 import numpy as np
 
-
 # GMAP imports
 # import GMAP.src.tools.MathFunctions as GM_MF
 # import GMAP.src.tools.PhysicsFunctions as GM_PF
-import GMAP.src.tools.DefaultMapFunctions as GM_DMF
-import GMAP.src.tools.PrintTools as GM_PT
+# import GMAP.src.tools.DefaultMapFunctions as GM_DMF
+# import GMAP.src.tools.PrintTools as GM_PT
 
 # own module imports
 import AmideSC_code.calculation_methods as MC_CM
@@ -40,10 +39,9 @@ def GM_adjust_map_core_raw(map_):
     have a list as value, in which other lists appear - one for each
     line.
 
-    The purpose of this function is to change this dictionary. Perhaps,
-    a rule in core.txt is dependent on a parameter of the map. This
-    function can make a decision based on those parameters (stored in
-    Map.RunPars).
+    The core.txt file has to be changed because the parameters of this
+    map allow to change between models, each of which has their own
+    files.
 
     Parameters
     ----------
@@ -121,44 +119,65 @@ def GM_adjust_oscillators(map_, system, oscillator_list):
 # things like building further lookup tables, for instance.
 # (for AmideBB - find neighbours!)
 def GM_post_init(map_, system):
-    # map_.Core.dipole_gas_phase_array = np.array(map_.Core.dipole_gas_phase)
-    # if map_.RunPars.dipole_map_choice == "Jansen":
-    #     map_.code.GM_calculate_dipole = (
-    #         calculation_methods.calc_dipole_Jansen
+    """Do some final initializations that need to happen before the
+    calculation starts.
+
+    Checks include:
+    - comparing RunPars of this map to that of AmideSC, if the latter is
+      present and active
+    - initializing the prepro properties/files
+    - Assigning the correct functions based on the parameter choices
+    - Finding and assigning the neighbours of each group
+    - Identifying all atoms local to each oscillator.
+
+    Parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+        The object that stores everything the program currently knows
+        about this map.
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
+    """
+
     if map_.RunPars.dipole_map_choice == "Torii":
         map_.code.GM_calculate_dipole = MC_CM.calc_dipole_Torii
         map_.Core.dipole_gas_phase = np.float32(map_.Core.dipole_gas_phase)
 
-    map_.code.GM_get_position = get_get_position(map_)
+    if map_.RunPars.legacy_mode == "AIM":
+        map_.code.GM_get_position_DMF = map_.code.GM_get_position
+        map_.code.GM_get_position = MC_CM.get_position
 
 
-def get_get_position(map_):
-    # Same as the built-in, but not shifted to around 0.
-    posline = map_.rawcore["position"]
+def GM_str_osc(map_, system, oscillator):
+    """Explains how an oscillator should be printed.
 
-    codestring = "\ndef GM_get_position"
-    codestring += "(Map, Syst, osc):\n"
+    Example print: 'binding the residues GLY36 and LYS37'
 
-    codestring += "    CoM = " + GM_DMF.envelop_int(
-        " ".join(posline), "osc.positions_box[", "]"
-    ) + "\n"
-    # codestring += "    CoM = (CoM - np.floor(CoM + 0.5)) @ Syst.boxvects\n"
-    codestring += "    CoM = (CoM - np.floor(CoM)) @ Syst.boxvects\n"
-    codestring += "    return CoM"
+    Parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+        The object that stores everything the program currently knows
+        about this map.
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
+    oscillator : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        The specific oscillator for which the string is required.
 
-    try:
-        exec(codestring)
-    except Exception as ex:
-        corefile = (map_.directory / 'core.txt').resolve()
-        GM_PT.Printer().warning(
-            f"\nThe file {corefile} does not contain a valid definition of "
-            "position.",
-            "MI_MC_9", exception=ex
-        )
-        return None
+    Returns
+    -------
+    string : str
+        The string that should be printed.
+    """
 
-    # return GM_get_VEG_ref
-    return locals()["GM_get_position"]
+    at0 = oscillator.used_atoms[0]
+    return (
+        # living on the residue GLN36
+        f"living on the residue {system.resnames[at0]}{system.resnums[at0]}"
+    )
 
 
 def GM_calculate_raman(Map, Syst, osc):

@@ -596,6 +596,7 @@ extern "C" {
         local_search = 0;
         influencer_search = 0;
         float diff[3], dist, dist2, smooth_factor, weighted_charge;
+        int totats = 0;
 
         // analyze all surrounding charges on a per-residue basis
         for (resnum = 0; resnum < n_res; resnum++) {
@@ -629,6 +630,7 @@ extern "C" {
                 ) {
                     continue;
                 }
+                totats++;
 
                 // loop over the atoms of the oscillator
                 for (oscix = 0; oscix < n_osc_ats; oscix++) {
@@ -641,6 +643,14 @@ extern "C" {
                 } 
             }
         }  // per-residue loop
+
+        // local_search = 0;
+        // if (in_ordered_array_int(
+        //     local_atoms, 446, local_search, n_locals, &local_search
+        // )) {
+        //     printf("\n\n%d\n\n", totats);
+        // }
+        // printf("%d\n", totats);
 
         free(refpos);  // free(diff)
     }

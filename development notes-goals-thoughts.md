@@ -357,8 +357,11 @@ If you need a place to quickly write something down, do it here! It can be tidie
 
 
 - (KvA) TODO before PR:
+  - c printing to file:
+    fhand = fopen(fname, mode); -> create handle (modes as in python)
+    fprintf(fhand, *just like printf);
+    fclose(fhand);
   - do some testing on how much sys.path is being shared between processes.
-  - AmideSC - main.py - GM_adjust_map_core_raw - freqmap based local atoms!, also assume_length_units, VEG_reference for freqmaps.
   - look at test test_parameterparser line 1046 - see comment thomas
 - (KvA) TODO:
   - start on mapdev-checklist. What things should a mapmaker double check before starting the map (and, simultaneously, have map-testing feature do these checks where possible - at least, write down what it should test)

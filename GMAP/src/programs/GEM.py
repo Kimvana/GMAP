@@ -390,7 +390,9 @@ def print_calculation_summary(RunPars, System):
     f_load = ["StartLoop", "LoadFrame"]
     f_upd = ["FrameUpdate", "PosBox", "COM"]
     f_init = f_upd + ["OscUpdate", "StructInit", "MapFInit"]
-    f_calc = ["Calc", "VEGprop", "VEGcalc", "VEGuse", "PrepCoup", "CalcCoup"]
+    f_calc = ["Calc", "VEGprop", "VEGcalc", "VEGuse"]
+    if "ham" in RunPars.output_data:
+        f_calc += ["PrepCoup", "CalcCoup"]
     f_post = ["MapFPost", "FrameWrite"]
     perframe = f_init + f_calc + f_post + f_load
     post_labels = ["MapPost"]
@@ -414,8 +416,9 @@ def print_calculation_summary(RunPars, System):
     pr.print(3, f"    Calculation:              {sumavg(*f_calc)}")
     pr.print(4, f"      Calculating estatics:   {sumavg('VEGcalc')}")
     pr.print(4, f"      SingleMap outputs:      {sumavg('VEGuse')}")
-    pr.print(4, f"      Coupling preparation:   {sumavg('PrepCoup')}")
-    pr.print(4, f"      Coupling calculation:   {sumavg('CalcCoup')}")
+    if "ham" in RunPars.output_data:
+        pr.print(4, f"      Coupling preparation:   {sumavg('PrepCoup')}")
+        pr.print(4, f"      Coupling calculation:   {sumavg('CalcCoup')}")
     pr.print(3, f"    Frame finalization:       {sumavg(*f_post)}")
     pr.print(4, f"      Map finalization:       {sumavg('MapFPost')}")
     pr.print(4, f"      Writing frames:         {sumavg('FrameWrite')}")

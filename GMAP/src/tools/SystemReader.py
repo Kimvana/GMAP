@@ -105,9 +105,21 @@ class System:
         The indices of all atoms that should be considered influencers.
     nosc : int
         The amount of oscillators present in the system.
-    ordered_oscillators : dict of str: list of \
+    oscillators_ordered : dict of str: list of \
         :class:`~GMAP.src.tools.SystemReader.Oscillator` pairs
         All oscillators, but grouped by the map they belong to.
+    oscillators_ordered_ix : dict of str: list of int pairs
+        Same as oscillators_ordered, but only listing oscillator indices
+        instead of oscillator objects.
+    oscillators_ordered_coup : dict of str: list of \
+        :class:`~GMAP.src.tools.SystemReader.Oscillator` pairs
+        All oscillators, but grouped by the coupling map they belong to.
+        This structure is intended for use by prep-methods of coupling
+        maps, as it is a simple overview of all oscillators that the
+        coupling map will treat
+    oscillators_ordered_coup_ix : dict of str: list of int pairs
+        Same as oscillators_ordered_coup, but only listing oscillator indices
+        instead of oscillator objects.
     """
 
     def __init__(self, RunPars):
@@ -124,6 +136,9 @@ class System:
         # correct coupling map for each oscillator pair (and build tables
         # for the pairs, too)
         self.order_oscillators(RunPars)
+
+        for oscillator in self.oscillators:
+            oscillator.frame_update(self)
 
         # It would make sense to, just as with influencers, also report all
         # findings to the user (through printing to command line and log file).
@@ -1099,19 +1114,13 @@ class Oscillator:
             self.used_atoms[index]
             for index in self.Map.Core.electrostatic_atoms
         ]
+        self.process_atschoice("electrostatic_atoms")
         self.local_atoms = [
             self.used_atoms[index] for index in self.Map.Core.local_atoms
         ]
+        self.process_atschoice("local_atoms")
         self.local_atoms.sort()
 
-        # for c integration - here, or should this part be called later?
-        self.electrostatic_atoms_c = np.ctypeslib.as_ctypes(np.array(
-            self.electrostatic_atoms, dtype="int32"))
-        self.local_atoms_c = np.ctypeslib.as_ctypes(np.array(
-            self.local_atoms, dtype="int32"
-        ))
-        self.n_estatic_atoms = np.int32(len(self.electrostatic_atoms))
-        self.n_local_atoms = np.int32(len(self.local_atoms))
         self.VEGout = np.zeros((self.n_estatic_atoms, 10), dtype="float32")
         self.VEGout_c = np.ctypeslib.as_ctypes(np.ravel(self.VEGout))
 
@@ -1124,6 +1133,35 @@ class Oscillator:
             f"{self.__class__.__name__} of type {self.Map.name} "
             f"{self.Map.code.GM_str_osc(self.Map, self.system, self)}"
         )
+
+    def process_atschoice(self, attname):
+        """Converts the provided attribute into c-friendly objects.
+
+        This has been turned into a separate function, so if maps want
+        to change anything about the structures programmatically (as
+        adjusting rawpars didn't offer the needed tools), they can call
+        this as a finalizer.
+
+        Parameters
+        ----------
+        attname : str
+            The name of the attribute which should be converted.
+            self.attname should be of type list of int.
+        """
+
+        if attname == "local_atoms":
+            atoms = set(getattr(self, attname))
+            setattr(self, attname, sorted(atoms))
+
+        setattr(self, attname + "_c", np.ctypeslib.as_ctypes(np.array(
+            getattr(self, attname), dtype="int32")))
+
+        if attname == "electrostatic_atoms":
+            setattr(self, "n_estatic_atoms", np.int32(
+                len(getattr(self, attname))))
+        else:
+            setattr(self, "n_" + attname, np.int32(
+                len(getattr(self, attname))))
 
     def rotate_VEG(self):
         """Rotate the stored VEG from cartesian to local basis.
