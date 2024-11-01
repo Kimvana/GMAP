@@ -357,13 +357,20 @@ If you need a place to quickly write something down, do it here! It can be tidie
 
 
 - (KvA) TODO before PR:
+  - merge main
+  - run ALL tests (GMAP, AmideBB, AmideSC, ProtenAmide)
+  - For each sub-coupling-map, add warning codes to readme.
+  - For each sub-coupling-map, add readme indicating it shouldn't be
+    used standalone
+  - for each sub-coupling-map, add the 'parent' to the core.txt line
+    with assumed-present-pairmaps
+- (KvA) TODO:
   - c printing to file:
     fhand = fopen(fname, mode); -> create handle (modes as in python)
     fprintf(fhand, *just like printf);
     fclose(fhand);
   - do some testing on how much sys.path is being shared between processes.
   - look at test test_parameterparser line 1046 - see comment thomas
-- (KvA) TODO:
   - start on mapdev-checklist. What things should a mapmaker double check before starting the map (and, simultaneously, have map-testing feature do these checks where possible - at least, write down what it should test)
     - Indicate whether a VEG dependence file for calcfreq has been supplied or not (and similarly for dipoles etc)
   - have c code for potential take the influencers into account (possibly not within c code, but create mirror of system? new position/charges/etc array containing only valid influencers?)

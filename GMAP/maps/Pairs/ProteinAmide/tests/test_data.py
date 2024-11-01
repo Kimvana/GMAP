@@ -46,13 +46,25 @@ def test_TCC_coups(tmp_path):
     core_test_frequencies("TCC", tmp_path, 0.0001)
 
 
+def test_Tasumi_coups(tmp_path):
+    core_test_frequencies("Tasumi", tmp_path, 0.0002)
+
+
+def test_GLDP_coups(tmp_path):
+    core_test_frequencies("GLDP", tmp_path, 0.0002)
+
+
 def core_test_frequencies(mapname, tmp_path, limit):
     # This runs GMAP to create the results
+    if mapname in ("Tasumi", "GLDP"):
+        base_mapname = "TDCTasumi"
+    else:
+        base_mapname = mapname
     curdir = Path(__file__).resolve().parent
     GM_CI.cmd_interface([
         "GMAP", "GEM", "run",
         str((curdir / "data/basic_parameters.txt").resolve()),
-        "--ProteinAmide.coupling_choice", mapname,
+        "--ProteinAmide.coupling_choice", base_mapname,
         "--ProteinAmide.NN_coupling_choice", mapname,
         "--ProteinAmide.legacy_mode", "AIM",
         "--output_data", "ham\\;",
