@@ -357,14 +357,11 @@ If you need a place to quickly write something down, do it here! It can be tidie
 
 
 - (KvA) TODO before PR:
-  - merge main
-  - run ALL tests (GMAP, AmideBB, AmideSC, ProtenAmide)
-  - For each sub-coupling-map, add warning codes to readme.
-  - For each sub-coupling-map, add readme indicating it shouldn't be
-    used standalone
-  - for each sub-coupling-map, add the 'parent' to the core.txt line
-    with assumed-present-pairmaps
+  - Nothing?
 - (KvA) TODO:
+  - legacy support:
+    - CoM calculation is different for AmideImaps.
+    - Torii dipoles have a significantly different magnitude (is now 0.276, used to be 2.73)
   - c printing to file:
     fhand = fopen(fname, mode); -> create handle (modes as in python)
     fprintf(fhand, *just like printf);

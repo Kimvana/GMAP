@@ -38,9 +38,9 @@ def GM_prep_coupling(map_, system, oscixlist, osclist):
     for oscix, osc in zip(oscixlist, osclist):
         COvec = GM_MF.PBC_boxdiff_triclin(
             osc.positions_box[1], osc.positions_box[0], system.boxvects)
-        map_.dipole_pos_arr[oscix] = (
-            osc.positions[0] + displace / GM_MF.vec3_len(COvec) * COvec)
         COvec /= GM_MF.vec3_len(COvec)
+        map_.dipole_pos_arr[oscix] = (
+            osc.positions[0] + displace * COvec)
 
         CNvec = GM_MF.PBC_boxdiff_triclin(
             osc.positions_box[3], osc.positions_box[0], system.boxvects)

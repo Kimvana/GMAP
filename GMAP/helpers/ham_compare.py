@@ -45,7 +45,6 @@ else:
     fname2 = Path(callargs[2])
 
 ham1 = makeham(fname1, 128)
-
 ham2 = makeham(fname2, 128)
 
 ene1 = np.diag(ham1)

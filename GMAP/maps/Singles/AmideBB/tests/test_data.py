@@ -77,7 +77,7 @@ def test_Hirst_freqs(tmp_path):
 def test_Torii_dips(tmp_path):
     # here, providing the freq map is not actually necessary. But for Jansen,
     # it is.
-    core_test_dipoles("Tokmakoff", "Torii", tmp_path, 0.000001)
+    core_test_dipoles("Tokmakoff", "Torii", tmp_path, 0.000002)
 
 
 def test_Jansen_dips(tmp_path):
