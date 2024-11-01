@@ -1,6 +1,9 @@
 """
 The purpose of this script is to compare two hamiltonians to see whether
 they're equal, and if not, indicate where / by how much.
+
+Something similar is now implemented for the tests of the singles maps
+AmideBB and AmideSC, and the test of the pair map ProteinAmide.
 """
 
 import sys
@@ -32,6 +35,9 @@ else:
     fname1 = Path(callargs[1])
 
 if len(callargs) < 3:
+    # This default path should be determined by the user of this script.
+    # If it doesn't exist, you get a filenotfound error later down the
+    # line.
     fname2 = Path(
         "D:/Data/PhD/AIM installable/AIM-version-1.0-installable/"
         "2024-10-18_16-50-03_AIM_V1-0-2_Hamiltonian.txt")
@@ -39,6 +45,7 @@ else:
     fname2 = Path(callargs[2])
 
 ham1 = makeham(fname1, 128)
+
 ham2 = makeham(fname2, 128)
 
 ene1 = np.diag(ham1)
