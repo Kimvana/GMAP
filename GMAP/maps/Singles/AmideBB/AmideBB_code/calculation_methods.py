@@ -43,13 +43,14 @@ def calc_dipole_Torii(map_, system, osc):
     r_pos = osc.positions[0] + 0.665*COvec + 0.258*CNvec
 
     # dipole moment vector itself
-    r_vec = dipole_Torii(COvec, CNvec, map_.Core.dipole_gas_phase)
+    r_vec = dipole_Torii(
+        COvec, CNvec, map_.Core.dipole_Torii_angle, map_.Core.dipole_gas_phase)
 
     return r_vec, r_pos
 
 
 @njit
-def dipole_Torii(COvec, CNvec, magnitude):
+def dipole_Torii(COvec, CNvec, itheta, magnitude):
     """Calculates the dipole moment using the Torii method.
 
     Method taken from AIM. When using this method, make sure the input
@@ -72,7 +73,7 @@ def dipole_Torii(COvec, CNvec, magnitude):
     """
 
     # itheta = 1/0.17632698  ## 1/tan(10 degrees expressed in radians)
-    itheta = 5.6712818196
+    # itheta = 5.6712818196
 
     dri = 0.665*COvec + 0.258*CNvec
 

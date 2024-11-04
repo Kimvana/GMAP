@@ -702,6 +702,8 @@ class PairMap(Map):
           behaviour
         """
 
+        self.allpairs = []
+
         self.code = self.extract_code()
         if not self.code:
             self.code = GM_DMF.NewModule()

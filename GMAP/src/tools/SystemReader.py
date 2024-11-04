@@ -808,7 +808,7 @@ class System:
                 req_coupmap = RunPars.pair_v_coupling_dict[
                     (osc1.Map.name, osc2.Map.name)]
                 all_req_maps = [req_coupmap]
-                while base_coupmap != req_coupmap:
+                while base_coupmap != req_coupmap and req_coupmap is not None:
                     base_coupmap = req_coupmap
                     # ask the current map which map should actually be used
                     coupmap = RunPars.requested_pairmapdict[base_coupmap]

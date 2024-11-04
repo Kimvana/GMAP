@@ -7,4 +7,6 @@ dp2_choice[str]                          C O [N] D Torii
 consider_nearest_neighbours(cnn)[bool]   True
 legacy_mode[str]                         [None] AIM AmideImaps
 
+Torii_dipole_angle[float]                10   # in degrees!
+
 allow_map_mismatch[bool]                 False

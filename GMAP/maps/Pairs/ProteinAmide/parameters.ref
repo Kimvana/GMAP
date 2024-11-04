@@ -1,0 +1,3 @@
+legacy_mode[str]                 [None] AIM AmideImaps
+coupling_choice[str]             None DipDip [TDCTasumi] TDCKrimm TCC
+NN_coupling_choice[str]          None DipDip TDCTasumi TDCKrimm TCC Tasumi [GLDP]
