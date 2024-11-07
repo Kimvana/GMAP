@@ -6,9 +6,11 @@ other custom python files stored in the same directory (or a directory
 therein) as this file.
 """
 
+# 3rd party lib imports
 from numba import njit
 import numpy as np
 
+# gmap imports
 from GMAP.src.tools import MathFunctions as GM_MF
 
 

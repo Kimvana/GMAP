@@ -1,0 +1,164 @@
+
+\/\/\/\/\/\/\/\/\/\/
+/\/\/\/\/\/\/\/\/\/\
+\/\/\AmideImaps/\/\/
+/\/\/\/\/\/\/\/\/\/\
+\/\/\/\/\/\/\/\/\/\/
+
+Copyright (c) 2022, AIM, Kim E. van Adrichem
+All rights reserved.
+
+Please cite the following:
+K. E. van Adrichem, T. L. C. Jansen. 'AIM: A Mapping Program for Infrared Spectroscopy of Proteins'. 
+In J. Chem. Theory Comput. 18.5 (may 2022), pp. 3089--3098, issn: 1549-9618, 1549-9626, 
+doi: 10.1021/acs.jctc.2c00113, url: https://pubs.acs.org/doi/10.1021/acs.jctc.2c00113
+
+
+Running version 1.0.2
+====================
+Input file
+====================
+
+topfile                                         sourcefiles/md_0_1.tpr
+trjfile                                         sourcefiles/md_0_1_short.xtc
+Verbose                                         2
+Verbose_log                                     3
+influencers                                     All
+oscillators                                     AmideBB AmideSC
+map_choice                                      Tokmakoff
+Dipole_choice                                   Torii
+coupling_choice                                 TCC
+NN_coupling_choice                              TCC
+SphereSize                                      20
+AtomPos_choice                                  C
+nFrames_to_calculate                            1
+output_type                                     Ham Dip Pos
+TreatNN                                         True
+outfilename                                     TCC_AIM_[version]_Hamiltonian
+outdipfilename                                  TCC_AIM_[version]_Dipoles
+outposfilename                                  TCC_AIM_[version]_AtomPos
+outramfilename                                  TCC_AIM_[version]_RamanTensor
+outparfilename                                  TCC_AIM_[version]_Parameters.txt
+logfilename                                     TCC_AIM_[version].log
+
+
+====================
+Checking parameters
+====================
+
+No working c-library file found. If you would like to use the c-lib speedup, see the manual. Running without c-lib speedup!
+
+Input file does not specify whether to use Amide group selection criteria. But as there are no selection criteria present, all groups (without further selection) will be calculated.
+
+
+====================
+Final input parameters
+====================
+
+Used files:
+   Input parameter file                         D:\Data\PhD\AIM installable\AIM-Version-1.0-installable\AIM\input_parameters_example.txt
+   Input topology file                          D:\Data\PhD\AIM installable\AIM-Version-1.0-installable\AIM\sourcefiles/md_0_1.tpr
+   Input trajectory file                        D:\Data\PhD\AIM installable\AIM-Version-1.0-installable\AIM\sourcefiles/md_0_1_short.xtc
+   Output hamiltonian file                      D:\Data\PhD\AIM installable\AIM-Version-1.0-installable\TCC_AIM_V1-0-2_Hamiltonian
+   Output dipole file                           D:\Data\PhD\AIM installable\AIM-Version-1.0-installable\TCC_AIM_V1-0-2_Dipoles
+   Output parameter file                        D:\Data\PhD\AIM installable\AIM-Version-1.0-installable\TCC_AIM_V1-0-2_Parameters.txt
+   Output position file                         D:\Data\PhD\AIM installable\AIM-Version-1.0-installable\TCC_AIM_V1-0-2_AtomPos
+No Raman tensor calculated
+
+   Using numba speedup
+   This run is not being profiled. Start and end times will still be recorded
+
+
+Run parameters:
+   Influencers selection                        All 
+   Oscillators selection                        AmideBB AmideSC 
+   Applying dipole-dipole coupling to           Same
+   Electrostatic map                            Tokmakoff
+   Dipole method                                Torii
+   Coupling method                              TCC
+   NN coupling method                           TCC
+   Positions of atom                            C
+   Starting frame number                        0
+   Amount of frames to calculate                1
+   End frame number                             1
+   Cutoff distance for Electrostatic effects    20.0 Angstrom
+
+   Not replicating behaviour of original AmideImaps.c script
+   No faster method for finding atoms within cut-off distance used
+   Identifying protein chains using residue, molecule and segment numbers in topology file
+   Considering the special aminoacid names a part of the protein
+   All calculated long-range coupling constants are multiplied by 1.0
+   Not applying any further restrictions on which amide groups to include in the hamiltonian and dipoles
+   Considering Nearest Neigbour effects
+
+
+All box vectors are perpendicular!
+
+Total amount of detected chains: 1 
+Chain 0 is identified as a linear chain of 129 residues 
+
+V1-0-2 Starting iterating over frames
+Starting on frame 0
+Stopping on frame 1.          Elapsed time =   0-00:00:17   Estimated remaining time =   0-00:00:00
+
+
+====================
+Calculation Finished!
+====================
+
+amount of chains:  1 
+ 
+Chain 0: 
+Amide groups in backbone: 128
+Amide groups in backbone considered: 128
+Groups of type AmideSC considered: 17
+Total amount of groups considered: 145
+
+Groups outside of protein: 
+Groups of type AmideSC considered: 0
+Total amount of groups considered: 0
+
+
+Summing up:
+Amide groups in backbone: 128
+Amide groups in backbone considered: 128
+Groups of type AmideSC considered: 17
+Total amount of considered groups: 145
+
+ 
+Notes from maps: 
+
+
+Calculated frames:
+
+Analyzed frames: 0 to 0
+Available frames: 0 to 50
+
+
+Calculation time:
+
+initialization: 1.308 s
+time per frame 15.845 s
+total: 17.186 s =   0-00:00:17.186 
+
+
+Relevant references:
+
+Development of the AIM program:
+K. E. van Adrichem, T. L. C. Jansen. "AIM: A Mapping Program for Infrared Spectroscopy of Proteins". In J. Chem. Theory Comput. 18.5 (may 2022), pp. 3089--3098, issn: 1549-9618, 1549-9626, doi: 10.1021/acs.jctc.2c00113, url: https://pubs.acs.org/doi/10.1021/acs.jctc.2c00113
+
+For calculating the:
+Frequency of AmideSC, AmideBB
+M. Reppert, A. Tokmakoff. "Electrostatic Frequency Shifts in Amide I Vibrational Spectra: Direct Parameterization against Experiment". In Chem. Phys. 138.13 (apr 2013), p. 134116, issn: 0021-9606, 1089-7690, doi: 10.1063/1.4798938, url: http://aip.scitation.org/doi/10.1063/1.4798938
+
+For calculating the:
+Dipole moment of AmideSC, AmideBB
+H. Torii, M. Tasumi. "Ab Initio Molecular Orbital Study of the Amide I Vibrational Interactions between the Peptide Groups in Di- and Tripeptides and Considerations on the Conformation of the Extended Helix". In J. Raman. Spectrosc. vol. 29 (1998), p. 6, doi: 10.1002/(SICI)1097-4555(199801)29:1<81::AID-JRS214>3.0.CO;2-H
+
+For calculating the:
+Coupling between AmideBB and AmideBB, AmideBB and AmideSC, AmideSC and AmideBB, AmideSC and AmideSC
+T. l. C. Jansen, A. G. Dijkstra, T. M. Watson, J. D. Hirst, J. Knoester. "Modeling the Amide I Bands of Small Peptides". In Chem. Phys. 125.4 (jul 2006), p. 044312, issn: 0021-9606, 1089-7690, doi: 10.1063/1.2218516, url: http://aip.scitation.org/doi/10.1063/1.2218516
+
+************************************************************************
+If you read this, the program encountered no problems, and ran normally!
+************************************************************************

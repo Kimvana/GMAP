@@ -1,0 +1,3 @@
+These data files are the results as obtained using AIM (V1.0.2 installable), and the MD files (1AKI) that are shipped with GMAP by default.
+
+For the backbone, there are 5 frequency models to test, a neighbor influence, 2 dipole models, and a couple positions. All of these are independent apart from the neighbor influences and frequency models, so for each dipole and position there is a separate test, no combination-tests are needed. For the 5 frequency models and the neighbor influence there are 10 tests needed: one for each frequency map, with and without neighbor influence.

@@ -36,7 +36,7 @@ def cmd_interface(callcommand):
 
     # The very first initialization the program needs/assumes. Also initializes
     # the printing tool (Printer).
-    GM_FH.FileLocations()
+    GM_FH.FileLocations(instr=callcommand)
 
     # Deduce whether we should be running in safe mode / dark mode.
     # These 'special' flags should be caught separately to avoid issues like
@@ -179,10 +179,21 @@ def print_logo():
         "kind of feedback, go to github.com/Kimvana/GMAP\n"
     )
 
+    # if the program was invoked directly, we only need this one
     Printer.print(
         1,
-        f"\nRunning the following job:\n{GM_FH.FileLocations.callcommand}"
+        f"\nRunning the following job:\n{GM_FH.FileLocations.instruction}\n"
     )
+
+    # but if a different command was used for starting something python,
+    # and this file was imported (and cmd_interface was called directly),
+    # the actual executed instruction is not the same as the initial command.
+    if GM_FH.FileLocations.instruction != GM_FH.FileLocations.callcommand:
+        Printer.print(
+            1,
+            "Issued through the following command:\n"
+            f"{GM_FH.FileLocations.callcommand}\n"
+        )
 
 
 def cmd_to_help(allhelps, subch):

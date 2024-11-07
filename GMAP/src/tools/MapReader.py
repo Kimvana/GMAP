@@ -15,7 +15,7 @@ import GMAP.src.tools.ParameterParser as GM_PP
 import GMAP.src.tools.PrintTools as GM_PT
 
 
-class Map():
+class Map:
     """Contains all information regarding a single map. Base to build
     upon.
 
@@ -86,7 +86,7 @@ class Map():
     """
 
     def __init__(self, mapdir, avail_files):
-        self.directory = mapdir
+        self.directory = mapdir.resolve()
         self.name = mapdir.name
         self.type = mapdir.parent.name
         self.success = True
@@ -236,12 +236,13 @@ class Map():
         if not modpath.is_file():
             return None
 
-        modname = self.name + "_code"
+        modname = self.name + "_mainpy_code"
 
         try:
             spec = importlib.util.spec_from_file_location(modname, modpath)
             module = importlib.util.module_from_spec(spec)
             sys.modules[modname] = module
+            sys.path.insert(1, str(self.directory))
             spec.loader.exec_module(module)
         except Exception as ex:
             GM_PT.Printer.warning(
@@ -701,6 +702,8 @@ class PairMap(Map):
           behaviour
         """
 
+        self.allpairs = []
+
         self.code = self.extract_code()
         if not self.code:
             self.code = GM_DMF.NewModule()
@@ -993,7 +996,7 @@ class PairMap(Map):
             main_runpars.requested_pairmapdict[mapname] = map_
 
 
-class SingleCore():
+class SingleCore:
     """Contains all information regarding a single core.txt file.
 
     Such a core.txt file is assumed to belong to a singles map.
@@ -1125,6 +1128,8 @@ class SingleCore():
             rawcore, Map.directory)
         if not self.success:
             return
+        if isinstance(self.dipole_gas_phase, list):
+            self.dipole_gas_phase_array = np.array(self.dipole_gas_phase)
 
         (
             self.frequency_gas_phase, self.frequency_data_array_linear,
@@ -1572,6 +1577,43 @@ class SingleCore():
                     self.success = False
                     return
 
+    def allow_ranges(self, ix_list, lenlist):
+        """Allows the user to select a range of integers to be
+        included in a map. Range of integers should be formatted
+        with a hyphen between two integers of choice.
+        Alternatively, the user may choose to include all atoms
+        by writing the word "All" instead of a range.
+
+        Parameters
+        ----------
+        ix_list : list
+            The list of atom indexes to be used for the map.
+        lenlist : int
+            The length of the atom list to choose from.
+        """
+
+        atoms = list()
+        if "all" in (elem.lower() for elem in ix_list):  # Case insensitive in
+            atoms.extend(list(range(0, lenlist)))
+        else:
+            for elem in ix_list:
+                if "-" in elem:
+                    temp = elem.split("-")  # "10-21" -> ["10","21"]
+                    if len(temp) == 2:
+                        start = int(temp[0])
+                        end = int(temp[1])
+                        if start > lenlist or end > lenlist:
+                            raise IndexError
+                        if start > end:
+                            atoms.extend(list(range(start, end - 1, -1)))
+                        else:
+                            atoms.extend(list(range(start, end + 1)))
+                    elif len(temp) != 2:
+                        raise ValueError
+                else:
+                    atoms.append(int(elem))
+        return atoms
+
     def parse_used_atoms(self, rawcore, mapdir):
         """Parse the choice for the parameter used_atoms
 
@@ -1604,13 +1646,29 @@ class SingleCore():
 
         # convert to ints
         try:
-            used_atoms = [int(num) for num in rawcore["used_atoms"]]
+            # Note: rawcore["used_atoms"] is a list of whatever comes after
+            #       used_atoms in the core.txt file used
+            minLen = min([  # Use the shortest structure
+                len(struct.indices) for struct in self.functional_group])
+            used_atoms = self.allow_ranges(rawcore["used_atoms"], minLen)
+
+        except IndexError as IErr:
+            GM_PT.Printer.warning(
+                "\nChoice of parameter 'used_atoms' is out of bounds. "
+                f"In the file {mapdir / 'core.txt'}. Please make sure the "
+                "choice is within bounds.",
+                "MI_MC_8", exception=IErr
+            )
+            self.success = False
+            return
+
         except Exception as ex:
             GM_PT.Printer.warning(
                 "\nCould not interpret the choice for the parameter "
                 "'used_atoms'"
                 f" in the file {mapdir / 'core.txt'}. Please make sure the "
-                "choice consists of nothing but numbers separated by spaces.",
+                "choice consists of nothing but numbers separated by spaces"
+                "and/or ranges of integers separated by a hyphen.",
                 "MI_MC_7", exception=ex
             )
             self.success = False
@@ -1710,9 +1768,9 @@ class SingleCore():
 
         # convert to ints
         try:
-            estatic_atoms = [
-                int(num) for num in rawcore["electrostatic_atoms"]
-            ]
+            u_a_len = len(self.used_atoms)  # Use the shortest structure
+            estatic_atoms = self.allow_ranges(
+                rawcore["electrostatic_atoms"], u_a_len)
         except Exception as ex:
             GM_PT.Printer.warning(
                 "\nCould not interpret the choice for the parameter "
@@ -1775,9 +1833,9 @@ class SingleCore():
 
         # convert to ints
         try:
-            local_atoms = [
-                int(num) for num in rawcore["local_atoms"]
-            ]
+            u_a_len = len(self.used_atoms)  # Use the shortest structure
+            local_atoms = self.allow_ranges(rawcore["local_atoms"], u_a_len)
+
         except Exception as ex:
             if rawcore["local_atoms"][0].lower() == "none":
                 local_atoms = []
@@ -2042,8 +2100,7 @@ class SingleCore():
             return None, None
 
         try:
-            fdata = np.genfromtxt(
-                fname, "float32", missing_values=0, ndmin=2)
+            fdata = np.genfromtxt(fname, "float32", missing_values=0, ndmin=2)
         except Exception as ex:  # numpy had some issue
             GM_PT.Printer.warning(
                 "\nNumpy could not interpret the contents of the file "
@@ -2471,7 +2528,7 @@ class SingleCore():
                 return
 
 
-class PairCore():
+class PairCore:
     """Contains all information regarding a single core.txt file.
 
     Such a core.txt file is assumed to belong to a pairs map.
@@ -2704,7 +2761,7 @@ class PairCore():
         return list(chosen_combinations)
 
 
-class Structure():
+class Structure:
     """What an oscillator looks like
 
     output formats:
@@ -2811,7 +2868,7 @@ class Structure():
             self.success = True
 
 
-class Residue():
+class Residue:
     """What a single residue of a structure (template) looks like.
 
     Parameters

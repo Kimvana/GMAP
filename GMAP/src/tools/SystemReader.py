@@ -105,9 +105,21 @@ class System:
         The indices of all atoms that should be considered influencers.
     nosc : int
         The amount of oscillators present in the system.
-    ordered_oscillators : dict of str: list of \
+    oscillators_ordered : dict of str: list of \
         :class:`~GMAP.src.tools.SystemReader.Oscillator` pairs
         All oscillators, but grouped by the map they belong to.
+    oscillators_ordered_ix : dict of str: list of int pairs
+        Same as oscillators_ordered, but only listing oscillator indices
+        instead of oscillator objects.
+    oscillators_ordered_coup : dict of str: list of \
+        :class:`~GMAP.src.tools.SystemReader.Oscillator` pairs
+        All oscillators, but grouped by the coupling map they belong to.
+        This structure is intended for use by prep-methods of coupling
+        maps, as it is a simple overview of all oscillators that the
+        coupling map will treat
+    oscillators_ordered_coup_ix : dict of str: list of int pairs
+        Same as oscillators_ordered_coup, but only listing oscillator indices
+        instead of oscillator objects.
     """
 
     def __init__(self, RunPars):
@@ -124,6 +136,9 @@ class System:
         # correct coupling map for each oscillator pair (and build tables
         # for the pairs, too)
         self.order_oscillators(RunPars)
+
+        for oscillator in self.oscillators:
+            oscillator.frame_update(self)
 
         # It would make sense to, just as with influencers, also report all
         # findings to the user (through printing to command line and log file).
@@ -356,6 +371,9 @@ class System:
                 + ", ".join(influencers_not_included)
             )
 
+        # influencers list must be sorted
+        self.influencers_atix.sort()
+
         # all kinds of influencer parameters
         atixprint = GM_PT.intlist_to_rangelist(
             self.influencers_atix, self.natoms
@@ -412,11 +430,17 @@ class System:
         # - For the bonds, see which residues they actually connect.
 
         # Find the oscillators as defined in the maps
-        allgroups = [
-            self.find_oscillators_perstruct(struct, map_)
-            for map_ in RunPars.requested_mapdict.values()
-            for struct in map_.Core.functional_group
-        ]
+        allgroups = []
+        for map_ in RunPars.requested_mapdict.values():
+            mapgroups = []
+            for struct in map_.Core.functional_group:
+                mapgroups.extend(self.find_oscillators_perstruct(struct, map_))
+            allgroups.append(mapgroups)
+        # allgroups = [
+        #     self.find_oscillators_perstruct(struct, map_)
+        #     for map_ in RunPars.requested_mapdict.values()
+        #     for struct in map_.Core.functional_group
+        # ]
 
         # feed the found oscillators to the maps, let them have a look
         # at them / edit.
@@ -784,7 +808,7 @@ class System:
                 req_coupmap = RunPars.pair_v_coupling_dict[
                     (osc1.Map.name, osc2.Map.name)]
                 all_req_maps = [req_coupmap]
-                while base_coupmap != req_coupmap:
+                while base_coupmap != req_coupmap and req_coupmap is not None:
                     base_coupmap = req_coupmap
                     # ask the current map which map should actually be used
                     coupmap = RunPars.requested_pairmapdict[base_coupmap]
@@ -1090,19 +1114,13 @@ class Oscillator:
             self.used_atoms[index]
             for index in self.Map.Core.electrostatic_atoms
         ]
+        self.process_atschoice("electrostatic_atoms")
         self.local_atoms = [
             self.used_atoms[index] for index in self.Map.Core.local_atoms
         ]
+        self.process_atschoice("local_atoms")
         self.local_atoms.sort()
 
-        # for c integration - here, or should this part be called later?
-        self.electrostatic_atoms_c = np.ctypeslib.as_ctypes(np.array(
-            self.electrostatic_atoms, dtype="int32"))
-        self.local_atoms_c = np.ctypeslib.as_ctypes(np.array(
-            self.local_atoms, dtype="int32"
-        ))
-        self.n_estatic_atoms = np.int32(len(self.electrostatic_atoms))
-        self.n_local_atoms = np.int32(len(self.local_atoms))
         self.VEGout = np.zeros((self.n_estatic_atoms, 10), dtype="float32")
         self.VEGout_c = np.ctypeslib.as_ctypes(np.ravel(self.VEGout))
 
@@ -1115,6 +1133,35 @@ class Oscillator:
             f"{self.__class__.__name__} of type {self.Map.name} "
             f"{self.Map.code.GM_str_osc(self.Map, self.system, self)}"
         )
+
+    def process_atschoice(self, attname):
+        """Converts the provided attribute into c-friendly objects.
+
+        This has been turned into a separate function, so if maps want
+        to change anything about the structures programmatically (as
+        adjusting rawpars didn't offer the needed tools), they can call
+        this as a finalizer.
+
+        Parameters
+        ----------
+        attname : str
+            The name of the attribute which should be converted.
+            self.attname should be of type list of int.
+        """
+
+        if attname == "local_atoms":
+            atoms = set(getattr(self, attname))
+            setattr(self, attname, sorted(atoms))
+
+        setattr(self, attname + "_c", np.ctypeslib.as_ctypes(np.array(
+            getattr(self, attname), dtype="int32")))
+
+        if attname == "electrostatic_atoms":
+            setattr(self, "n_estatic_atoms", np.int32(
+                len(getattr(self, attname))))
+        else:
+            setattr(self, "n_" + attname, np.int32(
+                len(getattr(self, attname))))
 
     def rotate_VEG(self):
         """Rotate the stored VEG from cartesian to local basis.
@@ -1171,8 +1218,17 @@ class Oscillator:
             The object that stores all information on the MD system
         """
 
-        self.positions_box = (
-            Syst.positions[self.used_atoms] @ Syst.boxvects_inv)
+        self.positions = Syst.positions[self.used_atoms]
+
+        # to get usable box positions, not only convert to box, but also make
+        # sure they are 'centered' around one of the atoms of the molecule.
+        # the assumption here is that all atoms of the molecule are reasonably
+        # close together (at least much closer than a box length)
+        self.positions_box = (self.positions @ Syst.boxvects_inv)
+        shift = self.positions_box[0].copy()
+        self.positions_box -= shift
+        self.positions_box -= np.floor(self.positions_box + 0.5) - shift
+
         self.VEG_refpos = self.get_VEG_ref(Syst)
         self.VEG_refpos_c = np.ctypeslib.as_ctypes(self.VEG_refpos)
         if self.Map.Core.electrostatic_choice in ("E", "G"):

@@ -50,25 +50,39 @@ When you've made some choices to the code, and would like to rebuild the docs, n
 
 ### windows
 
+For GMAP to automatically recognize the compiled versions of scripts, the intended OS has to be added to the name. For windows (depending on your OS and python version), this means that the name should end in ```_Win32bit``` or ```_Win64bit```. If you do not do that, you can still manually supply your compiled file to GMAP, but the autodetection will not work.
+
 - make sure to install microsoft visual studio (detailed instructions are a must - AIM repo has them in the manual, page 12).
 - through windows start menu, scroll trough list of programs, select visual studio folder, in there, the desired command prompt. x64 Native Tools for 64 bit windows, x86 Native Tools for 32 bit. __Make sure to open the command prompt in admin mode__.
-- run the following command: ```cl.exe /LD scriptname.cpp``` (generates 4 files)
+- run one of the following commands: 
+  ```cl.exe /LD /Fe: VEG_Win64bit scriptname.cpp``` (64 bit windows / python installation)
+  ```cl.exe /LD /Fe: VEG_Win32bit scriptname.cpp``` (32 bit windows / python installation)
+  (This step generates 4 files)
 - use the .dll file for the program (ignore or delete the other 3 generated ones).
-- change the name of the VEG.dll file to VEG_Win64bit.dll or VEG_Win32bit.dll depending on your system. 
 
 
 ### linux
 
+For GMAP to automatically recognize the compiled versions of scripts, the intended OS has to be added to the name. For linux, this means that the name (including the extension) should end in ```_Linux.so```. If you do not do that, you can still manually supply your compiled file to GMAP, but the autodetection will not work.
+
 - open terminal
-- To generally compile a c-library use ```g++ -fPIC -shared -o scriptname.so scriptname.cpp```
-- GMAP required an extension _Linux.so. Specifically the VEG library can be compiled with ```g++ -fPIC -shared -o VEG_Linux.so VEG.cpp``` 
+- To compile the c-library use ```g++ -fPIC -shared -o scriptname_Linux.so scriptname.cpp```
+
+For example, the VEG library can be compiled with ```g++ -fPIC -shared -o VEG_Linux.so VEG.cpp``` 
 
 (if installed, using cc instead of g++ also works)
 
 
 ### mac
 
+For GMAP to automatically recognize the compiled versions of scripts, the intended OS has to be added to the name. For mac, this means that the name (including the extension) should end in ```_MacOS.dylib```. If you do not do that, you can still manually supply your compiled file to GMAP, but the autodetection will not work.
+
+Please note that depending on your mac version, the instructions are slightly different, and that Apple occasionally changes the way that the OS works resulting in changes in how to compile c++ code. Please, consult with updates from Apple if the commands below don't work on your system.
+
 - open terminal
-- ```cc -fPIC -dynamiclib -o scriptname.dylib scriptname.cpp``` (works on older macs)
-- ```cc -fPIC -dynamiclib -std=c++11 -stdlib=libc++ -o scriptname.dylib scriptname.cpp``` (needed on Sonoma 14.6.1 to avoid alias warnings)
-- GMAP requires an extension _MacOS.dylib. Specifically the VEG library can be compiled with ```cc -fPIC -dynamiclib -std=c++11 -stdlib=libc++ -o VEG_MacOS.dylib VEG.cpp```
+- Compile the code with one of the following commands (system dependent):
+  - ```cc -fPIC -dynamiclib -o scriptname_MacOS.dylib scriptname.cpp``` (works on older macs)
+  - ```cc -fPIC -dynamiclib -std=c++11 -stdlib=libc++ -o scriptname_MacOS.dylib scriptname.cpp``` (needed on newer versions like Sonoma 14.6.1 to avoid alias warnings)
+  
+For example, the VEG library can be compiled with ```g++ -fPIC -shared -o VEG_MacOS.dylib VEG.cpp``` 
+

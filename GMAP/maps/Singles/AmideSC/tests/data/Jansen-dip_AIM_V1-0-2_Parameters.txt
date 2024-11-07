@@ -1,0 +1,71 @@
+# topology and trajectory files, including folder
+
+topfile                                         D:\Data\PhD\AIM installable\AIM-Version-1.0-installable\AIM\sourcefiles/md_0_1.tpr
+trjfile                                         D:\Data\PhD\AIM installable\AIM-Version-1.0-installable\AIM\sourcefiles/md_0_1_short.xtc
+
+
+# Support files location
+
+sourcedir                                       D:\Data\PhD\AIM installable\AIM-Version-1.0-installable\AIM\sourcefiles
+referencefile                                   references.dat
+resnamesfile                                    resnames.dat
+atnamesfile                                     atnames_Gromacs.dat
+libfile                                         AIMV1-0-0_64.dll
+use_c_lib                                       True
+extramapdir                                     D:\Data\PhD\AIM installable\AIM-Version-1.0-installable\AIM\extra_maps
+
+
+
+# output files
+
+outdir                                          D:\Data\PhD\AIM installable\AIM-Version-1.0-installable
+outfilename                                     Jansen-dip_AIM_[version]_Hamiltonian
+outdipfilename                                  Jansen-dip_AIM_[version]_Dipoles
+outposfilename                                  Jansen-dip_AIM_[version]_AtomPos
+outramfilename                                  Jansen-dip_AIM_[version]_RamanTensor
+outparfilename                                  Jansen-dip_AIM_[version]_Parameters.txt
+
+logdir                                          D:\Data\PhD\AIM installable\AIM-Version-1.0-installable
+logfilename                                     Jansen-dip_AIM_[version].log
+proffilename                                    [now]AIM_[version].pstats
+pngfilename                                     [now]AIM_[version].png
+
+
+
+# Output file settings
+
+output_format                                   txt 
+output_type                                     Ham Dip Pos 
+Verbose                                         2
+Verbose_log                                     3
+profiler                                        False
+pngout                                          False
+
+
+
+# Run Parameters
+
+influencers                                     All 
+oscillators                                     AmideSC 
+apply_dd_coupling                               Same
+map_choice                                      Jansen
+Dipole_choice                                   Jansen
+coupling_choice                                 TDCTasumi
+NN_coupling_choice                              GLDP
+AtomPos_choice                                  C
+start_frame                                     0
+nFrames_to_calculate                            1
+end_frame                                       1
+max_time                                        999999
+SphereSize                                      20.0
+
+replicate_orig_AIM                              False
+NSA_toggle                                      False
+
+atom_based_chainID                              False
+use_protein_specials                            True
+Scale_LRCoupling                                1.0
+
+Use_AmGroup_selection_criteria                  False
+
+TreatNN                                         True
