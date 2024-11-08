@@ -43,7 +43,8 @@ def test_TDCKrimm_coups(tmp_path):
 
 
 def test_TCC_coups(tmp_path):
-    core_test_frequencies("TCC", tmp_path, 0.0001)
+    core_test_frequencies("TCC", tmp_path, 0.0001, "_c")
+    core_test_frequencies("TCC", tmp_path, 0.0001, "_nb")
 
 
 def test_Tasumi_coups(tmp_path):
@@ -54,7 +55,7 @@ def test_GLDP_coups(tmp_path):
     core_test_frequencies("GLDP", tmp_path, 0.0002)
 
 
-def core_test_frequencies(mapname, tmp_path, limit):
+def core_test_frequencies(mapname, tmp_path, limit, nameadd=""):
     # This runs GMAP to create the results
     if mapname in ("Tasumi", "GLDP"):
         base_mapname = "TDCTasumi"
@@ -72,10 +73,16 @@ def core_test_frequencies(mapname, tmp_path, limit):
         "--log_directory", str(tmp_path.resolve())
     ])
 
+    # Due to bug found in AIM, some results are calculated with a newer
+    # version of the program
+    nr = 2
+    if mapname == "TCC":
+        nr = 3
+
     # now, we must test these newly generated results against the
     # AIM-calculated frequencies to see if the map is indeed correct.
     hamnew = makeham((tmp_path / "hamiltonian.txt").resolve(), 145)
-    fname = f"data/{mapname}_AIM_V1-0-2_Hamiltonian.txt"
+    fname = f"data/{mapname}{nameadd}_AIM_V1-0-{nr}_Hamiltonian.txt"
     hamold = makeham((curdir / fname).resolve(), 145)
 
     # this way, if the two do not match, we automatically get printed where/why

@@ -1,31 +1,32 @@
 # topology and trajectory files, including folder
 
-topfile                                         D:\Data\PhD\AIM installable\AIM-Version-1.0-installable\AIM\sourcefiles/md_0_1.tpr
-trjfile                                         D:\Data\PhD\AIM installable\AIM-Version-1.0-installable\AIM\sourcefiles/md_0_1_short.xtc
+topfile                                         D:\github\AIM\AIM\sourcefiles/md_0_1.tpr
+trjfile                                         D:\github\AIM\AIM\sourcefiles/md_0_1_short.xtc
 
 
 # Support files location
 
-sourcedir                                       D:\Data\PhD\AIM installable\AIM-Version-1.0-installable\AIM\sourcefiles
+sourcedir                                       D:\github\AIM\AIM\sourcefiles
 referencefile                                   references.dat
 resnamesfile                                    resnames.dat
 atnamesfile                                     atnames_Gromacs.dat
-use_c_lib                                       False
-extramapdir                                     D:\Data\PhD\AIM installable\AIM-Version-1.0-installable\AIM\extra_maps
+libfile                                         AIMV1-0-3_64.dll
+use_c_lib                                       True
+extramapdir                                     D:\github\AIM\AIM\extra_maps
 
 
 
 # output files
 
-outdir                                          D:\Data\PhD\AIM installable\AIM-Version-1.0-installable
-outfilename                                     TCC_AIM_[version]_Hamiltonian
-outdipfilename                                  TCC_AIM_[version]_Dipoles
-outposfilename                                  TCC_AIM_[version]_AtomPos
-outramfilename                                  TCC_AIM_[version]_RamanTensor
-outparfilename                                  TCC_AIM_[version]_Parameters.txt
+outdir                                          D:\github\AIM\AIM
+outfilename                                     TCC_c_AIM_[version]_Hamiltonian
+outdipfilename                                  TCC_c_AIM_[version]_Dipoles
+outposfilename                                  TCC_c_AIM_[version]_AtomPos
+outramfilename                                  TCC_c_AIM_[version]_RamanTensor
+outparfilename                                  TCC_c_AIM_[version]_Parameters.txt
 
-logdir                                          D:\Data\PhD\AIM installable\AIM-Version-1.0-installable
-logfilename                                     TCC_AIM_[version].log
+logdir                                          D:\github\AIM\AIM
+logfilename                                     TCC_c_AIM_[version].log
 proffilename                                    [now]AIM_[version].pstats
 pngfilename                                     [now]AIM_[version].png
 
@@ -47,7 +48,7 @@ pngout                                          False
 influencers                                     All 
 oscillators                                     AmideBB AmideSC 
 apply_dd_coupling                               Same
-map_choice                                      Tokmakoff
+map_choice                                      Skinner
 Dipole_choice                                   Torii
 coupling_choice                                 TCC
 NN_coupling_choice                              TCC
