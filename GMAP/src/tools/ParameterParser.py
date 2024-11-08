@@ -216,7 +216,7 @@ class RefPars:
             cleaning that line)
         """
 
-        with open(self.fname) as file:
+        with open(self.fname, encoding='utf-8') as file:
             for line in file:
                 line = cleanline(line).strip()  # remove all comments
                 if len(line) == 0:  # ignore all empty lines
@@ -771,7 +771,7 @@ class RawPars:
             stored.
         """
 
-        with open(fname) as file:
+        with open(fname, encoding='utf-8') as file:
             given_dict = get_pardict(file, RefPars.compounds)
 
         instance = cls.from_dict(
@@ -2523,7 +2523,7 @@ def get_parameters(in_parfile, argslist):
 
         # check if file is UTF8
         GM_FH.check_file_readability(in_parfile)
-        with open(in_parfile) as file:
+        with open(in_parfile, encoding='utf-8') as file:
             in_pardict = get_pardict(file)
         # step 5 (find which defpar to use)
         def_parfile = GM_FH.get_def_parfile(
@@ -3014,7 +3014,7 @@ def parse_influencerfile(fname, groupdict):
         found in the supplied file.
     """
 
-    with open(fname) as fhand:
+    with open(fname, encoding='utf-8') as fhand:
         for line in fhand:
             line = cleanline(line).strip()
             if not line:
