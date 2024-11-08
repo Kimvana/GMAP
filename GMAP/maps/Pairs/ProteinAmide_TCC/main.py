@@ -115,7 +115,7 @@ def calc_coupling(oscix1, oscix2, map_, system):
         q2 = map_.q_pro
         dq2 = map_.dq_pro
 
-    diff = osc1.positions_box[:, None, :] - osc2.positions_box[None, :, :]
+    diff = osc2.positions_box[None, :, :] - osc1.positions_box[:, None, :]
     diff -= np.floor(diff + 0.5)
     diff = diff @ system.boxvects
     r2 = np.sum(diff * diff, axis=2)

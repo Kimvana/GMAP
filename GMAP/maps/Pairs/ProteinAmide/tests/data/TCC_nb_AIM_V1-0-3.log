@@ -14,7 +14,7 @@ In J. Chem. Theory Comput. 18.5 (may 2022), pp. 3089--3098, issn: 1549-9618, 154
 doi: 10.1021/acs.jctc.2c00113, url: https://pubs.acs.org/doi/10.1021/acs.jctc.2c00113
 
 
-Running version 1.0.2
+Running version 1.0.3
 ====================
 Input file
 ====================
@@ -25,28 +25,26 @@ Verbose                                         2
 Verbose_log                                     3
 influencers                                     All
 oscillators                                     AmideBB AmideSC
-map_choice                                      Tokmakoff
+map_choice                                      Skinner
 Dipole_choice                                   Torii
 coupling_choice                                 TCC
 NN_coupling_choice                              TCC
 SphereSize                                      20
-AtomPos_choice                                  C
 nFrames_to_calculate                            1
 output_type                                     Ham Dip Pos
-TreatNN                                         True
-outfilename                                     TCC_AIM_[version]_Hamiltonian
-outdipfilename                                  TCC_AIM_[version]_Dipoles
-outposfilename                                  TCC_AIM_[version]_AtomPos
-outramfilename                                  TCC_AIM_[version]_RamanTensor
-outparfilename                                  TCC_AIM_[version]_Parameters.txt
-logfilename                                     TCC_AIM_[version].log
+use_c_lib                                       False
+libfile                                         AIMV1-0-3_64.dll
+outfilename                                     TCC_nb_AIM_[version]_Hamiltonian
+outdipfilename                                  TCC_nb_AIM_[version]_Dipoles
+outposfilename                                  TCC_nb_AIM_[version]_AtomPos
+outramfilename                                  TCC_nb_AIM_[version]_RamanTensor
+outparfilename                                  TCC_nb_AIM_[version]_Parameters.txt
+logfilename                                     TCC_nb_AIM_[version].log
 
 
 ====================
 Checking parameters
 ====================
-
-No working c-library file found. If you would like to use the c-lib speedup, see the manual. Running without c-lib speedup!
 
 Input file does not specify whether to use Amide group selection criteria. But as there are no selection criteria present, all groups (without further selection) will be calculated.
 
@@ -56,13 +54,13 @@ Final input parameters
 ====================
 
 Used files:
-   Input parameter file                         D:\Data\PhD\AIM installable\AIM-Version-1.0-installable\AIM\input_parameters_example.txt
-   Input topology file                          D:\Data\PhD\AIM installable\AIM-Version-1.0-installable\AIM\sourcefiles/md_0_1.tpr
-   Input trajectory file                        D:\Data\PhD\AIM installable\AIM-Version-1.0-installable\AIM\sourcefiles/md_0_1_short.xtc
-   Output hamiltonian file                      D:\Data\PhD\AIM installable\AIM-Version-1.0-installable\TCC_AIM_V1-0-2_Hamiltonian
-   Output dipole file                           D:\Data\PhD\AIM installable\AIM-Version-1.0-installable\TCC_AIM_V1-0-2_Dipoles
-   Output parameter file                        D:\Data\PhD\AIM installable\AIM-Version-1.0-installable\TCC_AIM_V1-0-2_Parameters.txt
-   Output position file                         D:\Data\PhD\AIM installable\AIM-Version-1.0-installable\TCC_AIM_V1-0-2_AtomPos
+   Input parameter file                         D:\github\AIM\AIM\input_parameters_example.txt
+   Input topology file                          D:\github\AIM\AIM\sourcefiles/md_0_1.tpr
+   Input trajectory file                        D:\github\AIM\AIM\sourcefiles/md_0_1_short.xtc
+   Output hamiltonian file                      D:\github\AIM\AIM\TCC_nb_AIM_V1-0-3_Hamiltonian
+   Output dipole file                           D:\github\AIM\AIM\TCC_nb_AIM_V1-0-3_Dipoles
+   Output parameter file                        D:\github\AIM\AIM\TCC_nb_AIM_V1-0-3_Parameters.txt
+   Output position file                         D:\github\AIM\AIM\TCC_nb_AIM_V1-0-3_AtomPos
 No Raman tensor calculated
 
    Using numba speedup
@@ -73,7 +71,7 @@ Run parameters:
    Influencers selection                        All 
    Oscillators selection                        AmideBB AmideSC 
    Applying dipole-dipole coupling to           Same
-   Electrostatic map                            Tokmakoff
+   Electrostatic map                            Skinner
    Dipole method                                Torii
    Coupling method                              TCC
    NN coupling method                           TCC
@@ -97,9 +95,9 @@ All box vectors are perpendicular!
 Total amount of detected chains: 1 
 Chain 0 is identified as a linear chain of 129 residues 
 
-V1-0-2 Starting iterating over frames
+V1-0-3 Starting iterating over frames
 Starting on frame 0
-Stopping on frame 1.          Elapsed time =   0-00:00:17   Estimated remaining time =   0-00:00:00
+Stopping on frame 1.          Elapsed time =   0-00:00:14   Estimated remaining time =   0-00:00:00
 
 
 ====================
@@ -137,9 +135,9 @@ Available frames: 0 to 50
 
 Calculation time:
 
-initialization: 1.308 s
-time per frame 15.845 s
-total: 17.186 s =   0-00:00:17.186 
+initialization: 1.606 s
+time per frame 13.314 s
+total: 14.946 s =   0-00:00:14.946 
 
 
 Relevant references:
@@ -149,7 +147,7 @@ K. E. van Adrichem, T. L. C. Jansen. "AIM: A Mapping Program for Infrared Spectr
 
 For calculating the:
 Frequency of AmideSC, AmideBB
-M. Reppert, A. Tokmakoff. "Electrostatic Frequency Shifts in Amide I Vibrational Spectra: Direct Parameterization against Experiment". In Chem. Phys. 138.13 (apr 2013), p. 134116, issn: 0021-9606, 1089-7690, doi: 10.1063/1.4798938, url: http://aip.scitation.org/doi/10.1063/1.4798938
+L. Wang, C. T. Middleton, M. T. Zanni, J. L. Skinner. "Development and Validation of Transferable Amide I Vibrational Frequency Maps for Peptides". In J. Phys. Chem. B 115.13 (apr 2011), pp. 3713--3724, issn: 1520-6106, 1520-5207, doi: 10.1021/jp200745r, url: https://pubs.acs.org/doi/10.1021/jp200745r
 
 For calculating the:
 Dipole moment of AmideSC, AmideBB
