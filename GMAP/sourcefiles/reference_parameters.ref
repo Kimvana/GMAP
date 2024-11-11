@@ -90,14 +90,14 @@ couplingvis_dpi[int]                               300
 
 # ----- Units of output files -----
 hamiltonian_units[str]                             [cm-1] eV
-hamiltonian_multiplier[float]                      1
+hamiltonian_multiplier[float]                      1.0
 energies_units[str]                                [cm-1] eV
-energies_multiplier[float]                         1
+energies_multiplier[float]                         1.0
 dipoles_units[str]                                 [Debye] eBohr
-dipoles_multiplier[float]                          1
+dipoles_multiplier[float]                          1.0
 raman_units[str]                                   [Ang3] Bohr3
-raman_multiplier[float]                            1
+raman_multiplier[float]                            1.0
 positions_units[str]                               [Ang] Bohr nm
-positions_multiplier[float]                        1
+positions_multiplier[float]                        1.0
 doublepos_units[str]                               [Ang] Bohr nm
-doublepos_multiplier[float]                        1 
+doublepos_multiplier[float]                        1.0

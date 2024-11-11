@@ -537,22 +537,22 @@ class RefPars:
         )]
 
         if self.choices["hamiltonian_units"][0] == "cm-1":
-            self.choices["hamiltonian_multiplier"] = [1]
+            self.choices["hamiltonian_multiplier"] = [1.0]
         else:  # eV
             self.choices["hamiltonian_multiplier"] = [GM_con.cm2eV]
 
         if self.choices["energies_units"][0] == "cm-1":
-            self.choices["energies_multiplier"] = [1]
+            self.choices["energies_multiplier"] = [1.0]
         else:  # eV
             self.choices["energies_multiplier"] = [GM_con.cm2eV]
 
         if self.choices["dipoles_units"][0] == "Debye":
-            self.choices["dipoles_multiplier"] = [1]
+            self.choices["dipoles_multiplier"] = [1.0]
         else:  # ea0
             self.choices["dipoles_multiplier"] = [GM_con.Debye2ea0]
 
         if self.choices["raman_units"][0] == "Ang3":
-            self.choices["raman_multiplier"] = [1]
+            self.choices["raman_multiplier"] = [1.0]
         else:  # bohr3
             self.choices["raman_multiplier"] = [GM_con.ang2bohr ** 3]
         # else:
@@ -562,7 +562,7 @@ class RefPars:
 
         match self.choices["positions_units"][0]:
             case "Ang":
-                self.choices["positions_multiplier"] = [1]
+                self.choices["positions_multiplier"] = [1.0]
             case "Bohr":
                 self.choices["positions_multiplier"] = [GM_con.ang2bohr]
             case "nm":
@@ -570,7 +570,7 @@ class RefPars:
 
         match self.choices["doublepos_units"][0]:
             case "Ang":
-                self.choices["doublepos_multiplier"] = [1]
+                self.choices["doublepos_multiplier"] = [1.0]
             case "Bohr":
                 self.choices["doublepos_multiplier"] = [GM_con.ang2bohr]
             case "nm":
@@ -1493,7 +1493,7 @@ class RawPars:
                 )
             else:
                 if self.choices["hamiltonian_units"][0] == "cm-1":
-                    self.choices["hamiltonian_multiplier"] = [1]
+                    self.choices["hamiltonian_multiplier"] = [1.0]
                 else:  # eV
                     self.choices["hamiltonian_multiplier"] = [GM_con.cm2eV]
 
@@ -1510,7 +1510,7 @@ class RawPars:
                 )
             else:
                 if self.choices["energies_units"][0] == "cm-1":
-                    self.choices["energies_multiplier"] = [1]
+                    self.choices["energies_multiplier"] = [1.0]
                 else:  # eV
                     self.choices["energies_multiplier"] = [GM_con.cm2eV]
 
@@ -1527,7 +1527,7 @@ class RawPars:
                 )
             else:
                 if self.choices["dipoles_units"][0] == "Debye":
-                    self.choices["dipoles_multiplier"] = [1]
+                    self.choices["dipoles_multiplier"] = [1.0]
                 else:  # eV
                     self.choices["dipoles_multiplier"] = [GM_con.Debye2ea0]
 
@@ -1544,7 +1544,7 @@ class RawPars:
                 )
             else:
                 if self.choices["raman_units"][0] == "Ang3":
-                    self.choices["raman_multiplier"] = [1]
+                    self.choices["raman_multiplier"] = [1.0]
                 else:  # bohr3
                     self.choices["raman_multiplier"] = [GM_con.ang2bohr ** 3]
 
@@ -1562,7 +1562,7 @@ class RawPars:
             else:
                 match self.choices["positions_units"][0]:
                     case "Ang":
-                        self.choices["positions_multiplier"] = [1]
+                        self.choices["positions_multiplier"] = [1.0]
                     case "Bohr":
                         self.choices["positions_multiplier"] = [
                             GM_con.ang2bohr]
@@ -1583,7 +1583,7 @@ class RawPars:
             else:
                 match self.choices["doublepos_units"][0]:
                     case "Ang":
-                        self.choices["doublepos_multiplier"] = [1]
+                        self.choices["doublepos_multiplier"] = [1.0]
                     case "Bohr":
                         self.choices["doublepos_multiplier"] = [
                             GM_con.ang2bohr]
