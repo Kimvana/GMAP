@@ -18,7 +18,8 @@
 # present, either in 'singles' (if the map itself is in 'singles'), or in the
 # map directory itself (former takes precedence)
 
-
+#can_output        ham   ene    dip     pos    dbp    ram
+can_output        ham   ene    dip     pos
 
 # -----------------------
 

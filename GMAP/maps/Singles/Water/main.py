@@ -141,7 +141,7 @@ def GM_adjust_oscillators(Files, Printer, Map, Syst, oscillator_list):
     oscillator_list_adjusted = []
     for oscillator in oscillator_list:
         oscillator_list_adjusted.append(oscillator)
-        oscillator_list_adjusted.append(GM_SR.Oscillator([oscillator.used_atoms[0], *oscillator.used_atoms[2:0:-1],Map)))        
+        oscillator_list_adjusted.append(GM_SR.Oscillator(Syst,[oscillator.used_atoms[0], *oscillator.used_atoms[2:0:-1]],Map))  # TLC Double check his line      
         #oscnew=oscillator_list_adjusted[-1]
         # oscnew.used_atoms = [oscillator.used_atoms[0],*oscillator.used_atoms[2:0:-1]]
         # oscnew.electrostatic_atoms = [oscnew.used_atoms[1]]
