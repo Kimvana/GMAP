@@ -13,6 +13,7 @@ import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.FileHandler as GM_FH
 import GMAP.src.tools.ParameterParser as GM_PP
 import GMAP.src.tools.PrintTools as GM_PT
+import GMAP.src.tools.ReferenceHandler as GM_RH
 
 
 class Map:
@@ -503,6 +504,15 @@ class Map:
             )
             return None
 
+    def parse_references(self):
+        """Checks if there is a references file, and parses it."""
+
+        references_filename = self.directory / "references.bib"
+        if references_filename.is_file():
+            self.references = GM_RH.read_reference_file(references_filename)
+        else:
+            self.references = {}
+
 
 class SingleMap(Map):
     def initialize(self):
@@ -510,6 +520,7 @@ class SingleMap(Map):
 
         Initializing is a multi-step process:
 
+        - interpret reference file if present
         - If there is a main.py file, read/extract it.
         - If any of GM_adjust_[RunPars/map_core_raw/oscillators] are
           missing, add the default for them.
@@ -521,6 +532,8 @@ class SingleMap(Map):
         - If not present in self.code, create functions for
           GM_calculate_dipole and GM_get_rotation matrix based on core.
         """
+
+        self.parse_references()
 
         self.code = self.extract_code()
         if not self.code:
@@ -583,7 +596,8 @@ class SingleMap(Map):
             "pre_run",
             "pre_frame",
             "post_frame",
-            "post_run"
+            "post_run",
+            "report_references"
         ))
 
     def code_add_builds(self):
@@ -690,6 +704,7 @@ class PairMap(Map):
 
         Initializing is a multi-step process:
 
+        - interpret reference file if present
         - If there is a main.py file, read/extract it.
         - If any of GM_adjust_[RunPars/map_core_raw] are
           missing, add the default for them.
@@ -701,6 +716,8 @@ class PairMap(Map):
         - If not present in self.code, create functions for all missing
           behaviour
         """
+
+        self.parse_references()
 
         self.allpairs = []
 
@@ -732,14 +749,6 @@ class PairMap(Map):
             self.success = False
             return
 
-        # self.complete_code(("needs_mapfunc",))
-        # self.required_functions = self.code.GM_needs_mapfunc(
-        #     self)
-
-        # self.complete_code(("needs_keyword",))
-        # self.required_keywords = self.code.GM_needs_keyword(
-        #     self)
-
         # Add in the remaining code
         self.complete_code((
             "change_coup_type",
@@ -748,8 +757,9 @@ class PairMap(Map):
             "pre_run",
             "pre_frame",
             "post_frame",
-            "post_run"
-        ), [{"name": self.name}] + [{}] * 6)
+            "post_run",
+            "report_references"
+        ), [{"name": self.name}] + [{}] * 7)
 
     def check_singles(self, main_runpars, requester=None):
         """Sees if all indicated requirements of the map are met.

@@ -357,7 +357,12 @@ If you need a place to quickly write something down, do it here! It can be tidie
 
 
 - (KvA) TODO before PR:
-  - Nothing?
+  - consider - do we want to report which groups we are coupling? or do we just mention the model name, and then have the couplingmatrix file do the rest?
+  - dip for ham?
+  - manual testing - does it seem to work?
+  - new map function (both singles and pairs: GM_report_references) - write documentation on this (important: document structure of the dict well!)
+  - new map file (references.bib) - write documentation on this
+  - tests
 - (KvA) TODO:
   - legacy support:
     - CoM calculation is different for AmideImaps.

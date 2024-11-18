@@ -515,6 +515,17 @@ def get_get_doublepos(map_):
     return GM_get_doublepos
 
 
+def get_report_references():
+    """Default for obtaining the correct references of a map.
+
+    By default, all references should be considered.
+    """
+
+    def GM_report_references(map_, system):
+        return map_.references
+    return GM_report_references
+
+
 # ------------------------
 # Base functions
 # ------------------------

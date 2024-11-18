@@ -40,6 +40,8 @@ import GMAP.src.tools.ParameterParser as GM_PP
 import GMAP.src.tools.PhysicsFunctions as GM_PF
 import GMAP.src.tools.Plotter as GM_Pl
 import GMAP.src.tools.PrintTools as GM_PT
+from GMAP.src.tools.PrintTools import devprint as dpr
+import GMAP.src.tools.ReferenceHandler as GM_RH
 import GMAP.src.tools.SystemReader as GM_SR
 
 
@@ -352,6 +354,38 @@ def print_calculation_summary(RunPars, System):
         MD trajectory.
     """
 
+    # making sure the last 'split' is saved in timer.totals()
+    pr = GM_PT.Printer
+    GM_PT.Printer.add_time(5, "", "end")
+
+    GM_PT.header(
+        1, "Calculation\nsummary", "doublebox_bare", detailed_instructions=[1])
+    GM_PT.header(2, "\n  Calculation  \nsummary\n", "doublebox_bare")
+
+    print_time_splits(RunPars)
+
+    print_treated_avail_frames(RunPars, System)
+
+    print_in_output_filenames(RunPars)
+
+    print_relevant_references(RunPars, System)
+
+    end = " ██▓▓▒▒░░"
+    start = end[::-1]
+    msg = "That was all for today, folks. Thank you, and good night!"
+    pr.print(1, f"\n  {start}{msg}{end}")
+
+
+def print_time_splits(RunPars):
+    """Report how much time was spent on what parts of the calculation
+
+    Parameters
+    ----------
+    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        The 'main' RunPars instance containing all the basic
+        run-defining parameters.
+    """
+
     def sumavg(*args):
         total_time = pr.Timer.get_total_ns(*args)
         avg_time = total_time // nframes
@@ -359,30 +393,9 @@ def print_calculation_summary(RunPars, System):
         avg_str = GM_PT.time_to_str(avg_time, "ms")
         return f"{tot_str: >12}  --> {avg_str[-12:]} / frame"
 
-    def report_files(RunPars, shorthand, printfname, txtverb, binverb):
-        if shorthand in RunPars.output_data:
-            fname = getattr(RunPars, f"output_{printfname.lower()}_filename")
-            if "txt" in RunPars.output_format:
-                temp = fname.parent / f"{fname.name}.txt"
-                text = f"{printfname} text file:"
-                pr.print(txtverb, f"{text: <28}{temp}")
-            if "bin" in RunPars.output_format:
-                temp = fname.parent / f"{fname.name}.bin"
-                text = f"{printfname} binary file:"
-                pr.print(binverb, f"{text: <28}{temp}")
-
     pr = GM_PT.Printer
     sum_ = pr.Timer.get_total_format
     nframes = RunPars.stop_frame - RunPars.start_frame
-
-    # making sure the last 'split' is saved in timer.totals()
-    pr.add_time(5, "", "end")
-
-    GM_PT.header(
-        1, "Calculation\nsummary", "doublebox_bare", detailed_instructions=[1])
-    GM_PT.header(2, "\n  Calculation  \nsummary\n", "doublebox_bare")
-
-    # ---- print all time splits --------
 
     GM_PT.header(2, "Time spent", "doublebox_bare", newlines=(1, 1))
     init_labels = [
@@ -424,7 +437,27 @@ def print_calculation_summary(RunPars, System):
     pr.print(4, f"      Writing frames:         {sumavg('FrameWrite')}")
     pr.print(2, f"  Calculation finalization:   {sum_(*post_labels): >12}")
 
-    # ---- print treated + avail frames --------
+
+def print_treated_avail_frames(RunPars, System):
+    """Report what frames from MD are available, which were requested,
+    and which actually calculated.
+
+    For now, there is no difference between the requested and calculated
+    frames. This will become relevant when the program can stop early
+    due to time constraints.
+
+    Parameters
+    ----------
+    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        The 'main' RunPars instance containing all the basic
+        run-defining parameters.
+    System : :class:`~GMAP.src.tools.SystemReader.System`
+        The class containing all the information on the system of the
+        MD trajectory.
+    """
+
+    pr = GM_PT.Printer
+
     GM_PT.header(2, "MD frames", "doublebox_bare")
     msg = "Frames treated:     " + " " * 12
     pr.print(1, f"{msg}{RunPars.start_frame}-{RunPars.stop_frame}")
@@ -433,7 +466,31 @@ def print_calculation_summary(RunPars, System):
     msg = "Frames available:   " + " " * 12
     pr.print(3, f"{msg}{0}-{len(System.universe.trajectory)}")
 
-    # ---- print in-/output filenames (+ sizes?) --------
+
+def print_in_output_filenames(RunPars):
+    """report which files were used during the calculation
+
+    Parameters
+    ----------
+    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        The 'main' RunPars instance containing all the basic
+        run-defining parameters.
+    """
+
+    def report_files(RunPars, shorthand, printfname, txtverb, binverb):
+        if shorthand in RunPars.output_data:
+            fname = getattr(RunPars, f"output_{printfname.lower()}_filename")
+            if "txt" in RunPars.output_format:
+                temp = fname.parent / f"{fname.name}.txt"
+                text = f"{printfname} text file:"
+                pr.print(txtverb, f"{text: <28}{temp}")
+            if "bin" in RunPars.output_format:
+                temp = fname.parent / f"{fname.name}.bin"
+                text = f"{printfname} binary file:"
+                pr.print(binverb, f"{text: <28}{temp}")
+
+    pr = GM_PT.Printer
+
     GM_PT.header(2, "Files used", "doublebox_bare")
     cb = GM_PT.Printer.colors.green_lc
     ct = GM_PT.Printer.colors.clear
@@ -472,10 +529,39 @@ def print_calculation_summary(RunPars, System):
     report_files(RunPars, "pos", "Positions", 2, 2)
     report_files(RunPars, "dbp", "Doublepos", 2, 2)
 
-    end = " ██▓▓▒▒░░"
-    start = end[::-1]
-    msg = "That was all for today, folks. Thank you, and good night!"
-    pr.print(1, f"\n  {start}{msg}{end}")
+
+def print_relevant_references(RunPars, system):
+    """report which references should be cited for this calculation
+
+    Parameters
+    ----------
+    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        The 'main' RunPars instance containing all the basic
+        run-defining parameters.
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The class containing all the information on the system of the
+        MD trajectory.
+    """
+
+    GM_PT.header(2, "References to cite", "doublebox_bare")
+    cb = GM_PT.Printer.colors.green_lc
+    ct = GM_PT.Printer.colors.clear
+    line = f"{cb}════{ct}"
+    GM_PT.Printer.print(
+        1, f"\n{line} References to cite {line}", detailed_instructions=[1])
+
+    all_references = []
+    for singles_map in system.oscillators_ordered.keys():
+        singles_map = RunPars.requested_mapdict[singles_map]
+        all_references.append(
+            singles_map.code.GM_report_references(singles_map, system))
+
+    for pairs_map in system.oscillators_ordered_coup.keys():
+        pairs_map = RunPars.requested_pairmapdict[pairs_map]
+        all_references.append(
+            pairs_map.code.GM_report_references(pairs_map, system))
+
+    GM_RH.report_references(RunPars, all_references)
 
 
 # still a placeholder - this function still has to grow. Should in the
