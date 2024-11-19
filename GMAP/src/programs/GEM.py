@@ -496,9 +496,10 @@ def GEM(callcommand):
     )
 
     # Parameter parsing
-    RunPars, singles_mapdict, pairs_mapdict, _, _, _, _ = GM_PP.get_parameters(
-        in_parfile, argslist
-    )
+    (
+        RunPars, singles_mapdict, pairs_mapdict, CmdPars, InPars, DefPars,
+        RefPars
+    ) = GM_PP.get_parameters(in_parfile, argslist)
     GM_PT.Printer.add_time(
         3, "Finished GMAP parameters, start adding maps", "AddMaps", "ms")
 
@@ -531,6 +532,10 @@ def GEM(callcommand):
         3, "Initialization complete, start loading C libraries",
         "ClibLoad", "ms"
     )
+
+    # Write output parameter file
+    GM_FH.write_parameter_file(
+        RefPars, RunPars, System, CmdPars, InPars, DefPars)
 
     # Report on what the system looks like
     System.print_system(RunPars)

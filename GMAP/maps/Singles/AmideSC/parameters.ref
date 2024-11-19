@@ -6,4 +6,4 @@ dp1_choice[str]                       [C] O N D Torii
 dp2_choice[str]                       C O [N] D Torii
 legacy_mode[str]                      [None] AIM AmideImaps
 
-Torii_dipole_angle[float]                10   # in degrees!
+Torii_dipole_angle[float]                10   # in degrees

@@ -110,7 +110,7 @@ class Map:
             self.RefPars = GM_PP.RefPars(refparfilename, False)
         else:
             # self.RefPars = None
-            with open(refparfilename, "w") as _:
+            with open(refparfilename, "w", encoding='utf-8') as _:
                 pass
             self.RefPars = GM_PP.RefPars(refparfilename, False)
 

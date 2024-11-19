@@ -216,7 +216,7 @@ class RefPars:
             cleaning that line)
         """
 
-        with open(self.fname) as file:
+        with open(self.fname, encoding='utf-8') as file:
             for line in file:
                 line = cleanline(line).strip()  # remove all comments
                 if len(line) == 0:  # ignore all empty lines
@@ -537,22 +537,22 @@ class RefPars:
         )]
 
         if self.choices["hamiltonian_units"][0] == "cm-1":
-            self.choices["hamiltonian_multiplier"] = [1]
+            self.choices["hamiltonian_multiplier"] = [1.0]
         else:  # eV
             self.choices["hamiltonian_multiplier"] = [GM_con.cm2eV]
 
         if self.choices["energies_units"][0] == "cm-1":
-            self.choices["energies_multiplier"] = [1]
+            self.choices["energies_multiplier"] = [1.0]
         else:  # eV
             self.choices["energies_multiplier"] = [GM_con.cm2eV]
 
         if self.choices["dipoles_units"][0] == "Debye":
-            self.choices["dipoles_multiplier"] = [1]
+            self.choices["dipoles_multiplier"] = [1.0]
         else:  # ea0
             self.choices["dipoles_multiplier"] = [GM_con.Debye2ea0]
 
         if self.choices["raman_units"][0] == "Ang3":
-            self.choices["raman_multiplier"] = [1]
+            self.choices["raman_multiplier"] = [1.0]
         else:  # bohr3
             self.choices["raman_multiplier"] = [GM_con.ang2bohr ** 3]
         # else:
@@ -562,7 +562,7 @@ class RefPars:
 
         match self.choices["positions_units"][0]:
             case "Ang":
-                self.choices["positions_multiplier"] = [1]
+                self.choices["positions_multiplier"] = [1.0]
             case "Bohr":
                 self.choices["positions_multiplier"] = [GM_con.ang2bohr]
             case "nm":
@@ -570,7 +570,7 @@ class RefPars:
 
         match self.choices["doublepos_units"][0]:
             case "Ang":
-                self.choices["doublepos_multiplier"] = [1]
+                self.choices["doublepos_multiplier"] = [1.0]
             case "Bohr":
                 self.choices["doublepos_multiplier"] = [GM_con.ang2bohr]
             case "nm":
@@ -771,7 +771,7 @@ class RawPars:
             stored.
         """
 
-        with open(fname) as file:
+        with open(fname, encoding='utf-8') as file:
             given_dict = get_pardict(file, RefPars.compounds)
 
         instance = cls.from_dict(
@@ -1493,7 +1493,7 @@ class RawPars:
                 )
             else:
                 if self.choices["hamiltonian_units"][0] == "cm-1":
-                    self.choices["hamiltonian_multiplier"] = [1]
+                    self.choices["hamiltonian_multiplier"] = [1.0]
                 else:  # eV
                     self.choices["hamiltonian_multiplier"] = [GM_con.cm2eV]
 
@@ -1510,7 +1510,7 @@ class RawPars:
                 )
             else:
                 if self.choices["energies_units"][0] == "cm-1":
-                    self.choices["energies_multiplier"] = [1]
+                    self.choices["energies_multiplier"] = [1.0]
                 else:  # eV
                     self.choices["energies_multiplier"] = [GM_con.cm2eV]
 
@@ -1527,7 +1527,7 @@ class RawPars:
                 )
             else:
                 if self.choices["dipoles_units"][0] == "Debye":
-                    self.choices["dipoles_multiplier"] = [1]
+                    self.choices["dipoles_multiplier"] = [1.0]
                 else:  # eV
                     self.choices["dipoles_multiplier"] = [GM_con.Debye2ea0]
 
@@ -1544,7 +1544,7 @@ class RawPars:
                 )
             else:
                 if self.choices["raman_units"][0] == "Ang3":
-                    self.choices["raman_multiplier"] = [1]
+                    self.choices["raman_multiplier"] = [1.0]
                 else:  # bohr3
                     self.choices["raman_multiplier"] = [GM_con.ang2bohr ** 3]
 
@@ -1562,7 +1562,7 @@ class RawPars:
             else:
                 match self.choices["positions_units"][0]:
                     case "Ang":
-                        self.choices["positions_multiplier"] = [1]
+                        self.choices["positions_multiplier"] = [1.0]
                     case "Bohr":
                         self.choices["positions_multiplier"] = [
                             GM_con.ang2bohr]
@@ -1583,7 +1583,7 @@ class RawPars:
             else:
                 match self.choices["doublepos_units"][0]:
                     case "Ang":
-                        self.choices["doublepos_multiplier"] = [1]
+                        self.choices["doublepos_multiplier"] = [1.0]
                     case "Bohr":
                         self.choices["doublepos_multiplier"] = [
                             GM_con.ang2bohr]
@@ -2523,7 +2523,7 @@ def get_parameters(in_parfile, argslist):
 
         # check if file is UTF8
         GM_FH.check_file_readability(in_parfile)
-        with open(in_parfile) as file:
+        with open(in_parfile, encoding='utf-8') as file:
             in_pardict = get_pardict(file)
         # step 5 (find which defpar to use)
         def_parfile = GM_FH.get_def_parfile(
@@ -3014,7 +3014,7 @@ def parse_influencerfile(fname, groupdict):
         found in the supplied file.
     """
 
-    with open(fname) as fhand:
+    with open(fname, encoding='utf-8') as fhand:
         for line in fhand:
             line = cleanline(line).strip()
             if not line:
