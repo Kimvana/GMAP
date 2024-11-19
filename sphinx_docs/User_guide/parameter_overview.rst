@@ -138,7 +138,7 @@ output_parameter_filename
 | (no shorthand available)
 | (used by: GEM)
 
-The filename of the output parameter wile, _with_ extension! The path stored here will be assumed to be relative to the directory given in the parameter output_directory when applicable.
+The filename of the output parameter file, _with_ extension! The path stored here will be assumed to be relative to the directory given in the parameter output_directory when applicable.
 
 The output parameter files contains all parameters set for the run, and can be used as an input (or default) parameter file in future runs to replicate the same settings as for the current run.
 
