@@ -22,16 +22,17 @@ maps_to_use   AmideBB AmideSC  # AmideSC
 couplings_to_use  ProteinAmide   :All
 # couplings_to_use  DipDip  AmideSC:AmideSC
 
-output_format txt
-output_data dip ham ene ram pos dbp
-prevent_overwrite False
+output_format       txt
+# output_data         dip ham ene ram pos dbp
+output_data         dip ene ram pos dbp
+prevent_overwrite   False
 
-estatics_method  perres_nocut
+# estatics_method  perres_nocut
 
 start_frame 0
 number_frames 1
 
-estatics_method        perres_nocut
+# estatics_method        perres_nocut
 estatic_smooth_range 0
 neutral_charge_threshold 0.01
 
