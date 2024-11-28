@@ -76,14 +76,18 @@ local_atoms   0 1 2
 # ------------------------
 
 frequency_gas_phase     3762
-frequency_data_file     Skinner.txt
+frequency_data_file_linear     Skinner.txt
 
 # ------------------------
 
 dipole_gas_phase        0.24
-dipole_data_file        Skinner_dipole.txt
+dipole_data_file        magnitude  Skinner_dipole.txt
 
 # -------------------
+
+position               0.58*1+0.42*0
+doublepos_0            1
+doublepos_1            0
 
 # how to calculate the different directions. Currently only supports subtraction.
 # Atoms are indicated by their indices in used_atoms. Here, the x vector is
