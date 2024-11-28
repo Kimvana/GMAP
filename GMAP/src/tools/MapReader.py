@@ -2350,7 +2350,8 @@ class SingleCore:
             self.success = False
             return None
 
-        if foundwidth != 10:
+        # even if foundwidth is correct, we cut it smaller in report_array_size
+        if array.shape[1] != 10:
             toadd = np.zeros(
                 (array.shape[0], 10-array.shape[1]), dtype="float32")
             array = np.concatenate((array, toadd), axis=1)
