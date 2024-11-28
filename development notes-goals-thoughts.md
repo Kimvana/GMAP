@@ -350,6 +350,15 @@ TO DO
 
 
 ### ===============================
+# FAQ
+### ===============================
+
+#### I followed the installation instructions, but it can't find the colorama module.
+We've encountered this issue for mac users, when their python version is too new. GMAP is tested mostly for python 3.10, so use that version with any issues.
+
+
+
+### ===============================
 # Dump section
 ### ===============================
 
