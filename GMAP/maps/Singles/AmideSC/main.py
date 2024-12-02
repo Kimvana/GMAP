@@ -285,7 +285,7 @@ def GM_report_references(map_, system):
 
     Returns
     -------
-    references_dict = dict
+    references_dict : dict
         This dict should be a slice/part of the full map_.references
         dict. Therefore, an explanation of the map_.references dict:
 
@@ -308,11 +308,14 @@ def GM_report_references(map_, system):
     # freq map used:
     report_these.append(f"Emap{map_.RunPars.frequency_map_choice}SC")
 
+    report_dict = {key: map_.references[key] for key in report_these}
+    report_dict["CP_DipDip"] = []
+
     # dip map used:
     if map_.RunPars.dipole_map_choice == "Torii":
-        report_these.append("DmapTorii")
+        report_dict["CP_DipDip"].extend(map_.references["DmapTorii"])
     else:
-        report_these.append("DmapJansenSC")
+        report_dict["CP_DipDip"].extend(map_.references["DmapJansenSC"])
 
     # select the actual references for the chosen keys
-    return {key: map_.references[key] for key in report_these}
+    return report_dict

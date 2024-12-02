@@ -753,13 +753,14 @@ class PairMap(Map):
         self.complete_code((
             "change_coup_type",
             "prep_coupling",
+            "calc_coupling",
             "post_init",
             "pre_run",
             "pre_frame",
             "post_frame",
             "post_run",
             "report_references"
-        ), [{"name": self.name}] + [{}] * 7)
+        ), [{"name": self.name}] + [{}] * 8)
 
     def check_singles(self, main_runpars, requester=None):
         """Sees if all indicated requirements of the map are met.

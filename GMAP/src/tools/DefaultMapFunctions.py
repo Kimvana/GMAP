@@ -59,6 +59,10 @@ def get_prep_coupling():
     return does_nothing
 
 
+def get_calc_coupling():
+    return does_nothing
+
+
 def get_str_osc():
     def base_str_getter(Map, Syst, osc):
         return f"living on residue number {Syst.resnums[osc.used_atoms[0]]}"

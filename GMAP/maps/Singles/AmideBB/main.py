@@ -414,7 +414,7 @@ def GM_report_references(map_, system):
 
     Returns
     -------
-    references_dict = dict
+    references_dict : dict
         This dict should be a slice/part of the full map_.references
         dict. Therefore, an explanation of the map_.references dict:
 
@@ -450,14 +450,20 @@ def GM_report_references(map_, system):
     if pro_present:
         report_these.append(f"Emap{map_.RunPars.frequency_map_choice}Pro")
 
+    report_dict = {key: map_.references[key] for key in report_these}
+
     # dip map used:
+    # in order to have the DipDip coupling map correctly understand which
+    # references should be cited, we add them to the correct mapkey entry
+    # in the dict.
+    report_dict["CP_DipDip"] = []
     if map_.RunPars.dipole_map_choice == "Torii":
-        report_these.append("DmapTorii")
+        report_dict["CP_DipDip"].extend(map_.references["DmapTorii"])
     else:
         if gen_present:
-            report_these.append("DmapJansenGen")
+            report_dict["CP_DipDip"].extend(map_.references["DmapJansenGen"])
         if pro_present:
-            report_these.append("DmapJansenPro")
+            report_dict["CP_DipDip"].extend(map_.references["DmapJansenPro"])
 
     # select the actual references for the chosen keys
-    return {key: map_.references[key] for key in report_these}
+    return report_dict

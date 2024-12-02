@@ -18,6 +18,10 @@ class Reference:
 
     Attributes
     ----------
+    input_string : str
+        The string provided to the __init__ method. This string can be
+        used to later see what was used to instantiate the class (and,
+        for example, for creating a copy of the instance).
     dir_attr : list
         A list of strings, each string being a field name. These are the
         fields that can be directly read from the .bib file / input
@@ -92,6 +96,8 @@ class Reference:
     """
 
     def __init__(self, input_string):
+        self.input_string = input_string
+
         # read from bib file directly
         self.dir_attr = [
             "title", "year", "month", "journal", "volume", "number", "pages",
@@ -506,5 +512,5 @@ def print_references(references):
     for refstr, reporttexts in references.items():
         pr.print(2, "The following reference was used for calculating the:")
         for reporttext in reporttexts:
-            pr.print(2, f" - {reporttext}")
+            pr.print(2, f" - {reporttext}", wrap_preline="   ")
         pr.print(1, f"{refstr}\n")

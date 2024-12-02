@@ -1486,3 +1486,81 @@ default code:
 .. #endregion
 
 
+
+.. #region GM_report_references
+GM_report_references
+=================================================================
+
+Returns the references that should be reported for this map.
+
+.. tip::
+    This function becomes much easier to write when the references have well-chosen mapkeys. See the documentation on the reference file for more explanation on this field.
+
+All references present in the references file are saved as ``map_.references``, this function is intended to only return a subset of that dictionary. The structure of the dictionary is as follows:
+
+The keys in this dictionary are the separate keys listed in the reference.bib file's 'mapkey' field. If the reference has multiple keys in that field, it will occur multiple times in the dictionary, once for each key.
+
+Associated with each key is a list of :class:`~GMAP.src.tools.ReferenceHandler.Reference` objects, each of which corresponds to a single entry in the .bib file.
+
+
+Example uses
+------------
+
+The map allows the application of multiple models
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Some functional groups have been mapped by multiple different research groups. Especially when they do have a similar structure, it makes sense to group all these different scientific maps (called 'models' from now to avoid confusion) within a single GMAP map. However, it happens that two different models don't come from a single paper. In these cases, the default would be that the papers of all models are referenced in the map references file, and GMAP reports them all. This is undesired, the correct behaviour would be to only report the paper of the model actually used. This function allows selecting the papers of a single model, instead of all of them. 
+
+
+Available attributes of map\_
+-------------------------------
+
+.. hlist::
+    :columns: 4
+
+    * self.directory
+    * self.corepath
+    * self.name
+    * self.type
+    * self.success
+    * self.avail_files
+    * self.RefPars
+    * self.DefPars
+    * self.InPars
+    * self.CmdPars
+    * self.RunPars
+    * self.code
+    * self.rawcore
+    * self.Core
+    * self.references
+
+
+Parameters
+----------
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
+    The object that stores everything the program currently knows
+    about this map.
+system : :class:`~GMAP.src.tools.SystemReader.System`
+    The object that stores everyting the program currently knows about the MD system.
+
+
+Returns
+-------
+references_dict : dict
+    A dictionary with all references to be cited, grouped by key. The structure of this dict should be the same as that of ``map_.references``, making slicing from the latter easier.
+
+
+Default implementation
+----------------------
+
+The default is to just return the entire ``map_.references`` dictionary, without omitting anything.
+
+
+default code:
+.. code-block:: python
+    import GMAP.src.tools.PhysicsFunctions as GM_PF
+
+    def GM_report_references(map_, system):
+        return map_.references
+
+
+.. #endregion

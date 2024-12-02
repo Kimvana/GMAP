@@ -40,7 +40,6 @@ import GMAP.src.tools.ParameterParser as GM_PP
 import GMAP.src.tools.PhysicsFunctions as GM_PF
 import GMAP.src.tools.Plotter as GM_Pl
 import GMAP.src.tools.PrintTools as GM_PT
-from GMAP.src.tools.PrintTools import devprint as dpr
 import GMAP.src.tools.ReferenceHandler as GM_RH
 import GMAP.src.tools.SystemReader as GM_SR
 
@@ -483,11 +482,14 @@ def print_in_output_filenames(RunPars):
             if "txt" in RunPars.output_format:
                 temp = fname.parent / f"{fname.name}.txt"
                 text = f"{printfname} text file:"
-                pr.print(txtverb, f"{text: <28}{temp}")
+                wrapprint(txtverb, f"{text: <28}{temp}", ps)
             if "bin" in RunPars.output_format:
                 temp = fname.parent / f"{fname.name}.bin"
                 text = f"{printfname} binary file:"
-                pr.print(binverb, f"{text: <28}{temp}")
+                wrapprint(binverb, f"{text: <28}{temp}", ps)
+
+    def wrapprint(verbose, message, wrap_preline):
+        pr.print(verbose, message, wrap_preline=wrap_preline)
 
     pr = GM_PT.Printer
 
@@ -499,29 +501,30 @@ def print_in_output_filenames(RunPars):
         1, f"\n{line} Files used {line}", detailed_instructions=[1])
     line = f"{cb}========{ct}"
     files = GM_FH.FileLocations
+    ps = "  "  # The string to print as pre-wrap
     pr.print(3, f"{line}  Program files and information {line}")
-    pr.print(3, f"Python installation used:   {sys.executable}")
-    pr.print(3, f"GMAP installation used:     {files.script_dir}")
-    pr.print(3, f"Working directory:          {files.cwd}")
-    pr.print(3, f"Program started at:         {files.now_str}")
+    wrapprint(3, f"Python installation used:   {sys.executable}", ps)
+    wrapprint(3, f"GMAP installation used:     {files.script_dir}", ps)
+    wrapprint(3, f"Working directory:          {files.cwd}", ps)
+    wrapprint(3, f"Program started at:         {files.now_str}", ps)
 
     pr.print(2, f"\n{line}  Input files {line}")
-    pr.print(1, f"Command issued:             {files.callcommand}")
-    pr.print(2, f"Default parameter file:     {RunPars.defparfilename}")
-    pr.print(2, f"Input parameter file:       {RunPars.inparfilename}")
-    pr.print(1, f"Topology file analyzed:     {RunPars.topology_file}")
-    pr.print(1, f"Trajectory file analyzed:   {RunPars.trajectory_file}")
+    wrapprint(1, f"Command issued:             {files.callcommand}", ps)
+    wrapprint(2, f"Default parameter file:     {RunPars.defparfilename}", ps)
+    wrapprint(2, f"Input parameter file:       {RunPars.inparfilename}", ps)
+    wrapprint(1, f"Topology file analyzed:     {RunPars.topology_file}", ps)
+    wrapprint(1, f"Trajectory file analyzed:   {RunPars.trajectory_file}", ps)
     mapdirs = ", ".join([str(direc) for direc in RunPars.map_directory])
-    pr.print(2, f"Map directories used:       {mapdirs}")
-    pr.print(2, f"VEG-library file used:      {RunPars.VEG_clib_file}")
+    wrapprint(2, f"Map directories used:       {mapdirs}", ps)
+    wrapprint(2, f"VEG-library file used:      {RunPars.VEG_clib_file}", ps)
 
     pr.print(2, f"\n{line}  Output files {line}")
-    pr.print(1, f"Logfile generated:          {RunPars.log_filename}")
+    wrapprint(1, f"Logfile generated:          {RunPars.log_filename}", ps)
     fname = RunPars.output_legend_filename
-    pr.print(2, f"Legend file generated:      {fname}")
+    wrapprint(2, f"Legend file generated:      {fname}", ps)
     if "ham" in RunPars.output_data:
         fname = RunPars.output_couplingvis_filename
-        pr.print(2, f"Coupling visualization:     {fname}")
+        wrapprint(2, f"Coupling visualization:     {fname}", ps)
     report_files(RunPars, "ham", "Hamiltonian", 2, 2)
     report_files(RunPars, "ene", "Energies", 2, 2)
     report_files(RunPars, "dip", "Dipole", 2, 2)
