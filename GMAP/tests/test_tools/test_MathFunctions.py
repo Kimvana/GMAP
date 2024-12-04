@@ -41,6 +41,9 @@ def test_PBC_triclinic(vect, expt, boxvects):
     boxvects_inv = np.linalg.inv(boxvects)
     translated_point = GM_MF.PBC_triclinic(vect, boxvects, boxvects_inv)
     assert np.all(np.round(translated_point, 3) == expt)
+    translated_point = GM_MF.PBC_triclinic.py_func(
+        vect, boxvects, boxvects_inv)
+    assert np.all(np.round(translated_point, 3) == expt)
 
 
 @pytest.mark.parametrize(("boxvect1", "boxvect2", "boxvects", "expt"), [

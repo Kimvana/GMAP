@@ -77,7 +77,7 @@ class Reference:
     mapkey : list
         A list of strings. Each string is one of the keys mentioned in
         the input string. Distinct keys are separated by a semicolon,
-        followed by a whitespace: ``; ``
+        followed by a whitespace: "; "
     reporttext : dict
         A dict of all ways/reasons to report this reference. The keys
         are the possible outputs the program can generate (currently,
@@ -86,8 +86,8 @@ class Reference:
 
         The input string looks like this:
 
-        ``ham, ene: print this for hamiltonian and energies output;
-        dip: print this for dipole output``
+        "ham, ene: print this for hamiltonian and energies output;
+        dip: print this for dipole output"
 
         A text is placed after its associated outputs, separated by a
         colon. If there are multiple different output/text pairs, those
@@ -160,7 +160,7 @@ class Reference:
             if hasattr(self, "number"):
                 outstr += "no. " + self.number
             else:
-                outstr += "unknown volume"
+                outstr += "vol. unknown"
 
         # Report on publication date
         if hasattr(self, "year"):
@@ -169,7 +169,7 @@ class Reference:
             else:
                 outstr += f" ({self.year})"
         else:
-            outstr += " unknown year"
+            outstr += " (unknown year)"
 
         # Report on page in journal
         if hasattr(self, "pages"):
@@ -393,7 +393,7 @@ def flatten_iterable(iterable):
     """
 
     if isinstance(iterable, dict):
-        iterable = iterable.values()
+        iterable = [*iterable.values()]
     elif isinstance(iterable, list):
         pass
     elif isinstance(iterable, Reference):

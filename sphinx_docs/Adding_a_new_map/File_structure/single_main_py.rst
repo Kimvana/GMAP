@@ -65,6 +65,7 @@ The function are in the order at which they're called by the program. This means
 
 
 .. #region GM_adjust_RunPars
+
 GM_adjust_RunPars
 ======================================
 Makes the necessary changes to Map.RunPar.
@@ -125,6 +126,7 @@ Default implementation
 
 
 .. #region GM_adjust_map_core_raw
+
 GM_adjust_map_core_raw
 ===========================================
 
@@ -188,6 +190,7 @@ Default implementation
 
 
 .. #region GM_adjust_oscillators
+
 GM_adjust_oscillators
 =================================================================
 
@@ -268,6 +271,7 @@ Default implementation
 
 
 .. #region GM_post_init
+
 GM_post_init
 =======================================
 
@@ -345,6 +349,7 @@ Default implementation
 
 
 .. #region GM_pre_run
+
 GM_pre_run
 =======================================
 
@@ -407,6 +412,7 @@ Default implementation
 
 
 .. #region GM_pre_frame
+
 GM_pre_frame
 =======================================
 
@@ -471,6 +477,7 @@ Default implementation
 
 
 .. #region GM_post_frame
+
 GM_post_frame
 =======================================
 
@@ -533,6 +540,7 @@ Default implementation
 
 
 .. #region GM_post_run
+
 GM_post_run
 =======================================
 
@@ -595,6 +603,7 @@ Default implementation
 
 
 .. #region GM_str_osc
+
 GM_str_osc
 ==============================
 
@@ -661,6 +670,7 @@ Default implementation
 
 
 .. #region GM_report_system
+
 GM_report_system
 =================================
 
@@ -730,6 +740,7 @@ Default implementation
 
 
 .. #region GM_get_rotation_matrix
+
 GM_get_rotation_matrix
 ===============================================
 
@@ -807,6 +818,7 @@ core.txt file::
     type standard
 
 default code:
+
 .. code-block:: python
 
     import numpy as np
@@ -836,6 +848,7 @@ core.txt file::
     type standard
 
 default code:
+
 .. code-block:: python
 
     import numpy as np
@@ -865,6 +878,7 @@ core.txt file::
     type linear
 
 default code:
+
 .. code-block:: python
 
     import numpy as np
@@ -889,6 +903,7 @@ default code:
 
 
 .. #region GM_get_dipole_dir
+
 GM_get_dipole_dir
 ==========================================
 
@@ -1000,6 +1015,7 @@ core.txt file::
 
 
 .. #region GM_get_dipole_mag
+
 GM_get_dipole_mag
 ==========================================
 
@@ -1081,6 +1097,7 @@ The default implementation only works with a set magnitude, or a magnitude map. 
 
 
 .. #region GM_calculate_dipole
+
 GM_calculate_dipole
 ============================================
 
@@ -1145,6 +1162,7 @@ Default implementation
 There are two main different ways of calculating the dipole moment. The first is by determining the dipole direction and magnitude following the GM_get_dipole_dir and GM_get_dipole_mag methods, and multiplying the two. However, as those methods also mention, that only works for some types of dipole specifications. When the dipole has each of its x-, y- and z-components depend on the electrostatics in a different way, a different method is needed. The actual implementation defines two possible ways of calculating the dipole moment, and then looks at the supplied map to see which is applicable, and return the correct method. That method selection should not be done within this function, but, eg. in the post_init function. It works as follows:
 
 .. code-block:: python
+
     def function_determiner(map_):
 
         # if there is no array, just a set magnitude provided in the corefile:
@@ -1164,6 +1182,7 @@ Again, these methods above are what this function contains, something like the a
 The contents of this function (GM_calculate_dipole) have two (the above-mentioned) possible defaults. The first is for 'simpler' dipoles with a provided direction and position (in the above code called dir_mag_method):
 
 .. code-block:: python
+
     def GM_calculate_dipole(map_, system, osc):
         r_vec, r_pos = map_.code.GM_get_dipole_dir(map_, system, osc)
         r_vec *= map_.code.GM_get_dipole_mag(map_, system, osc)
@@ -1173,6 +1192,7 @@ The contents of this function (GM_calculate_dipole) have two (the above-mentione
 In case of the separate x-, y- and z dependencies (in the above method selector referred to as xyz_method), the default implementation is as follows:
 
 .. code-block:: python
+
     def GM_calculate_dipole(map_, system, osc):
         _, r_pos = map_.code.GM_get_dipole_dir(map_, system, osc)
         xyz = [
@@ -1187,6 +1207,7 @@ In case of the separate x-, y- and z dependencies (in the above method selector 
 
 
 .. #region GM_calculate_frequency
+
 GM_calculate_frequency
 ===============================================
 
@@ -1248,12 +1269,14 @@ There are multiple different ways of calculating the frequency. While all method
 Gas phase only
 ^^^^^^^^^^^^^^
 .. code-block:: python
+
     def GM_calculate_frequency(map_, system, osc):
         return map_.Core.frequency_gas_phase
 
 Gas phase and linear dependence
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code-block:: python
+
     def GM_calculate_frequency(map_, system, osc):
         freq = uses_maps(
             map_.Core.frequency_gas_phase, [osc.VEGout],
@@ -1264,6 +1287,7 @@ Gas phase and linear dependence
 Gas phase and quadratic dependence
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code-block:: python
+
     def GM_calculate_frequency(map_, system, osc):
         freq = uses_maps(
             map_.Core.frequency_gas_phase, [osc.VEGout**2],
@@ -1274,6 +1298,7 @@ Gas phase and quadratic dependence
 Gas phase and both linear and quadratic dependence
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code-block:: python
+
     def GM_calculate_frequency(map_, system, osc):
         freq = uses_maps(
             map_.Core.frequency_gas_phase,
@@ -1288,6 +1313,7 @@ Gas phase and both linear and quadratic dependence
 
 
 .. #region GM_calculate_raman
+
 GM_calculate_raman
 =========================================
 
@@ -1350,6 +1376,7 @@ Due to the highly specific nature of this functionality, no default method has b
 
 
 .. #region GM_get_VEG_ref
+
 GM_get_VEG_ref
 =================================================================
 
@@ -1421,7 +1448,9 @@ core.txt file::
     VEG_reference residues 0 6
 
 default code:
+
 .. code-block:: python
+
     import GMAP.src.tools.PhysicsFunctions as GM_PF
 
     def GM_get_VEG_ref(map_, system, osc):
@@ -1448,7 +1477,9 @@ core.txt file::
     VEG_reference CoM 0 6
 
 default code:
+
 .. code-block:: python
+
     import GMAP.src.tools.PhysicsFunctions as GM_PF
 
     def GM_get_VEG_ref(map_, system, osc):
@@ -1469,7 +1500,9 @@ core.txt file::
     VEG_reference position 0.625 * 1 + 0.375 * 3
 
 default code:
+
 .. code-block:: python
+
     import GMAP.src.tools.PhysicsFunctions as GM_PF
 
     def GM_get_VEG_ref(map_, system, osc):
@@ -1488,6 +1521,7 @@ default code:
 
 
 .. #region GM_report_references
+
 GM_report_references
 =================================================================
 
@@ -1556,7 +1590,9 @@ The default is to just return the entire ``map_.references`` dictionary, without
 
 
 default code:
+
 .. code-block:: python
+
     import GMAP.src.tools.PhysicsFunctions as GM_PF
 
     def GM_report_references(map_, system):

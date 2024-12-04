@@ -125,11 +125,11 @@ class Printer(metaclass=GM_CT.Singleton):
             the requested verbose levels for printing - if `verbose_level` is
             smaller than or equal to the value set by the verbose parameters,
             the message will be printed/logged.
-        *toprint : str
+        toprint : str
             The message to print. Can be multiple arguments, like with
             python print
         instruction : str, default="pf"
-            Where to print to. If the string contains a 'p', the message
+            Where to print to. If the string contains a "p", the message
             will be printed to the terminal, if the string contains an
             "f", the message will be written to the logfile.
         line_length : int or None, default=None
@@ -140,7 +140,7 @@ class Printer(metaclass=GM_CT.Singleton):
             will be used.
         detailed instructions : list of int or None, default=None
             Any extra instructions. If None, an empty list will be
-            assumed. Currently supported::
+            assumed. Currently supported:
 
                 If any of the digits 0-4 are present in the list (each a
                 separate item), only at EXACTLY that verbose level the
@@ -152,7 +152,7 @@ class Printer(metaclass=GM_CT.Singleton):
         wrap_preline : str
             When wrapping the line, this bit should be added by the
             wrapper to make things line up nicely.
-        **kwargs : any
+        kwargs : any
             These kwargs are forwarded to the call to python's print.
         """
 
@@ -644,9 +644,9 @@ def color_test():  # run this one with word_wrap to 150 (8 colors per row)
     Due to the windows command line only going back so many lines, I
     used this function in a very manual way. There are two modii, one
     from 0 to 128, and one from 128 to 255. To run the first, make sure
-    that 'range_' is defined starting at 0, and the loop ends with
-    'if r == 128: break'. For the latter, expand that value (or comment
-    those last lines), and adjust the 'range_' definition to start at
+    that `range_` is defined starting at 0, and the loop ends with
+    `if r == 128: break`. For the latter, expand that value (or comment
+    those last lines), and adjust the `range_` definition to start at
     128.
     """
 

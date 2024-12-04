@@ -65,6 +65,7 @@ The function are in the order at which they're called by the program. This means
 
 
 .. #region GM_adjust_RunPars
+
 GM_adjust_RunPars
 ======================================
 Makes the necessary changes to Map.RunPar.
@@ -123,6 +124,7 @@ Default implementation
 
 
 .. #region GM_adjust_map_core_raw
+
 GM_adjust_map_core_raw
 ===========================================
 
@@ -186,6 +188,7 @@ Default implementation
 
 
 .. #region GM_change_coup_type
+
 GM_change_coup_type
 ==========================================================
 
@@ -264,6 +267,7 @@ Default implementation
 
 
 .. #region GM_prep_coupling
+
 GM_prep_coupling
 ==========================================================
 
@@ -335,6 +339,7 @@ Default implementation
 
 
 .. #region GM_calc_coupling
+
 GM_calc_coupling
 ==========================================================
 
@@ -408,6 +413,7 @@ Default implementation
 
 
 .. #region GM_post_init
+
 GM_post_init
 =======================================
 
@@ -485,6 +491,7 @@ Default implementation
 
 
 .. #region GM_pre_run
+
 GM_pre_run
 =======================================
 
@@ -547,6 +554,7 @@ Default implementation
 
 
 .. #region GM_pre_frame
+
 GM_pre_frame
 =======================================
 
@@ -611,6 +619,7 @@ Default implementation
 
 
 .. #region GM_post_frame
+
 GM_post_frame
 =======================================
 
@@ -673,6 +682,7 @@ Default implementation
 
 
 .. #region GM_post_run
+
 GM_post_run
 =======================================
 
@@ -735,6 +745,7 @@ Default implementation
 
 
 .. #region GM_report_references
+
 GM_report_references
 =================================================================
 
@@ -802,8 +813,8 @@ Default implementation
 The default is to just return the entire ``map_.references`` dictionary, without omitting anything.
 
 
-default code:
 .. code-block:: python
+
     import GMAP.src.tools.PhysicsFunctions as GM_PF
 
     def GM_report_references(map_, system):

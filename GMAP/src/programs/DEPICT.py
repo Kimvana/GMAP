@@ -1,18 +1,18 @@
 r"""
 Usage:
 
-    GMAP DEPICT
-    GMAP DEPICT help
-prints this help
+GMAP DEPICT
+GMAP DEPICT help
+    prints this help
 
-    GMAP DEPICT calculate [name of input file] [optional parameters]
-Calculates all datapoints for a potential vs estatic_range graph.
+GMAP DEPICT calculate [name of input file] [optional parameters]
+    Calculates all datapoints for a potential vs estatic_range graph.
 
-    GMAP DEPICT show [name of input file] [optional parameters]
-Displays all data calculated previously using calculate.
+GMAP DEPICT show [name of input file] [optional parameters]
+    Displays all data calculated previously using calculate.
 
-    GMAP DEPICT calcshow [name of input file] [optional parameters]
-Performs the functions of both 'calculate' and 'show'
+GMAP DEPICT calcshow [name of input file] [optional parameters]
+    Performs the functions of both 'calculate' and 'show'
 
 
 Dependence of Electrostatic Properties on Individual Charges Taken

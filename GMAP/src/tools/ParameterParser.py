@@ -2736,8 +2736,8 @@ def find_defparfile_in_cmd(argslist):
     arguments), see if there is anything hinting at a default parameter
     file there.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     argslist : list of str
         The part of the output of sys.argv that contains parameter
         choices

@@ -519,8 +519,8 @@ class System:
             The desired residue template for which the MD system will be
             searched.
 
-        Returns:
-        --------
+        Returns
+        -------
         oscillators : list of list of int
             The list of all oscillators found, matching the template.
             Each oscillator is a list of atnums of the atoms it consists
