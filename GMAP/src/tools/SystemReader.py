@@ -756,6 +756,8 @@ class System:
         outlist = []
 
         found_ix = base_residue[found_local_ix]  # get global index
+        found_bounds = self.universe.atoms[found_ix].bonded_atoms
+        found_bounds = set([atom.ix for atom in found_bounds])
 
         # convert struct-ix to residue-ix
         target_residue, target_local_ix = struct.indices[new_local_ix]
@@ -764,7 +766,7 @@ class System:
         for new_residue in all_oscillators[target_residue]:
             new_ix = new_residue[target_local_ix]  # get global index
             # if it is attached, add it
-            if self.confirm_bond(found_ix, new_ix):
+            if new_ix in found_bounds:
                 new_osc = base_residue[:]
 
                 # write the global indices of added piece to original

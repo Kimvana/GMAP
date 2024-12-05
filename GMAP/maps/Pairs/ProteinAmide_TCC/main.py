@@ -5,7 +5,7 @@ import numpy as np
 
 # gmap imports
 import GMAP.src.tools.MathFunctions as GM_MF
-from GMAP.src.tools.PrintTools import devprint as dpr
+# from GMAP.src.tools.PrintTools import devprint as dpr
 
 
 def GM_prep_coupling(map_, system, oscixlist, osclist):
@@ -143,13 +143,6 @@ def calc_coupling(oscix1, oscix2, map_, system):
         * np.sum(v1[:, None, :] * diff, axis=2))
     J = np.sum(J)
     J *= map_.fourPiEps
-
-    if set((oscix1, oscix2)) == {0, 68}:
-        dpr(
-            oscix1, oscix2,
-            "\n", q1, dq1, "\n", q2, dq2,
-            "\n", v1, "\n", v2,
-            "\n", J)
 
     return J
 

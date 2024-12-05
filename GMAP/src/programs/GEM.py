@@ -25,7 +25,9 @@ For more information, check the manual on N/A.
 
 
 # standard lib imports
+import cProfile
 import datetime
+import subprocess
 import sys
 
 # 3rd party lib imports
@@ -40,6 +42,7 @@ import GMAP.src.tools.ParameterParser as GM_PP
 import GMAP.src.tools.PhysicsFunctions as GM_PF
 import GMAP.src.tools.Plotter as GM_Pl
 import GMAP.src.tools.PrintTools as GM_PT
+from GMAP.src.tools.PrintTools import devprint as dpr
 import GMAP.src.tools.SystemReader as GM_SR
 
 
@@ -471,6 +474,12 @@ def print_calculation_summary(RunPars, System):
     report_files(RunPars, "ram", "Raman", 2, 2)
     report_files(RunPars, "pos", "Positions", 2, 2)
     report_files(RunPars, "dbp", "Doublepos", 2, 2)
+    if RunPars.profiler:
+        fname = RunPars.output_profiling_filename
+        pr.print(2, f"profiler output:            {fname}")
+    if RunPars.profiler_graph:
+        fname = RunPars.output_profiling_graph_filename
+        pr.print(2, f"profiler visualization:     {fname}")
 
     end = " ██▓▓▒▒░░"
     start = end[::-1]
@@ -500,6 +509,12 @@ def GEM(callcommand):
         RunPars, singles_mapdict, pairs_mapdict, CmdPars, InPars, DefPars,
         RefPars
     ) = GM_PP.get_parameters(in_parfile, argslist)
+
+    # If requested, profile the run.
+    if RunPars.profiler:
+        profile = cProfile.Profile()
+        profile.enable()
+
     GM_PT.Printer.add_time(
         3, "Finished GMAP parameters, start adding maps", "AddMaps", "ms")
 
@@ -545,6 +560,29 @@ def GEM(callcommand):
 
     # calculate all (requested) frames
     trj_loop(RunPars, System)
+
+    dpr("creating stats")
+    # finalize profiler
+    if RunPars.profiler:
+        profile.create_stats()
+        profile.dump_stats(RunPars.output_profiling_filename)
+
+    dpr("running gprof")
+    if RunPars.profiler_graph:
+        strcommand = [
+            "gprof2dot", "-f", "pstats",
+            RunPars.output_profiling_filename, "-o",
+            RunPars.output_profiling_tempfile]
+        subprocess.run(strcommand)
+
+        dpr("running dot")
+        strcommand = [
+            "dot", "-Tpng", "-o", RunPars.output_profiling_graph_filename,
+            RunPars.output_profiling_tempfile]
+        subprocess.run(strcommand)
+
+        # remove the tempfile again
+        RunPars.output_profiling_tempfile.unlink()
 
     print_calculation_summary(RunPars, System)
 

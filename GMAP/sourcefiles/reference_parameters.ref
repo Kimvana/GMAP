@@ -33,6 +33,10 @@ output_raman_filename(orf)[path_rel_op_c]         raman_tensor
 output_positions_filename(opf)[path_rel_op_c]     positions
 output_doublepos_filename[path_rel_op_c]          doublepos
 
+output_profiling_filename[path_rel_op_c]          prof.out
+output_profiling_tempfile[path_rel_op_c]          prof.temp
+output_profiling_graph_filename[path_rel_op_c]    profout.png
+
 
 
 ########################
@@ -80,6 +84,10 @@ dont_report_error[list_str]                       none
 output_format[list_str]                           [bin] txt
 couplingvis_figsize[float]                         8.5  # width of figure in inches
 couplingvis_dpi[int]                               300
+
+profiler[bool]                                    False
+profiler_graph[bool]                              False
+
 
 
 
