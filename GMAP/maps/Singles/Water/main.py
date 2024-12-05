@@ -25,6 +25,7 @@ import GMAP.src.tools.PhysicsFunctions as GM_PF
 import GMAP.src.tools.SystemReader as GM_SR
 import GMAP.src.tools.DefaultMapFunctions as GM_DMF
 
+
 # A function to adjust the parameters of the map. For some kinds of
 # parameter (especially if theres multiple that are linked), the way
 # RunPar is built might not be correct. In this function, the user can
@@ -154,12 +155,10 @@ def GM_adjust_oscillators(Map, Syst, oscillator_list):
 # (for AmideBB - find neighbours!)
 def GM_post_init(Map, Syst):
     def calculate_frequency(Map, Syst, osc):
-        freq=calc_frequency(Map, Syst, osc)
-        osc.freq=freq
-        print(osc.oscix, "frequency")
+        freq = calc_frequency(Map, Syst, osc)
+        osc.freq = freq
         return freq
 
-    print("Post init")
     calc_frequency = GM_DMF.get_calculate_frequency(Map)
     Map.code.GM_calculate_frequency = calculate_frequency
     return
@@ -256,7 +255,6 @@ def placeholder_GM_get_rotation_matrix(
 def GM_get_dipole_mag(Map, Syst, osc):
     mug=0.18749 # (in atomic units).
 #    freq=3762-5060*osc.VEGout[0,1]-86225*osc.VEGout[0,1]**2
-    print(osc.oscix, "Dipole")
     freq=osc.freq
     return (
         (0.7112+75.59*osc.VEGout[0,1])*mug # mu_i

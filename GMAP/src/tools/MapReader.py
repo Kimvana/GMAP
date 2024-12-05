@@ -1086,6 +1086,8 @@ class SingleCore:
         self.can_output = self.parse_can_output(
             rawcore, Map.RunPars, Map.directory)
 
+        self.ham_first = self.parse_ham_first(rawcore)
+
         self.parse_functional_group(rawcore, Map.directory)
         if not self.success:
             return
@@ -1199,6 +1201,27 @@ class SingleCore:
             return
 
         return set(map_can_do)
+
+    def parse_ham_first(self, rawcore, mapdir):
+        if "ham_first" not in rawcore:
+            return True
+
+        ham_first = rawcore["ham_first"][0]
+        match ham_first.lower():
+            case "true" | "t":
+                return True
+            case "false" | "f":
+                return False
+
+        # no true or false
+        GM_PT.Printer.warning(
+            "\nThe parameter 'ham_first' in the file"
+            f"{mapdir / 'core.txt'} can only take specific options. These "
+            "are: 'True' and 'False'. Please make sure to have one of these.",
+            "MI_MC_12"
+        )
+        self.success = False
+        return
 
     def parse_functional_group(self, rawcore, mapdir):
         """Parses the input for keywords functional_group(_file) in
