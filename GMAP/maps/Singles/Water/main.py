@@ -23,6 +23,7 @@ import GMAP.src.tools.PhysicsFunctions as GM_PF
 
 # Import System Reader for additional functionality
 import GMAP.src.tools.SystemReader as GM_SR
+import GMAP.src.tools.DefaultMapFunctions as GM_DMF
 
 # A function to adjust the parameters of the map. For some kinds of
 # parameter (especially if theres multiple that are linked), the way
@@ -152,9 +153,16 @@ def GM_adjust_oscillators(Map, Syst, oscillator_list):
 # things like building further lookup tables, for instance.
 # (for AmideBB - find neighbours!)
 def GM_post_init(Map, Syst):
+    def calculate_frequency(Map, Syst, osc):
+        freq=calc_frequency(Map, Syst, osc)
+        osc.freq=freq
+        print(osc.oscix, "frequency")
+        return freq
 
-    pass
-
+    print("Post init")
+    calc_frequency = GM_DMF.get_calculate_frequency(Map)
+    Map.code.GM_calculate_frequency = calculate_frequency
+    return
 
 # A place to do things before the main loop starts (create datastructures
 # to be filled in, for example). GEM itself builds the coupling table at
@@ -247,7 +255,9 @@ def placeholder_GM_get_rotation_matrix(
 
 def GM_get_dipole_mag(Map, Syst, osc):
     mug=0.18749 # (in atomic units).
-    freq=3762-5060*osc.VEGout[0,1]-86225*osc.VEGout[0,1]**2
+#    freq=3762-5060*osc.VEGout[0,1]-86225*osc.VEGout[0,1]**2
+    print(osc.oscix, "Dipole")
+    freq=osc.freq
     return (
         (0.7112+75.59*osc.VEGout[0,1])*mug # mu_i
         *(0.1934-0.175e-5*freq) # x_i

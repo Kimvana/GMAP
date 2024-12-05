@@ -76,7 +76,8 @@ local_atoms   0 1 2
 # ------------------------
 
 frequency_gas_phase     3762
-frequency_data_file_linear     Skinner.txt
+#frequency_data_file_quadratic  SkinnerQuad.txt
+frequency_data_file_linear     SkinnerLinear.txt
 
 # ------------------------
 

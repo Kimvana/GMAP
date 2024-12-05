@@ -12,7 +12,7 @@ import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.FileHandler as GM_FH
 import GMAP.src.tools.MapReader as GM_MR
 import GMAP.src.tools.PrintTools as GM_PT
-
+from GMAP.src.tools.PrintTools import devprint as dpr
 
 class RefPars:
     """Deals with reference parameters
