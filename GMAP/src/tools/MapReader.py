@@ -1086,7 +1086,7 @@ class SingleCore:
         self.can_output = self.parse_can_output(
             rawcore, Map.RunPars, Map.directory)
 
-        self.ham_first = self.parse_ham_first(rawcore)
+        self.ham_first = self.parse_ham_first(rawcore, Map.director)
 
         self.parse_functional_group(rawcore, Map.directory)
         if not self.success:
