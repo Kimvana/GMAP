@@ -457,6 +457,9 @@ class System:
             oscillator for oscillators in checked_oscillators
             for oscillator in oscillators
         ]
+        for oscix, oscillator in enumerate(self.oscillators):
+            oscillator.oscix = oscix
+
         self.nosc = len(self.oscillators)
 
     def find_oscillators_perstruct(self, struct, map_):
