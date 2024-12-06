@@ -7,6 +7,9 @@ import numpy as np
 import GMAP.src.tools.MathFunctions as GM_MF
 # from GMAP.src.tools.PrintTools import devprint as dpr
 
+# own module imports
+import ProteinAmide_TCC_code.TCCclib as MC_TC
+
 
 def GM_prep_coupling(map_, system, oscixlist, osclist):
     """Any preparation needed for calculating couplings this frame.
@@ -205,6 +208,10 @@ def GM_post_init(map_, system):
         map_.v_pro = np.array([
             [float(item) for item in get_next_line(fhand).split()]
             for _ in range(6)])
+
+    # We'd like to use the c-library for this map (so it is considerably
+    # faster)
+    MC_TC.init_map_for_clib(map_, system)
 
 
 def get_next_line(fhand):

@@ -15,8 +15,8 @@
 # topology_file D:\Data\PhD\Tutorials\C8S3\md_300_1ns_xtc4fs.tpr
 # trajectory_file D:\Data\PhD\Tutorials\C8S3\md_300_1ns_xtc4fs.gro
 
-topology_file D:\Data\PhD\Tutorials\PsbS-Deq\PsbS_Deq_A_200.tpr
-trajectory_file D:\Data\PhD\Tutorials\PsbS-Deq\PsbS_Deq_A_200_short.xtc
+# topology_file D:\Data\PhD\Tutorials\PsbS-Deq\PsbS_Deq_A_200.tpr
+# trajectory_file D:\Data\PhD\Tutorials\PsbS-Deq\PsbS_Deq_A_200_short.xtc
 
 verbose 3
 verbose_logfile 4
@@ -48,7 +48,7 @@ AmideSC.dipole_map_choice         Jansen
 AmideBB.frequency_map_choice      Jansen
 AmideBB.dipole_map_choice         Jansen
 
-ProteinAmide.coupling_choice      TDCTasumi
+ProteinAmide.coupling_choice      TCC
 ProteinAmide.NN_coupling_choice   GLDP
 
 # influencers_blacklist SOL | CL
