@@ -10,7 +10,7 @@ authors = [
 description = "A tool for calculating vibrational and electronic spectra, more to be added."
 version = "0.0.1"
 classifiers = [
-    Programming Language :: Python :: 3
+    "Programming Language :: Python :: 3"
 ]
 requires-python = ">= 3.10"
 dependencies = [
@@ -22,6 +22,7 @@ dependencies = [
 
 [project.optional-dependencies]
 testing = [
+    "build >= 1.2.2.post1",
     "dataframe-image >= 0.2.4",
     "flake8 >= 4.0",
     "numpydoc >= 1.6.0",
