@@ -66,6 +66,24 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
                 GMAPerrclass=GM_Ex.GmapOSError
             )
 
+        self.clib.transform_vectors.argtypes = [
+            ct.POINTER(ct.c_float),  # vectors_in
+            ct.c_int,  # n_vects
+            ct.POINTER(ct.c_float),  # tr_matrix
+            ct.POINTER(ct.c_float)  # vectors_out
+        ]
+        self.clib.transform_vectors.restype = None
+
+        self.clib.calc_CoM_box.argtypes = [
+            ct.POINTER(ct.c_float),  # positions_box
+            ct.POINTER(ct.c_float),  # masses
+            ct.POINTER(ct.c_int),  # res_first_ix
+            ct.POINTER(ct.c_int),  # res_last_ix
+            ct.c_int,  # nres
+            ct.POINTER(ct.c_float)  # CoM_box
+        ]
+        self.clib.calc_CoM_box.restype = None
+
         self.clib.calcVEG_perres_mm.argtypes = [
             ct.POINTER(ct.c_int),  # tocalc
             ct.c_int,  # n_osc_ats
@@ -110,6 +128,24 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
             ct.POINTER(ct.c_float)  # out
         ]
         self.clib.calcVEG_perres_mm_nocut.restype = None
+
+    def positions_to_box(self, system):
+        self.clib.transform_vectors(
+            system.positions_c,
+            system.natoms,
+            system.boxvects_inv_c,
+            system.positions_box_c
+        )
+
+    def calc_CoM_box(self, system):
+        self.clib.calc_CoM_box(
+            system.positions_box_c,
+            system.masses_c,
+            system.residues.first_ix_c,
+            system.residues.last_ix_c,
+            system.nres,
+            system.residues.CoM_c
+        )
 
     def calcVEG_perres_mm(self, System, RunPars, oscillator):
         """Calculate the potential on each of the requested points.
