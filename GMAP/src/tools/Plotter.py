@@ -3,12 +3,10 @@
 from pathlib import Path
 
 # 3rd party lib imports
-import dataframe_image
 import matplotlib.colors as mplC
 from matplotlib.patches import Rectangle
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 
 # local imports
 import GMAP.src.tools.ColorSchemes as GM_CS
@@ -135,6 +133,10 @@ def plot_color_conv():
 
     There is no return value, the plots are just written to file.
     """
+
+    # import here, as these modules are not installed for 'normal' users
+    import dataframe_image
+    import pandas as pd
 
     step = 16
     data_points = [*range(0, 255, step)] + [255]
