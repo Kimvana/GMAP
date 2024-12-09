@@ -286,7 +286,17 @@ def GM_calculate_frequency(map_, system, osc):
         gasfreq = map_.Core.frequency_gas_phase
         freqarr = map_.Core.frequency_data_array_linear
 
+    # np.seterr(all='raise')
+    # try:
     freq = gasfreq + np.sum(np.multiply(osc.VEGout, freqarr))
+    # except Exception as ex:
+    #     dpr(osc.oscix)
+    #     dpr(osc.VEGout)
+    #     dpr(freqarr)
+    #     if osc.oscix > 10:
+    #         raise ex
+    #     else:
+    #         freq = gasfreq
 
     if (
         map_.RunPars.frequency_map_choice != "Tokmakoff"

@@ -10,9 +10,9 @@ import GMAP.src.tools.CLibLoader as GM_CL
 import GMAP.src.tools.DefaultMapFunctions as GM_DMF
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.ParameterParser as GM_PP
-import GMAP.src.tools.PhysicsFunctions as GM_PF
+# import GMAP.src.tools.PhysicsFunctions as GM_PF
 import GMAP.src.tools.PrintTools as GM_PT
-from GMAP.src.tools.PrintTools import devprint as dpr
+# from GMAP.src.tools.PrintTools import devprint as dpr
 
 
 class System:
@@ -919,7 +919,7 @@ class System:
         self.residues.CoM_c = np.zeros((self.nres, 3), dtype="float32")
         self.residues.CoM_c = np.ctypeslib.as_ctypes(
             np.ravel(self.residues.CoM_c))
-        clib.calc_CoM_box(self)  # fill CoM_c.
+        clib.calc_CoM_box(self)  # fill CoM_c. Results are calculated in box c.
 
         # # for testing
         # CoM_transformed = np.zeros((self.nres, 3), dtype="float32")
