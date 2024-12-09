@@ -20,7 +20,7 @@ Figuring out what references to print for a map is a two-step process:
 File layout
 ***********
 
-Personally, I don't 'create' these files, but use a downloaded .bib from somewhere. A lot of journals allow to download the reference to a paper already in the .bib format. I add extra flags, might clean up some fields, but use the .bib files themselves. That means that the .bib file here has the exact same format as 'normal' .bib files!
+Personally, I don't 'create' these files, but use a downloaded .bib from somewhere. A lot of journals allow to download the reference to a paper already in the .bib format. I add extra flags, might clean up some fields, but use the .bib files themselves. That means that the .bib file here has the exact same format as bibtex standard .bib files!
 
 
 

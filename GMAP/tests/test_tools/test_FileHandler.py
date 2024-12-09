@@ -25,7 +25,7 @@ import pytest
 
 # local imports
 import GMAP.src.tools.CodingTools as GM_CT
-import GMAP.src.tools.constants as GM_con
+import GMAP.src.tools.constants as GM_Con
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.FileHandler as GM_FH
 
@@ -43,8 +43,8 @@ class TestFileLocations:
         assert files.sourcedir_hc == (
             curpath / "../../../sourcefiles").resolve()
         assert files.mapdir_hc == (curpath / "../../../maps").resolve()
-        assert files.exec_os in GM_con.clib_ext_dict.keys()
-        assert files.clib_extension in GM_con.clib_ext_dict.values()
+        assert files.exec_os in GM_Con.clib_ext_dict.keys()
+        assert files.clib_extension in GM_Con.clib_ext_dict.values()
 
 
 def test_get_bare_file():

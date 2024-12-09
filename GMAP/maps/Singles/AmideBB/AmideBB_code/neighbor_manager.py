@@ -3,7 +3,7 @@
 import numpy as np
 
 # GMAP imports
-import GMAP.src.tools.constants as GM_con
+import GMAP.src.tools.constants as GM_Con
 import GMAP.src.tools.MathFunctions as GM_MF
 import GMAP.src.tools.PrintTools as GM_PT
 
@@ -81,7 +81,7 @@ class NeighborMap:
             Found through int((angle + 180) // self.space)
         """
 
-        angle *= GM_con.rad2deg
+        angle *= GM_Con.rad2deg
         angle_N = int((angle + 180) // self.space)
         if angle_N == (self.dim - 1):
             angle_N = self.dim - 2

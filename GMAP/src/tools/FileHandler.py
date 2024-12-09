@@ -14,7 +14,7 @@ import numpy as np
 # local imports
 import GMAP
 import GMAP.src.tools.CodingTools as GM_CT
-import GMAP.src.tools.constants as GM_con
+import GMAP.src.tools.constants as GM_Con
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.PrintTools as GM_PT
 
@@ -75,7 +75,7 @@ class FileLocations(metaclass=GM_CT.Singleton):
         GM_PT.Printer(self)  # initialize the printer!
 
         obset(self, "_exec_os", find_exec_os())
-        obset(self, "_clib_extension", GM_con.clib_ext_dict[self._exec_os])
+        obset(self, "_clib_extension", GM_Con.clib_ext_dict[self._exec_os])
 
     @GM_CT.singletonproperty
     def callcommand(self):

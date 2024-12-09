@@ -7,7 +7,7 @@ from numba import njit
 import numpy as np
 
 # local imports
-import GMAP.src.tools.constants as GM_con
+import GMAP.src.tools.constants as GM_Con
 
 
 # (as I keep searching here for this, I'm putting this here)
@@ -384,7 +384,7 @@ def convert_color_24_4(r, g, b, lookup={}):
 
     maxdist = 765
     outcolor = (255, 255, 255)
-    for ix, (col, output) in enumerate(GM_con.printed_colors.items()):
+    for ix, (col, output) in enumerate(GM_Con.printed_colors.items()):
         delC = calc_color_dist(*rgb, *col)
         if 0 < ix < 4:
             delC *= 2

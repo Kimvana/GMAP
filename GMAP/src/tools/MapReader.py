@@ -7,7 +7,7 @@ import sys
 import numpy as np
 
 # local imports
-import GMAP.src.tools.constants as GM_con
+import GMAP.src.tools.constants as GM_Con
 import GMAP.src.tools.DefaultMapFunctions as GM_DMF
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.FileHandler as GM_FH
@@ -2468,7 +2468,7 @@ class SingleCore:
             return
 
         # this could be made conditional if others are added later!
-        conv_factor = GM_con.bohr2ang
+        conv_factor = GM_Con.bohr2ang
         self.change_map_units(conv_factor)
 
     def change_map_units(self, conv_factor):
