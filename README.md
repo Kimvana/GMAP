@@ -13,6 +13,7 @@ This is the development version of GEMAIM.
 * (developers) run ```python3 -m pip install -e ".[testing]"```
 5. now, from anywhere, typing ```GMAP``` will start the program!
 6. Don't forget to compile the C library!
+7. note to developers: now, installing is not the only thing that needs to happen. Build your changes before opening a PR. ``pip install build`` if you don't have it yet; then ``python -m build`` (all from repo home directory)
 
 ## How to generate the documentation using sphinx:
 Assuming generating from scratch, and inside a venv (see above, always a good habit)
