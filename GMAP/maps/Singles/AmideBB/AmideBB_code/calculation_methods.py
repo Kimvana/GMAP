@@ -117,7 +117,6 @@ def calc_dipole_Jansen(map_, system, osc):
     else:
         gasdip = map_.Core.dipole_gas_phase_array
         diparr = map_.Core.dipole_data_array
-    print(osc.oscix, gasdip)
     xyz_local = gasdip + np.sum(
         np.multiply(osc.VEGout[None, :, :], diparr), axis=(1, 2))
     xyz_cartesian = np.dot(xyz_local, osc.rotation_matrix)

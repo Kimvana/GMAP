@@ -11,6 +11,7 @@ import numpy as np
 import pytest
 
 # local imports
+import GMAP.src.tools.constants as GM_Con
 import GMAP.src.tools.MathFunctions as GM_MF
 
 
@@ -34,14 +35,37 @@ def test_PBC_triclinic(vect, expt, boxvects):
     See that vectors (points) are moved back into the box.
     """
 
-    vect = np.array(vect)
-    expt = np.array(expt)
-    boxvects = np.array(boxvects)
+    vect = np.array(vect, dtype="float32")
+    expt = np.array(expt, dtype="float32")
+    boxvects = np.array(boxvects, dtype="float32")
     boxvects_inv = np.linalg.inv(boxvects)
     translated_point = GM_MF.PBC_triclinic(vect, boxvects, boxvects_inv)
-    assert np.all(
-        np.round(translated_point, 3) == expt
-    )
+    assert np.all(np.round(translated_point, 3) == expt)
+    translated_point = GM_MF.PBC_triclinic.py_func(
+        vect, boxvects, boxvects_inv)
+    assert np.all(np.round(translated_point, 3) == expt)
+
+
+@pytest.mark.parametrize(("boxvect1", "boxvect2", "boxvects", "expt"), [
+    (
+        [0.5, 0.9, 0.5], [0.2, 0.2, 0.3], [[10, 0, 0], [0, 10, 0], [0, 0, 10]],
+        [3, -3, 2]),
+    (
+        [9.9, 9.9, 9.9], [6.6, 2.2, 7.7], [[10, 0, 0], [0, 10, 0], [0, 0, 10]],
+        [3, -3, 2]),
+    (
+        [4.4, 4.4, 4.4], [3.3, 3.3, 3.3],
+        [[10, 0, 0], [10, 10, 0], [10, 10, 10]], [3, 2, 1]),
+])
+def test_PBC_boxdiff_triclin(boxvect1, boxvect2, boxvects, expt):
+    boxvect1 = np.array(boxvect1, dtype="float32")
+    boxvect2 = np.array(boxvect2, dtype="float32")
+    boxvects = np.array(boxvects, dtype="float32")
+    expt = np.array(expt, dtype="float32")
+    newdiff = GM_MF.PBC_boxdiff_triclin(boxvect1, boxvect2, boxvects)
+    assert np.all(np.round(newdiff, 3) == expt)
+    newdiff = GM_MF.PBC_boxdiff_triclin.py_func(boxvect1, boxvect2, boxvects)
+    assert np.all(np.round(newdiff, 3) == expt)
 
 
 @pytest.mark.parametrize(("vector1", "vector2"), [
@@ -124,3 +148,116 @@ def test_project(vector1, vector2):
         abs(np.dot(vector1, prj)) <= 1e-5,
         abs(np.dot(vector1, np.cross(vector2, prj))) <= 1e-5
     ))
+
+
+@pytest.mark.parametrize(("b0", "b1", "b2", "expt"), [
+    # rotation around Z axis, one fixed at x axiss
+    ([1, 0, 0], [0, 0, 1], [1, 1, 0], 45),
+    ([1, 0, 0], [0, 0, 1], [0, 1, 0], 90),
+    ([1, 0, 0], [0, 0, 1], [-1, 1, 0], 135),
+    ([1, 0, 0], [0, 0, 1], [-1, 0, 0], 180),
+    ([1, 0, 0], [0, 0, 1], [-1, -1, 0], -135),
+    ([1, 0, 0], [0, 0, 1], [0, -1, 0], -90),
+    ([1, 0, 0], [0, 0, 1], [1, -1, 0], -45),
+    ([1, 0, 0], [0, 0, 1], [1, 0, 0], 0),
+
+    # rotation around (1, 1, 1), one fixed at z axis
+    ([0, 0, 1], [1, 1, 1], [0, -1, 0], 60),
+    ([0, 0, 1], [1, 1, 1], [1, 0, 0], 120),
+    ([0, 0, 1], [1, 1, 1], [0, 0, -1], 180),
+    ([0, 0, 1], [1, 1, 1], [0, 1, 0], -120),
+    ([0, 0, 1], [1, 1, 1], [-1, 0, 0], -60),
+    ([0, 0, 1], [1, 1, 1], [0, 0, 1], 0),
+])
+def test_dihedral_base(b0, b1, b2, expt):
+    b0 = np.array(b0, dtype='float32')
+    b1 = np.array(b1, dtype='float32')
+    b2 = np.array(b2, dtype='float32')
+    assert round(GM_MF.dihedral_base(b0, b1, b2) * GM_Con.rad2deg, 4) == expt
+    assert round(
+        GM_MF.dihedral_base.py_func(b0, b1, b2) * GM_Con.rad2deg, 4) == expt
+
+
+@pytest.mark.parametrize(("p0", "p1", "p2", "p3", "boxvects", "expt"), [
+    # rotation around (1, 1, 1), one fixed at z axis
+    (
+        [0, 0, 1], [0, 0, 0], [1, 1, 1], [1, 0, 1],
+        [[10, 0, 0], [0, 10, 0], [0, 0, 10]], 60),
+    (
+        [0, 0, 1], [0, 0, 0], [1, 1, 1], [2, 1, 1],
+        [[10, 0, 0], [0, 10, 0], [0, 0, 10]], 120),
+    (
+        [0, 0, 1], [0, 0, 0], [1, 1, 1], [1, 1, 0],
+        [[10, 0, 0], [0, 10, 0], [0, 0, 10]], 180),
+    (
+        [0, 0, 1], [0, 0, 0], [1, 1, 1], [1, 2, 1],
+        [[10, 0, 0], [0, 10, 0], [0, 0, 10]], -120),
+    (
+        [0, 0, 1], [0, 0, 0], [1, 1, 1], [0, 1, 1],
+        [[10, 0, 0], [0, 10, 0], [0, 0, 10]], -60),
+    (
+        [0, 0, 1], [0, 0, 0], [1, 1, 1], [1, 1, 2],
+        [[10, 0, 0], [0, 10, 0], [0, 0, 10]], 0),
+
+    # over box edge
+    (
+        [0, 0, 1], [0, 0, 0], [-8, -8, -8], [-6, -7, -7],
+        [[10, 0, 0], [0, 10, 0], [0, 0, 10]], 120),
+    # slanted box
+    (
+        [0, 0, 1], [0, 0, 0], [-8, -8, -8], [-6, -7, -7],
+        [[10, 0, 0], [10, 10, 0], [10, 10, 10]], 120),
+])
+def test_dihedral(p0, p1, p2, p3, boxvects, expt):
+    p0 = np.array(p0, dtype='float32')
+    p1 = np.array(p1, dtype='float32')
+    p2 = np.array(p2, dtype='float32')
+    p3 = np.array(p3, dtype='float32')
+    boxvects = np.array(boxvects, dtype='float32')
+    boxvects_inv = np.linalg.inv(boxvects)
+    assert round(GM_MF.dihedral(
+        p0, p1, p2, p3, boxvects, boxvects_inv) * GM_Con.rad2deg, 4) == expt
+    assert round(GM_MF.dihedral.py_func(
+        p0, p1, p2, p3, boxvects, boxvects_inv) * GM_Con.rad2deg, 4) == expt
+
+
+@pytest.mark.parametrize(("p0", "p1", "p2", "p3", "boxvects", "expt"), [
+    # rotation around (1, 1, 1), one fixed at z axis
+    (
+        [0, 0, 0.1], [0, 0, 0], [0.1, 0.1, 0.1], [0.1, 0, 0.1],
+        [[10, 0, 0], [0, 10, 0], [0, 0, 10]], 60),
+    (
+        [0, 0, 0.1], [0, 0, 0], [0.1, 0.1, 0.1], [0.2, 0.1, 0.1],
+        [[10, 0, 0], [0, 10, 0], [0, 0, 10]], 120),
+    (
+        [0, 0, 0.1], [0, 0, 0], [0.1, 0.1, 0.1], [0.1, 0.1, 0],
+        [[10, 0, 0], [0, 10, 0], [0, 0, 10]], 180),
+    (
+        [0, 0, 0.1], [0, 0, 0], [0.1, 0.1, 0.1], [0.1, 0.2, 0.1],
+        [[10, 0, 0], [0, 10, 0], [0, 0, 10]], -120),
+    (
+        [0, 0, 0.1], [0, 0, 0], [0.1, 0.1, 0.1], [0, 0.1, 0.1],
+        [[10, 0, 0], [0, 10, 0], [0, 0, 10]], -60),
+    (
+        [0, 0, 0.1], [0, 0, 0], [0.1, 0.1, 0.1], [0.1, 0.1, 0.2],
+        [[10, 0, 0], [0, 10, 0], [0, 0, 10]], 0),
+
+    # over box edge
+    (
+        [0, 0, 0.1], [0, 0, 0], [-0.8, -0.8, -0.8], [-0.6, -0.7, -0.7],
+        [[10, 0, 0], [0, 10, 0], [0, 0, 10]], 120),
+    # slanted box
+    (
+        [0, -0.1, 0.1], [0, 0, 0], [0, 0, -0.8], [0.1, 0, -0.7],
+        [[10, 0, 0], [10, 10, 0], [10, 10, 10]], 120),
+])
+def test_dihedral_boxcoords(p0, p1, p2, p3, boxvects, expt):
+    p0 = np.array(p0, dtype='float32')
+    p1 = np.array(p1, dtype='float32')
+    p2 = np.array(p2, dtype='float32')
+    p3 = np.array(p3, dtype='float32')
+    boxvects = np.array(boxvects, dtype='float32')
+    assert round(GM_MF.dihedral_boxcoords(
+        p0, p1, p2, p3, boxvects) * GM_Con.rad2deg, 4) == expt
+    assert round(GM_MF.dihedral_boxcoords.py_func(
+        p0, p1, p2, p3, boxvects) * GM_Con.rad2deg, 4) == expt

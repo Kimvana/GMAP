@@ -14,6 +14,7 @@ Vertical rulers
 ================
 You can't go without these when working on files with a line length limit (like python code). Add the ruler through adding the following lines to your environments 'settings.json' file:
 .. code-block::
+
     "editor.rulers": [72, 79],
 
 In my case, the 72 ruler is for python docstrings, the 79 for general (python) code.
@@ -23,6 +24,7 @@ Colors
 ========
 I really like my color scheme. My default scheme is default dark plus:
 .. code-block::
+
     "workbench.colorTheme": "Default Dark+",
     "workbench.preferredDarkColorTheme": "Default Dark+",
 
@@ -30,6 +32,7 @@ Besides this, I've changed the color of the multi-line docstring to be slightly 
 
 I forgot which, but there is a shortcut key you can press to investigate any color your cursor is hoovering over, to see what its name is (to add in this list), what it's current color is, and how much that color contrasts the current background.
 .. code-block::
+
     "editor.tokenColorCustomizations": {
         "textMateRules": [
             {
@@ -61,16 +64,19 @@ Other settings
 ===============
 I personally prefer having word wrap on:
 .. code-block::
+
     "editor.wordWrap": "on",
 
 
 Zooming out slightly allows me (on my specific, full HD, 1920p screen) to have two 79-char windows side-by-side, along with a useful side-column for file navigation:
 .. code-block::
+
     "window.zoomLevel": -1,
 
 
 As well as disabling all kinds of fancy, automagic features I don't use:
 .. code-block::
+
     "editor.detectIndentation": false,
     "cSpell.enabled": false,
     "telemetry.telemetryLevel": "off",
@@ -104,6 +110,7 @@ region folding for VS code
 ===========================
 An extension by Maptz that allows you to add comments to any document that mark where the code should be folded. Incredibly useful for file formats that can't be folded by default (like restructuredtext). After installing the extension, the following fragment should be added to your environments 'settings.json' file:
 .. code-block::
+    
     "restructuredtext.linter.run": "off",
     "maptz.regionfolder": {
     "[restructuredtext]": {  //Language selector
