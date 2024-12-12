@@ -32,7 +32,7 @@ class TestVClib:
         (
             RunPars, RefPars, DefPars, InPars,
             CmdPars, mapdict, pairs_mapdict
-        ) = parameter_getter("AmideSC", cmdline)
+        ) = parameter_getter("AmideSC", cmdline, load_clib=False)
 
         VEGlib = GM_CL.VEG_CLib(RunPars)
         RunPars.estatic_range = np.float32(60)
@@ -174,7 +174,7 @@ class TestVClib:
         (
             RunPars, RefPars, DefPars, InPars,
             CmdPars, mapdict, pairs_mapdict
-        ) = parameter_getter("AmideSC", cmdline)
+        ) = parameter_getter("AmideSC", cmdline, load_clib=False)
 
         VEGlib = GM_CL.VEG_CLib(RunPars)
         RunPars.estatic_range = np.float32(60)
@@ -237,7 +237,7 @@ class TestVClib:
         (
             RunPars, RefPars, DefPars, InPars,
             CmdPars, mapdict, pairs_mapdict
-        ) = parameter_getter("AmideSC", cmdline)
+        ) = parameter_getter("AmideSC", cmdline, load_clib=False)
 
         VEGlib = GM_CL.VEG_CLib(RunPars)
         RunPars.estatic_range = np.float32(60)
@@ -403,7 +403,7 @@ class TestVClib:
         (
             RunPars, RefPars, DefPars, InPars,
             CmdPars, mapdict, pairs_mapdict
-        ) = parameter_getter("AmideSC", cmdline)
+        ) = parameter_getter("AmideSC", cmdline, load_clib=False)
 
         RunPars.VEG_clib_file = (
             RunPars.VEG_clib_file.parent / "doesntexist.txt")
