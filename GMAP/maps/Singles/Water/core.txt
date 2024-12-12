@@ -50,6 +50,8 @@ used_atoms    0 1 2   # all atoms are relevant, the order is already fine.
 
 electrostatic_atoms   1   # Skinners map only depend on the hydrogens
 
+assume_length_units    Bohr
+
 # ----------------------
 
 # The highest order gradient of electrostatic properties needed. If only the
@@ -76,7 +78,7 @@ local_atoms   0 1 2
 # ------------------------
 
 frequency_gas_phase     3762
-#frequency_data_file_quadratic  SkinnerQuad.txt
+frequency_data_file_quadratic  SkinnerQuad.txt
 frequency_data_file_linear     SkinnerLinear.txt
 
 # ------------------------

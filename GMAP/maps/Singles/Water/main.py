@@ -254,8 +254,11 @@ def placeholder_GM_get_rotation_matrix(
 
 def GM_get_dipole_mag(Map, Syst, osc):
     mug=0.18749 # (in atomic units).
+    #mug=mug/0.393456 # Convert to Debye
 #    freq=3762-5060*osc.VEGout[0,1]-86225*osc.VEGout[0,1]**2
+    freq2=3762-5060*osc.VEGout[0,1]-86225*osc.VEGout[0,1]**2
     freq=osc.freq
+    print(freq,freq2,"Freqs")
     return (
         (0.7112+75.59*osc.VEGout[0,1])*mug # mu_i
         *(0.1934-0.175e-5*freq) # x_i
