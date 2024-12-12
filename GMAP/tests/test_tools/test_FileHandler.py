@@ -24,6 +24,7 @@ import numpy as np
 import pytest
 
 # local imports
+import GMAP.src.tools.CmdInterface as GM_CI
 import GMAP.src.tools.CodingTools as GM_CT
 import GMAP.src.tools.constants as GM_Con
 import GMAP.src.tools.Exceptions as GM_Ex
@@ -500,6 +501,68 @@ def test_write_legend():
             "residue number 2\nat index 3: Oscillator of type mockmap living "
             "on residue number 3\n"
         )
+
+
+def test_write_parameter_file(tmp_path):
+    # curdir = Path(__file__).resolve().parent
+
+    # perform first run
+    with open(tmp_path / "input_parameters.txt", "w") as fhand:
+        fhand.write("")
+    (tmp_path / "run1").mkdir()
+    GM_CI.cmd_interface([
+        "GMAP", "GEM", "run",
+        str((tmp_path / "input_parameters.txt").resolve()),
+        "--number_frames", "2",
+        "--output_directory", str((tmp_path / "run1").resolve()),
+        "--log_directory", str((tmp_path / "run1").resolve()),
+        "--estatics_method", "perres_nocut",
+        "--estatic_smooth_range", "0",
+        "--verbose", "1",
+        "--verbose_logfile", "4",
+        "--output_format", "txt\\;"
+    ])
+
+    # check if first run went without any major errors
+    with open(tmp_path / "run1/log.log", encoding="utf-8") as fhand:
+        output = fhand.read()
+    assert output.endswith(
+        "  ░░▒▒▓▓██ That was all for today, folks. Thank you, and good night! "
+        "██▓▓▒▒░░\n"
+    )
+
+    # as all individual file names have the exact directory location mentioned,
+    # move all files, and re-fill that same old directory
+    (tmp_path / "run1").rename(tmp_path / "run2")
+
+    # perform second run
+    (tmp_path / "run1").mkdir()
+
+    GM_CI.cmd_interface([
+        "GMAP", "GEM", "run",
+        str((tmp_path / "run2/parameters.txt").resolve()),
+        "--number_frames", "2",
+        # "--output_directory", str((tmp_path / "run2").resolve()),
+        # "--log_directory", str((tmp_path / "run2").resolve())
+    ])
+
+    # check if second run went without any major errors
+    with open(tmp_path / "run2/log.log", encoding="utf-8") as fhand:
+        output = fhand.read()
+    assert output.endswith(
+        "  ░░▒▒▓▓██ That was all for today, folks. Thank you, and good night! "
+        "██▓▓▒▒░░\n"
+    )
+
+    # see if outputs of the two runs are equal
+    with open(tmp_path / "run1/parameters.txt", encoding="utf-8") as fhand:
+        pars1 = fhand.read()
+    with open(tmp_path / "run2/parameters.txt", encoding="utf-8") as fhand:
+        pars2 = fhand.read()
+
+    # different paths are expected
+    pars2.replace("run2", "run1")
+    assert pars1 == pars2
 
 
 def test_SU_FH_1():

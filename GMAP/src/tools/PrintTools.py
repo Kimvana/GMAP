@@ -103,7 +103,7 @@ class Printer(metaclass=GM_CT.Singleton):
 
         cls.Timer = Timer(start=Files.start)
 
-        self.syspathcopy = Files.syspathcopy
+        cls.syspathcopy = Files.syspathcopy
 
         # to have some kind of default - will be changed as soon as parameter
         # choices are known.

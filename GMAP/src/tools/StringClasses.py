@@ -585,6 +585,10 @@ class Header:
     def s(self):
         return str(self)
 
+    @property
+    def cs(self):
+        return ColStr(self)
+
     def format_title(self, maxwidth, n_padding):
         """Prepare the title text for the header
 
