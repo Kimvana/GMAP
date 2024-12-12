@@ -1,0 +1,4 @@
+require_pairs         DipDip
+
+singles_whitelist     Water 
+
