@@ -1,0 +1,214 @@
+
+# ╔══════════╗
+# ║          ║
+# ║   GMAP   ║
+# ║          ║
+# ╚══════════╝
+
+##################
+# File locations #
+##################
+
+# ----- MD input file locations -----
+topology_file                             /Users/lacour/Documents/GitHub/GMAP/GMAP/sourcefiles/pdb_1AKI.tpr  
+trajectory_file                           /Users/lacour/Documents/GitHub/GMAP/GMAP/sourcefiles/pdb_1AKI_50frame.xtc  
+
+
+# ----- source files location -----
+source_directory                          /Users/lacour/Documents/GitHub/GMAP/GMAP/sourcefiles  
+default_parameter_filename                /Users/lacour/Documents/GitHub/GMAP/GMAP/sourcefiles/reference_parameters.ref  
+VEG_clib_file                             /Users/lacour/Documents/GitHub/GMAP/GMAP/sourcefiles/VEG  
+
+
+# ----- logging locations -----
+log_directory                             /Users/lacour/Documents/GitHub/GMAP/GMAP  
+log_filename                              /Users/lacour/Documents/GitHub/GMAP/GMAP/log.log  
+
+
+# ----- program output locations -----
+output_directory                          /Users/lacour/Documents/GitHub/GMAP/GMAP  
+output_parameter_filename                 /Users/lacour/Documents/GitHub/GMAP/GMAP/parameters.txt  
+output_legend_filename                    /Users/lacour/Documents/GitHub/GMAP/GMAP/legend.txt  
+output_couplingvis_filename               /Users/lacour/Documents/GitHub/GMAP/GMAP/couplingvisualization.pdf  
+
+output_estatics_filename                  /Users/lacour/Documents/GitHub/GMAP/GMAP/estatics.txt  
+output_hamiltonian_filename               /Users/lacour/Documents/GitHub/GMAP/GMAP/hamiltonian  
+output_energies_filename                  /Users/lacour/Documents/GitHub/GMAP/GMAP/energies  
+output_dipole_filename                    /Users/lacour/Documents/GitHub/GMAP/GMAP/dipoles  
+output_raman_filename                     /Users/lacour/Documents/GitHub/GMAP/GMAP/raman_tensor  
+output_positions_filename                 /Users/lacour/Documents/GitHub/GMAP/GMAP/positions  
+output_doublepos_filename                 /Users/lacour/Documents/GitHub/GMAP/GMAP/doublepos  
+
+
+
+########################
+# Calculation settings #
+########################
+
+
+# ----- Choosing models and methods -----
+map_directory                             /Users/lacour/Documents/GitHub/GMAP/GMAP/maps  
+maps_to_use                               AmideBB AmideSC  
+influencers_whitelist                     :All  
+
+couplings_to_use                          ProteinAmide :All  
+output_data                               ham  
+estatics_method                           perres_nocut  
+neutral_charge_threshold                  0.01  
+guess_bonds                               False  
+
+# charges up to a distance of (estatic_range - (estatic_smooth_range/2)) are
+# treated fully. Then, for a distance of estatic_smooth_range, they 'count'
+# less and less, until the distance of
+# (estatic_range + (estatic_smooth_range/2)), where no charges are considered
+# anymore.
+estatic_range                             20.0  # this is in angstrom
+estatic_smooth_range                      0.0  # this is in angstrom
+
+# in order to allow start+number=stop, stop is exclusive.
+start_frame                               0  
+number_frames                             1  
+stop_frame                                1  
+
+
+# ----- Choosing what the program outputs look like -----
+verbose                                   3  
+verbose_logfile                           4  
+safe_mode                                 False  
+dark_mode                                 True  
+command_line_color                        24bit  
+command_line_length                       79  
+prevent_overwrite                         False  
+dont_report_error                         None  
+output_format                             txt  
+couplingvis_figsize                       8.5  # width of figure in inches
+couplingvis_dpi                           300  
+
+
+
+#########
+# Units #
+#########
+
+
+# ----- Units of output files -----
+hamiltonian_multiplier                    1.0  
+energies_multiplier                       1.0  
+dipoles_multiplier                        1.0  
+raman_multiplier                          1.0  
+positions_multiplier                      1.0  
+doublepos_multiplier                      1.0  
+
+
+
+
+# ╔═════════════╗
+# ║             ║
+# ║   AmideBB   ║
+# ║             ║
+# ╚═════════════╝
+AmideBB.frequency_map_choice              Jansen  
+AmideBB.dipole_map_choice                 Torii  
+AmideBB.residue_order                     resnum  
+AmideBB.pos_choice                        C  
+AmideBB.dp1_choice                        C  
+AmideBB.dp2_choice                        N  
+AmideBB.consider_nearest_neighbours       True  
+AmideBB.legacy_mode                       None  
+
+AmideBB.Torii_dipole_angle                10.0  # in degrees
+
+AmideBB.allow_map_mismatch                False  
+
+
+
+
+# ╔═════════════╗
+# ║             ║
+# ║   AmideSC   ║
+# ║             ║
+# ╚═════════════╝
+AmideSC.frequency_map_choice              Jansen  
+AmideSC.dipole_map_choice                 Torii  
+AmideSC.residue_order                     resnum  
+AmideSC.pos_choice                        C  
+AmideSC.dp1_choice                        C  
+AmideSC.dp2_choice                        N  
+AmideSC.legacy_mode                       None  
+
+AmideSC.Torii_dipole_angle                10.0  # in degrees
+
+
+
+
+# ╔══════════════════╗
+# ║                  ║
+# ║   ProteinAmide   ║
+# ║                  ║
+# ╚══════════════════╝
+ProteinAmide.legacy_mode                  None  
+ProteinAmide.coupling_choice              DipDip  
+ProteinAmide.NN_coupling_choice           DipDip  
+
+
+
+
+# ╔═══════════════════════╗
+# ║                       ║
+# ║   ProteinAmide_GLDP   ║
+# ║                       ║
+# ╚═══════════════════════╝
+
+
+
+
+# ╔═════════════════════════╗
+# ║                         ║
+# ║   ProteinAmide_Tasumi   ║
+# ║                         ║
+# ╚═════════════════════════╝
+
+
+
+
+# ╔══════════════════════╗
+# ║                      ║
+# ║   ProteinAmide_TCC   ║
+# ║                      ║
+# ╚══════════════════════╝
+
+
+
+
+# ╔════════════════════════════╗
+# ║                            ║
+# ║   ProteinAmide_TDCTasumi   ║
+# ║                            ║
+# ╚════════════════════════════╝
+
+ProteinAmide_TDCTasumi.Torii_dipole_angle  10.0  # in degrees
+ProteinAmide_TDCTasumi.Torii_dipole_magnitude  0.276  # in Debye
+
+
+
+
+# ╔═══════════════════════════╗
+# ║                           ║
+# ║   ProteinAmide_TDCKrimm   ║
+# ║                           ║
+# ╚═══════════════════════════╝
+
+ProteinAmide_TDCKrimm.displace            0.868  
+ProteinAmide_TDCKrimm.tanangle            -0.36397023426  
+
+
+
+
+# ╔════════════╗
+# ║            ║
+# ║   DipDip   ║
+# ║            ║
+# ╚════════════╝
+
+
+

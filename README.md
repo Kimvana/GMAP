@@ -85,5 +85,5 @@ Please note that depending on your mac version, the instructions are slightly di
   - ```cc -fPIC -dynamiclib -o scriptname_MacOS.dylib scriptname.cpp``` (works on older macs)
   - ```cc -fPIC -dynamiclib -std=c++11 -stdlib=libc++ -o scriptname_MacOS.dylib scriptname.cpp``` (needed on newer versions like Sonoma 14.6.1 to avoid alias warnings)
   
-For example, the VEG library can be compiled with ```g++ -fPIC -shared -o VEG_MacOS.dylib VEG.cpp``` 
+For example, the VEG library can be compiled with ```g++ -fPIC -shared -o VEG_MacOS.dylib VEG.cpp``` or ```cc -fPIC -dynamiclib -std=c++11 -stdlib=libc++ -o VEG_MacOS.dylib VEG.cpp```
 
