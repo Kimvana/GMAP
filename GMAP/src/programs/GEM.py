@@ -602,6 +602,9 @@ def GEM(callcommand):
     GM_PT.Printer.add_time(
         2, "Added all maps, start initializing MD system", "MDinit", "ms")
 
+    # initialize C library
+    GM_CL.VEG_CLib(RunPars)
+
     # Looking at MD system - finding oscillators.
     System = GM_SR.System(RunPars)
 
@@ -630,9 +633,6 @@ def GEM(callcommand):
 
     # Report on what the system looks like
     System.print_system(RunPars)
-
-    # initialize C library
-    GM_CL.VEG_CLib(RunPars)
 
     # calculate all (requested) frames
     trj_loop(RunPars, System)

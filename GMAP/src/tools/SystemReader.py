@@ -6,11 +6,13 @@ import MDAnalysis as MDA
 import numpy as np
 
 # local imports
+import GMAP.src.tools.CLibLoader as GM_CL
 import GMAP.src.tools.DefaultMapFunctions as GM_DMF
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.ParameterParser as GM_PP
-import GMAP.src.tools.PhysicsFunctions as GM_PF
+# import GMAP.src.tools.PhysicsFunctions as GM_PF
 import GMAP.src.tools.PrintTools as GM_PT
+# from GMAP.src.tools.PrintTools import devprint as dpr
 
 
 class System:
@@ -232,7 +234,15 @@ class System:
 
         # TO DO - C support?
         self.positions_c = np.ctypeslib.as_ctypes(np.ravel(self.positions))
+        self.masses_c = np.ctypeslib.as_ctypes(self.masses)
         self.charges_c = np.ctypeslib.as_ctypes(self.charges)
+        self.positions_box = np.zeros_like(self.positions)
+        self.positions_box_c = np.ctypeslib.as_ctypes(np.ravel(
+            self.positions_box))
+        # calculate the box position of each atom
+        clib = GM_CL.VEG_CLib()
+        clib.positions_to_box(self)
+
         # if RunPar.use_c_lib:
         #     self.charges = self.charges.astype('float32')
         #     self.charges_c = np.ctypeslib.as_ctypes(self.charges)
@@ -275,6 +285,10 @@ class System:
         ).astype('float32')
         self.safesphere = 0.5 * self.boxvects.diagonal().min()
         self.boxvects_inv = np.linalg.inv(self.boxvects).astype('float32')
+
+        self.boxvects_c = np.ctypeslib.as_ctypes(np.ravel(self.boxvects))
+        self.boxvects_inv_c = np.ctypeslib.as_ctypes(np.ravel(
+            self.boxvects_inv))
 
         self.boxdims_c = np.ctypeslib.as_ctypes(self.boxdims)
         self.halfbox_c = np.ctypeslib.as_ctypes(self.halfbox)
@@ -893,13 +907,34 @@ class System:
         self.positions_c = np.ctypeslib.as_ctypes(np.ravel(self.positions))
         self.determine_box()
         printer.add_time(4, "Center of Mass:", "COM", "ms")
-        self.residues.CoM = GM_PF.system_CoM(
-            self.positions, self.masses, self.boxvects_inv,
-            self.boxvects, self.residues.first_ix, self.residues.last_ix,
-            self.nres
-        )
+
+        # calculate the box position of each atom
+        clib = GM_CL.VEG_CLib()
+        clib.positions_to_box(self)
+
+        # CoM = GM_PF.system_CoM(
+        #     self.positions, self.masses, self.boxvects_inv,
+        #     self.boxvects, self.residues.first_ix, self.residues.last_ix,
+        #     self.nres
+        # )
+        # self.residues.CoM_c = np.ctypeslib.as_ctypes(
+        #     np.ravel(self.residues.CoM))
+        self.residues.CoM_c = np.zeros((self.nres, 3), dtype="float32")
         self.residues.CoM_c = np.ctypeslib.as_ctypes(
-            np.ravel(self.residues.CoM))
+            np.ravel(self.residues.CoM_c))
+        clib.calc_CoM_box(self)  # fill CoM_c. Results are calculated in box c.
+
+        # # for testing
+        # CoM_transformed = np.zeros((self.nres, 3), dtype="float32")
+        # CoM_transformed_c = np.ctypeslib.as_ctypes(np.ravel(CoM_transformed))
+        # clib.clib.transform_vectors(
+        #     self.residues.CoM_c, self.nres, self.boxvects_c,
+        #     CoM_transformed_c)
+
+        # dpr(np.sum(np.abs(CoM - CoM_transformed)))
+        # dpr(CoM[:10, :])
+        # dpr(CoM_transformed[:10, :])
+        # quit()
 
     def print_system(self, RunPars):
         """Reports what the MD system looks like - what oscillators were
@@ -1227,7 +1262,7 @@ class Oscillator:
         # sure they are 'centered' around one of the atoms of the molecule.
         # the assumption here is that all atoms of the molecule are reasonably
         # close together (at least much closer than a box length)
-        self.positions_box = (self.positions @ Syst.boxvects_inv)
+        self.positions_box = Syst.positions_box[self.used_atoms]
         shift = self.positions_box[0].copy()
         self.positions_box -= shift
         self.positions_box -= np.floor(self.positions_box + 0.5) - shift
