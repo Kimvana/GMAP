@@ -78,6 +78,7 @@ class TestRefPars:
             "VEG_clib_file": [
                 Path("VEG" + GM_FH.FileLocations.clib_extension)],
             "log_filename": [Path("log.log")],
+            "output_parameter_filename": [Path("parameters.txt")],
             "output_legend_filename": [Path("legend.txt")],
             "output_couplingvis_filename": [Path("couplingvisualization.pdf")],
             "output_estatics_filename": [Path("estatics.txt")],
@@ -207,6 +208,7 @@ class TestRefPars:
                 "VEG_clib_file"],
             "log_directory": ["log_filename"],
             "output_directory": [
+                "output_parameter_filename",
                 "output_legend_filename", "output_couplingvis_filename",
                 "output_estatics_filename", "output_hamiltonian_filename",
                 "output_dipole_filename", "output_energies_filename",
@@ -234,6 +236,7 @@ class TestRefPars:
             "log_directory",
             "log_filename",
             "output_directory",
+            "output_parameter_filename",
             "output_legend_filename",
             "output_couplingvis_filename",
             "output_estatics_filename",
@@ -257,6 +260,7 @@ class TestRefPars:
         ]
         assert RefPars.filepars_create == [
             "log_filename",
+            "output_parameter_filename",
             "output_legend_filename",
             "output_couplingvis_filename",
             "output_estatics_filename",
@@ -510,6 +514,7 @@ class TestRawPars:
             "VEG_clib_file": [
                 Path("VEG" + GM_FH.FileLocations.clib_extension)],
             "log_filename": [Path("log.log")],
+            "output_parameter_filename": [Path("parameters.txt")],
             "output_legend_filename": [Path("legend.txt")],
             "output_couplingvis_filename": [Path("couplingvisualization.pdf")],
             "output_estatics_filename": [Path("estatics.txt")],
