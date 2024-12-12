@@ -358,6 +358,8 @@ extern "C" {
         // convert the cartesian spherepos into box vectors
         VM_vect_at_matrix33(spherepos, boxvects_inv, spherepos_box);
 
+        // printf("starting looping over all residues\n");
+
         // analyze all surrounding charges on a per-residue basis
         for (resnum = 0; resnum < n_res; resnum++) {
             // find distance to residue in box coordinates
@@ -367,6 +369,8 @@ extern "C" {
             // convert difference in box coordinates to cartesian
             VM_vect_at_matrix33(diff_box, boxvects, diff);
             dist2 = VM_veclen2(diff);
+
+            // printf("residue %d has a distance squared of %f\n", resnum, dist2);
 
             // if the residue is too far away, skip it
             if (dist2 > maxdist2) {
@@ -413,10 +417,38 @@ extern "C" {
                 for (oscix = 0; oscix < n_osc_ats; oscix++) {
                     // yes, its needed (and allowed/possible) to redo PBCdiff
                     // and dist(2) again.
+
+                    // printf(
+                    //     "refpos: %f %f %f\n", refpos[oscix*3],
+                    //     refpos[oscix*3+1], refpos[oscix*3+2]);
+                    // printf(
+                    //     "positions_box: %f %f %f\n", positions_box[sysix*3],
+                    //     positions_box[sysix*3+1], positions_box[sysix*3+2]);
+                    // printf(
+                    //     "halfbox: %f %f %f\n", halfbox[0],
+                    //     halfbox[1], halfbox[2]);
+                    // printf(
+                    //     "boxdims: %f %f %f\n", boxdims[0],
+                    //     boxdims[1], boxdims[2]);
                     VM_PBC_diff_cubic(
                         &refpos[oscix * 3], &positions_box[sysix * 3],
                         halfbox, boxdims, diff_box);
+
+                    // printf(
+                    //     "diff_box: %f %f %f\n", diff_box[0],
+                    //     diff_box[1], diff_box[2]);
+                    // printf(
+                    //     "boxvects: %f %f %f %f %f %f %f %f %f\n",
+                    //     boxvects[0], boxvects[1], boxvects[2],
+                    //     boxvects[3], boxvects[4], boxvects[5],
+                    //     boxvects[6], boxvects[7], boxvects[8]);
                     VM_vect_at_matrix33(diff_box, boxvects, diff);
+
+                    // printf(
+                    //     "diff: %f %f %f\n", diff[0], diff[1], diff[2]);
+                    // printf("charge: %f\n", weighted_charge);
+                    // printf("oscix: %d\n", oscix);
+                    // printf("sysix: %d\n", sysix);
                     calc_VEG(diff, weighted_charge, oscix, out);
                 }
             }

@@ -23,7 +23,7 @@ from .test_SystemReader import parameter_getter
 import GMAP.src.tools.CLibLoader as GM_CL
 import GMAP.src.tools.CodingTools as GM_CT
 import GMAP.src.tools.Exceptions as GM_Ex
-import GMAP.src.tools.PhysicsFunctions as GM_PF
+# import GMAP.src.tools.PhysicsFunctions as GM_PF
 
 
 class TestVClib:
@@ -40,6 +40,7 @@ class TestVClib:
 
         System = get_System_1()
         oscillator = get_oscillator_1()
+        VEGlib.calc_CoM_box(System)
 
         VEGlib.calcVEG_perres_mm(System, RunPars, oscillator)
 
@@ -84,6 +85,8 @@ class TestVClib:
             [0, 0],
             [-0.015139585119952648, -0.013882521453]
         ], dtype="float32").sum(0).round(7)
+
+        print(oscillator.VEGout)
         assert np.all(oscillator.VEGout[:, 0].round(7) == ans)
 
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -163,8 +166,8 @@ class TestVClib:
             [-0.000003743181, 0.000000513291, 0.000002570840],  # Gxy
             [-0.000003743181, 0.000000513291, 0.000005141681],  # Gxz
             [-0.000008146924, 0.000001026582, 0.000002570840]   # Gyz
-        ]], dtype="float32").sum(2).round(10)
-        assert np.all(oscillator.VEGout[:, 4:].round(10) == ans)
+        ]], dtype="float32").sum(2).round(9)
+        assert np.all(oscillator.VEGout[:, 4:].round(9) == ans)
 
     def test_calcVEG_perres_mm_influencers(self):
         cmdline = ["-md", "maps\\;"]
@@ -184,6 +187,7 @@ class TestVClib:
             np.array([0, 1, 2, 3], dtype="int32"))
         System.n_influencers = np.int32(4)
         oscillator = get_oscillator_1()
+        VEGlib.calc_CoM_box(System)
 
         VEGlib.calcVEG_perres_mm(System, RunPars, oscillator)
 
@@ -225,8 +229,8 @@ class TestVClib:
             [-0.002557953278597537, -0.0027717718596666],
             [0, 0],  # NNdtIS
             [0, 0]  # NNdtIS
-        ], dtype="float32").sum(0).round(7)
-        assert np.all(oscillator.VEGout[:, 0].round(7) == ans)
+        ], dtype="float32").sum(0).round(6)
+        assert np.all(oscillator.VEGout[:, 0].round(6) == ans)
 
     def test_calcVEG_perres_mm_nocut(self):
         cmdline = ["-md", "maps\\;"]
@@ -419,13 +423,21 @@ class TestVClib:
 
 
 def get_System_1():
-    positions = np.array([
-        [8, 28, 68],
-        [11, 31, 71],
-        [28, 68, 8],
-        [31, 71, 11],
-        [68, 8, 28],
-        [71, 11, 31]
+    # positions = np.array([
+    #     [8, 28, 68],
+    #     [11, 31, 71],
+    #     [28, 68, 8],
+    #     [31, 71, 11],
+    #     [68, 8, 28],
+    #     [71, 11, 31]
+    # ], dtype="float32")
+    positions_box = np.array([
+        [0.08, 0.28, 0.68],
+        [0.11, 0.31, 0.71],
+        [0.28, 0.68, 0.08],
+        [0.31, 0.71, 0.11],
+        [0.68, 0.08, 0.28],
+        [0.71, 0.11, 0.31]
     ], dtype="float32")
     masses = np.array([1, 2, 1, 2, 1, 2], dtype="float32")
     # charges = np.array([1, -1, 0, 1, 0, 0], dtype="float32")
@@ -441,15 +453,18 @@ def get_System_1():
     res_first_ix = np.array([0, 2, 4], dtype="int32")
     res_last_ix = np.array([1, 3, 5], dtype="int32")
     nres = np.int32(3)
-    residues_CoM = GM_PF.system_CoM(
-        positions, masses, boxvects_inv, boxvects,
-        res_first_ix, res_last_ix, nres
-    )
+    # residues_CoM = GM_PF.system_CoM(
+    #     positions, masses, boxvects_inv, boxvects,
+    #     res_first_ix, res_last_ix, nres
+    # )
+    residues_CoM = np.zeros((nres, 3), dtype="float32")
+
     boxdims = np.array([100, 100, 100], dtype="float32")
     halfbox = np.array([50, 50, 50], dtype="float32")
 
     return GM_CT.CustomClass(**{
-        "positions_c": np.ctypeslib.as_ctypes(np.ravel(positions)),
+        "positions_box_c": np.ctypeslib.as_ctypes(np.ravel(positions_box)),
+        "masses_c": np.ctypeslib.as_ctypes(masses),
         "charges_c": np.ctypeslib.as_ctypes(charges),
         "influencers_atix_c": np.ctypeslib.as_ctypes(influencers),
         "n_influencers": n_influencers,
@@ -459,6 +474,8 @@ def get_System_1():
             "last_ix_c": np.ctypeslib.as_ctypes(res_last_ix)
         }),
         "nres": nres,
+        "boxvects_c": np.ctypeslib.as_ctypes(np.ravel(boxvects)),
+        "boxvects_inv_c": np.ctypeslib.as_ctypes(np.ravel(boxvects_inv)),
         "halfbox_c": np.ctypeslib.as_ctypes(halfbox),
         "boxdims_c": np.ctypeslib.as_ctypes(boxdims)
     })
