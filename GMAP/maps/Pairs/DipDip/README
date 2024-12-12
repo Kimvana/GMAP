@@ -1,0 +1,49 @@
+sections:
+- intended use
+- how to use
+- available parameters
+- warnings that can be raised by this map
+- important notes for singles-map developers
+
+
+
+intended use
+------------
+
+This map is intended to calculate the dipole-dipole coupling of two singles. There are no restrictions on the singles apart from them having a dipole moment.
+
+
+how to use
+----------
+
+This map needs to know the dipole moment of any single it couples. If a singles map does not do anything special, it will use the dipole moment that has already been calculated for that oscillator, with it's standard dipole method.
+
+If, however, a singles map doesn't want that default behaviour and instead give a specific dipole moment for this map to use, it can do this by defining a function of the name CP_DipDip_calc_dipole. This function is expected to have the same types/amounts of inputs/outputs as GM_calc_dipole, but allows for a different choice.
+
+
+
+
+Available parameters
+--------------------
+
+When using this map, the following parameters become available to use in any input parameter source (default file, input file, command line):
+
+None.
+
+
+warnings that can be raised by this map
+---------------------------------------
+
+None.
+
+
+important notes for singles-map developers
+------------------------------------------
+
+If you want your singles-map to be able to be coupled by this map, the amount of work/changes necessary depends on how well you want it to be integrated.
+
+The simplest form does not require any work. This map will automatically find a dipole moment for the oscillators (using the output of GM_calc_dipole), and will automatically cite the references of the map that have 'dip' in the 'reporttext' field, but for the 'ham' output. It will only look in the set of maps returned by the map's GM_report_references function, and not all available ones.
+
+One of the options for better integration is to define the function named CP_DipDip_calc_dipole. It should have the same signature as GM_calc_dipole, and is used solely to supply a dipole moment for this coupling map.
+
+Another is to give any of the references the mapkey 'CP_DipDip'. This is a marker for this map that that specific singles map specifically mentions which references this map should use, so if present, this map will not look at any other references. Please do note that any reference with the mapkey 'CP_DipDip' should also still have 'dip' in the 'reporttext' field for it to be accepted.

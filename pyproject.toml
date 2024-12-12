@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "GMAP"
+authors = [
+    {name = "Kim E. van Adrichem"}
+]
+description = "A tool for calculating vibrational and electronic spectra, more to be added."
+version = "0.0.1"
+classifiers = [
+    "Programming Language :: Python :: 3"
+]
+requires-python = ">= 3.10"
+dependencies = [
+  "colorama >= 0.4.6",
+  "MDAnalysis >= 0.20",
+  "numba >= 0.58",
+  "numpy >= 1.22, <= 1.26",
+]
+
+[project.optional-dependencies]
+testing = [
+    "build >= 1.2.2.post1",
+    "dataframe-image >= 0.2.4",
+    "flake8 >= 4.0",
+    "numpydoc >= 1.6.0",
+    "pandas >= 2.2.1",
+    "pydata-sphinx-theme >= 0.14",
+    "pytest >= 6.0",
+    "pytest-cov >= 2.0",
+    "sphinx >= 7.2.6",
+    "sphinx-design >= 0.5"
+]
+
+
+[tool.setuptools.package-data]
+GMAP = ["sourcefiles/*", "maps/*", "logo.txt"]
+
+
+[project.scripts]
+GMAP = "GMAP.src.tools.CmdInterface:main"
+
+
+[tool.setuptools]
+packages = ["GMAP", "GMAP.src", "GMAP.src.programs", "GMAP.src.tools"]
+
+

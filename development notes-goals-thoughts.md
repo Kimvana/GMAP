@@ -11,6 +11,7 @@
 - [How to calculate potential (and other electrostatic properties)](#how-to-calculate-potential-and-other-electrostatic-properties)
 - [Rough program flow](#rough-program-flow-gem)
 - [To discuss](#to-discuss)
+- [FAQ](#faq)
 - [Dump section](#dump-section)
 - [Old notes/goals/thoughts/etc](#old-notesgoalsthoughtsetc)
 
@@ -350,6 +351,15 @@ TO DO
 
 
 ### ===============================
+# FAQ
+### ===============================
+
+#### I followed the installation instructions, but it can't find the colorama module.
+We've encountered this issue for mac users, when their python version is too new. GMAP is tested mostly for python 3.10, so use that version to avoid this issue.
+
+
+
+### ===============================
 # Dump section
 ### ===============================
 
@@ -357,7 +367,8 @@ If you need a place to quickly write something down, do it here! It can be tidie
 
 
 - (KvA) TODO before PR:
-  - Nothing?
+  - consider - do we want to report which groups we are coupling? or do we just mention the model name, and then have the couplingmatrix file do the rest?
+  - tests
 - (KvA) TODO:
   - legacy support:
     - CoM calculation is different for AmideImaps.
