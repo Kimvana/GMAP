@@ -12,6 +12,7 @@ import numpy as np
 
 # gmap imports
 from GMAP.src.tools import MathFunctions as GM_MF
+from GMAP.src.tools import ReferenceHandler as GM_RH
 
 
 # A function to adjust the parameters of the map. For some kinds of
@@ -82,10 +83,8 @@ def GM_prep_coupling(Map, Syst, oscixlist, osclist):
     for oscix, osc in zip(oscixlist, osclist):
         # if the map has a function specifically for this map, use it!
         if hasattr(osc.Map.code, "CP_DipDip_calc_dipole"):
-            (
-                Map.dipole_vec_arr[oscix], dip_pos
-            ) = osc.Map.code.CP_DipDip_calc_dipole(
-                osc.Map, Syst, osc)
+            Map.dipole_vec_arr[oscix], dip_pos = (
+                osc.Map.code.CP_DipDip_calc_dipole(osc.Map, Syst, osc))
         else:
             Map.dipole_vec_arr[oscix] = osc.dipole_vec
             dip_pos = osc.dipole_pos
@@ -181,3 +180,91 @@ def GM_post_frame(Map, Syst):
 # calculation time and treated frames at this point in time.
 def GM_post_run(Map, Syst):
     pass
+
+
+def GM_report_references(map_, system):
+    """Returns all references that should be reported for this map.
+
+    This function does not have to account for which outputs are
+    actually requested from the program - the text in the reporttext
+    field in the references.bib file already does that. It indicates
+    for which methods it should be reported, and with which text.
+
+    If this function is absent from a main.py, map_.references will be
+    returned in it's entirety. The purpose of this function is to
+    return a selection/subset of that dictionary, instead.
+
+    In the case of this mapping, there are different methods for
+    computing the different properties of the system, so we only want
+    to send those of the selected mapping through, and leave the rest.
+
+    Parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+        The object that stores everything the program currently knows
+        about this map.
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
+
+    Returns
+    -------
+    references_dict = dict
+        This dict should be a slice/part of the full map_.references
+        dict. Therefore, an explanation of the map_.references dict:
+
+        The keys in this dictionary are the separate keys listed in the
+        reference.bib file's 'mapkey' field. If the reference has
+        multiple keys in that field, it will occur multiple times in the
+        dictionary, once for each key.
+
+        Associated with each key is a list of
+        :class:`~GMAP.src.tools.ReferenceHandler.Reference` objects,
+        each of which corresponds to a single entry in the .bib file.
+    """
+
+    report_these = {"CP_DipDip": []}
+
+    # loop over all singles maps that have oscillators being coupled by this
+    # map
+    for singles_map in set(
+        [osc.Map for osc in system.oscillators_ordered_coup["DipDip"]]
+    ):
+        # instead of looking at all references of the map, only look at those
+        # that the map itself picked (in case of multiple models and such).
+        references = singles_map.code.GM_report_references(singles_map, system)
+
+        # if the map has put aside some references for this map already.
+        if "CP_DipDip" in references:
+            for reference in references["CP_DipDip"]:
+                report_these = add_reference(
+                    reference, report_these, singles_map)
+        else:
+            for mapkey, reflist in references.items():
+                for reference in reflist:
+                    report_these = add_reference(
+                        reference, report_these, singles_map)
+
+    return report_these
+
+
+def add_reference(reference, report_these, singles_map):
+
+    # Now we have a specific reference object. Only if it is meant
+    # for dipoles, grab it.
+    if "dip" not in reference.reporttext:
+        return report_these
+
+    # now, this reference has a dipole reason for being mentioned.
+    # So, we'd like to take this reference, but we do make a copy,
+    # so we can safely edit the reasons for our own goal.
+    new_reference = GM_RH.Reference(reference.input_string)
+    new_reference.reporttext = {
+        "ham": [
+            "dipole moment for the oscillators of type "
+            f"{singles_map.name} to be used for the dipole-dipole coupling."
+        ]}
+
+    report_these["CP_DipDip"].append(new_reference)
+    return report_these

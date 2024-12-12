@@ -10,6 +10,7 @@ Submodules
    GMAP.tests.test_tools.test_CLibLoader
    GMAP.tests.test_tools.test_CmdInterface
    GMAP.tests.test_tools.test_CodingTools
+   GMAP.tests.test_tools.test_ColorSchemes
    GMAP.tests.test_tools.test_DefaultMapFunctions
    GMAP.tests.test_tools.test_FileHandler
    GMAP.tests.test_tools.test_MapReader
@@ -18,6 +19,7 @@ Submodules
    GMAP.tests.test_tools.test_PhysicsFunctions
    GMAP.tests.test_tools.test_Plotter
    GMAP.tests.test_tools.test_PrintTools
+   GMAP.tests.test_tools.test_StringClasses
    GMAP.tests.test_tools.test_SystemReader
 
 Module contents

@@ -34,6 +34,7 @@ For pairs maps, the core file is optional, while the main.py file is mandatory. 
     single_core
     parameters
     single_main_py
+    references_bib
 
 .. toctree::
     :caption: Pairs maps:
@@ -41,4 +42,5 @@ For pairs maps, the core file is optional, while the main.py file is mandatory. 
     pair_core
     parameters
     pair_main_py
+    references_bib
 

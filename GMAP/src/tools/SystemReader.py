@@ -327,10 +327,11 @@ class System:
                 influencers_not_included.add("None")
             GM_PT.Printer.print(
                 1,
-                "Residue names included in influencers:\n"
+                "Residue names included in influencers:\n  "
                 + ", ".join(choice) +
-                "\n\nResidue names NOT included in influencers:\n"
-                + ", ".join(influencers_not_included)
+                "\n\nResidue names NOT included in influencers:\n  "
+                + ", ".join(influencers_not_included),
+                wrap_preline="  "
             )
 
         # The MDA select_atoms functionality is used to define influencers.
@@ -365,10 +366,11 @@ class System:
                 influencers_not_included.add("None")
             GM_PT.Printer.print(
                 1,
-                "Residue names included in influencers:\n"
+                "Residue names included in influencers:\n  "
                 + ", ".join(choice) +
-                "\n\nResidue names NOT included in influencers:\n"
-                + ", ".join(influencers_not_included)
+                "\n\nResidue names NOT included in influencers:\n  "
+                + ", ".join(influencers_not_included),
+                wrap_preline="  "
             )
 
         # influencers list must be sorted
@@ -382,10 +384,11 @@ class System:
             atixprint[1].append("None")
         GM_PT.Printer.print(
             3,
-            "\nAtoms included in influencers:\n"
+            "\nAtoms included in influencers:\n  "
             + ", ".join(atixprint[0]) +
-            "\n\nAtoms NOT included in influencers:\n"
-            + ", ".join(atixprint[1])
+            "\n\nAtoms NOT included in influencers:\n  "
+            + ", ".join(atixprint[1]),
+            wrap_preline="  "
         )
         GM_PT.footer(2, "influencers", "doublebox")
         self.influencers_atix = np.asarray(
@@ -519,8 +522,8 @@ class System:
             The desired residue template for which the MD system will be
             searched.
 
-        Returns:
-        --------
+        Returns
+        -------
         oscillators : list of list of int
             The list of all oscillators found, matching the template.
             Each oscillator is a list of atnums of the atoms it consists

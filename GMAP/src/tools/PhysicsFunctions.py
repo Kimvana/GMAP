@@ -12,6 +12,7 @@ def calc_CoM(System, atomlist):
     """Calculate the centre of mass of a given set of atoms.
 
     How to?
+
     - Convert a list of positions to box coordinates
     - Translate by the first atom position (center the first atom)
     - Shift all atoms so they are in the 'middle' box (between -0.5 and
@@ -23,7 +24,7 @@ def calc_CoM(System, atomlist):
 
     Parameters
     ----------
-    System : :class:`~GMAP.src.tools.SystemReader.System
+    System : :class:`~GMAP.src.tools.SystemReader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)

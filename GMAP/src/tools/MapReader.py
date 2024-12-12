@@ -7,12 +7,13 @@ import sys
 import numpy as np
 
 # local imports
-import GMAP.src.tools.constants as GM_con
+import GMAP.src.tools.constants as GM_Con
 import GMAP.src.tools.DefaultMapFunctions as GM_DMF
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.FileHandler as GM_FH
 import GMAP.src.tools.ParameterParser as GM_PP
 import GMAP.src.tools.PrintTools as GM_PT
+import GMAP.src.tools.ReferenceHandler as GM_RH
 
 
 class Map:
@@ -110,7 +111,7 @@ class Map:
             self.RefPars = GM_PP.RefPars(refparfilename, False)
         else:
             # self.RefPars = None
-            with open(refparfilename, "w") as _:
+            with open(refparfilename, "w", encoding='utf-8') as _:
                 pass
             self.RefPars = GM_PP.RefPars(refparfilename, False)
 
@@ -503,6 +504,15 @@ class Map:
             )
             return None
 
+    def parse_references(self):
+        """Checks if there is a references file, and parses it."""
+
+        references_filename = self.directory / "references.bib"
+        if references_filename.is_file():
+            self.references = GM_RH.read_reference_file(references_filename)
+        else:
+            self.references = {}
+
 
 class SingleMap(Map):
     def initialize(self):
@@ -510,6 +520,7 @@ class SingleMap(Map):
 
         Initializing is a multi-step process:
 
+        - interpret reference file if present
         - If there is a main.py file, read/extract it.
         - If any of GM_adjust_[RunPars/map_core_raw/oscillators] are
           missing, add the default for them.
@@ -521,6 +532,8 @@ class SingleMap(Map):
         - If not present in self.code, create functions for
           GM_calculate_dipole and GM_get_rotation matrix based on core.
         """
+
+        self.parse_references()
 
         self.code = self.extract_code()
         if not self.code:
@@ -583,7 +596,8 @@ class SingleMap(Map):
             "pre_run",
             "pre_frame",
             "post_frame",
-            "post_run"
+            "post_run",
+            "report_references"
         ))
 
     def code_add_builds(self):
@@ -690,6 +704,7 @@ class PairMap(Map):
 
         Initializing is a multi-step process:
 
+        - interpret reference file if present
         - If there is a main.py file, read/extract it.
         - If any of GM_adjust_[RunPars/map_core_raw] are
           missing, add the default for them.
@@ -701,6 +716,8 @@ class PairMap(Map):
         - If not present in self.code, create functions for all missing
           behaviour
         """
+
+        self.parse_references()
 
         self.allpairs = []
 
@@ -732,24 +749,18 @@ class PairMap(Map):
             self.success = False
             return
 
-        # self.complete_code(("needs_mapfunc",))
-        # self.required_functions = self.code.GM_needs_mapfunc(
-        #     self)
-
-        # self.complete_code(("needs_keyword",))
-        # self.required_keywords = self.code.GM_needs_keyword(
-        #     self)
-
         # Add in the remaining code
         self.complete_code((
             "change_coup_type",
             "prep_coupling",
+            "calc_coupling",
             "post_init",
             "pre_run",
             "pre_frame",
             "post_frame",
-            "post_run"
-        ), [{"name": self.name}] + [{}] * 6)
+            "post_run",
+            "report_references"
+        ), [{"name": self.name}] + [{}] * 8)
 
     def check_singles(self, main_runpars, requester=None):
         """Sees if all indicated requirements of the map are met.
@@ -2373,7 +2384,8 @@ class SingleCore:
             self.success = False
             return None
 
-        if foundwidth != 10:
+        # even if foundwidth is correct, we cut it smaller in report_array_size
+        if array.shape[1] != 10:
             toadd = np.zeros(
                 (array.shape[0], 10-array.shape[1]), dtype="float32")
             array = np.concatenate((array, toadd), axis=1)
@@ -2480,7 +2492,7 @@ class SingleCore:
             return
 
         # this could be made conditional if others are added later!
-        conv_factor = GM_con.bohr2ang
+        conv_factor = GM_Con.bohr2ang
         self.change_map_units(conv_factor)
 
     def change_map_units(self, conv_factor):

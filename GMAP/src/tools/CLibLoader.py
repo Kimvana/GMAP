@@ -134,7 +134,7 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
 
         Parameters
         ----------
-        System : :class:`~GMAP.src.tools.SystemReader.System
+        System : :class:`~GMAP.src.tools.SystemReader.System`
             The object that stores everything the program currently knows
             about the system being treated (names, numbers, types, masses,
             charges of all atoms, for example)
@@ -191,7 +191,7 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
 
         Parameters
         ----------
-        System : :class:`~GMAP.src.tools.SystemReader.System
+        System : :class:`~GMAP.src.tools.SystemReader.System`
             The object that stores everything the program currently knows
             about the system being treated (names, numbers, types, masses,
             charges of all atoms, for example)

@@ -14,9 +14,10 @@ import numpy as np
 # local imports
 import GMAP
 import GMAP.src.tools.CodingTools as GM_CT
-import GMAP.src.tools.constants as GM_con
+import GMAP.src.tools.constants as GM_Con
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.PrintTools as GM_PT
+import GMAP.src.tools.StringClasses as GM_SC
 
 
 @dataclass(repr=False, frozen=True)
@@ -75,7 +76,7 @@ class FileLocations(metaclass=GM_CT.Singleton):
         GM_PT.Printer(self)  # initialize the printer!
 
         obset(self, "_exec_os", find_exec_os())
-        obset(self, "_clib_extension", GM_con.clib_ext_dict[self._exec_os])
+        obset(self, "_clib_extension", GM_Con.clib_ext_dict[self._exec_os])
 
     @GM_CT.singletonproperty
     def callcommand(self):
@@ -616,6 +617,327 @@ def write_legend(RunPars, System):
         MD trajectory.
     """
 
-    with open(RunPars.output_legend_filename, "w") as fhand:
+    with open(RunPars.output_legend_filename, "w", encoding='utf-8') as fhand:
         for oscix, oscillator in enumerate(System.oscillators):
             fhand.write(f"at index {oscix}: {oscillator}\n")
+
+
+def write_parameter_file(RefPars, RunPars, system, CmdPars, InPars, DefPars):
+    """Save the parameters of the current run to a file so the run can
+    be repeated.
+
+    Parameters
+    ----------
+    RefPars : :class:`RefPars`
+        Contains all available parameters from GMAP itself
+        (not map-specific)
+    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        The 'main' RunPars instance containing all the basic
+        run-defining parameters.
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The class containing all the information on the system of the
+        MD trajectory.
+    CmdPars : :class:`RawPars`
+        Contains any parameter choices made on the command line
+    InPars : :class:`RawPars`
+        Contains any parameter choices made in the input parameter file
+    DefPars : :class:`RawPars` or :class:`RefPars`
+        Contains all default parameter choices. Might be RefPars, might
+        be from a separate default parameters file.
+    """
+
+    # initialize file
+    with open(
+        RunPars.output_parameter_filename, "w", encoding='utf-8'
+    ) as outfhand:
+        # write GMAP parameters
+        with open(RefPars.fname, "r") as reffhand:
+            write_single_parameter_source(
+                reffhand, RunPars, outfhand, "GMAP", CmdPars, InPars, DefPars)
+
+        # write parameters of all active singles maps
+        for singles_map in RunPars.requested_mapdict.values():
+            with open(
+                singles_map.directory / "parameters.ref", "r"
+            ) as reffhand:
+                write_single_parameter_source(
+                    reffhand, singles_map.RunPars, outfhand, singles_map.name,
+                    singles_map.CmdPars, singles_map.InPars,
+                    singles_map.DefPars)
+
+        # write parameters of all active pairs maps.
+        for pairs_map in RunPars.requested_pairmapdict.values():
+            with open(
+                pairs_map.directory / "parameters.ref", "r"
+            ) as reffhand:
+                write_single_parameter_source(
+                    reffhand, pairs_map.RunPars, outfhand, pairs_map.name,
+                    pairs_map.CmdPars, pairs_map.InPars, pairs_map.DefPars)
+
+
+def write_single_parameter_source(
+    reffhand, RunPars, outfhand, sourcename, CmdPars, InPars, DefPars
+):
+    """Save the parameters of a single source to a file so the run can
+    be repeated.
+
+    Parameters
+    ----------
+    reffhand : `_io.TextIOWrapper`
+        The reference parameter file handle which contains all
+        parameters that should be written.
+    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        The 'main' RunPars instance containing all the basic
+        run-defining parameters.
+    outfhand : `_io.TextIOWrapper`
+        The output parameter file handle to which all parameters should
+        be written.
+    sourcename : str
+        The name of the source (GMAP or name of map) whose parameters
+        should be saved.
+    CmdPars : :class:`RawPars`
+        Contains any parameter choices made on the command line
+    InPars : :class:`RawPars`
+        Contains any parameter choices made in the input parameter file
+    DefPars : :class:`RawPars` or :class:`RefPars`
+        Contains all default parameter choices. Might be RefPars, might
+        be from a separate default parameters file.
+    """
+
+    write_parameter_header(sourcename, outfhand)
+
+    # A select few parameters can be multiline
+    sp_choices = []
+    sp_prname = None
+
+    for line in reffhand:
+        # Find name of parameter on this line
+        linelist = line.split("#")
+        parname = linelist[0].split("[")[0].split("(")[0]
+        # find full (source-including) parameter name
+        prparname = get_full_parameter_name(parname, sourcename)
+
+        # if this line does not contain a parameter
+        if not hasattr(RunPars, parname):
+            outfhand.write(line)
+            continue
+
+        # we expect all occurences of the same parameter to be back-to-back
+        # in a parameter file. So if we've got more lines availabe that
+        # haven't been printed yet, print them now.
+        if len(sp_choices) > 0 and sp_prname != prparname:
+            while len(sp_choices) > 0:
+                choice = sp_choices.pop(0)
+                write_parameter_line(
+                    outfhand, sp_prname, choice, [])
+            sp_prname = None
+
+        # write all parameters that are not expected to occur multiple times
+        write_parameter_line_main(
+            RunPars, parname, prparname, sp_prname, outfhand, linelist,
+            CmdPars, InPars, DefPars)
+
+    outfhand.write("\n\n\n")
+
+
+def write_parameter_header(sourcename, outfhand):
+    """Write the header of the next parameter source to the output file.
+
+    Parameters
+    ----------
+    sourcename : str
+        The name of the source (GMAP or name of map) whose parameters
+        should be saved.
+    outfhand : `_io.TextIOWrapper`
+        The output parameter file handle to which all parameters should
+        be written.
+    """
+
+    header = GM_SC.Header(
+        f"\n{sourcename}\n", linemode="oulrc", padding=3, corner_char="╔╗╚╝",
+        overline_char="═", underline_char="═", left_char="║", right_char="║"
+    ).cs.change_color("white")
+    header = "# " + "\n# ".join(header.split("\n"))
+    outfhand.write(f"\n{header}\n")
+
+
+def get_full_parameter_name(parname, sourcename):
+    """Figure out what name the parameter should be saved as.
+
+    GMAP parameters should be written/saved as-is, while map paramters
+    should be preceded by the map name.
+
+    Parameters
+    ----------
+    parname : str
+        The parameter that we'd like to write to file.
+    sourcename : str
+        The name of the source (GMAP or name of map) whose parameters
+        should be saved.
+    """
+
+    if sourcename == "GMAP":
+        return parname
+    else:
+        return sourcename + "." + parname
+
+
+def write_parameter_line_main(
+    RunPars, parname, prparname, sp_prname, outfhand, linelist,
+    CmdPars, InPars, DefPars
+):
+    """Save the parameters of a single source to a file so the run can
+    be repeated.
+
+    Parameters
+    ----------
+    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        The 'main' RunPars instance containing all the basic
+        run-defining parameters.
+    parname : str
+        The parameter that we'd like to write to file.
+    prparname : str
+        The full name of the parameter (possibly including source name)
+        that we'd like to write to file.
+    sp_prname : The full name of the special parameter that we treated
+        last.
+    outfhand : `_io.TextIOWrapper`
+        The output parameter file handle to which all parameters should
+        be written.
+    linelist : list of str
+        The line from the reference parameter file, split on "#".
+    CmdPars : :class:`RawPars`
+        Contains any parameter choices made on the command line
+    InPars : :class:`RawPars`
+        Contains any parameter choices made in the input parameter file
+    DefPars : :class:`RawPars` or :class:`RefPars`
+        Contains all default parameter choices. Might be RefPars, might
+        be from a separate default parameters file.
+    """
+
+    # parname structures for special parameters
+    all_inf_pars = set((
+        "influencers_whitelist", "influencers_blacklist", "influencers_file",
+        "influencers_select_atoms"))
+    all_unit_ends = set(("_units", "_multiplier"))
+
+    choice = getattr(RunPars, parname)
+    # Write parameters that are allowed to occur multiple times
+    if (
+        isinstance(choice, list)
+        and len(choice) > 0
+        and isinstance(choice[0], list)
+    ):
+        if prparname != sp_prname:
+            sp_choices = choice[:]
+            sp_prname = prparname
+        choice = sp_choices.pop(0)
+        write_parameter_line(outfhand, prparname, choice, linelist)
+
+    # Write C-library parameters
+    # ( prparname instead of parname to make sure we only look at GMAP own's
+    #   parameters
+    elif prparname.endswith("_clib_file"):
+        choice = str(choice.resolve())
+        choice = "_".join(choice.split("_")[:-1])
+        write_parameter_line(outfhand, prparname, choice, linelist)
+
+    # Write influencer parameters
+    elif prparname.startswith("influencers_"):
+        if prparname != "influencers_whitelist":
+            return
+        write_parameter_intersect(
+            outfhand, prparname, CmdPars, InPars, DefPars, all_inf_pars,
+            linelist)
+
+    # Write unit-specifying parameters
+    elif (
+        any(prparname.startswith(item) for item in (
+            "hamiltonian_", "energies_", "dipoles_", "raman_",
+            "positions_", "doublepos_"))
+        and any(prparname.endswith(item) for item in all_unit_ends)
+    ):
+        # ignore the units, only print multiplier (in case of defpars)
+        if prparname.endswith("_units"):
+            return
+        parnames = [prparname.split("_")[0] + item for item in all_unit_ends]
+        write_parameter_intersect(
+            outfhand, prparname, CmdPars, InPars, DefPars, parnames, linelist)
+
+    # Write 'normal' / other parameters.
+    else:
+        # now, all special multiline-parameters have been taken care of,
+        # so continue to print this new one.
+        write_parameter_line(outfhand, prparname, choice, linelist)
+
+
+def write_parameter_line(outfhand, prparname, choice, linelist):
+    """Write a single parameter line to the output file.
+
+    Parameters
+    ----------
+    outfhand : `_io.TextIOWrapper`
+        The output parameter file handle to which all parameters should
+        be written.
+    prparname : str
+        The full name of the parameter (possibly including source name)
+        that we'd like to write to file.
+    choice : any
+        The choice as saved in RunPars for this parameter
+    linelist : list of str
+        The line from the reference parameter file, split on "#".
+    """
+
+    if isinstance(choice, list):
+        if len(choice) == 0:
+            choice = ["None"]
+        choice = " ".join([str(item) for item in choice])
+
+    outfhand.write(f"{prparname:<40}  {choice}  ")
+    if len(linelist) > 1:
+        outfhand.write("#" + "#".join(linelist[1:]))
+    else:
+        outfhand.write("\n")
+
+
+def write_parameter_intersect(
+    outfhand, prparname, CmdPars, InPars, DefPars, parnames, linelist
+):
+    """Save a single parameter. This one has multiple options in the
+    reference file, of which only one may be written.
+
+    Each possible parameter source is searched for all valid parameters.
+    The first one found will be the one written to file.
+
+    Parameters
+    ----------
+    outfhand : `_io.TextIOWrapper`
+        The output parameter file handle to which all parameters should
+        be written.
+    prparname : str
+        The full name of the parameter (possibly including source name)
+        that we'd like to write to file.
+    CmdPars : :class:`RawPars`
+        Contains any parameter choices made on the command line
+    InPars : :class:`RawPars`
+        Contains any parameter choices made in the input parameter file
+    DefPars : :class:`RawPars` or :class:`RefPars`
+        Contains all default parameter choices. Might be RefPars, might
+        be from a separate default parameters file.
+    parnames : iterable
+        The parameter names that are an acceptable substitute for
+        prparname when looking through the source
+    linelist : list of str
+        The line from the reference parameter file, split on "#".
+    """
+
+    for parsource in (CmdPars, InPars):
+        intersection = set(parnames).intersection(parsource.choices)
+        if len(intersection) > 0:
+            parameter = intersection.pop()
+            write_parameter_line(
+                outfhand, parameter, parsource.choices[parameter], [])
+            return
+    # if no source mentions any influencers
+    write_parameter_line(
+        outfhand, prparname, DefPars.choices[prparname], linelist)
