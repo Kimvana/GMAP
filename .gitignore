@@ -9,5 +9,6 @@ env_**
 **.obj
 **.png
 sphinx_docs/_build/**
+**.png
 
 GMAP/.coverage**

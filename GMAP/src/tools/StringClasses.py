@@ -259,7 +259,7 @@ class ColStr(str):
 
         return [ColStr(item) for item in super().split(*args, **kwargs)]
 
-    def wrap(self, deslen):
+    def wrap(self, deslen, wrap_preline=""):
         """A shortcut to :func:`~GMAP.src.tools.PrintTools.word_wrap`
 
         Applies the word_wrap function to itself and returns the result.
@@ -276,10 +276,13 @@ class ColStr(str):
         wrapped : ColStr
             The same as the input string, but with newlines inserted to
             maintain the maximum line length.
+        wrap_preline : str
+            When wrapping the line, this bit should be added by the
+            wrapper to make things line up nicely.
         """
 
         # word wrap retains type
-        return GM_PT.word_wrap(self, deslen=deslen)
+        return GM_PT.word_wrap(self, deslen=deslen, wrap_preline=wrap_preline)
 
     def change_color(self, target_mode):
         """Changes its own color, returns a copy with changed color

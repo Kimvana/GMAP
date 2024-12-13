@@ -87,6 +87,13 @@ def test_report_system():
     assert newfunc(map_, syst) == "A map for testing:       5"
 
 
+def test_report_references():
+    newfunc = GM_DMF.get_report_references()
+    map_ = GM_CT.CustomClass(**{"references": "this is a reference"})
+    system = GM_CT.CustomClass(**{})
+    assert newfunc(map_, system) == "this is a reference"
+
+
 def test_get_get_VEG_ref():
     VEGref_res = ["residues", "0", "2"]
     map_ = GM_CT.CustomClass(**{

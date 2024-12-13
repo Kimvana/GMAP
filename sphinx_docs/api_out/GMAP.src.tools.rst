@@ -20,6 +20,8 @@ Submodules
    GMAP.src.tools.PhysicsFunctions
    GMAP.src.tools.Plotter
    GMAP.src.tools.PrintTools
+   GMAP.src.tools.ReferenceHandler
+   GMAP.src.tools.StringClasses
    GMAP.src.tools.SystemReader
    GMAP.src.tools.constants
 

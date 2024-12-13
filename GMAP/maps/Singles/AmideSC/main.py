@@ -10,7 +10,7 @@ therein) as this file.
 import numpy as np
 
 # GMAP imports
-import GMAP.src.tools.constants as GM_con
+import GMAP.src.tools.constants as GM_Con
 # import GMAP.src.tools.MathFunctions as GM_MF
 # import GMAP.src.tools.PhysicsFunctions as GM_PF
 # import GMAP.src.tools.DefaultMapFunctions as GM_DMF
@@ -146,7 +146,7 @@ def GM_post_init(map_, system):
         map_.code.GM_calculate_dipole = MC_CM.calc_dipole_Torii
         map_.Core.dipole_gas_phase = np.float32(map_.Core.dipole_gas_phase)
         map_.Core.dipole_Torii_angle = np.float32(
-            1 / np.tan(GM_con.deg2rad * map_.RunPars.Torii_dipole_angle))
+            1 / np.tan(GM_Con.deg2rad * map_.RunPars.Torii_dipole_angle))
 
     if map_.RunPars.legacy_mode == "AIM":
         map_.code.GM_get_position_DMF = map_.code.GM_get_position
@@ -255,3 +255,67 @@ def GM_calculate_raman(Map, Syst, osc):
     # (A @ R)[i, j] = A[i, i] * R[i, j]
 
     return raman_tensor_system[np.triu_indices(3)]
+
+
+def GM_report_references(map_, system):
+    """Returns all references that should be reported for this map.
+
+    This function does not have to account for which outputs are
+    actually requested from the program - the text in the reporttext
+    field in the references.bib file already does that. It indicates
+    for which methods it should be reported, and with which text.
+
+    If this function is absent from a main.py, map_.references will be
+    returned in it's entirety. The purpose of this function is to
+    return a selection/subset of that dictionary, instead.
+
+    In the case of this mapping, there are different methods for
+    computing the different properties of the system, so we only want
+    to send those of the selected mapping through, and leave the rest.
+
+    Parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+        The object that stores everything the program currently knows
+        about this map.
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
+
+    Returns
+    -------
+    references_dict : dict
+        This dict should be a slice/part of the full map_.references
+        dict. Therefore, an explanation of the map_.references dict:
+
+        The keys in this dictionary are the separate keys listed in the
+        reference.bib file's 'mapkey' field. If the reference has
+        multiple keys in that field, it will occur multiple times in the
+        dictionary, once for each key.
+
+        Associated with each key is a list of
+        :class:`~GMAP.src.tools.ReferenceHandler.Reference` objects,
+        each of which corresponds to a single entry in the .bib file.
+    """
+
+    report_these = []
+
+    # This map has a whole bunch of references stored, but not (nearly) all
+    # are actually used in a single calculation... Find those that are.
+    report_these.append("RamanAmide")
+
+    # freq map used:
+    report_these.append(f"Emap{map_.RunPars.frequency_map_choice}SC")
+
+    report_dict = {key: map_.references[key] for key in report_these}
+    report_dict["CP_DipDip"] = []
+
+    # dip map used:
+    if map_.RunPars.dipole_map_choice == "Torii":
+        report_dict["CP_DipDip"].extend(map_.references["DmapTorii"])
+    else:
+        report_dict["CP_DipDip"].extend(map_.references["DmapJansenSC"])
+
+    # select the actual references for the chosen keys
+    return report_dict

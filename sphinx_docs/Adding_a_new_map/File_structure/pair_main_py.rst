@@ -64,7 +64,9 @@ The function are in the order at which they're called by the program. This means
 
 
 
-GM_adjust_RunPars(Map)
+.. #region GM_adjust_RunPars
+
+GM_adjust_RunPars
 ======================================
 Makes the necessary changes to Map.RunPar.
 
@@ -82,8 +84,8 @@ dependent parameters
 ^^^^^^^^^^^^^^^^^^^^
 Some maps are designed with certain assumptions in mind. These assumptions don't always mix. Because of this, it can happen that when a choice for one parameter is made, not all choices should be available for another. Custom code can solve this kind of conflicts.
 
-Available attributes of Map
----------------------------
+Available attributes of map\_
+-----------------------------
 
 .. hlist::
     :columns: 4
@@ -102,13 +104,28 @@ Available attributes of Map
 
 Parameters
 ----------
-Map : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
 
+Returns
+-------
+(nothing)
+
+Default implementation
+----------------------
+
+.. code-block:: python
+
+    def GM_adjust_RunPars(map_):
+        pass
+.. #endregion
 
 
-GM_adjust_map_core_raw(Map)
+
+.. #region GM_adjust_map_core_raw
+
+GM_adjust_map_core_raw
 ===========================================
 
 Makes the necessary changes to the 'raw' input read from core.txt.
@@ -128,8 +145,8 @@ Dependency on map parameters
 The core.txt file gives the option to link a file containing the map constants. There are cases (for example, the Amide-I stretch) for which multiple different sets of constants have been developed. In this case, it would be useful for this function to select a different file with map constants based on a map-specific parameter.
 
 
-Available attributes of Map
----------------------------
+Available attributes of map\_
+-----------------------------
 
 .. hlist::
     :columns: 4
@@ -151,13 +168,28 @@ Available attributes of Map
 
 Parameters
 ----------
-Map : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
 
+Returns
+-------
+(nothing)
+
+Default implementation
+----------------------
+
+.. code-block:: python
+
+    def GM_adjust_map_core_raw(map_):
+        pass
+.. #endregion
 
 
-GM_change_coup_type(Map, Syst, oscix1, osc1, oscix2, osc2)
+
+.. #region GM_change_coup_type
+
+GM_change_coup_type
 ==========================================================
 
 Decides what coupling map should be used for a given pair of oscillators.
@@ -181,8 +213,8 @@ Water molecules with two internal vibrations
 Water is a special little molecule. It turns out that a good way of simulating the water spectrum is to cut it up - have each molecule correspond to two oscillators (one for each OH bond). This means that there will be two types of couplings - between two oscillators in the same molecule (intramolecular), or between two oscillators in different molecules (intermolecular). Just as with the amides, it turns out that it is not physically accurate to use the same kind of map for both inter- and intramolecular couplings. This function allows the map to see which it is, and assign a certain coupling map to this exact pair based on that.
 
 
-Available attributes of Map
----------------------------
+Available attributes of map\_
+-----------------------------
 
 .. hlist::
     :columns: 4
@@ -204,10 +236,10 @@ Available attributes of Map
 
 Parameters
 ----------
-Map : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
-Syst : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.SystemReader.System`
     The object that stores everyting the program currently knows about the MD system.
 oscix1 : int
     The oscillator index of the first oscillator of this pair. This is its index in output structures, like the hamiltonian or dipoles file.
@@ -215,11 +247,28 @@ osc1 : :class:`~GMAP.src.tools.SystemReader.Oscillator`
     The first oscillator in this pair.
 oscix2 : int
     The oscillator index of the second oscillator of this pair. This is its index in output structures, like the hamiltonian or dipoles file.
-osc1 : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+osc2 : :class:`~GMAP.src.tools.SystemReader.Oscillator`
     The second oscillator in this pair.
 
+Returns
+-------
+map_to_use : str
+    The name of the map that should treat this coupling pair.
 
-GM_prep_coupling(Map, Syst, oscixlist, osclist)
+Default implementation
+----------------------
+
+.. code-block:: python
+
+    def GM_change_coup_type(map_, system, oscix1, osc1, oscix2, osc2):
+        return map_.name
+.. #endregion
+
+
+
+.. #region GM_prep_coupling
+
+GM_prep_coupling
 ==========================================================
 
 Any preparation that the map needs to do for calculating couplings is done here.
@@ -241,8 +290,8 @@ When calculating the coupling between two dipoles, the dipole moment and positio
 This means that efficiency is incredibly important. The kinds of optimizations considered for this map require that all those dipole moments and dipole positions are saved close to each other (data structure / harddisk wise). This function collects those properties and saves them in dedicated structures (numpy arrays). This allows an increase in speed of up to a factor 100.
 
 
-Available attributes of Map
----------------------------
+Available attributes of map\_
+-----------------------------
 
 .. hlist::
     :columns: 4
@@ -264,26 +313,41 @@ Available attributes of Map
 
 Parameters
 ----------
-Map : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
-Syst : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.SystemReader.System`
     The object that stores everyting the program currently knows about the MD system.
 oscixlist : list of int
     The oscillator indices of all oscillators that are treated by this map. Some might be only in a single pair, others in many.
 osclist : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
     All oscillators treated by this map.
 
+Returns
+-------
+(nothing)
+
+Default implementation
+----------------------
+
+.. code-block:: python
+
+    def GM_prep_coupling(map_, system, oscixlist, osclist)
+        pass
+.. #endregion
 
 
-GM_calc_coupling(Map, Syst, hamiltonian)
+
+.. #region GM_calc_coupling
+
+GM_calc_coupling
 ==========================================================
 
 Calculates the coupling for each pair associated with this map, and saves the result in the hamiltonian.
 
 Is not expected to return anything - return value is not caught.
 
-Important to note is the fact that this function is called once per frame. That means that the map itself must make sure to treat all pairs, instead of one. A list (or any other structure chosen) of the pairs that should be treated is saved as the attribute Map.allpairs.
+Important to note is the fact that this function is called once per frame. That means that the map itself must make sure to treat all pairs, instead of one. A list (or any other structure chosen) of the pairs that should be treated is saved as the attribute map\_.allpairs.
 
 .. important::
     Depending on how many oscillators are present in the MD system, this function could very well be the reason why the program runs slow. That means that this should most likely be the first target for any optimizations. Optimizations could be made using clever numpy use (doing all calculations vectorized), numba, or even writing your own c library. The function GM_prep_coupling() could aid further in this.
@@ -302,8 +366,8 @@ When calculating the coupling between two dipoles, the dipole moment and positio
 This means that efficiency is incredibly important. The kinds of optimizations considered for this map require control over how we treat the pairs. Instead of looping (the python way) through all pairs, and calculating each (and saving it in the hamiltonian), it is much, much faster to do a vectorized numpy calculation, where all pairs go through the same steps simultaneously. Yet another option is to have this loop happen in c, either through numba or a separate c library. However, properly vectorized c code is preferred if possible.
 
 
-Available attributes of Map
----------------------------
+Available attributes of map\_
+-----------------------------
 
 .. hlist::
     :columns: 4
@@ -325,17 +389,32 @@ Available attributes of Map
 
 Parameters
 ----------
-Map : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
-Syst : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.SystemReader.System`
     The object that stores everyting the program currently knows about the MD system.
 hamiltonian : `np.ndarray`
     The hamiltonian of the full system. Consists of float32, has a column and a row for each oscillator.
 
+Returns
+-------
+(nothing)
+
+Default implementation
+----------------------
+
+.. code-block:: python
+
+    def GM_calc_coupling(map_, system, hamiltonian)
+        pass
+.. #endregion
 
 
-GM_post_init(Map, Syst)
+
+.. #region GM_post_init
+
+GM_post_init
 =======================================
 
 Allows the user to do some final initialization steps. These can include building lookup-tables, or computing some basic properties for later use. This function is called when all initialization is done (maps, MD system, etc).
@@ -359,9 +438,15 @@ Setting different values for certain parameters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Some parameters are only set simply. Like local_ix. If a more complex selection of local_ix is desired, it can be enforced here.
 
+Changing units
+^^^^^^^^^^^^^^
+The main purpose of a map is to provide constants to calculate spectroscopic properties. These constants assume that the properties they are combined with are provided in certain units (see the :ref:`units page<AddMap_units>` for more information). However, these assumptions might not always match this program. 
 
-Available attributes of Map
----------------------------
+One could either do the conversion first, and save the converted constants with the correct assumptions in the files supplied to GMAP, or let GMAP do this conversion. The latter might be preferred if one wants the files to match the original publication of the map. In that case, this function here is the best place for a map to do the conversion. To make the conversion easy, use the function Map.Core.change_map_units().
+
+
+Available attributes of map\_
+-----------------------------
 
 .. hlist::
     :columns: 4
@@ -384,15 +469,30 @@ Available attributes of Map
 
 Parameters
 ----------
-Map : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
-Syst : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.SystemReader.System`
     The object that stores everyting the program currently knows about the MD system.
 
+Returns
+-------
+(nothing)
+
+Default implementation
+----------------------
+
+.. code-block:: python
+
+    def GM_post_init(map_, system)
+        pass
+.. #endregion
 
 
-GM_pre_run(Map, Syst)
+
+.. #region GM_pre_run
+
+GM_pre_run
 =======================================
 
 Allows the user to prepare the structures needed for the run.
@@ -408,8 +508,8 @@ New output type
 If the map wants to compute a new property / output type, the data structure storing that property could be initialized here.
 
 
-Available attributes of Map
----------------------------
+Available attributes of map\_
+-----------------------------
 
 .. hlist::
     :columns: 4
@@ -432,15 +532,30 @@ Available attributes of Map
 
 Parameters
 ----------
-Map : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
-Syst : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.SystemReader.System`
     The object that stores everyting the program currently knows about the MD system.
 
+Returns
+-------
+(nothing)
+
+Default implementation
+----------------------
+
+.. code-block:: python
+
+    def GM_pre_run(map_, system)
+        pass
+.. #endregion
 
 
-GM_pre_frame(Map, Syst)
+
+.. #region GM_pre_frame
+
+GM_pre_frame
 =======================================
 
 Allows the user to compute information that will change for each frame.
@@ -458,8 +573,8 @@ To be added
 To be explained.
 
 
-Available attributes of Map
----------------------------
+Available attributes of map\_
+-----------------------------
 
 .. hlist::
     :columns: 4
@@ -482,15 +597,30 @@ Available attributes of Map
 
 Parameters
 ----------
-Map : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
-Syst : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.SystemReader.System`
     The object that stores everyting the program currently knows about the MD system.
 
+Returns
+-------
+(nothing)
+
+Default implementation
+----------------------
+
+.. code-block:: python
+
+    def GM_pre_frame(map_, system)
+        pass
+.. #endregion
 
 
-GM_post_frame(Map, Syst)
+
+.. #region GM_post_frame
+
+GM_post_frame
 =======================================
 
 Allows the user to finalize the frame.
@@ -506,8 +636,8 @@ New output type
 If the map wants to compute a new property / output type, the computed data should be written to a file here.
 
 
-Available attributes of Map
----------------------------
+Available attributes of map\_
+-----------------------------
 
 .. hlist::
     :columns: 4
@@ -530,15 +660,30 @@ Available attributes of Map
 
 Parameters
 ----------
-Map : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
-Syst : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.SystemReader.System`
     The object that stores everyting the program currently knows about the MD system.
 
+Returns
+-------
+(nothing)
+
+Default implementation
+----------------------
+
+.. code-block:: python
+
+    def GM_post_frame(map_, system)
+        pass
+.. #endregion
 
 
-GM_post_run(Map, Syst)
+
+.. #region GM_post_run
+
+GM_post_run
 =======================================
 
 Allows the user to do some final reports.
@@ -554,8 +699,8 @@ Reporting on the calculation
 If the user should know anything about the computation that has been performed, they can be told by this function.
 
 
-Available attributes of Map
----------------------------
+Available attributes of map\_
+-----------------------------
 
 .. hlist::
     :columns: 4
@@ -578,10 +723,102 @@ Available attributes of Map
 
 Parameters
 ----------
-Map : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
-Syst : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.SystemReader.System`
+    The object that stores everyting the program currently knows about the MD system.
+
+Returns
+-------
+(nothing)
+
+Default implementation
+----------------------
+
+.. code-block:: python
+
+    def GM_post_run(map_, system)
+        pass
+.. #endregion
+
+
+
+.. #region GM_report_references
+
+GM_report_references
+=================================================================
+
+Returns the references that should be reported for this map.
+
+.. tip::
+    This function becomes much easier to write when the references have well-chosen mapkeys. See the documentation on the reference file for more explanation on this field.
+
+All references present in the references file are saved as ``map_.references``, this function is intended to only return a subset of that dictionary. The structure of the dictionary is as follows:
+
+The keys in this dictionary are the separate keys listed in the reference.bib file's 'mapkey' field. If the reference has multiple keys in that field, it will occur multiple times in the dictionary, once for each key.
+
+Associated with each key is a list of :class:`~GMAP.src.tools.ReferenceHandler.Reference` objects, each of which corresponds to a single entry in the .bib file.
+
+
+Example uses
+------------
+
+The map allows the application of multiple models
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Some functional groups have been mapped by multiple different research groups. Especially when they do have a similar structure, it makes sense to group all these different scientific maps (called 'models' from now to avoid confusion) within a single GMAP map. However, it happens that two different models don't come from a single paper. In these cases, the default would be that the papers of all models are referenced in the map references file, and GMAP reports them all. This is undesired, the correct behaviour would be to only report the paper of the model actually used. This function allows selecting the papers of a single model, instead of all of them. 
+
+
+Available attributes of map\_
+-------------------------------
+
+.. hlist::
+    :columns: 4
+
+    * self.directory
+    * self.corepath
+    * self.name
+    * self.type
+    * self.success
+    * self.avail_files
+    * self.RefPars
+    * self.DefPars
+    * self.InPars
+    * self.CmdPars
+    * self.RunPars
+    * self.code
+    * self.rawcore
+    * self.Core
+    * self.references
+
+
+Parameters
+----------
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
+    The object that stores everything the program currently knows
+    about this map.
+system : :class:`~GMAP.src.tools.SystemReader.System`
     The object that stores everyting the program currently knows about the MD system.
 
 
+Returns
+-------
+references_dict : dict
+    A dictionary with all references to be cited, grouped by key. The structure of this dict should be the same as that of ``map_.references``, making slicing from the latter easier.
+
+
+Default implementation
+----------------------
+
+The default is to just return the entire ``map_.references`` dictionary, without omitting anything.
+
+
+.. code-block:: python
+
+    import GMAP.src.tools.PhysicsFunctions as GM_PF
+
+    def GM_report_references(map_, system):
+        return map_.references
+
+
+.. #endregion

@@ -1,9 +1,9 @@
 r"""
 Usage:
 
-    GMAP Setup [target directory]
-Copies GMAP\sourcefiles and GMAP\maps and places them in the target directory
-under the names sourcefiles_copy and maps_copy.
+GMAP Setup [target directory]
+    Copies GMAP\sourcefiles and GMAP\maps and places them in the target
+    directory under the names sourcefiles_copy and maps_copy.
 
 The purpose of Setup is to simplify editing of these files.
 

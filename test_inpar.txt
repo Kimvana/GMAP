@@ -25,7 +25,8 @@ couplings_to_use  ProteinAmide   :All
 # couplings_to_use  DipDip  AmideSC:AmideSC
 
 output_format txt
-output_data dip ham ene ram pos dbp
+# output_data dip ham ene ram pos dbp
+output_data ham
 prevent_overwrite False
 
 # estatics_method  perres_nocut

@@ -1739,6 +1739,8 @@ class TestSingleCore:
             "MI_MC_7", capfd, "test_MI_MC_7_9", "estatic_choice")
         self.basis_test_MI_MC(
             "MI_MC_7", capfd, "test_MI_MC_7_10", "estatic_choice")
+        self.basis_test_MI_MC(
+            "MI_MC_7", capfd, "test_MI_MC_7_11", "estatic_choice")
 
     def test_MI_MC_8(self, capfd):
         self.basis_test_MI_MC(

@@ -2,22 +2,24 @@ r"""
 
 Usage:
 
-    GMAP AIM
-    GMAP AIM help
-prints this help
+GMAP AIM
+GMAP AIM help
+    prints this help
 
-    GMAP AIM demo
-Launches AIM in demo-mode. Performs a basic calculation to demonstrate basic
-use and to verify the program is installed correctly.
+GMAP AIM demo
+    Launches AIM in demo-mode. Performs a basic calculation to
+    demonstrate basic use and to verify the program is installed
+    correctly.
 
-    GMAP AIM run [name of input file]
-Performs a run of AIM using the parameters specified in the included file.
+GMAP AIM run [name of input file]
+    Performs a run of AIM using the parameters specified in the included
+    file.
 
 
-The purpose of AIM is to take an MD trajectory and compute the time-dependent
-Hamiltonian to be used in infrared spectral calculations. Natively, only
-(protein) amide groups are supported, but AIM allows the user to specify their
-own oscillating groups.
+The purpose of AIM is to take an MD trajectory and compute the
+time-dependent Hamiltonian to be used in infrared spectral calculations.
+Natively, only (protein) amide groups are supported, but AIM allows the
+user to specify their own oscillating groups.
 
 For more information, check the manual on github.com/Kimvana/AIM.
 """
