@@ -1,6 +1,9 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>  // calloc!
+#include <string.h>  // memset!
+
+#include "vectormath.cpp"
 
 /*
 This file will contain all functions (and their helpers) required for
@@ -10,6 +13,7 @@ of points.
 
 #ifdef _WIN32
     extern "C" {
+        // Currently not used by GEM - but like to keep it for now as reference
         __declspec(dllexport) void calcVEG_perres_mm(
             int *tocalc, int n_osc_ats, float *spherepos, int calc_choice,
             float *positions, float *charges, int *influencer_atoms,
@@ -18,6 +22,7 @@ of points.
             int n_res, int *local_atoms, int n_locals, float r_sphere,
             float r_smooth, float *halfbox, float *boxdims, float *out
         );
+        // Currently not used by GEM - but like to keep it for now as reference
         __declspec(dllexport) void calcVEG_perres_mm_nocut(
             int *tocalc, int n_osc_ats, float *spherepos, int calc_choice,
             float *positions, float *charges, int *influencer_atoms,
@@ -26,59 +31,77 @@ of points.
             int n_res, int *local_atoms, int n_locals, float r_sphere,
             float *halfbox, float *boxdims, float *out
         );
+        __declspec(dllexport) void calcVEG_perres_mm_rhombic(
+            int *tocalc, int n_osc_ats, float *spherepos, int calc_choice,
+            float *positions_box, float *charges, int *influencer_atoms,
+            int n_influencers, float *COMs_box, int *res_first_ix,
+            int *res_last_ix, int n_res, int *local_atoms, int n_locals,
+            float r_sphere, float r_smooth, float *boxvects,
+            float *boxvects_inv, float *out
+        );
+        __declspec(dllexport) void calcVEG_perres_mm_rhombic_nocut(
+            int *tocalc, int n_osc_ats, float *spherepos, int calc_choice,
+            float *positions_box, float *charges, int *influencer_atoms,
+            int n_influencers, float *COMs_box, int *res_first_ix,
+            int *res_last_ix, int n_res, int *local_atoms, int n_locals,
+            float r_sphere, float *boxvects,
+            float *boxvects_inv, float *out
+        );
+        __declspec(dllexport) void transform_vectors(
+            float *vectors_in, int nvects, float *tr_matrix, float *vectors_out
+        );
+        __declspec(dllexport) void calc_CoM_box(
+            float *positions_box, float *masses, int *res_first_ix,
+            int *res_last_ix, int nres, float *CoM_box
+        );
     }
 #endif
 
 
-
 extern "C" {
-    void PBC_diff_cubic(
-        float *vect1, float *vect2, float *halfbox, float *boxdims,
-        float *vectout
+    void transform_vectors(
+        float *vectors_in, int nvects, float *tr_matrix, float *vectors_out
     ) {
-        /*Calculates the difference vect1 - vect2, assuming a cubic MD
-        system, and assuming vect1 and vect2 are inside the system
-        currently.
-
-        Parameters
-        ----------
-        vect1, vect2 : float[3]
-            The positions between which the difference vector should be
-            calculated.
-        halfbox, boxdims : float[3]
-            The size of the PBC (MD system size). Halfbox is assumed to
-            equal boxdims/2.
-        vectout : float[3]
-            The output will be written here. It is the difference vector
-            between vect1 and vect2, corrected for the PBC.
-        */
-
-        for (int i = 0; i < 3; i++){
-            vectout[i] = vect1[i] - vect2[i];
-			if (vectout[i] > halfbox[i]) {
-				vectout[i] -= boxdims[i];
-			}
-			else if (vectout[i] < -1 * halfbox[i]) {
-				vectout[i] += boxdims[i];
-			}
+        // eg. vectors_in = positions, vectors_out = positions_box
+        // nvects = nats, tr_matrix = boxvects_inv
+        int ix;
+        for (ix = 0; ix < nvects; ix++) {
+            VM_vect_at_matrix33(
+                &vectors_in[ix*3], tr_matrix, &vectors_out[ix * 3]);
         }
     }
 
-    inline float veclen2(float *vec) {
-        /*Calculates the square of the length of the input vector.
-
-        Parameters
-        ----------
-        vec : float[3]
-            The input vector.
-
-        Returns
-        -------
-        len2 : float
-            The length of the input vector, squared.
-        */
-
-        return (vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]);
+    void calc_CoM_box(
+        float *positions_box, float *masses,
+        int *res_first_ix, int *res_last_ix, int nres,
+        float *CoM_box
+    ) {
+        int resnum, atix, nats, i, firstix;
+        float total_pos[3], cur_pos, total_mass;
+            
+        for (resnum = 0; resnum < nres; resnum++) {
+            total_mass = 0;
+            firstix = res_first_ix[resnum];
+            nats = res_last_ix[resnum] - firstix + 1;
+            memset(total_pos, 0, 12); // 3 floats (of 4 bytes)
+            for (atix = firstix; atix < res_last_ix[resnum] + 1; atix++) {
+                for (i = 0; i < 3; i++) {
+                    cur_pos = (
+                        positions_box[atix * 3 + i] // get box pos
+                        - positions_box[firstix * 3 + i]); // shift around at1
+                    cur_pos -= (
+                        floorf(cur_pos + 0.5)  // move all into box
+                        - positions_box[firstix * 3 + i]); // undo shift
+                    total_pos[i] += cur_pos * masses[atix];
+                }
+                total_mass += masses[atix];
+            }
+            for (i = 0; i < 3; i++) {
+                CoM_box[resnum * 3 + i] = total_pos[i] / (float)total_mass;
+                CoM_box[resnum * 3 + i] -= floorf(
+                    CoM_box[resnum * 3 + i] + 0.5);
+            }
+        }
     }
 
     int in_ordered_array_int(
@@ -209,7 +232,7 @@ extern "C" {
         int oscix,  // The index of the atom we're treating
         float *out  // output is stored here
     ) {
-        out[oscix*10] += weighted_charge / sqrt(veclen2(diff));
+        out[oscix*10] += weighted_charge / sqrt(VM_veclen2(diff));
     }
 
     void calcField(
@@ -218,7 +241,7 @@ extern "C" {
         int oscix,  // The index of the atom we're treating
         float *out  // output is stored here
     ) {
-        float idist2 = 1 / veclen2(diff);
+        float idist2 = 1 / VM_veclen2(diff);
         float idist = sqrt(idist2);
         float prefac = weighted_charge * idist2 * idist;
 
@@ -235,7 +258,7 @@ extern "C" {
         int oscix,  // The index of the atom we're treating
         float *out  // output is stored here
     ) {
-        float idist2 = 1 / veclen2(diff);
+        float idist2 = 1 / VM_veclen2(diff);
         float idist = sqrt(idist2);
         float prefac = weighted_charge * idist2 * idist;
         float prefac2 = 3.0 * prefac * idist2;
@@ -258,6 +281,280 @@ extern "C" {
         out[oscix*10 + 9] -= diffY * diffZ * prefac2;
     }
 
+
+    void calcVEG_perres_mm_rhombic(
+        // single-osc parameters
+        int *tocalc,  // the sys-ix of the atoms whose properties are requested
+        int n_osc_ats,  // amount of atoms in the oscillator
+        float *spherepos,  // center of influencersphere
+        int calc_choice,  // V, E, or G?
+
+        // system parameters
+        float *positions_box, // positions of all atoms in the MD system
+        float *charges,  // charges of all atoms in the MD system
+        int *influencer_atoms,  // all atoms (indices) that are influencers
+        int n_influencers,  // the amount of influencers
+
+        // residue parameters
+        float *COMs_box,  // the COM of each residue in the system
+        int *res_first_ix,  // the sysix of first atom in each residue
+        int *res_last_ix,  // the sysix of the last atom in each residue
+        int n_res,  // the amount of residues in the system
+        
+        int *local_atoms,  // the atoms that cannot be influencers
+        int n_locals,  // the amount of local atoms
+        float r_sphere,  // how far away the residue can be
+        float r_smooth,  // how far should we smooth
+        float *boxvects,  // the vectors defining the PBC box
+        float *boxvects_inv,  // the inverse of the boxvects matrix
+        float *out  // output is stored here
+    ) {
+        using smoothfunc = float(*)(float, float, float *, int, float);
+        smoothfunc get_weighted_charge = getweight_linear_nosmooth;
+        if (r_smooth > 0) {
+            get_weighted_charge = getweight_linear_smoothing;
+        }
+        using VEGfunc = void(*)(float *, float, int, float *);
+        VEGfunc calc_VEG = calcNone;
+        if (calc_choice == 1) {calc_VEG = calcPot;}
+        else if (calc_choice == 2) {calc_VEG = calcField;}
+        else if (calc_choice == 3) {calc_VEG = calcGrad;}
+
+        // build the refpos array (in box coordinates)
+        float *refpos;
+        refpos = (float *)calloc(3 * n_osc_ats, sizeof(float));
+        int oscix, sysix, dir;
+        for (oscix = 0; oscix < n_osc_ats; oscix++) {
+            sysix = tocalc[oscix];
+            for (dir = 0; dir < 3; dir++) {
+                refpos[oscix * 3 + dir] = positions_box[sysix * 3 + dir];
+            }
+        }
+
+        // clear output array
+        // *10, as we want to clear all entries for each oscillator
+        for (oscix = 0; oscix < n_osc_ats * 10; oscix++) {
+            out[oscix] = 0;
+        }
+
+        // get all distances straight
+        float maxdist, maxdist2;  // when an atom can have influence
+        float puredist;   // when an atom has full influence
+
+        maxdist = r_sphere + (r_smooth * 0.5);
+        maxdist2 = maxdist * maxdist;
+        puredist = r_sphere - (r_smooth * 0.5);
+
+        int resnum, local_search, influencer_search;
+        local_search = 0;
+        influencer_search = 0;
+        float spherepos_box[3], diff_box[3], diff[3], dist, dist2;
+        float smooth_factor, weighted_charge, halfbox[3], boxdims[3];
+
+        // setting boxdims for box-coordinate cubic function
+        for (int i = 0; i < 3; i++) {
+            halfbox[i] = 0.5;
+            boxdims[i] = 1;
+        }
+
+        // convert the cartesian spherepos into box vectors
+        VM_vect_at_matrix33(spherepos, boxvects_inv, spherepos_box);
+
+        // printf("starting looping over all residues\n");
+
+        // analyze all surrounding charges on a per-residue basis
+        for (resnum = 0; resnum < n_res; resnum++) {
+            // find distance to residue in box coordinates
+            VM_PBC_diff_cubic(
+                spherepos_box, &COMs_box[resnum * 3], halfbox, boxdims,
+                diff_box);
+            // convert difference in box coordinates to cartesian
+            VM_vect_at_matrix33(diff_box, boxvects, diff);
+            dist2 = VM_veclen2(diff);
+
+            // printf("residue %d has a distance squared of %f\n", resnum, dist2);
+
+            // if the residue is too far away, skip it
+            if (dist2 > maxdist2) {
+                continue;
+            }
+
+            // loop over the separate atoms of the influencing resiue
+            for (
+                sysix = res_first_ix[resnum];
+                sysix <= res_last_ix[resnum];
+                sysix++
+            ) {
+                // if this atom is NOT in influencers, skip!
+                if (!in_ordered_array_int(
+                    influencer_atoms, sysix, influencer_search, n_influencers,
+                    &influencer_search
+                    )
+                ) {
+                    continue;
+                }
+
+                // if this atom is in local_atoms, skip!
+                if (in_ordered_array_int(
+                    local_atoms, sysix, local_search, n_locals, &local_search)
+                ) {
+                    continue;
+                }
+
+                // smoothing on a per-atom basis
+                VM_PBC_diff_cubic(
+                    spherepos_box, &positions_box[sysix * 3], halfbox, boxdims,
+                    diff_box);
+                VM_vect_at_matrix33(diff_box, boxvects, diff);
+                dist2 = VM_veclen2(diff);
+
+                if (dist2 > maxdist2) {
+                    continue;
+                }
+
+                weighted_charge = get_weighted_charge(
+                    dist2, puredist, charges, sysix, r_smooth);
+                
+                // loop over the atoms of the oscillator
+                for (oscix = 0; oscix < n_osc_ats; oscix++) {
+                    // yes, its needed (and allowed/possible) to redo PBCdiff
+                    // and dist(2) again.
+                    VM_PBC_diff_cubic(
+                        &refpos[oscix * 3], &positions_box[sysix * 3],
+                        halfbox, boxdims, diff_box);
+                    VM_vect_at_matrix33(diff_box, boxvects, diff);
+                    calc_VEG(diff, weighted_charge, oscix, out);
+                }
+            }
+        }
+
+        free(refpos);
+    }
+
+
+    void calcVEG_perres_mm_rhombic_nocut(
+        // single-osc parameters
+        int *tocalc,  // the sys-ix of the atoms whose properties are requested
+        int n_osc_ats,  // amount of atoms in the oscillator
+        float *spherepos,  // center of influencersphere
+        int calc_choice,  // V, E, or G?
+
+        // system parameters
+        float *positions_box, // positions of all atoms in the MD system
+        float *charges,  // charges of all atoms in the MD system
+        int *influencer_atoms,  // all atoms (indices) that are influencers
+        int n_influencers,  // the amount of influencers
+
+        // residue parameters
+        float *COMs_box,  // the COM of each residue in the system
+        int *res_first_ix,  // the sysix of first atom in each residue
+        int *res_last_ix,  // the sysix of the last atom in each residue
+        int n_res,  // the amount of residues in the system
+        
+        int *local_atoms,  // the atoms that cannot be influencers
+        int n_locals,  // the amount of local atoms
+        float r_sphere,  // how far away the residue can be
+        float *boxvects,  // the vectors defining the PBC box
+        float *boxvects_inv,  // the inverse of the boxvects matrix
+        float *out  // output is stored here
+    ) {
+        using VEGfunc = void(*)(float *, float, int, float *);
+        VEGfunc calc_VEG = calcNone;
+        if (calc_choice == 1) {calc_VEG = calcPot;}
+        else if (calc_choice == 2) {calc_VEG = calcField;}
+        else if (calc_choice == 3) {calc_VEG = calcGrad;}
+
+        // build the refpos array (in box coordinates)
+        float *refpos;
+        refpos = (float *)calloc(3 * n_osc_ats, sizeof(float));
+        int oscix, sysix, dir;
+        for (oscix = 0; oscix < n_osc_ats; oscix++) {
+            sysix = tocalc[oscix];
+            for (dir = 0; dir < 3; dir++) {
+                refpos[oscix * 3 + dir] = positions_box[sysix * 3 + dir];
+            }
+        }
+
+        // clear output array
+        // *10, as we want to clear all entries for each oscillator
+        for (oscix = 0; oscix < n_osc_ats * 10; oscix++) {
+            out[oscix] = 0;
+        }
+
+        // get all distances straight
+        float maxdist2;  // when an atom can have influence
+
+        maxdist2 = r_sphere * r_sphere;
+        
+        int resnum, local_search, influencer_search;
+        local_search = 0;
+        influencer_search = 0;
+        float spherepos_box[3], diff_box[3], diff[3], dist, dist2;
+        float smooth_factor, halfbox[3], boxdims[3];
+
+        // setting boxdims for box-coordinate cubic function
+        for (int i = 0; i < 3; i++) {
+            halfbox[i] = 0.5;
+            boxdims[i] = 1;
+        }
+
+        // convert the cartesian spherepos into box vectors
+        VM_vect_at_matrix33(spherepos, boxvects_inv, spherepos_box);
+
+        // analyze all surrounding charges on a per-residue basis
+        for (resnum = 0; resnum < n_res; resnum++) {
+            // find distance to residue in box coordinates
+            VM_PBC_diff_cubic(
+                spherepos_box, &COMs_box[resnum * 3], halfbox, boxdims,
+                diff_box);
+            // convert difference in box coordinates to cartesian
+            VM_vect_at_matrix33(diff_box, boxvects, diff);
+            dist2 = VM_veclen2(diff);
+
+            // if the residue is too far away, skip it
+            if (dist2 > maxdist2) {
+                continue;
+            }
+
+            // loop over the separate atoms of the influencing resiue
+            for (
+                sysix = res_first_ix[resnum];
+                sysix <= res_last_ix[resnum];
+                sysix++
+            ) {
+                // if this atom is NOT in influencers, skip!
+                if (!in_ordered_array_int(
+                    influencer_atoms, sysix, influencer_search, n_influencers,
+                    &influencer_search
+                    )
+                ) {
+                    continue;
+                }
+
+                // if this atom is in local_atoms, skip!
+                if (in_ordered_array_int(
+                    local_atoms, sysix, local_search, n_locals, &local_search)
+                ) {
+                    continue;
+                }
+
+                // loop over the atoms of the oscillator
+                for (oscix = 0; oscix < n_osc_ats; oscix++) {
+                    // yes, its needed (and allowed/possible) to redo PBCdiff
+                    // and dist(2) again.
+                    VM_PBC_diff_cubic(
+                        &refpos[oscix * 3], &positions_box[sysix * 3],
+                        halfbox, boxdims, diff_box);
+                    VM_vect_at_matrix33(diff_box, boxvects, diff);
+                    calc_VEG(diff, charges[sysix], oscix, out);
+                }
+            }
+        }
+        // printf("testhi\n");
+        free(refpos);
+    }
+
+
     /*
     Calculate the potential for an oscillator. The sphere determining whether
     an influencer counts is centered on spherepos. After an atom is deemed in
@@ -279,7 +576,7 @@ extern "C" {
         float *charges,  // charges of all atoms in the MD system
         int *influencer_atoms,  // all atoms (indices) that are influencers
         int n_influencers,  // the amount of influencers
-        
+
         // residue parameters
         float *COMs,  // the COM of each residue in the system
         int *res_first_ix,  // the sysix of first atom in each residue
@@ -363,7 +660,7 @@ extern "C" {
         out : float[n_osc_atoms]
             The output array to which all potentials will be written.
         */
-        
+
         using smoothfunc = float(*)(float, float, float *, int, float);
         smoothfunc get_weighted_charge = getweight_linear_nosmooth;
         if (r_smooth > 0) {
@@ -408,9 +705,9 @@ extern "C" {
         // analyze all surrounding charges on a per-residue basis
         for (resnum = 0; resnum < n_res; resnum++) {
             // find distance to residue
-            PBC_diff_cubic(
+            VM_PBC_diff_cubic(
                 spherepos, &COMs[resnum * 3], halfbox, boxdims, diff);
-            dist2 = veclen2(diff);
+            dist2 = VM_veclen2(diff);
 
             // if the residue is too far away, skip it
             if (dist2 > maxdist2) {
@@ -439,10 +736,10 @@ extern "C" {
                 }
 
                 // Smoothing on per-atom basis
-                PBC_diff_cubic(
+                VM_PBC_diff_cubic(
                     spherepos, &positions[sysix * 3],
                     halfbox, boxdims, diff);
-                dist2 = veclen2(diff);
+                dist2 = VM_veclen2(diff);
 
                 if (dist2 > maxdist2) {
                     continue;
@@ -455,7 +752,7 @@ extern "C" {
                 for (oscix = 0; oscix < n_osc_ats; oscix++) {
                     // yes, its needed (and allowed/possible) to redo PBCdiff
                     // and dist(2) again.
-                    PBC_diff_cubic(
+                    VM_PBC_diff_cubic(
                         &refpos[oscix * 3], &positions[sysix * 3],
                         halfbox, boxdims, diff);
                     calc_VEG(diff, weighted_charge, oscix, out);
@@ -601,9 +898,9 @@ extern "C" {
         // analyze all surrounding charges on a per-residue basis
         for (resnum = 0; resnum < n_res; resnum++) {
             // find distance to residue
-            PBC_diff_cubic(
+            VM_PBC_diff_cubic(
                 spherepos, &COMs[resnum * 3], halfbox, boxdims, diff);
-            dist2 = veclen2(diff);
+            dist2 = VM_veclen2(diff);
 
             // if the residue is too far away, skip it
             if (dist2 > maxdist2) {
@@ -636,7 +933,7 @@ extern "C" {
                 for (oscix = 0; oscix < n_osc_ats; oscix++) {
                     // yes, its needed (and allowed/possible) to redo PBCdiff
                     // and dist(2) again.
-                    PBC_diff_cubic(
+                    VM_PBC_diff_cubic(
                         &refpos[oscix * 3], &positions[sysix * 3],
                         halfbox, boxdims, diff);
                     calc_VEG(diff, charges[sysix], oscix, out);
