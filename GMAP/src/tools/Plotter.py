@@ -12,7 +12,6 @@ import numpy as np
 import GMAP.src.tools.ColorSchemes as GM_CS
 import GMAP.src.tools.constants as GM_Con
 import GMAP.src.tools.MathFunctions as GM_MF
-# from GMAP.src.tools.PrintTools import devprint as dpr
 
 
 # ========== Functions for users ==========

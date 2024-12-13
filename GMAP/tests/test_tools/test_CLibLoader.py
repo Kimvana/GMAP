@@ -23,7 +23,6 @@ from .test_SystemReader import parameter_getter
 import GMAP.src.tools.CLibLoader as GM_CL
 import GMAP.src.tools.CodingTools as GM_CT
 import GMAP.src.tools.Exceptions as GM_Ex
-# import GMAP.src.tools.PhysicsFunctions as GM_PF
 
 
 class TestVClib:

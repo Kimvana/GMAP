@@ -57,7 +57,7 @@ void VM_PBC_diff_cubic(
         if (vectout[i] > halfbox[i]) {
             vectout[i] -= boxdims[i];
         }
-        else if (vectout[i] < -1 * halfbox[i]) {
+        else if (vectout[i] < -halfbox[i]) {
             vectout[i] += boxdims[i];
         }
     }

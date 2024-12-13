@@ -13,6 +13,7 @@ of points.
 
 #ifdef _WIN32
     extern "C" {
+        // Currently not used by GEM - but like to keep it for now as reference
         __declspec(dllexport) void calcVEG_perres_mm(
             int *tocalc, int n_osc_ats, float *spherepos, int calc_choice,
             float *positions, float *charges, int *influencer_atoms,
@@ -21,6 +22,7 @@ of points.
             int n_res, int *local_atoms, int n_locals, float r_sphere,
             float r_smooth, float *halfbox, float *boxdims, float *out
         );
+        // Currently not used by GEM - but like to keep it for now as reference
         __declspec(dllexport) void calcVEG_perres_mm_nocut(
             int *tocalc, int n_osc_ats, float *spherepos, int calc_choice,
             float *positions, float *charges, int *influencer_atoms,
@@ -417,38 +419,10 @@ extern "C" {
                 for (oscix = 0; oscix < n_osc_ats; oscix++) {
                     // yes, its needed (and allowed/possible) to redo PBCdiff
                     // and dist(2) again.
-
-                    // printf(
-                    //     "refpos: %f %f %f\n", refpos[oscix*3],
-                    //     refpos[oscix*3+1], refpos[oscix*3+2]);
-                    // printf(
-                    //     "positions_box: %f %f %f\n", positions_box[sysix*3],
-                    //     positions_box[sysix*3+1], positions_box[sysix*3+2]);
-                    // printf(
-                    //     "halfbox: %f %f %f\n", halfbox[0],
-                    //     halfbox[1], halfbox[2]);
-                    // printf(
-                    //     "boxdims: %f %f %f\n", boxdims[0],
-                    //     boxdims[1], boxdims[2]);
                     VM_PBC_diff_cubic(
                         &refpos[oscix * 3], &positions_box[sysix * 3],
                         halfbox, boxdims, diff_box);
-
-                    // printf(
-                    //     "diff_box: %f %f %f\n", diff_box[0],
-                    //     diff_box[1], diff_box[2]);
-                    // printf(
-                    //     "boxvects: %f %f %f %f %f %f %f %f %f\n",
-                    //     boxvects[0], boxvects[1], boxvects[2],
-                    //     boxvects[3], boxvects[4], boxvects[5],
-                    //     boxvects[6], boxvects[7], boxvects[8]);
                     VM_vect_at_matrix33(diff_box, boxvects, diff);
-
-                    // printf(
-                    //     "diff: %f %f %f\n", diff[0], diff[1], diff[2]);
-                    // printf("charge: %f\n", weighted_charge);
-                    // printf("oscix: %d\n", oscix);
-                    // printf("sysix: %d\n", sysix);
                     calc_VEG(diff, weighted_charge, oscix, out);
                 }
             }
@@ -568,39 +542,11 @@ extern "C" {
                 for (oscix = 0; oscix < n_osc_ats; oscix++) {
                     // yes, its needed (and allowed/possible) to redo PBCdiff
                     // and dist(2) again.
-                    // printf(
-                    //     "refpos: %f %f %f\n", refpos[oscix*3],
-                    //     refpos[oscix*3+1], refpos[oscix*3+2]);
-                    // printf(
-                    //     "positions_box: %f %f %f\n", positions_box[sysix*3],
-                    //     positions_box[sysix*3+1], positions_box[sysix*3+2]);
-                    // printf(
-                    //     "halfbox: %f %f %f\n", halfbox[0],
-                    //     halfbox[1], halfbox[2]);
-                    // printf(
-                    //     "boxdims: %f %f %f\n", boxdims[0],
-                    //     boxdims[1], boxdims[2]);
                     VM_PBC_diff_cubic(
                         &refpos[oscix * 3], &positions_box[sysix * 3],
                         halfbox, boxdims, diff_box);
-
-                    // printf(
-                    //     "diff_box: %f %f %f\n", diff_box[0],
-                    //     diff_box[1], diff_box[2]);
-                    // printf(
-                    //     "boxvects: %f %f %f %f %f %f %f %f %f\n",
-                    //     boxvects[0], boxvects[1], boxvects[2],
-                    //     boxvects[3], boxvects[4], boxvects[5],
-                    //     boxvects[6], boxvects[7], boxvects[8]);
                     VM_vect_at_matrix33(diff_box, boxvects, diff);
-
-                    // printf(
-                    //     "diff: %f %f %f\n", diff[0], diff[1], diff[2]);
-                    // printf("charge: %f\n", charges[sysix]);
-                    // printf("oscix: %d\n", oscix);
-                    // printf("sysix: %d\n", sysix);
                     calc_VEG(diff, charges[sysix], oscix, out);
-
                 }
             }
         }
