@@ -20,7 +20,6 @@ import numpy as np
 # local imports
 from .test_SystemReader import parameter_getter
 from . import test_MapReader as tMR
-# import GMAP.src.tools.CLibLoader as GM_CL
 import GMAP.src.tools.CodingTools as GM_CT
 import GMAP.src.tools.MapReader as GM_MR
 import GMAP.src.tools.PhysicsFunctions as GM_PF
