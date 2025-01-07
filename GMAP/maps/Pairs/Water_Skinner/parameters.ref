@@ -1,3 +1,0 @@
-legacy_mode[str]                 [None]
-coupling_choice[str]             None [DipDip]
-intra_coupling_choice[str]          None [WaterIntra]

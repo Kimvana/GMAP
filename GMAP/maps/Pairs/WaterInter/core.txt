@@ -1,3 +1,0 @@
-require_singles    Water
-require_pairs      Water_Skinner
-
