@@ -84,8 +84,8 @@ def calc_coupling(oscix1, oscix2, map_, system):
     x1=0.1934-1.75e-5*osc1.freq
     x2=0.1934-1.75e-5*osc2.freq
     p1=1.611+5.893e-4*osc1.freq
-    p1=1.611+5.893e-4*osc2.freq
-    sumE=osc1.VEGout[0,1]+osc1.VEGout[0,1]
+    p2=1.611+5.893e-4*osc2.freq
+    sumE=osc1.VEGout[0,1]+osc2.VEGout[0,1]
     J=(-1789+23852*sumE)*x1*x2-1.966*p1*p2
 
     return J

@@ -1,4 +1,0 @@
-require_pairs         DipDip Water_Intra
-
-singles_whitelist     Water 
-
