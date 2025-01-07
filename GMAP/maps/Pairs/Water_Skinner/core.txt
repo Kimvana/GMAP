@@ -1,4 +1,4 @@
-require_pairs         DipDip
+require_pairs         DipDip WaterIntra
 
 singles_whitelist     Water 
 

@@ -1,41 +1,27 @@
-
+# Not sure about the options below, intramolecular must always be done with the intramolecular map and inter with dipdip
 def GM_change_coup_type(map_, system, oscix1, osc1, oscix2, osc2):
     mapnames = {
         "None": None,
         "DipDip": "DipDip",
-        "TDCKrimm": "Water_Skinner",
+        "Water": "WaterIntra",
     }
 
     legacy_mode = map_.RunPars.legacy_mode
 
-    # If any of the two is a sidechain, they cannot be nearest neighbours
-    if osc1.Map.name == "AmideSC" or osc2.Map.name == "AmideSC":
-        # original code forced the double-sidechain couplings to be
-        # coupled by a TDC method (TDCTasumi by default, but if TDCKrimm is
-        # already active, use that)
-        # IMPORTANT! The old version did not have DipDip or none, so this
-        # if check is not designed to make those run smoothly.
-        if (
-            legacy_mode == "AmideImaps"
-            and osc1.Map.name == "AmideSC"
-            and osc2.Map.name == "AmideSC"
-            and map_.RunPars.coupling_choice == "TCC"
-        ):
-            return "ProteinAmide_TDCTasumi"
+    # If the oscillators are in the same water molecule we must choose intra
+    # unless we do not want coupling
+    if osc1.used_atoms[1] == osc2.used_atoms[1]:
+        if map_.RunPars.coupling_choice != "None":
+            return "WaterIntra"
         return mapnames[map_.RunPars.coupling_choice]
 
-    # Both are backbone, but not neighbors
-    if osc1 not in (osc2.NtermNB, osc2.CtermNB):
-        return mapnames[map_.RunPars.coupling_choice]
+    # The OH stretches are in different molecules. If the user specified to use
+    # intramolecular couplings we force them to use the dipole dipole instead
+    if map_.RunPars.coupling_choice == "WaterIntra":
+            return "DipDip"
+    return mapnames[map_.RunPars.coupling_choice]
 
-    # From here, they are neighbors
+    # Use the choice specified by the user (should be DipDip here, but more
+    # advanced maps could be added in the future.)
+    return mapnames[map_.RunPars.coupling_choice]
 
-    # AmideImaps had a bug when two opposite ends of a cyclic chain connect:
-    # Then, always use GLDP (used to be the NN default at time of writing)
-    elif (
-        legacy_mode == "AmideImaps"
-        and osc1.resnums[0] not in (osc2.resnums[0] - 1, osc2.resnums[0] + 1)
-    ):
-        return "ProteinAmide_GLDP"
-    else:
-        return mapnames[map_.RunPars.NN_coupling_choice]
