@@ -80,7 +80,7 @@ def calc_coupling(oscix1, oscix2, map_, system):
     osc1 = system.oscillators[oscix1]
     osc2 = system.oscillators[oscix2]
 
-    # This is a typical value, but the actual equation has to be programmed
+    # These are the couplings according to the OH intramolecular water map
     x1=0.1934-1.75e-5*osc1.freq
     x2=0.1934-1.75e-5*osc2.freq
     p1=1.611+5.893e-4*osc1.freq

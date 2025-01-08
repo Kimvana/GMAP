@@ -19,7 +19,7 @@
 # map directory itself (former takes precedence)
 
 #can_output        ham   ene    dip     pos    dbp    ram
-can_output        ham   ene    dip     pos
+can_output        ham   ene    dip     pos    dbp
 
 # -----------------------
 
@@ -39,7 +39,7 @@ functional_group        [SOL]    OW  HW1  HW2
 # first number in the list here, etc. The number represents the index at which
 # that atom is present in the functional_group list.
 
-used_atoms    0 1 2   # all atoms are relevant, the order is already fine.
+used_atoms    0-2   # all atoms are relevant, the order is already fine.
 
 # -----------------------------
 
@@ -73,7 +73,7 @@ electrostatic_choice E   # V, E, or G
 # The number represents the index at which that atom is present in the
 # used_atoms list.
 
-local_atoms   0 1 2
+local_atoms   0-2
 
 # ------------------------
 
@@ -88,9 +88,13 @@ dipole_data_file        magnitude  Skinner_dipole.txt
 
 # -------------------
 
+# This is the position where the transition dipole is placed for TDC following
+# Skinner
 position               0.58*1+0.42*0
+# This is the position of hydrogen and oxygen
 doublepos_0            1
 doublepos_1            0
+
 
 # how to calculate the different directions. Currently only supports subtraction.
 # Atoms are indicated by their indices in used_atoms. Here, the x vector is
@@ -114,7 +118,7 @@ r_pos     0.58*1+0.42*0
 
 #VEG_reference  residues 0    # take CoM of all atoms in residue which atom 0 of this oscillator belongs to.
 #VEG_reference  position 1-0  # take #VEG_reference to be this exact position
-VEG_reference  CoM  0 1 2  # take CoM of listed atoms
+VEG_reference  position 0  # take CoM of listed atoms (Oxygen)
 
 # ---------------------
 
