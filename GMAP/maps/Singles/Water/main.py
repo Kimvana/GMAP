@@ -256,6 +256,7 @@ def GM_get_dipole_mag(Map, Syst, osc):
     # The value of mug was not given in Skinners paper
     # it was shared as private communication
     mug=0.18749 # (in atomic units).
+    #print(osc.VEGout[0,1],osc.VEGout[0,2],osc.VEGout[0,3])
     freq=osc.freq
     return (
         (0.7112+75.59*osc.VEGout[0,1])*mug # mu_i
