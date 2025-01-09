@@ -6,7 +6,7 @@ import numpy as np
 # gmap imports
 import GMAP.src.tools.MathFunctions as GM_MF
 from GMAP.src.tools.PrintTools import devprint as dpr
-
+import GMAP.src.tools.constants as GM_Con
 
 def GM_prep_coupling(map_, system, oscixlist, osclist):
     """Any preparation needed for calculating couplings this frame.
@@ -80,12 +80,17 @@ def calc_coupling(oscix1, oscix2, map_, system):
     osc1 = system.oscillators[oscix1]
     osc2 = system.oscillators[oscix2]
 
+#    print(osc1.VEGout)
+#    print(osc2.VEGout)
+
     # These are the couplings according to the OH intramolecular water map
+    # We follow the equations of Skinner to get gecognizable parameters
     x1=0.1934-1.75e-5*osc1.freq
     x2=0.1934-1.75e-5*osc2.freq
     p1=1.611+5.893e-4*osc1.freq
     p2=1.611+5.893e-4*osc2.freq
-    sumE=osc1.VEGout[0,1]+osc2.VEGout[0,1]
+    # Find the sum of the fields in atomic units
+    sumE=(osc1.VEGout[0,1]+osc2.VEGout[0,1])*GM_Con.bohr2ang**2
     J=(-1789+23852*sumE)*x1*x2-1.966*p1*p2
 
     return J
