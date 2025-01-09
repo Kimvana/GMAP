@@ -11,7 +11,7 @@ maps_to_use              ChlB # use the name of your directory
 couplings_to_use         DipDip :All
 
 output_format            txt
-# output_data              dip ene pos # ham
+output_data              dip # ene # pos # ham
 # hamiltonian_units        cm-1
 prevent_overwrite        False
 
