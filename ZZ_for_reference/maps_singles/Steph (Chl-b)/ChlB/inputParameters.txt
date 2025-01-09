@@ -1,0 +1,103 @@
+
+##################
+# File locations #
+##################
+
+# ----- MD input file locations -----
+# topology_file(top)[path_sep]                      ../sourcefiles/pdb_1AKI.tpr
+# trajectory_file(trj)[path_sep]                    ../sourcefiles/pdb_1AKI_50frame.xtc
+
+
+# ----- source files location -----
+source_directory(sd)[path_dir_sd]                 ../sourcefiles
+default_parameter_filename(dpf)[path_rel_sd]      [N/A]
+VEG_clib_file[path_rel_sd]                        VEG
+
+
+# ----- logging locations -----
+log_directory[path_dir_lg]                        [N/A]
+log_filename[path_rel_lg_c]                       log.log
+
+
+# ----- program output locations -----
+output_directory[path_dir_op]                     [N/A]
+output_parameter_filename[path_rel_op_c]          parameters.txt
+output_legend_filename[path_rel_op_c]             legend.txt
+output_couplingvis_filename[path_rel_op_c]        couplingvisualization.pdf
+
+output_estatics_filename[path_rel_op_c]           estatics.txt
+output_hamiltonian_filename(ohf)[path_rel_op_c]   hamiltonian
+output_energies_filename(oef)[path_rel_op_c]      energies
+output_dipole_filename(odf)[path_rel_op_c]        dipoles
+output_raman_filename(orf)[path_rel_op_c]         raman_tensor
+output_positions_filename(opf)[path_rel_op_c]     positions
+output_doublepos_filename[path_rel_op_c]          doublepos
+
+
+
+########################
+# Calculation settings #
+########################
+
+
+# ----- Choosing models and methods -----
+map_directory(md)[list_path_sep]                  ../maps
+maps_to_use(um)[list_str]                         AmideSC
+influencers_whitelist[list_str]                   :All
+influencers_blacklist[list_str]                   :None
+influencers_file[path_sep]                        infl_file_base.txt
+influencers_select_atoms[list_str]                segid *
+
+couplings_to_use[list_str]                        DipDip :All
+output_data[list_str]                             [ham] [dip] ene [pos] dbp ram
+estatics_method[str]                              [perres] perres_nocut
+neutral_charge_threshold[float]                   0.0001
+guess_bonds[bool]                                 False
+
+# charges up to a distance of (estatic_range - (estatic_smooth_range/2)) are
+# treated fully. Then, for a distance of estatic_smooth_range, they 'count'
+# less and less, until the distance of
+# (estatic_range + (estatic_smooth_range/2)), where no charges are considered
+# anymore.
+estatic_range[float]                              20  # this is in angstrom
+estatic_smooth_range[float]                       5  # this is in angstrom
+
+# in order to allow start+number=stop, stop is exclusive.
+start_frame[int]                                  0
+number_frames[int]                                999999999
+stop_frame[int]                                   999999999
+
+
+# ----- Choosing what the program outputs look like -----
+verbose(v)[int]                                   0 1 [2] 3 4
+verbose_logfile(vl)[int]                          0 1 [2] 3 4
+safe_mode(safe)[bool]                             False
+dark_mode(dm)[bool]                               True
+command_line_color[str]                           white 4bit [24bit]
+command_line_length[int]                          79
+prevent_overwrite[bool]                           True
+dont_report_error[list_str]                       none
+output_format[list_str]                           [bin] txt
+couplingvis_figsize[float]                         8.5  # width of figure in inches
+couplingvis_dpi[int]                               300
+
+
+
+#########
+# Units #
+#########
+
+
+# ----- Units of output files -----
+hamiltonian_units[str]                             [cm-1] eV
+hamiltonian_multiplier[float]                      1.0
+energies_units[str]                                [cm-1] eV
+energies_multiplier[float]                         1.0
+dipoles_units[str]                                 [Debye] eBohr
+dipoles_multiplier[float]                          1.0
+raman_units[str]                                   [Ang3] Bohr3
+raman_multiplier[float]                            1.0
+positions_units[str]                               [Ang] Bohr nm
+positions_multiplier[float]                        1.0
+doublepos_units[str]                               [Ang] Bohr nm
+doublepos_multiplier[float]                        1.0
