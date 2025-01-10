@@ -34,6 +34,7 @@ def GM_prep_coupling(map_, system, oscixlist, osclist):
 
     return
 
+
 def GM_calc_coupling(map_, system, hamiltonian):
     """Calculate all the couplings that should be determined by this map
 
@@ -81,12 +82,12 @@ def calc_coupling(oscix1, oscix2, map_, system):
     osc2 = system.oscillators[oscix2]
 
     # These are the couplings according to the OH intramolecular water map
-    x1=0.1934-1.75e-5*osc1.freq
-    x2=0.1934-1.75e-5*osc2.freq
-    p1=1.611+5.893e-4*osc1.freq
-    p2=1.611+5.893e-4*osc2.freq
-    sumE=osc1.VEGout[0,1]+osc2.VEGout[0,1]
-    J=(-1789+23852*sumE)*x1*x2-1.966*p1*p2
+    x1 = 0.1934 - 1.75e-5 * osc1.freq
+    x2 = 0.1934 - 1.75e-5 * osc2.freq
+    p1 = 1.611 + 5.893e-4 * osc1.freq
+    p2 = 1.611 + 5.893e-4 * osc2.freq
+    sumE = osc1.VEGout[0, 1]+osc2.VEGout[0, 1]
+    J = (-1789 + 23852 * sumE) * x1 * x2 - 1.966 * p1 * p2
 
     return J
 
@@ -106,6 +107,7 @@ def GM_pre_run(map_, system):
         about the MD system.
     """
 
+    pass
 
 
 def GM_post_init(map_, system):
@@ -125,6 +127,8 @@ def GM_post_init(map_, system):
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
     """
+
+    pass
 
 
 def get_next_line(fhand):

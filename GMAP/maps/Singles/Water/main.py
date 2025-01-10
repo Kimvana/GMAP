@@ -140,12 +140,18 @@ def GM_adjust_oscillators(Map, Syst, oscillator_list):
     oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
         All oscillators belonging to a single struct of this map.
     """
+
     oscillator_list_adjusted = []
     for oscillator in oscillator_list:
         oscillator_list_adjusted.append(oscillator)
-        oscillator_list_adjusted.append(GM_SR.Oscillator(Syst,[oscillator.used_atoms[0], *oscillator.used_atoms[2:0:-1]],Map))  # TLC Double check his line      
-        #oscnew=oscillator_list_adjusted[-1]
-        # oscnew.used_atoms = [oscillator.used_atoms[0],*oscillator.used_atoms[2:0:-1]]
+        # TLC Double check this line
+        oscillator_list_adjusted.append(GM_SR.Oscillator(
+            Syst,
+            [oscillator.used_atoms[0], *oscillator.used_atoms[2:0:-1]],
+            Map))
+        # oscnew=oscillator_list_adjusted[-1]
+        # oscnew.used_atoms = [
+        #     oscillator.used_atoms[0],*oscillator.used_atoms[2:0:-1]]
         # oscnew.electrostatic_atoms = [oscnew.used_atoms[1]]
     return oscillator_list_adjusted
 
@@ -162,6 +168,7 @@ def GM_post_init(Map, Syst):
     calc_frequency = GM_DMF.get_calculate_frequency(Map)
     Map.code.GM_calculate_frequency = calculate_frequency
     return
+
 
 # A place to do things before the main loop starts (create datastructures
 # to be filled in, for example). GEM itself builds the coupling table at
@@ -255,13 +262,12 @@ def placeholder_GM_get_rotation_matrix(
 def GM_get_dipole_mag(Map, Syst, osc):
     # The value of mug was not given in Skinners paper
     # it was shared as private communication
-    mug=0.18749 # (in atomic units).
-    #print(osc.VEGout[0,1],osc.VEGout[0,2],osc.VEGout[0,3])
-    freq=osc.freq
+    mug = 0.18749  # (in atomic units).
+    freq = osc.freq
     return (
-        (0.7112+75.59*osc.VEGout[0,1])*mug # mu_i
-        *(0.1934-0.175e-5*freq) # x_i
-        *(1.611+5.893e-4*freq) #p_i
+        (0.7112+75.59*osc.VEGout[0, 1]) * mug  # mu_i
+        * (0.1934 - 0.175e-5 * freq)  # x_i
+        * (1.611 + 5.893e-4 * freq)  # p_i
     )
 
 

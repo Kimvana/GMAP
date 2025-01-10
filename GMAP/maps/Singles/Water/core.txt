@@ -18,8 +18,7 @@
 # present, either in 'singles' (if the map itself is in 'singles'), or in the
 # map directory itself (former takes precedence)
 
-#can_output        ham   ene    dip     pos    dbp    ram
-can_output        ham   ene    dip     pos    dbp
+can_output        ham   ene    dip     pos    dbp   # not: ram
 
 # -----------------------
 
@@ -77,7 +76,7 @@ local_atoms   0-2
 
 # ------------------------
 
-frequency_gas_phase     3762
+frequency_gas_phase            3762
 frequency_data_file_quadratic  SkinnerQuad.txt
 frequency_data_file_linear     SkinnerLinear.txt
 
@@ -90,7 +89,7 @@ dipole_data_file        magnitude  Skinner_dipole.txt
 
 # This is the position where the transition dipole is placed for TDC following
 # Skinner
-position               0.58*1+0.42*0
+position               0.58*1 + 0.42*0
 # This is the position of hydrogen and oxygen
 doublepos_0            1
 doublepos_1            0
@@ -105,11 +104,11 @@ doublepos_1            0
 # if no estat ats, these may be missing.
 # if estat ats, but estat choice V, these may be missing.
 # if type is linear, only 1 vector is needed. otherwise, two.
-x_uvec    1-0  # this is comment
+x_uvec    1-0
 y_uvec    2-0
 
 r_vec     1-0
-r_pos     0.58*1+0.42*0
+r_pos     0.58*1 + 0.42*0
 
 # ---------------------
 
