@@ -20,6 +20,7 @@ import numpy as np
 
 import GMAP.src.tools.MathFunctions as GM_MF
 import GMAP.src.tools.PhysicsFunctions as GM_PF
+import GMAP.src.tools.constants as GM_Con
 
 # Import System Reader for additional functionality
 import GMAP.src.tools.SystemReader as GM_SR
@@ -263,9 +264,15 @@ def GM_get_dipole_mag(Map, Syst, osc):
     # The value of mug was not given in Skinners paper
     # it was shared as private communication
     mug = 0.18749  # (in atomic units).
+
+    # We need to know the frequency prediced for the OH for this map
     freq = osc.freq
+
+    # The fields in the core of GEM are using Ångström, we need bohr for the
+    # map
+    E = osc.VEGout[0, 1] * GM_Con.bohr2ang ** 2
     return (
-        (0.7112+75.59*osc.VEGout[0, 1]) * mug  # mu_i
+        (0.7112 + 75.59 * E) * mug  # mu_i
         * (0.1934 - 0.175e-5 * freq)  # x_i
         * (1.611 + 5.893e-4 * freq)  # p_i
     )

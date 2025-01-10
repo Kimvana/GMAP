@@ -1,0 +1,22 @@
+sections:
+- intended use
+- how to use
+- available parameters
+- warnings that can be raised by this map
+
+Intended use
+------------
+This map is intended to use with water O (smiles notation). It can be applied both for H2O and HOD, but gives the frequency of the OH stretch.
+
+How to use
+----------
+This map should be used with the WaterCoupling map, which will provide the related couplings repending ohe system.
+
+
+Available parameters
+--------------------
+At this point the frequency map has no options or parameters. See the WaterCoupling map for the parameters related to the coupling.
+
+Warnings that can be raised by this map
+---------------------------------------
+At this point none
