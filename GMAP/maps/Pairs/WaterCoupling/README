@@ -22,9 +22,9 @@ When using this map, the following parameters become available in any input para
 
 Water.coupling_choice
     no shorthand
-    options: None, DipDip, WaterInter
+    options: None, DipDip, Water_Intra
 
-If one wants to do bulk water (H2O) the WaterInter or DipDip can both be used, however, for all intramolecular couplings WaterInter will always be used and for intermolecular couplings DipDip will always be used.
+If one wants to do bulk water (H2O) the Water_Intra or DipDip can both be used, however, for all intramolecular couplings Water_Intra will always be used and for intermolecular couplings DipDip will always be used.
 If one wants to do isotope labeled water (HOD) the couplings should not be calculated and None must be selected.
 
 Warnings that can be raised by this map
