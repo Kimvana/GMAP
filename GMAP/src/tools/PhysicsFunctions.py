@@ -183,11 +183,11 @@ def calc_frame(RunPars, System, outputs):
         if "ram" in RunPars.output_data:
             outputs["raman"][oscix] = calc_raman(System, oscillator)
 
-        if "ene" in RunPars.output_data and oscillator.Map.Core.ham_first:
+        if "ene" in RunPars.output_data and not oscillator.Map.Core.ham_first:
             outputs["energies"][oscix] = calc_frequency(
                 System, oscillator)
 
-        if "ham" in RunPars.output_data and oscillator.Map.Core.ham_first:
+        if "ham" in RunPars.output_data and not oscillator.Map.Core.ham_first:
             outputs["hamiltonian"][oscix, oscix] = calc_frequency(
                 System, oscillator)
 

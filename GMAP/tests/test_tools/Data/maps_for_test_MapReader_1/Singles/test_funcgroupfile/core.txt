@@ -1,6 +1,7 @@
 
 
 can_output         ham ene dip pos dbp
+ham_first     f
 
 functional_group_file   funcgroup.txt
 

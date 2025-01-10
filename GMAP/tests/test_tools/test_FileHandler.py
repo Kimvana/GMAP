@@ -4,13 +4,13 @@ src/tools/FileHandler.py.
 
 Missing tests:
 
-(@ September 20th '24):
-115, 119-131, 356 (8 missed statements)
+(@ January 10th '25):
+125, 129-141, 358 (8 missed statements)
 
 (CUHTAT - currently unknown how to access this)
-- Program is run using any OS other than windows 64 bit (115, 119-131)
+- Program is run using any OS other than windows 64 bit (125, 129-141)
   (CUHTAT; at least within one single run, probably impossible)
-- the reference parameter file could not be found (SU_FH_2) (CUHTAT) (356)
+- the reference parameter file could not be found (SU_FH_2) (CUHTAT) (358)
 """
 
 
@@ -520,7 +520,13 @@ def test_write_parameter_file(tmp_path):
         "--estatic_smooth_range", "0",
         "--verbose", "1",
         "--verbose_logfile", "4",
-        "--output_format", "txt\\;"
+        "--output_format", "txt\\;",
+        "--maps_to_use", "AmideBB", "AmideSC\\;",  # default is SC only
+        # add 3 coupling lines to see if multiline parameters are written
+        # correctly.
+        "--couplings_to_use", "DipDip", ":All\\;",
+        "--couplings_to_use", "None", "AmideSC:\\;",
+        "--couplings_to_use", "DipDip", "AmideSC:\\;"
     ])
 
     # check if first run went without any major errors

@@ -1,4 +1,5 @@
-# Not sure about the options below, intramolecular must always be done with the intramolecular map and inter with dipdip
+# Not sure about the options below, intramolecular must always be done with the
+# intramolecular map and inter with dipdip
 def GM_change_coup_type(map_, system, oscix1, osc1, oscix2, osc2):
     mapnames = {
         "None": None,
@@ -15,7 +16,5 @@ def GM_change_coup_type(map_, system, oscix1, osc1, oscix2, osc2):
 
     # The OH stretches are in different molecules. If the user specified to use
     # intramolecular couplings we force them to use the dipole dipole instead
-    else: 
+    else:
         return mapnames[map_.RunPars.inter_coupling_choice]
-
-
