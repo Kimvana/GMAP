@@ -4,7 +4,7 @@
 import numpy as np
 
 # gmap imports
-import GMAP.src.tools.MathFunctions as GM_MF
+# import GMAP.src.tools.MathFunctions as GM_MF
 # from GMAP.src.tools.PrintTools import devprint as dpr
 
 # own module imports
@@ -35,27 +35,31 @@ def GM_prep_coupling(map_, system, oscixlist, osclist):
         All oscillators treated by this map.
     """
 
-    for oscix, osc in zip(oscixlist, osclist):
-        COvec = GM_MF.PBC_boxdiff_triclin(
-            osc.positions_box[1], osc.positions_box[0], system.boxvects)
-        COvec /= GM_MF.vec3_len(COvec)
+    map_.clib.prep_coupling(map_, system)
 
-        CNvec = GM_MF.PBC_boxdiff_triclin(
-            osc.positions_box[3], osc.positions_box[0], system.boxvects)
-        CNvec = GM_MF.project(COvec, CNvec)
-        CNvec /= GM_MF.vec3_len(CNvec)
-        z = GM_MF.crossprod(COvec, CNvec)
-        z /= GM_MF.vec3_len(z)
+    # for oscix, osc in zip(oscixlist, osclist):
+    #     COvec = GM_MF.PBC_boxdiff_triclin(
+    #         osc.positions_box[1], osc.positions_box[0], system.boxvects)
+    #     COvec /= GM_MF.vec3_len(COvec)
 
-        if osc.Map.name == "AmideSC" or osc.resnames[1] != "PRO":
-            alpha = map_.alpha_gen
-            v = map_.v_gen
-        else:
-            alpha = map_.alpha_pro
-            v = map_.v_pro
+    #     CNvec = GM_MF.PBC_boxdiff_triclin(
+    #         osc.positions_box[3], osc.positions_box[0], system.boxvects)
+    #     CNvec = GM_MF.project(COvec, CNvec)
+    #     CNvec /= GM_MF.vec3_len(CNvec)
+    #     z = GM_MF.crossprod(COvec, CNvec)
+    #     z /= GM_MF.vec3_len(z)
 
-        rotmat = np.array([COvec, CNvec, z])
-        map_.map_tcc_v[oscix] = np.dot(v, rotmat) * alpha
+    #     if osc.Map.name == "AmideSC" or osc.resnames[1] != "PRO":
+    #         alpha = map_.alpha_gen
+    #         v = map_.v_gen
+    #     else:
+    #         alpha = map_.alpha_pro
+    #         v = map_.v_pro
+
+    #     rotmat = np.array([COvec, CNvec, z])
+    #     map_.map_tcc_v[map_.oscix_to_ix[oscix]] = np.dot(v, rotmat) * alpha
+
+    # quit()
 
 
 def GM_calc_coupling(map_, system, hamiltonian):
@@ -74,10 +78,13 @@ def GM_calc_coupling(map_, system, hamiltonian):
         column and a row for each oscillator.
     """
 
-    for pair in map_.allpairs:
-        J = calc_coupling(*pair, map_, system)
-        hamiltonian[pair[0], pair[1]] = J
-        hamiltonian[pair[1], pair[0]] = J
+    hamiltonian_c = np.ctypeslib.as_ctypes(np.ravel(hamiltonian))
+    map_.clib.calc_coupling(map_, system, hamiltonian_c)
+
+    # for pair in map_.allpairs:
+    #     J = calc_coupling(*pair, map_, system)
+    #     hamiltonian[pair[0], pair[1]] = J
+    #     hamiltonian[pair[1], pair[0]] = J
 
 
 def calc_coupling(oscix1, oscix2, map_, system):
@@ -129,8 +136,8 @@ def calc_coupling(oscix1, oscix2, map_, system):
     ir3 = ir * ir2
     ir5 = ir3 * ir2
 
-    v1 = map_.map_tcc_v[oscix1]
-    v2 = map_.map_tcc_v[oscix2]
+    v1 = map_.map_tcc_v[map_.oscix_to_ix[oscix1]]
+    v2 = map_.map_tcc_v[map_.oscix_to_ix[oscix2]]
     # dpr(oscix1, oscix2, "\n", v1, "\n", v2)
     # dpr("XXXXXXXXXX", np.sum(v2[None, :, :] * diff, axis=2))
 
@@ -165,7 +172,30 @@ def GM_pre_run(map_, system):
         about the MD system.
     """
 
-    map_.map_tcc_v = np.zeros((system.nosc, 6, 3), dtype="float32")
+    oscixlist = system.oscillators_ordered_coup_ix[map_.name]
+    map_.nosc = np.int32(len(oscixlist))
+    map_.oscixlist_c = np.ctypeslib.as_ctypes(
+        np.array(oscixlist, dtype="int32"))
+
+    usedatslist = [system.oscillators[ix].used_atoms for ix in oscixlist]
+    map_.all_used_ats_c = np.ctypeslib.as_ctypes(np.ravel(
+        np.array(usedatslist, dtype="int32")))
+
+    map_.oscix_to_ix = np.zeros((system.nosc), dtype="int32")
+    map_.dopro = np.zeros((map_.nosc), dtype="int32")
+    for ix, oscix in enumerate(oscixlist):
+        map_.oscix_to_ix[oscix] = ix
+        osc = system.oscillators[oscix]
+        if osc.Map.name == "AmideBB" and osc.resnames[1] == "PRO":
+            map_.dopro[ix] = 1
+    map_.oscix_to_ix_c = np.ctypeslib.as_ctypes(map_.oscix_to_ix)
+    map_.dopro_c = np.ctypeslib.as_ctypes(map_.dopro)
+
+    map_.map_tcc_v = np.zeros((map_.nosc, 6, 3), dtype="float32")
+    map_.map_tcc_v_c = np.ctypeslib.as_ctypes(np.ravel(map_.map_tcc_v))
+    map_.allpairs = np.array(map_.allpairs, dtype="int32")
+    map_.allpairs_c = np.ctypeslib.as_ctypes(np.ravel(map_.allpairs))
+    map_.n_allpairs = np.int32(map_.allpairs.shape[0])
 
 
 def GM_post_init(map_, system):
@@ -189,28 +219,39 @@ def GM_post_init(map_, system):
     # read in all parameters from the constants file
     with open(map_.directory / "constants.txt") as fhand:
         # get_next_line just gets the next not-empty line from the file
-        map_.fourPiEps = float(get_next_line(fhand).split()[0])
-        map_.alpha_gen = float(get_next_line(fhand).split()[0])
-        map_.alpha_pro = float(get_next_line(fhand).split()[0])
+        map_.fourPiEps = np.float32(get_next_line(fhand).split()[0])  # scalar
+        map_.alpha_gen = np.float32(get_next_line(fhand).split()[0])  # scalar
+        map_.alpha_pro = np.float32(get_next_line(fhand).split()[0])  # scalar
 
-        map_.q_gen = np.array(
-            [float(item) for item in get_next_line(fhand).split()])
-        map_.q_pro = np.array(
-            [float(item) for item in get_next_line(fhand).split()])
-        map_.dq_gen = np.array(
-            [float(item) for item in get_next_line(fhand).split()])
-        map_.dq_pro = np.array(
-            [float(item) for item in get_next_line(fhand).split()])
+        map_.q_gen = np.array(  # vector of length 6
+            [float(item) for item in get_next_line(fhand).split()],
+            dtype="float32")
+        map_.q_pro = np.array(  # vector of length 6
+            [float(item) for item in get_next_line(fhand).split()],
+            dtype="float32")
+        map_.dq_gen = np.array(  # vector of length 6
+            [float(item) for item in get_next_line(fhand).split()],
+            dtype="float32")
+        map_.dq_pro = np.array(  # vector of length 6
+            [float(item) for item in get_next_line(fhand).split()],
+            dtype="float32")
 
-        map_.v_gen = np.array([
+        map_.v_gen = np.array([  # array of 6 * 3
             [float(item) for item in get_next_line(fhand).split()]
-            for _ in range(6)])
-        map_.v_pro = np.array([
+            for _ in range(6)], dtype="float32")
+        map_.v_pro = np.array([  # array of 6 * 3
             [float(item) for item in get_next_line(fhand).split()]
-            for _ in range(6)])
+            for _ in range(6)], dtype="float32")
 
     # We'd like to use the c-library for this map (so it is considerably
     # faster)
+    map_.q_gen_c = np.ctypeslib.as_ctypes(map_.q_gen)  # length 6
+    map_.q_pro_c = np.ctypeslib.as_ctypes(map_.q_pro)  # length 6
+    map_.dq_gen_c = np.ctypeslib.as_ctypes(map_.dq_gen)  # length 6
+    map_.dq_pro_c = np.ctypeslib.as_ctypes(map_.dq_pro)  # length 6
+    map_.v_gen_c = np.ctypeslib.as_ctypes(np.ravel(map_.v_gen))  # length 18
+    map_.v_pro_c = np.ctypeslib.as_ctypes(np.ravel(map_.v_pro))  # length 18
+    map_.noscats = np.int32(6)
     MC_TC.init_map_for_clib(map_, system)
 
 
