@@ -15,12 +15,17 @@
 # topology_file D:\Data\PhD\Tutorials\C8S3\md_300_1ns_xtc4fs.tpr
 # trajectory_file D:\Data\PhD\Tutorials\C8S3\md_300_1ns_xtc4fs.gro
 
+topology_file     D:\Data\PhD\Tutorials\H2OinMeCN\topol.tpr
+trajectory_file   D:\Data\PhD\Tutorials\H2OinMeCN\traj.trr
+
 
 verbose 3
 verbose_logfile 4
-maps_to_use   AmideBB AmideSC  # AmideSC
-couplings_to_use  ProteinAmide   :All
+# maps_to_use   AmideBB AmideSC  # AmideSC
+# couplings_to_use  ProteinAmide   :All
 # couplings_to_use  DipDip  AmideSC:AmideSC
+maps_to_use Water
+couplings_to_use DipDip :All
 
 output_format txt
 # output_data dip ham ene ram pos dbp

@@ -1,0 +1,2 @@
+inter_coupling_choice[str]          None [DipDip]
+intra_coupling_choice[str]          None [Water_Intra]

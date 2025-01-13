@@ -1,0 +1,5 @@
+require_singles    Water
+require_pairs      WaterCoupling
+singles_whitelist  Water
+
+#assume_length_units    Bohr

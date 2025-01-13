@@ -5,16 +5,15 @@ src/tools/ParameterParser.py.
 Missing tests:
 
 (@ September 20th '24):
-376-377, 438, 1182, 1295, 1843-1844, 2221 (8 missed statements)
+376-377, 438, 1183, 1296, 1847-1848 (7 missed statements)
 
 (CUHTAT - currently unknown how to access this )
 - SU_FP_7 (CUHTAT)   (376-377)
 - RefPars parse choice - unknown dtype (CUHTAT)  (438)
-- RawPars verify choice - unknown dtype (CUHTAT)  (1182)
+- RawPars verify choice - unknown dtype (CUHTAT)  (1183)
 - RawPars checkparexist - variable may occur multiple times, but is also
-  not expected in deffiles (N/A in refpars)  (1295)
-- RunPars unknown loc for -md - SU_NP_3   (CUHTAT, SU_PP_3!)  (1843-1844)
-- RunPars framenums - empty source (CUHTAT)   (2221)
+  not expected in deffiles (N/A in refpars)  (1296)
+- RunPars unknown loc for -md - SU_NP_3   (CUHTAT, SU_PP_3!)  (1847-1848)
 """
 
 # standard library imports
