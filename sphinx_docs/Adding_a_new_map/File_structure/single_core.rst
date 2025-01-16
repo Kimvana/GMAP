@@ -579,6 +579,23 @@ If you use different units, you can do the unit conversion yourself using the fu
         Bohr, a0, A0, au, AU
 
 
+*********
+ham_first
+*********
+
+| *optional parameter*
+| *(options: true, false)
+
+.. tip::
+    This keyword only makes a difference when you have custom code in the main.py file. To be even more precise: if any custom code in the main.py file makes active changes to the ``map_`` or ``oscillator`` objects during either ``GM_calculate_frequency`` or ``GM_calculate_dipole``.
+
+    If your map does not (need to) do that, you can safely skip this one.
+
+The program assumes (by default) that the diagonal hamiltonian elements (i.e. the energy / absorbtion frequency) should be calculated first for a map. This means that if the map saves any additional attributes to the ``map_`` or ``oscillator`` objects during the energy calculation, these are accessible during the dipole moment calculation.
+
+If, however, you need the reverse, this keyword should be set to false. Then, the dipole moment will be computed (and saved) first, and any attributes saved to the ``map_`` or ``oscillator`` objects during the dipole moment calculation are accessible during the frequency calculation.
+
+
 ****************
 dipole_gas_phase
 ****************

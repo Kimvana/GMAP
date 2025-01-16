@@ -162,6 +162,15 @@ def calc_frame(RunPars, System, outputs):
                 oscillator.rotate_VEG()
 
         printer.add_time(5, "", "VEGuse")
+
+        if "ene" in RunPars.output_data and oscillator.Map.Core.ham_first:
+            outputs["energies"][oscix] = calc_frequency(
+                System, oscillator)
+
+        if "ham" in RunPars.output_data and oscillator.Map.Core.ham_first:
+            outputs["hamiltonian"][oscix, oscix] = calc_frequency(
+                System, oscillator)
+
         # do we need dipoles?
         # we also need dipoles for the (full) hamiiltonian.
         if any(data in RunPars.output_data for data in ("ham", "dip")):
@@ -171,16 +180,16 @@ def calc_frame(RunPars, System, outputs):
             if any(data in RunPars.output_data for data in ("ham")):
                 outputs["dipole_pos"][oscix] = r_pos  # only ham!
 
-        if "ene" in RunPars.output_data:
+        if "ram" in RunPars.output_data:
+            outputs["raman"][oscix] = calc_raman(System, oscillator)
+
+        if "ene" in RunPars.output_data and not oscillator.Map.Core.ham_first:
             outputs["energies"][oscix] = calc_frequency(
                 System, oscillator)
 
-        if "ham" in RunPars.output_data:
+        if "ham" in RunPars.output_data and not oscillator.Map.Core.ham_first:
             outputs["hamiltonian"][oscix, oscix] = calc_frequency(
                 System, oscillator)
-
-        if "ram" in RunPars.output_data:
-            outputs["raman"][oscix] = calc_raman(System, oscillator)
 
         if "pos" in RunPars.output_data:
             outputs["positions"][oscix] = get_positions(System, oscillator)
