@@ -87,6 +87,7 @@ void VM_normalize(float *vec) {
 }
 
 
+// original implementation
 void VM_PBC_diff_cubic(
     float *vect1, float *vect2, float *halfbox, float *boxdims,
     float *vectout
@@ -108,6 +109,8 @@ void VM_PBC_diff_cubic(
         between vect1 and vect2, corrected for the PBC.
     */
 
+    // printf("remainder -2, 10 = %f\n", remainderf(-2, 10));
+    // printf("remainder -8, 10 = %f\n", remainderf(-8, 10));
     for (int i = 0; i < 3; i++){
         vectout[i] = vect1[i] - vect2[i];
         if (vectout[i] > halfbox[i]) {
@@ -115,6 +118,99 @@ void VM_PBC_diff_cubic(
         }
         else if (vectout[i] < -halfbox[i]) {
             vectout[i] += boxdims[i];
+        }
+    }
+}
+
+inline float posmodf(float divident, float divisor) {
+    /*
+    Always returns a positive mod. i.e. -2 % 10 = 8.
+    */
+   return fmodf(fmodf(divident, divisor) + divisor, divisor);
+}
+
+
+// modulo implementation (is noticably slower than orig)
+// void VM_PBC_diff_cubic(
+//     float *vect1, float *vect2, float *halfbox, float *boxdims, float *vectout
+// ) {
+//     // printf("hi, im running! -0.2 mod 1 = %f, -0.2 ownmod 1 = %f\n", fmodf(-0.2, 1.0), posmodf(-0.2, 1));
+//     for (int i = 0; i < 3; i++) {
+//         // printf("((%f - %f + %f) mod %f) - %f = ", vect1[i], vect2[i], halfbox[i], boxdims[i], halfbox[i]);
+//         vectout[i] = posmodf(vect1[i] - vect2[i] + halfbox[i], boxdims[i]);
+//         // vectout[i] -= fmodf(vectout[i], boxdims[i]);
+//         vectout[i] -= halfbox[i];
+//         // printf("%f\n", vectout[i]);
+//     }
+// }
+
+
+// remainder implementation (is slightly slower than orig)
+// void VM_PBC_diff_cubic(
+//     float *vect1, float *vect2, float *halfbox, float *boxdims, float *vectout
+// ) {
+//     // printf("hi, im running! -0.2 mod 1 = %f, -0.2 ownmod 1 = %f\n", fmodf(-0.2, 1.0), posmodf(-0.2, 1));
+//     for (int i = 0; i < 3; i++) {
+//         // printf("((%f - %f + %f) mod %f) - %f = ", vect1[i], vect2[i], halfbox[i], boxdims[i], halfbox[i]);
+//         vectout[i] = remainderf(vect1[i] - vect2[i], boxdims[i]);
+//         // vectout[i] -= fmodf(vectout[i], boxdims[i]);
+//         // vectout[i] -= halfbox[i];
+//         // printf("%f\n", vectout[i]);
+//     }
+// }
+
+// set divisor == 1 implementation (slightly slower than orig)
+// void VM_PBC_diff_mod1(
+//     float *vect1, float *vect2, float *halfbox, float *boxdims, float *vectout
+// ) {
+//     for (int i = 0; i < 3; i++){
+//         vectout[i] = remainderf(vect1[i] - vect2[i], 1);
+//     }
+// }
+
+
+// set divisor == 1 implementation (slightly slower than orig)
+// void VM_PBC_diff_mod1(
+//     float *vect1, float *vect2, float *halfbox, float *boxdims, float *vectout
+// ) {
+//     for (int i = 0; i < 3; i++){
+//         vectout[i] = vect1[i] - vect2[i] + 0.5;
+//         vectout[i] -= floorf(vectout[i]) + 0.5;
+//     }
+// }
+
+
+// a mod 1 version of the original PBCdiff - same speed.
+void VM_PBC_diff_mod1(
+    float *vect1, float *vect2, float *halfbox, float *boxdims,
+    float *vectout
+) {
+    /*Calculates the difference vect1 - vect2, assuming a cubic MD
+    system, and assuming vect1 and vect2 are inside the system
+    currently.
+
+    Parameters
+    ----------
+    vect1, vect2 : float[3]
+        The positions between which the difference vector should be
+        calculated.
+    halfbox, boxdims : float[3]
+        The size of the PBC (MD system size). Halfbox is assumed to
+        equal boxdims/2.
+    vectout : float[3]
+        The output will be written here. It is the difference vector
+        between vect1 and vect2, corrected for the PBC.
+    */
+
+    // printf("remainder -2, 10 = %f\n", remainderf(-2, 10));
+    // printf("remainder -8, 10 = %f\n", remainderf(-8, 10));
+    for (int i = 0; i < 3; i++){
+        vectout[i] = vect1[i] - vect2[i];
+        if (vectout[i] > 0.5) {
+            vectout[i] -= 1;
+        }
+        else if (vectout[i] < -0.5) {
+            vectout[i] += 1;
         }
     }
 }
