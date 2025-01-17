@@ -20,10 +20,10 @@
 
 verbose 3
 verbose_logfile 4
-# maps_to_use   AmideBB AmideSC  # AmideSC
+maps_to_use   AmideBB AmideSC  # AmideSC
 # couplings_to_use  ProteinAmide   :All
 # couplings_to_use  DipDip  AmideSC:AmideSC
-maps_to_use Water
+# maps_to_use Water
 couplings_to_use DipDip :All
 
 output_format txt
@@ -36,7 +36,7 @@ prevent_overwrite False
 start_frame 0
 number_frames 100000
 
-estatics_method        perres
+estatics_method        perres_nocut
 estatic_smooth_range 0
 neutral_charge_threshold 0.01
 

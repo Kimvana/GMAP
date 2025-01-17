@@ -367,11 +367,8 @@ If you need a place to quickly write something down, do it here! It can be tidie
 
 
 - (KvA) TODO before PR:
-  - why slower? is that because of the non-cubic maths? Is it desirable to make a separate cubic mode?
-  - c-version of TCC!
-  - compare subparts for AIM and GMAP, see how/where/why its slower
-  - system.confirm_bond is SLOW! Are there faster options/alternatives?
 - (KvA) TODO:
+  - Is it desirable to make a separate cubic mode that's hopefully faster?
   - legacy support:
     - CoM calculation is different for AmideImaps.
     - Torii dipoles have a significantly different magnitude (is now 0.276, used to be 2.73)

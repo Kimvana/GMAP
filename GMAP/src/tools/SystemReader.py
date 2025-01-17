@@ -11,6 +11,7 @@ import GMAP.src.tools.DefaultMapFunctions as GM_DMF
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.ParameterParser as GM_PP
 import GMAP.src.tools.PrintTools as GM_PT
+from GMAP.src.tools.PrintTools import devprint as dpr
 
 
 class System:
@@ -476,6 +477,16 @@ class System:
             oscillator.oscix = oscix
 
         self.nosc = len(self.oscillators)
+        GM_PT.Printer.print(2, f"found {self.nosc} oscillators.")
+        if self.nosc == 0:
+            GM_PT.Printer.warning(
+                "\nNone of the requested oscillators could be found in the "
+                "supplied MD system. Either change the choice for the "
+                "parameter maps_to_use, or for the parameters topology_file "
+                "and/or trajectory_file. Quitting!"
+                "MD_SU_7", True,
+                GMAPerrclass=GM_Ex.GmapValueError
+            )
 
     def find_oscillators_perstruct(self, struct, map_):
         """Finds all oscillators matching the given structure.
