@@ -573,10 +573,11 @@ def print_relevant_references(RunPars, system):
         all_references.append(
             singles_map.code.GM_report_references(singles_map, system))
 
-    for pairs_map in system.oscillators_ordered_coup.keys():
-        pairs_map = RunPars.requested_pairmapdict[pairs_map]
-        all_references.append(
-            pairs_map.code.GM_report_references(pairs_map, system))
+    if "ham" in RunPars.output_data:
+        for pairs_map in system.oscillators_ordered_coup.keys():
+            pairs_map = RunPars.requested_pairmapdict[pairs_map]
+            all_references.append(
+                pairs_map.code.GM_report_references(pairs_map, system))
 
     GM_RH.report_references(RunPars, all_references)
 
