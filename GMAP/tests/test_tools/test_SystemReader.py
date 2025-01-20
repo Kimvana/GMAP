@@ -290,9 +290,10 @@ class TestSystem:
             RunPars, RefPars, DefPars, InPars,
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
+        system = GM_SR.System(RunPars)
 
         with pytest.raises(GM_Ex.GmapParameterError, match="MD_SU_6$"):
-            _ = GM_SR.System(RunPars)
+            system.order_oscillators_pairs(RunPars)
 
 
 class TestOscillator:
