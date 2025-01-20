@@ -59,6 +59,10 @@ def get_prep_coupling():
     return does_nothing
 
 
+def get_calc_coupling():
+    return does_nothing
+
+
 def get_str_osc():
     def base_str_getter(Map, Syst, osc):
         return f"living on residue number {Syst.resnums[osc.used_atoms[0]]}"
@@ -513,6 +517,17 @@ def get_get_doublepos(map_):
     GM_get_doublepos1 = interpret_position(map_, instructions, "doublepos_1")
 
     return GM_get_doublepos
+
+
+def get_report_references():
+    """Default for obtaining the correct references of a map.
+
+    By default, all references should be considered.
+    """
+
+    def GM_report_references(map_, system):
+        return map_.references
+    return GM_report_references
 
 
 # ------------------------

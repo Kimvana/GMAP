@@ -22,6 +22,7 @@ import pytest
 
 # local imports
 from .test_MapReader import basic_setup
+import GMAP.src.tools.CLibLoader as GM_CL
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.MapReader as GM_MR
 import GMAP.src.tools.SystemReader as GM_SR
@@ -442,7 +443,7 @@ def test_MD_SU_3(capsys):
     assert captured.out.endswith("MD_SU_3\n")
 
 
-def parameter_getter(mapname, cmdline=None, inpardict=None):
+def parameter_getter(mapname, cmdline=None, inpardict=None, load_clib=True):
 
     # prepare inputs
     cmdadd = [
@@ -486,6 +487,9 @@ def parameter_getter(mapname, cmdline=None, inpardict=None):
 
     GM_MR.manage_maps_singles(RunPars, mapdict)
     GM_MR.manage_maps_pairs(RunPars, pairs_mapdict)
+
+    if load_clib:
+        _ = GM_CL.VEG_CLib(RunPars)
 
     return (
         RunPars, RefPars, DefPars, InPars,

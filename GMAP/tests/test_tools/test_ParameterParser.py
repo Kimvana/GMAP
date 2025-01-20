@@ -5,16 +5,15 @@ src/tools/ParameterParser.py.
 Missing tests:
 
 (@ September 20th '24):
-376-377, 438, 1182, 1295, 1843-1844, 2221 (8 missed statements)
+376-377, 438, 1183, 1296, 1847-1848 (7 missed statements)
 
 (CUHTAT - currently unknown how to access this )
 - SU_FP_7 (CUHTAT)   (376-377)
 - RefPars parse choice - unknown dtype (CUHTAT)  (438)
-- RawPars verify choice - unknown dtype (CUHTAT)  (1182)
+- RawPars verify choice - unknown dtype (CUHTAT)  (1183)
 - RawPars checkparexist - variable may occur multiple times, but is also
-  not expected in deffiles (N/A in refpars)  (1295)
-- RunPars unknown loc for -md - SU_NP_3   (CUHTAT, SU_PP_3!)  (1843-1844)
-- RunPars framenums - empty source (CUHTAT)   (2221)
+  not expected in deffiles (N/A in refpars)  (1296)
+- RunPars unknown loc for -md - SU_NP_3   (CUHTAT, SU_PP_3!)  (1847-1848)
 """
 
 # standard library imports
@@ -26,7 +25,7 @@ import pytest
 
 # local imports
 from GMAP.src.programs.GEM import alljobs
-import GMAP.src.tools.constants as GM_con
+import GMAP.src.tools.constants as GM_Con
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.FileHandler as GM_FH
 import GMAP.src.tools.MapReader as GM_MR
@@ -78,6 +77,7 @@ class TestRefPars:
             "VEG_clib_file": [
                 Path("VEG" + GM_FH.FileLocations.clib_extension)],
             "log_filename": [Path("log.log")],
+            "output_parameter_filename": [Path("parameters.txt")],
             "output_legend_filename": [Path("legend.txt")],
             "output_couplingvis_filename": [Path("couplingvisualization.pdf")],
             "output_estatics_filename": [Path("estatics.txt")],
@@ -207,6 +207,7 @@ class TestRefPars:
                 "VEG_clib_file"],
             "log_directory": ["log_filename"],
             "output_directory": [
+                "output_parameter_filename",
                 "output_legend_filename", "output_couplingvis_filename",
                 "output_estatics_filename", "output_hamiltonian_filename",
                 "output_dipole_filename", "output_energies_filename",
@@ -234,6 +235,7 @@ class TestRefPars:
             "log_directory",
             "log_filename",
             "output_directory",
+            "output_parameter_filename",
             "output_legend_filename",
             "output_couplingvis_filename",
             "output_estatics_filename",
@@ -257,6 +259,7 @@ class TestRefPars:
         ]
         assert RefPars.filepars_create == [
             "log_filename",
+            "output_parameter_filename",
             "output_legend_filename",
             "output_couplingvis_filename",
             "output_estatics_filename",
@@ -510,6 +513,7 @@ class TestRawPars:
             "VEG_clib_file": [
                 Path("VEG" + GM_FH.FileLocations.clib_extension)],
             "log_filename": [Path("log.log")],
+            "output_parameter_filename": [Path("parameters.txt")],
             "output_legend_filename": [Path("legend.txt")],
             "output_couplingvis_filename": [Path("couplingvisualization.pdf")],
             "output_estatics_filename": [Path("estatics.txt")],
@@ -625,17 +629,17 @@ class TestRawPars:
         assert InPars.choices == {
             "verbose": [4],
             "hamiltonian_units": ["eV"],
-            "hamiltonian_multiplier": [GM_con.cm2eV],
+            "hamiltonian_multiplier": [GM_Con.cm2eV],
             "energies_units": ["eV"],
-            "energies_multiplier": [GM_con.cm2eV],
+            "energies_multiplier": [GM_Con.cm2eV],
             "dipoles_units": ["eBohr"],
-            "dipoles_multiplier": [GM_con.Debye2ea0],
+            "dipoles_multiplier": [GM_Con.Debye2ea0],
             "raman_units": ["Bohr3"],
-            "raman_multiplier": [GM_con.ang2bohr**3],
+            "raman_multiplier": [GM_Con.ang2bohr**3],
             "positions_units": ["Bohr"],
-            "positions_multiplier": [GM_con.ang2bohr],
+            "positions_multiplier": [GM_Con.ang2bohr],
             "doublepos_units": ["Bohr"],
-            "doublepos_multiplier": [GM_con.ang2bohr],
+            "doublepos_multiplier": [GM_Con.ang2bohr],
             "bool_test1": [False],
             "bool_test2": [True],
             "int_test_free_list": [88, 44],
@@ -2159,7 +2163,7 @@ def test_get_parameters():
     # has already been tested separately.
     assert InPars.fname.name == "test_inpar.txt"
     assert DefPars == RefPars
-    assert len(mapdict) == 4
+    assert len(mapdict) == 5
     assert CmdPars.choices == {}
 
     (

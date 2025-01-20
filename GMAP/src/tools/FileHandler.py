@@ -14,7 +14,7 @@ import numpy as np
 # local imports
 import GMAP
 import GMAP.src.tools.CodingTools as GM_CT
-import GMAP.src.tools.constants as GM_con
+import GMAP.src.tools.constants as GM_Con
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.PrintTools as GM_PT
 import GMAP.src.tools.StringClasses as GM_SC
@@ -76,7 +76,7 @@ class FileLocations(metaclass=GM_CT.Singleton):
         GM_PT.Printer(self)  # initialize the printer!
 
         obset(self, "_exec_os", find_exec_os())
-        obset(self, "_clib_extension", GM_con.clib_ext_dict[self._exec_os])
+        obset(self, "_clib_extension", GM_Con.clib_ext_dict[self._exec_os])
 
     @GM_CT.singletonproperty
     def callcommand(self):
@@ -733,7 +733,7 @@ def write_single_parameter_source(
             sp_prname = None
 
         # write all parameters that are not expected to occur multiple times
-        write_parameter_line_main(
+        sp_choices, sp_prname = write_parameter_line_main(
             RunPars, parname, prparname, sp_prname, outfhand, linelist,
             CmdPars, InPars, DefPars)
 
@@ -825,7 +825,7 @@ def write_parameter_line_main(
     # Write parameters that are allowed to occur multiple times
     if (
         isinstance(choice, list)
-        and len(choice) > 0
+        and len(choice) > 0  # so we write entire parameter on first occurence
         and isinstance(choice[0], list)
     ):
         if prparname != sp_prname:
@@ -833,6 +833,7 @@ def write_parameter_line_main(
             sp_prname = prparname
         choice = sp_choices.pop(0)
         write_parameter_line(outfhand, prparname, choice, linelist)
+        return sp_choices, sp_prname
 
     # Write C-library parameters
     # ( prparname instead of parname to make sure we only look at GMAP own's
@@ -845,7 +846,7 @@ def write_parameter_line_main(
     # Write influencer parameters
     elif prparname.startswith("influencers_"):
         if prparname != "influencers_whitelist":
-            return
+            return [], sp_prname
         write_parameter_intersect(
             outfhand, prparname, CmdPars, InPars, DefPars, all_inf_pars,
             linelist)
@@ -859,7 +860,7 @@ def write_parameter_line_main(
     ):
         # ignore the units, only print multiplier (in case of defpars)
         if prparname.endswith("_units"):
-            return
+            return [], sp_prname
         parnames = [prparname.split("_")[0] + item for item in all_unit_ends]
         write_parameter_intersect(
             outfhand, prparname, CmdPars, InPars, DefPars, parnames, linelist)
@@ -869,6 +870,7 @@ def write_parameter_line_main(
         # now, all special multiline-parameters have been taken care of,
         # so continue to print this new one.
         write_parameter_line(outfhand, prparname, choice, linelist)
+    return [], sp_prname
 
 
 def write_parameter_line(outfhand, prparname, choice, linelist):

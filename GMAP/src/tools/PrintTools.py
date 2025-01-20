@@ -103,7 +103,7 @@ class Printer(metaclass=GM_CT.Singleton):
 
         cls.Timer = Timer(start=Files.start)
 
-        self.syspathcopy = Files.syspathcopy
+        cls.syspathcopy = Files.syspathcopy
 
         # to have some kind of default - will be changed as soon as parameter
         # choices are known.
@@ -114,7 +114,7 @@ class Printer(metaclass=GM_CT.Singleton):
     @classmethod
     def print(
         cls, verbose_level, *toprint, instruction="pf", line_length=None,
-        detailed_instructions=None, sep=" ", **kwargs
+        detailed_instructions=None, sep=" ", wrap_preline="", **kwargs
     ):
         """Called when something needs to be printed.
 
@@ -125,11 +125,11 @@ class Printer(metaclass=GM_CT.Singleton):
             the requested verbose levels for printing - if `verbose_level` is
             smaller than or equal to the value set by the verbose parameters,
             the message will be printed/logged.
-        *toprint : str
+        toprint : str
             The message to print. Can be multiple arguments, like with
             python print
         instruction : str, default="pf"
-            Where to print to. If the string contains a 'p', the message
+            Where to print to. If the string contains a "p", the message
             will be printed to the terminal, if the string contains an
             "f", the message will be written to the logfile.
         line_length : int or None, default=None
@@ -140,7 +140,7 @@ class Printer(metaclass=GM_CT.Singleton):
             will be used.
         detailed instructions : list of int or None, default=None
             Any extra instructions. If None, an empty list will be
-            assumed. Currently supported::
+            assumed. Currently supported:
 
                 If any of the digits 0-4 are present in the list (each a
                 separate item), only at EXACTLY that verbose level the
@@ -149,7 +149,10 @@ class Printer(metaclass=GM_CT.Singleton):
             The character that should be used to separate items in
             *toprint. See the argument 'sep' of the python function
             print for more information.
-        **kwargs : any
+        wrap_preline : str
+            When wrapping the line, this bit should be added by the
+            wrapper to make things line up nicely.
+        kwargs : any
             These kwargs are forwarded to the call to python's print.
         """
 
@@ -182,7 +185,8 @@ class Printer(metaclass=GM_CT.Singleton):
                 is not all_verbose.isdisjoint(detailed_instructions))
         ):
             message = cls._print_preparation(
-                cls.verbose, toprint, line_length, cls.color_mode)
+                cls.verbose, toprint, line_length, cls.color_mode,
+                wrap_preline)
             print(message, **kwargs)
 
         # print to file
@@ -197,11 +201,14 @@ class Printer(metaclass=GM_CT.Singleton):
                 # change color to white here so color codes/markers are not
                 # present in the log files
                 message = cls._print_preparation(
-                    cls.verbose_logfile, toprint, line_length, "white")
+                    cls.verbose_logfile, toprint, line_length, "white",
+                    wrap_preline)
                 print(message, file=fhand, **kwargs)
 
     @classmethod
-    def _print_preparation(cls, verbose, message, line_length, color_mode):
+    def _print_preparation(
+        cls, verbose, message, line_length, color_mode, wrap_preline=""
+    ):
         """Format prints so they can be shown.
 
         After cls.print() has decided that something should indeed be
@@ -232,6 +239,9 @@ class Printer(metaclass=GM_CT.Singleton):
         color_mode : str
             What color palette should be used. Can be '24bit', '4bit' or
             'white' (colorless).
+        wrap_preline : str
+            When wrapping the line, this bit should be added by the
+            wrapper to make things line up nicely.
 
         Returns
         -------
@@ -251,7 +261,8 @@ class Printer(metaclass=GM_CT.Singleton):
         prelinelen = len(printpreline)
 
         # wordwrap the message to be printed (adjusted length for preline)
-        message = GM_SC.ColStr(message).wrap(line_length - prelinelen)
+        message = GM_SC.ColStr(message).wrap(
+            line_length - prelinelen, wrap_preline)
         # change the message color (so color_repeater knows what to expect)
         # make sure color markers/codes are repeated after a line break
         message = message.change_color(color_mode).repeat_color()
@@ -354,7 +365,7 @@ class Printer(metaclass=GM_CT.Singleton):
                     error_message += msg
 
             msg = (
-                " More information can be found in the documentation "
+                "More information can be found in the documentation "
                 "user pages using the following error "
                 f"code: {cls.colors.clear} {error_code}"
             )
@@ -477,7 +488,8 @@ class Printer(metaclass=GM_CT.Singleton):
         cls.print(
             verbose_level,
             f"{cls.colors.blue_hc}[{now}] {cls.colors.clear}{runtime}:  "
-            f"{msg}"
+            f"{msg}",
+            wrap_preline=" " * 32
         )
 
 
@@ -632,9 +644,9 @@ def color_test():  # run this one with word_wrap to 150 (8 colors per row)
     Due to the windows command line only going back so many lines, I
     used this function in a very manual way. There are two modii, one
     from 0 to 128, and one from 128 to 255. To run the first, make sure
-    that 'range_' is defined starting at 0, and the loop ends with
-    'if r == 128: break'. For the latter, expand that value (or comment
-    those last lines), and adjust the 'range_' definition to start at
+    that `range_` is defined starting at 0, and the loop ends with
+    `if r == 128: break`. For the latter, expand that value (or comment
+    those last lines), and adjust the `range_` definition to start at
     128.
     """
 
@@ -660,7 +672,7 @@ def color_test():  # run this one with word_wrap to 150 (8 colors per row)
             break
 
 
-def word_wrap(string, deslen=79):
+def word_wrap(string, deslen=79, wrap_preline=""):
     """Formats a given string to create soft-wrap-like behaviour.
 
     Parameters
@@ -675,6 +687,9 @@ def word_wrap(string, deslen=79):
     new_string : str or :class:`~GMAP.src.tools.StringClasses.ColStr`
         The original input `string`, but with newline characters added
         where necessary. Retains input type.
+    wrap_preline : str
+        When wrapping the line, this bit should be added by the
+        wrapper to make things line up nicely.
     """
 
     intype = type(string)
@@ -686,7 +701,14 @@ def word_wrap(string, deslen=79):
     # color swaps don't take up space in the command line, but here they do
     # represent a length of up to 16!
 
+    # We will split at whitespaces (words), but we do want to print all white
+    # spaces (except for those replaced by a line break). Therefore, when
+    # adding an item, the whitespace is added back in. However, for the very
+    # first item, that shouldn't happen. Therefore, we make sure to omit that
+    # very first one
+
     for item in startlst:  # each item is of type ColStr
+        startline = True  # Remember: we are now at the start of a line
         ilen = len(item)  # ColStrs take their colors into account for length
         if ilen > deslen:
             itemlst = item.split(" ")
@@ -695,13 +717,16 @@ def word_wrap(string, deslen=79):
                 slen = len(subitem)
                 blen = len(buildstr)
                 if blen + slen >= deslen:
-                    endlst.append(buildstr)
-                    buildstr = subitem
-                else:
-                    if blen == 0:
-                        buildstr += subitem
+                    # if this is the first of the line, that line starts with
+                    # an extra whitespace that should be stripped
+                    if startline:
+                        endlst.append(buildstr[1:])
+                        startline = False  # after this, no longer first
                     else:
-                        buildstr += " " + subitem
+                        endlst.append(buildstr)
+                    buildstr = wrap_preline + subitem
+                else:
+                    buildstr += " " + subitem
             endlst.append(buildstr)
         else:
             endlst.append(item)

@@ -66,6 +66,24 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
                 GMAPerrclass=GM_Ex.GmapOSError
             )
 
+        self.clib.transform_vectors.argtypes = [
+            ct.POINTER(ct.c_float),  # vectors_in
+            ct.c_int,  # n_vects
+            ct.POINTER(ct.c_float),  # tr_matrix
+            ct.POINTER(ct.c_float)  # vectors_out
+        ]
+        self.clib.transform_vectors.restype = None
+
+        self.clib.calc_CoM_box.argtypes = [
+            ct.POINTER(ct.c_float),  # positions_box
+            ct.POINTER(ct.c_float),  # masses
+            ct.POINTER(ct.c_int),  # res_first_ix
+            ct.POINTER(ct.c_int),  # res_last_ix
+            ct.c_int,  # nres
+            ct.POINTER(ct.c_float)  # CoM_box
+        ]
+        self.clib.calc_CoM_box.restype = None
+
         self.clib.calcVEG_perres_mm.argtypes = [
             ct.POINTER(ct.c_int),  # tocalc
             ct.c_int,  # n_osc_ats
@@ -111,6 +129,69 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
         ]
         self.clib.calcVEG_perres_mm_nocut.restype = None
 
+        self.clib.calcVEG_perres_mm_rhombic.argtypes = [
+            ct.POINTER(ct.c_int),  # tocalc
+            ct.c_int,  # n_osc_ats
+            ct.POINTER(ct.c_float),  # spherepos
+            ct.c_int,  # calc_choice
+            ct.POINTER(ct.c_float),  # positions_box
+            ct.POINTER(ct.c_float),  # charges
+            ct.POINTER(ct.c_int),  # influencer_atoms
+            ct.c_int,  # n_influencers
+            ct.POINTER(ct.c_float),  # COMs_box
+            ct.POINTER(ct.c_int),  # res_first_ix
+            ct.POINTER(ct.c_int),  # res_last_ix
+            ct.c_int,  # n_res
+            ct.POINTER(ct.c_int),  # local_atoms
+            ct.c_int,  # n_locals
+            ct.c_float,  # r_sphere
+            ct.c_float,  # r_smooth
+            ct.POINTER(ct.c_float),  # boxvects
+            ct.POINTER(ct.c_float),  # boxvects)inv
+            ct.POINTER(ct.c_float)  # out
+        ]
+        self.clib.calcVEG_perres_mm.restype = None
+
+        self.clib.calcVEG_perres_mm_rhombic_nocut.argtypes = [
+            ct.POINTER(ct.c_int),  # tocalc
+            ct.c_int,  # n_osc_ats
+            ct.POINTER(ct.c_float),  # spherepos
+            ct.c_int,  # calc_choice
+            ct.POINTER(ct.c_float),  # positions_box
+            ct.POINTER(ct.c_float),  # charges
+            ct.POINTER(ct.c_int),  # influencer_atoms
+            ct.c_int,  # n_influencers
+            ct.POINTER(ct.c_float),  # COMs_box
+            ct.POINTER(ct.c_int),  # res_first_ix
+            ct.POINTER(ct.c_int),  # res_last_ix
+            ct.c_int,  # n_res
+            ct.POINTER(ct.c_int),  # local_atoms
+            ct.c_int,  # n_locals
+            ct.c_float,  # r_sphere
+            ct.POINTER(ct.c_float),  # boxvects
+            ct.POINTER(ct.c_float),  # boxvects)inv
+            ct.POINTER(ct.c_float)  # out
+        ]
+        self.clib.calcVEG_perres_mm_nocut.restype = None
+
+    def positions_to_box(self, system):
+        self.clib.transform_vectors(
+            system.positions_c,
+            system.natoms,
+            system.boxvects_inv_c,
+            system.positions_box_c
+        )
+
+    def calc_CoM_box(self, system):
+        self.clib.calc_CoM_box(
+            system.positions_box_c,
+            system.masses_c,
+            system.residues.first_ix_c,
+            system.residues.last_ix_c,
+            system.nres,
+            system.residues.CoM_c
+        )
+
     def calcVEG_perres_mm(self, System, RunPars, oscillator):
         """Calculate the potential on each of the requested points.
 
@@ -134,7 +215,7 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
 
         Parameters
         ----------
-        System : :class:`~GMAP.src.tools.SystemReader.System
+        System : :class:`~GMAP.src.tools.SystemReader.System`
             The object that stores everything the program currently knows
             about the system being treated (names, numbers, types, masses,
             charges of all atoms, for example)
@@ -146,16 +227,16 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
         """
 
         # each input has as a comment the name of that variable in c.
-        self.clib.calcVEG_perres_mm(
+        self.clib.calcVEG_perres_mm_rhombic(
             oscillator.electrostatic_atoms_c,  # tocalc
             oscillator.n_estatic_atoms,  # n_osc_ats
             oscillator.VEG_refpos_c,  # spherepos
             oscillator.Map.Core.electrostatic_choice_c,  # calc_choice
-            System.positions_c,  # positions
+            System.positions_box_c,  # positions_box
             System.charges_c,  # charges
             System.influencers_atix_c,  # influencer_atoms
             System.n_influencers,  # n_influencers
-            System.residues.CoM_c,  # COMs
+            System.residues.CoM_c,  # COMs_box
             System.residues.first_ix_c,  # res_first_ix
             System.residues.last_ix_c,  # res_last_ix
             System.nres,  # n_res
@@ -163,8 +244,8 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
             oscillator.n_local_atoms,  # n_locals
             RunPars.estatic_range,  # r_sphere
             RunPars.estatic_smooth_range,  # r_smooth
-            System.halfbox_c,  # halfbox
-            System.boxdims_c,  # boxdims
+            System.boxvects_c,  # boxvects
+            System.boxvects_inv_c,  # boxvects_inv
             oscillator.VEGout_c  # out
         )
 
@@ -191,7 +272,7 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
 
         Parameters
         ----------
-        System : :class:`~GMAP.src.tools.SystemReader.System
+        System : :class:`~GMAP.src.tools.SystemReader.System`
             The object that stores everything the program currently knows
             about the system being treated (names, numbers, types, masses,
             charges of all atoms, for example)
@@ -203,23 +284,23 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
         """
 
         # each input has as a comment the name of that variable in c.
-        self.clib.calcVEG_perres_mm_nocut(
+        self.clib.calcVEG_perres_mm_rhombic_nocut(
             oscillator.electrostatic_atoms_c,  # tocalc
             oscillator.n_estatic_atoms,  # n_osc_ats
             oscillator.VEG_refpos_c,  # spherepos
             oscillator.Map.Core.electrostatic_choice_c,  # calc_choice
-            System.positions_c,  # positions
+            System.positions_box_c,  # positions_box
             System.charges_c,  # charges
             System.influencers_atix_c,  # influencer_atoms
             System.n_influencers,  # n_influencers
-            System.residues.CoM_c,  # COMs
+            System.residues.CoM_c,  # COMs_box
             System.residues.first_ix_c,  # res_first_ix
             System.residues.last_ix_c,  # res_last_ix
             System.nres,  # n_res
             oscillator.local_atoms_c,  # local_atoms
             oscillator.n_local_atoms,  # n_locals
             RunPars.estatic_range,  # r_sphere
-            System.halfbox_c,  # halfbox
-            System.boxdims_c,  # boxdims
+            System.boxvects_c,  # boxvects
+            System.boxvects_inv_c,  # boxvects_inv
             oscillator.VEGout_c  # out
         )

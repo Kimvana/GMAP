@@ -4,16 +4,16 @@ src/tools/PhysicsFunctions.py.
 
 Missing tests:
 
-(@ August 2nd '24):
-328-336, 1562  (5 missed statements)
+(@ January 10nd '25):
+329-337, 1598  (5 missed statements)
 
 (CUHTAT - currently unknown how to access this )
 - Map.append_core() - there was some issue with the corefile (CUHTAT)
-  (328-336)
+  (329-337)
   Any stuff wrong with the corefile will have its own warning call (and not
   use raise) - MI_MC_5
 - The structure of the map has no bonds (but the parameter giving bonds has
-  been used) (1562)
+  been used) (1598)
 """
 
 
@@ -1017,6 +1017,9 @@ class TestPairMap:
 
 
 class TestSingleCore:
+    # ham first values true and false are tested in these maps:
+    # test_Core   (ham_first   True)
+    # test_funcgroupfile  (ham_first    f)
     def test_parse_functional_group(self):
         cmdline = [
             "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
@@ -1739,6 +1742,8 @@ class TestSingleCore:
             "MI_MC_7", capfd, "test_MI_MC_7_9", "estatic_choice")
         self.basis_test_MI_MC(
             "MI_MC_7", capfd, "test_MI_MC_7_10", "estatic_choice")
+        self.basis_test_MI_MC(
+            "MI_MC_7", capfd, "test_MI_MC_7_11", "estatic_choice")
 
     def test_MI_MC_8(self, capfd):
         self.basis_test_MI_MC(
@@ -1772,7 +1777,10 @@ class TestSingleCore:
         self.basis_test_MI_MC("MI_MC_9", capfd, finish_before="used_atoms")
 
     def test_MI_MC_12(self, capfd):
-        self.basis_test_MI_MC("MI_MC_12", capfd, finish_before="func_group")
+        self.basis_test_MI_MC(
+            "MI_MC_12", capfd, "test_MI_MC_12_1", "ham_first")
+        self.basis_test_MI_MC(
+            "MI_MC_12", capfd, "test_MI_MC_12_2", "func_group")
 
     def basis_test_MI_MC(
         self, errcode, capfd, mapname=None, finish_before=None
@@ -2114,6 +2122,11 @@ def basic_setup_core(map_, finish_before=None):
 
     setattr(CoreBase, "can_output", CoreBase.parse_can_output(
         map_.rawcore, map_.RunPars, map_.directory))
+    if finish_before == "ham_first":
+        return CoreBase
+
+    setattr(CoreBase, "ham_first", CoreBase.parse_ham_first(
+        map_.rawcore, map_.directory))
     if finish_before == "func_group":
         return CoreBase
 
