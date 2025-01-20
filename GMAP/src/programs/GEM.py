@@ -615,17 +615,18 @@ def GEM(callcommand):
     GM_MR.manage_maps_singles(RunPars, singles_mapdict)
     GM_MR.manage_maps_pairs(RunPars, pairs_mapdict)
     GM_PT.Printer.add_time(
-        2, "Added all maps, start initializing MD system", "MDinit", "ms")
+        2, "Added all maps, start loading C libraries", "ClibLoad", "ms")
 
     # initialize C library
     GM_CL.VEG_CLib(RunPars)
 
+    GM_PT.Printer.add_time(
+        3, "Libraries loaded, start initializing MD system", "MDinit",
+        "ms"
+    )
+
     # Looking at MD system - finding oscillators.
     System = GM_SR.System(RunPars)
-
-    # Save overview of found coupling maps to file.
-    if "ham" in RunPars.output_data:
-        GM_Pl.plot_coupling_choices(RunPars, System)
 
     GM_PT.Printer.add_time(
         3, "Initialized MD system, start initializing maps", "MapInit", "ms")
@@ -634,20 +635,27 @@ def GEM(callcommand):
     for mapname in System.oscillators_ordered.keys():  # singles
         map_ = RunPars.requested_mapdict[mapname]
         map_.code.GM_post_init(map_, System)
+
+    # Report on what the system looks like (needs singles mapinit)
+    System.print_system(RunPars)
+
+    GM_PT.Printer.add_time(
+        3, "Initialization complete, start considering pairs", "MDinit", "ms")
+
+    # prepare all pair lookup tables.
+    System.order_oscillators_pairs(RunPars)
+
     for mapname in System.oscillators_ordered_coup.keys():  # pairs
         map_ = RunPars.requested_pairmapdict[mapname]
         map_.code.GM_post_init(map_, System)
-    GM_PT.Printer.add_time(
-        3, "Initialization complete, start loading C libraries",
-        "ClibLoad", "ms"
-    )
+
+    # Save overview of found coupling maps to file.
+    if "ham" in RunPars.output_data:
+        GM_Pl.plot_coupling_choices(RunPars, System)
 
     # Write output parameter file
     GM_FH.write_parameter_file(
         RefPars, RunPars, System, CmdPars, InPars, DefPars)
-
-    # Report on what the system looks like
-    System.print_system(RunPars)
 
     # calculate all (requested) frames
     trj_loop(RunPars, System)
