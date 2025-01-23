@@ -217,9 +217,9 @@ def GM_post_init(map_, system):
 
     if "TRESP" in main_runpars.requested_pairmapdict.keys():
         trespmap = main_runpars.requested_pairmapdict["TRESP"]
-        map_.rawcore["TRESP.charges_filename"] = "TRESP_gen.txt"
+        map_.rawcore["TRESP.charges_filename"] = ["TRESP_gen.txt"]
         map_.Core.TRESP_gen_charges = trespmap.code.get_charges(trespmap, map_)
-        map_.rawcore["TRESP.charges_filename"] = "TRESP_pro.txt"
+        map_.rawcore["TRESP.charges_filename"] = ["TRESP_pro.txt"]
         map_.Core.TRESP_pro_charges = trespmap.code.get_charges(trespmap, map_)
 
     if not map_.success:
