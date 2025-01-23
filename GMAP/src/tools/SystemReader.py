@@ -816,6 +816,12 @@ class System:
                 self.oscillators_ordered[mapname].append(oscillator)
                 self.oscillators_ordered_ix[mapname].append(oscix)
 
+        # After this part, we start sorting oscillators to make calculating
+        # couplings easier. However, when we do not need to calculate
+        # coupings, those steps are not needed (and suspected to eat RAM)
+        if "ham" not in RunPars.output_data:
+            return
+
         # for each oscillator pair, determine which coupling map should
         # treat it. That coupling map has the chance to change it.
         coup_v_allpair = {}
