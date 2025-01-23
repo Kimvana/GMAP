@@ -367,9 +367,8 @@ If you need a place to quickly write something down, do it here! It can be tidie
 
 
 - (KvA) TODO before PR:
-  - consider - do we want to report which groups we are coupling? or do we just mention the model name, and then have the couplingmatrix file do the rest?
-  - tests
 - (KvA) TODO:
+  - Is it desirable to make a separate cubic mode that's hopefully faster?
   - legacy support:
     - CoM calculation is different for AmideImaps.
     - Torii dipoles have a significantly different magnitude (is now 0.276, used to be 2.73)

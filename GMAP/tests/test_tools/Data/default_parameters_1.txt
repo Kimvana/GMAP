@@ -19,6 +19,11 @@ output_raman_filename           raman_tensor
 output_positions_filename       positions
 output_doublepos_filename       doublepos
 
+output_profiling_filename       prof.out
+output_profiling_tempfile       prof.temp
+output_profiling_graph_filename profout.png
+
+
 map_directory                   ../../../maps
 maps_to_use                     AmideSC
 couplings_to_use                DipDip :All
@@ -49,6 +54,9 @@ estatic_smooth_range            5  # this is in angstrom
 start_frame                     0
 number_frames                   999999999
 stop_frame                      999999999
+
+profiler                        False
+profiler_graph                  False
 
 hamiltonian_units               cm-1
 hamiltonian_multiplier          1

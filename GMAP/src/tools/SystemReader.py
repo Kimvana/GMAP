@@ -11,6 +11,7 @@ import GMAP.src.tools.DefaultMapFunctions as GM_DMF
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.ParameterParser as GM_PP
 import GMAP.src.tools.PrintTools as GM_PT
+# from GMAP.src.tools.PrintTools import devprint as dpr
 
 
 class System:
@@ -135,7 +136,7 @@ class System:
         # sort all oscillators, make usable lookup-tables. Also, determine
         # correct coupling map for each oscillator pair (and build tables
         # for the pairs, too)
-        self.order_oscillators(RunPars)
+        self.order_oscillators_singles(RunPars)
 
         for oscillator in self.oscillators:
             oscillator.frame_update(self)
@@ -476,6 +477,16 @@ class System:
             oscillator.oscix = oscix
 
         self.nosc = len(self.oscillators)
+        # GM_PT.Printer.print(2, f"found {self.nosc} oscillators.")
+        if self.nosc == 0:
+            GM_PT.Printer.warning(
+                "\nNone of the requested oscillators could be found in the "
+                "supplied MD system. Either change the choice for the "
+                "parameter maps_to_use, or for the parameters topology_file "
+                "and/or trajectory_file. Quitting!"
+                "MD_SU_7", True,
+                GMAPerrclass=GM_Ex.GmapValueError
+            )
 
     def find_oscillators_perstruct(self, struct, map_):
         """Finds all oscillators matching the given structure.
@@ -774,6 +785,8 @@ class System:
         outlist = []
 
         found_ix = base_residue[found_local_ix]  # get global index
+        found_bounds = self.universe.atoms[found_ix].bonded_atoms
+        found_bounds = set([atom.ix for atom in found_bounds])
 
         # convert struct-ix to residue-ix
         target_residue, target_local_ix = struct.indices[new_local_ix]
@@ -782,7 +795,7 @@ class System:
         for new_residue in all_oscillators[target_residue]:
             new_ix = new_residue[target_local_ix]  # get global index
             # if it is attached, add it
-            if self.confirm_bond(found_ix, new_ix):
+            if new_ix in found_bounds:
                 new_osc = base_residue[:]
 
                 # write the global indices of added piece to original
@@ -792,7 +805,7 @@ class System:
                 outlist.append(new_osc)
         return outlist
 
-    def order_oscillators(self, RunPars):
+    def order_oscillators_singles(self, RunPars):
         """Sort all present oscillators by their map.
 
         Parameters
@@ -816,11 +829,15 @@ class System:
                 self.oscillators_ordered[mapname].append(oscillator)
                 self.oscillators_ordered_ix[mapname].append(oscix)
 
-        # After this part, we start sorting oscillators to make calculating
-        # couplings easier. However, when we do not need to calculate
-        # coupings, those steps are not needed (and suspected to eat RAM)
-        if "ham" not in RunPars.output_data:
-            return
+    def order_oscillators_pairs(self, RunPars):
+        """Sort all present oscillators by their map.
+
+        Parameters
+        ----------
+        RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+            The 'main' RunPars instance containing all the basic
+            run-defining parameters.
+        """
 
         # for each oscillator pair, determine which coupling map should
         # treat it. That coupling map has the chance to change it.

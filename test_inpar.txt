@@ -15,16 +15,15 @@
 # topology_file D:\Data\PhD\Tutorials\C8S3\md_300_1ns_xtc4fs.tpr
 # trajectory_file D:\Data\PhD\Tutorials\C8S3\md_300_1ns_xtc4fs.gro
 
-topology_file     D:\Data\PhD\Tutorials\H2OinMeCN\topol.tpr
-trajectory_file   D:\Data\PhD\Tutorials\H2OinMeCN\traj.trr
-
+# topology_file D:\Data\PhD\Tutorials\PsbS-Deq\PsbS_Deq_A_200.tpr
+# trajectory_file D:\Data\PhD\Tutorials\PsbS-Deq\PsbS_Deq_A_200_short.xtc
 
 verbose 3
 verbose_logfile 4
-# maps_to_use   AmideBB AmideSC  # AmideSC
+maps_to_use   AmideBB AmideSC  # AmideSC
 # couplings_to_use  ProteinAmide   :All
 # couplings_to_use  DipDip  AmideSC:AmideSC
-maps_to_use Water
+# maps_to_use Water
 couplings_to_use DipDip :All
 
 output_format       txt
@@ -35,20 +34,24 @@ prevent_overwrite   False
 # estatics_method  perres_nocut
 
 start_frame 0
-number_frames 1
+number_frames 100000
 
 # estatics_method        perres_nocut
 estatic_smooth_range 0
 neutral_charge_threshold 0.01
 
-AmideSC.frequency_map_choice     Jansen
-AmideSC.dipole_map_choice        Torii
 
-AmideBB.frequency_map_choice     Jansen
-AmideBB.dipole_map_choice        Torii
+profiler                                    True
+profiler_graph                              True
 
-ProteinAmide.coupling_choice     DipDip
-ProteinAmide.NN_coupling_choice  DipDip
 
+AmideSC.frequency_map_choice      Jansen
+AmideSC.dipole_map_choice         Jansen
+
+AmideBB.frequency_map_choice      Jansen
+AmideBB.dipole_map_choice         Jansen
+
+ProteinAmide.coupling_choice      TCC
+ProteinAmide.NN_coupling_choice   GLDP
 
 # influencers_blacklist SOL | CL

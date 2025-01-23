@@ -27,7 +27,9 @@ For more information, check the manual on N/A.
 
 
 # standard lib imports
+import cProfile
 import datetime
+import subprocess
 import sys
 
 # 3rd party lib imports
@@ -42,6 +44,7 @@ import GMAP.src.tools.ParameterParser as GM_PP
 import GMAP.src.tools.PhysicsFunctions as GM_PF
 import GMAP.src.tools.Plotter as GM_Pl
 import GMAP.src.tools.PrintTools as GM_PT
+from GMAP.src.tools.PrintTools import devprint as dpr
 import GMAP.src.tools.ReferenceHandler as GM_RH
 import GMAP.src.tools.SystemReader as GM_SR
 
@@ -545,6 +548,12 @@ def print_in_output_filenames(RunPars):
     report_files(RunPars, "ram", "Raman", 2, 2)
     report_files(RunPars, "pos", "Positions", 2, 2)
     report_files(RunPars, "dbp", "Doublepos", 2, 2)
+    if RunPars.profiler:
+        fname = RunPars.output_profiling_filename
+        pr.print(2, f"profiler output:            {fname}")
+    if RunPars.profiler_graph:
+        fname = RunPars.output_profiling_graph_filename
+        pr.print(2, f"profiler visualization:     {fname}")
 
 
 def print_relevant_references(RunPars, system):
@@ -604,6 +613,12 @@ def GEM(callcommand):
         RunPars, singles_mapdict, pairs_mapdict, CmdPars, InPars, DefPars,
         RefPars
     ) = GM_PP.get_parameters(in_parfile, argslist)
+
+    # If requested, profile the run.
+    if RunPars.profiler:
+        profile = cProfile.Profile()
+        profile.enable()
+
     GM_PT.Printer.add_time(
         3, "Finished GMAP parameters, start adding maps", "AddMaps", "ms")
 
@@ -613,17 +628,18 @@ def GEM(callcommand):
     GM_MR.manage_maps_singles(RunPars, singles_mapdict)
     GM_MR.manage_maps_pairs(RunPars, pairs_mapdict)
     GM_PT.Printer.add_time(
-        2, "Added all maps, start initializing MD system", "MDinit", "ms")
+        2, "Added all maps, start loading C libraries", "ClibLoad", "ms")
 
     # initialize C library
     GM_CL.VEG_CLib(RunPars)
 
+    GM_PT.Printer.add_time(
+        3, "Libraries loaded, start initializing MD system", "MDinit",
+        "ms"
+    )
+
     # Looking at MD system - finding oscillators.
     System = GM_SR.System(RunPars)
-
-    # Save overview of found coupling maps to file.
-    if "ham" in RunPars.output_data:
-        GM_Pl.plot_coupling_choices(RunPars, System)
 
     GM_PT.Printer.add_time(
         3, "Initialized MD system, start initializing maps", "MapInit", "ms")
@@ -633,25 +649,53 @@ def GEM(callcommand):
         map_ = RunPars.requested_mapdict[mapname]
         map_.code.GM_post_init(map_, System)
 
-    # pair maps only need to initialize if couplings are to be calculated.
+    # Report on what the system looks like (needs singles mapinit)
+    System.print_system(RunPars)
+
+    GM_PT.Printer.add_time(
+        3, "Initialization complete, start considering pairs", "MDinit", "ms")
+
     if "ham" in RunPars.output_data:
+        # prepare all pair lookup tables.
+        System.order_oscillators_pairs(RunPars)
+
+        # let all coupling maps initialize
         for mapname in System.oscillators_ordered_coup.keys():  # pairs
             map_ = RunPars.requested_pairmapdict[mapname]
             map_.code.GM_post_init(map_, System)
-    GM_PT.Printer.add_time(
-        3, "Initialization complete, start loading C libraries",
-        "ClibLoad", "ms"
-    )
+
+        # Save overview of found coupling maps to file.
+        GM_Pl.plot_coupling_choices(RunPars, System)
 
     # Write output parameter file
     GM_FH.write_parameter_file(
         RefPars, RunPars, System, CmdPars, InPars, DefPars)
 
-    # Report on what the system looks like
-    System.print_system(RunPars)
-
     # calculate all (requested) frames
     trj_loop(RunPars, System)
+
+    dpr("creating stats")
+    # finalize profiler
+    if RunPars.profiler:
+        profile.create_stats()
+        profile.dump_stats(RunPars.output_profiling_filename)
+
+    dpr("running gprof")
+    if RunPars.profiler_graph:
+        strcommand = [
+            "gprof2dot", "-f", "pstats",
+            RunPars.output_profiling_filename, "-o",
+            RunPars.output_profiling_tempfile]
+        subprocess.run(strcommand)
+
+        dpr("running dot")
+        strcommand = [
+            "dot", "-Tpng", "-o", RunPars.output_profiling_graph_filename,
+            RunPars.output_profiling_tempfile]
+        subprocess.run(strcommand)
+
+        # remove the tempfile again
+        RunPars.output_profiling_tempfile.unlink()
 
     print_calculation_summary(RunPars, System)
 
