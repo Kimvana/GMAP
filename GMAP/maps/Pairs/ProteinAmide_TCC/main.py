@@ -3,9 +3,8 @@
 # from numba import njit
 import numpy as np
 
-# gmap imports
-# import GMAP.src.tools.MathFunctions as GM_MF
-# from GMAP.src.tools.PrintTools import devprint as dpr
+# GMAP imports
+from GMAP.src.tools import MathFunctions as GM_MF
 
 # own module imports
 import ProteinAmide_TCC_code.TCCclib as MC_TC
@@ -37,29 +36,31 @@ def GM_prep_coupling(map_, system, oscixlist, osclist):
 
     map_.clib.prep_coupling(map_, system)
 
-    # for oscix, osc in zip(oscixlist, osclist):
-    #     COvec = GM_MF.PBC_boxdiff_triclin(
-    #         osc.positions_box[1], osc.positions_box[0], system.boxvects)
-    #     COvec /= GM_MF.vec3_len(COvec)
 
-    #     CNvec = GM_MF.PBC_boxdiff_triclin(
-    #         osc.positions_box[3], osc.positions_box[0], system.boxvects)
-    #     CNvec = GM_MF.project(COvec, CNvec)
-    #     CNvec /= GM_MF.vec3_len(CNvec)
-    #     z = GM_MF.crossprod(COvec, CNvec)
-    #     z /= GM_MF.vec3_len(z)
+# this python version is deprecated as c is faster, but I'm keeping this here
+# for reference.
+def prep_coupling(oscixlist, osclist, system, map_):
+    for oscix, osc in zip(oscixlist, osclist):
+        COvec = GM_MF.PBC_boxdiff_triclin(
+            osc.positions_box[1], osc.positions_box[0], system.boxvects)
+        COvec /= GM_MF.vec3_len(COvec)
 
-    #     if osc.Map.name == "AmideSC" or osc.resnames[1] != "PRO":
-    #         alpha = map_.alpha_gen
-    #         v = map_.v_gen
-    #     else:
-    #         alpha = map_.alpha_pro
-    #         v = map_.v_pro
+        CNvec = GM_MF.PBC_boxdiff_triclin(
+            osc.positions_box[3], osc.positions_box[0], system.boxvects)
+        CNvec = GM_MF.project(COvec, CNvec)
+        CNvec /= GM_MF.vec3_len(CNvec)
+        z = GM_MF.crossprod(COvec, CNvec)
+        z /= GM_MF.vec3_len(z)
 
-    #     rotmat = np.array([COvec, CNvec, z])
-    #     map_.map_tcc_v[map_.oscix_to_ix[oscix]] = np.dot(v, rotmat) * alpha
+        if osc.Map.name == "AmideSC" or osc.resnames[1] != "PRO":
+            alpha = map_.alpha_gen
+            v = map_.v_gen
+        else:
+            alpha = map_.alpha_pro
+            v = map_.v_pro
 
-    # quit()
+        rotmat = np.array([COvec, CNvec, z])
+        map_.map_tcc_v[map_.oscix_to_ix[oscix]] = np.dot(v, rotmat) * alpha
 
 
 def GM_calc_coupling(map_, system, hamiltonian):
@@ -81,12 +82,9 @@ def GM_calc_coupling(map_, system, hamiltonian):
     hamiltonian_c = np.ctypeslib.as_ctypes(np.ravel(hamiltonian))
     map_.clib.calc_coupling(map_, system, hamiltonian_c)
 
-    # for pair in map_.allpairs:
-    #     J = calc_coupling(*pair, map_, system)
-    #     hamiltonian[pair[0], pair[1]] = J
-    #     hamiltonian[pair[1], pair[0]] = J
 
-
+# this python version is deprecated as c is faster, but I'm keeping this here
+# for reference.
 def calc_coupling(oscix1, oscix2, map_, system):
     """Calculates the coupling value for the spcific provided pair.
 
@@ -138,8 +136,6 @@ def calc_coupling(oscix1, oscix2, map_, system):
 
     v1 = map_.map_tcc_v[map_.oscix_to_ix[oscix1]]
     v2 = map_.map_tcc_v[map_.oscix_to_ix[oscix2]]
-    # dpr(oscix1, oscix2, "\n", v1, "\n", v2)
-    # dpr("XXXXXXXXXX", np.sum(v2[None, :, :] * diff, axis=2))
 
     J = ir * dq1[:, None] * dq2[None, :]
     J -= ir3 * (

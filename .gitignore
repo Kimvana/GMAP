@@ -7,7 +7,6 @@ env_**
 **.exp
 **.lib
 **.obj
-**.png
 sphinx_docs/_build/**
 **.png
 
