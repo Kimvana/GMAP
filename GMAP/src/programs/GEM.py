@@ -231,9 +231,12 @@ def trj_loop(RunPars, System):
     for mapname in System.oscillators_ordered.keys():  # singles
         map_ = RunPars.requested_mapdict[mapname]
         map_.code.GM_pre_run(map_, System)
-    for mapname in System.oscillators_ordered_coup.keys():  # pairs
-        map_ = RunPars.requested_pairmapdict[mapname]
-        map_.code.GM_pre_run(map_, System)
+
+    # pair maps only need to prepare if couplings are to be calculated.
+    if "ham" in RunPars.output_data:
+        for mapname in System.oscillators_ordered_coup.keys():  # pairs
+            map_ = RunPars.requested_pairmapdict[mapname]
+            map_.code.GM_pre_run(map_, System)
 
     # And in case maps did anything weird...
     RunPars.manage_dtypes()
@@ -291,9 +294,12 @@ def trj_loop(RunPars, System):
         for mapname in System.oscillators_ordered.keys():  # singles
             map_ = RunPars.requested_mapdict[mapname]
             map_.code.GM_pre_frame(map_, System)
-        for mapname in System.oscillators_ordered_coup.keys():  # pairs
-            map_ = RunPars.requested_pairmapdict[mapname]
-            map_.code.GM_pre_frame(map_, System)
+
+        # pair maps only need to be called if couplings are to be calculated.
+        if "ham" in RunPars.output_data:
+            for mapname in System.oscillators_ordered_coup.keys():  # pairs
+                map_ = RunPars.requested_pairmapdict[mapname]
+                map_.code.GM_pre_frame(map_, System)
 
         GM_PT.Printer.add_time(
             4, "map init done. next: calculation", "Calc", "ms")
@@ -308,9 +314,12 @@ def trj_loop(RunPars, System):
         for mapname in System.oscillators_ordered.keys():  # singles
             map_ = RunPars.requested_mapdict[mapname]
             map_.code.GM_post_frame(map_, System)
-        for mapname in System.oscillators_ordered_coup.keys():  # pairs
-            map_ = RunPars.requested_pairmapdict[mapname]
-            map_.code.GM_post_frame(map_, System)
+
+        # pair maps only need to be called if couplings are to be calculated.
+        if "ham" in RunPars.output_data:
+            for mapname in System.oscillators_ordered_coup.keys():  # pairs
+                map_ = RunPars.requested_pairmapdict[mapname]
+                map_.code.GM_post_frame(map_, System)
 
         GM_PT.Printer.add_time(
             4, "map final done. next: write output", "FrameWrite", "ms")
@@ -333,9 +342,12 @@ def trj_loop(RunPars, System):
     for mapname in System.oscillators_ordered.keys():  # singles
         map_ = RunPars.requested_mapdict[mapname]
         map_.code.GM_post_run(map_, System)
-    for mapname in System.oscillators_ordered_coup.keys():  # pairs
-        map_ = RunPars.requested_pairmapdict[mapname]
-        map_.code.GM_post_run(map_, System)
+
+    # pair maps only need to do postcalc if couplings are to be calculated.
+    if "ham" in RunPars.output_data:
+        for mapname in System.oscillators_ordered_coup.keys():  # pairs
+            map_ = RunPars.requested_pairmapdict[mapname]
+            map_.code.GM_post_run(map_, System)
 
     # print all that the user does not yet know
     # (profiler?)
@@ -561,10 +573,11 @@ def print_relevant_references(RunPars, system):
         all_references.append(
             singles_map.code.GM_report_references(singles_map, system))
 
-    for pairs_map in system.oscillators_ordered_coup.keys():
-        pairs_map = RunPars.requested_pairmapdict[pairs_map]
-        all_references.append(
-            pairs_map.code.GM_report_references(pairs_map, system))
+    if "ham" in RunPars.output_data:
+        for pairs_map in system.oscillators_ordered_coup.keys():
+            pairs_map = RunPars.requested_pairmapdict[pairs_map]
+            all_references.append(
+                pairs_map.code.GM_report_references(pairs_map, system))
 
     GM_RH.report_references(RunPars, all_references)
 
@@ -619,9 +632,12 @@ def GEM(callcommand):
     for mapname in System.oscillators_ordered.keys():  # singles
         map_ = RunPars.requested_mapdict[mapname]
         map_.code.GM_post_init(map_, System)
-    for mapname in System.oscillators_ordered_coup.keys():  # pairs
-        map_ = RunPars.requested_pairmapdict[mapname]
-        map_.code.GM_post_init(map_, System)
+
+    # pair maps only need to initialize if couplings are to be calculated.
+    if "ham" in RunPars.output_data:
+        for mapname in System.oscillators_ordered_coup.keys():  # pairs
+            map_ = RunPars.requested_pairmapdict[mapname]
+            map_.code.GM_post_init(map_, System)
     GM_PT.Printer.add_time(
         3, "Initialization complete, start loading C libraries",
         "ClibLoad", "ms"
