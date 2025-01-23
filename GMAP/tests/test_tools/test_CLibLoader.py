@@ -86,6 +86,7 @@ class TestVClib:
         ], dtype="float32").sum(0).round(7)
 
         print(oscillator.VEGout)
+        print(ans)
         assert np.all(oscillator.VEGout[:, 0].round(7) == ans)
 
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -123,6 +124,7 @@ class TestVClib:
             [-0.00024418964909623079469788, -0.000268496579170856763],
             [-0.00034421994730017355881788, -0.000345621800206041948]
         ], dtype="float32").round(8)
+        print(ans)
         assert np.all(oscillator.VEGout[:, 1:4].round(8) == ans.T)
 
         # weights_res2 = 1, 0,16630631158
@@ -166,7 +168,9 @@ class TestVClib:
             [-0.000003743181, 0.000000513291, 0.000005141681],  # Gxz
             [-0.000008146924, 0.000001026582, 0.000002570840]   # Gyz
         ]], dtype="float32").sum(2).round(9)
+        print(ans)
         assert np.all(oscillator.VEGout[:, 4:].round(9) == ans)
+        # assert False
 
     def test_calcVEG_perres_mm_influencers(self):
         cmdline = ["-md", "maps\\;"]
@@ -288,6 +292,9 @@ class TestVClib:
             [0.01666666666667, 0.0153809753478],
             [-0.0181758109502614, -0.01666666666667]
         ], dtype="float32").sum(0).round(7)
+
+        print(oscillator.VEGout)
+        print(ans)
         assert np.all(oscillator.VEGout[:, 0].round(7) == ans)
 
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

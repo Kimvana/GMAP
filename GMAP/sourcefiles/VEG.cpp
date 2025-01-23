@@ -365,7 +365,7 @@ extern "C" {
         // analyze all surrounding charges on a per-residue basis
         for (resnum = 0; resnum < n_res; resnum++) {
             // find distance to residue in box coordinates
-            VM_PBC_diff_cubic(
+            VM_PBC_diff_mod1(
                 spherepos_box, &COMs_box[resnum * 3], halfbox, boxdims,
                 diff_box);
             // convert difference in box coordinates to cartesian
@@ -402,7 +402,7 @@ extern "C" {
                 }
 
                 // smoothing on a per-atom basis
-                VM_PBC_diff_cubic(
+                VM_PBC_diff_mod1(
                     spherepos_box, &positions_box[sysix * 3], halfbox, boxdims,
                     diff_box);
                 VM_vect_at_matrix33(diff_box, boxvects, diff);
@@ -419,7 +419,7 @@ extern "C" {
                 for (oscix = 0; oscix < n_osc_ats; oscix++) {
                     // yes, its needed (and allowed/possible) to redo PBCdiff
                     // and dist(2) again.
-                    VM_PBC_diff_cubic(
+                    VM_PBC_diff_mod1(
                         &refpos[oscix * 3], &positions_box[sysix * 3],
                         halfbox, boxdims, diff_box);
                     VM_vect_at_matrix33(diff_box, boxvects, diff);
@@ -504,7 +504,7 @@ extern "C" {
         // analyze all surrounding charges on a per-residue basis
         for (resnum = 0; resnum < n_res; resnum++) {
             // find distance to residue in box coordinates
-            VM_PBC_diff_cubic(
+            VM_PBC_diff_mod1(
                 spherepos_box, &COMs_box[resnum * 3], halfbox, boxdims,
                 diff_box);
             // convert difference in box coordinates to cartesian
@@ -542,7 +542,7 @@ extern "C" {
                 for (oscix = 0; oscix < n_osc_ats; oscix++) {
                     // yes, its needed (and allowed/possible) to redo PBCdiff
                     // and dist(2) again.
-                    VM_PBC_diff_cubic(
+                    VM_PBC_diff_mod1(
                         &refpos[oscix * 3], &positions_box[sysix * 3],
                         halfbox, boxdims, diff_box);
                     VM_vect_at_matrix33(diff_box, boxvects, diff);

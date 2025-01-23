@@ -21,6 +21,11 @@ output_raman_filename(orf)[path_rel_op_c]         raman_tensor
 output_positions_filename(opf)[path_rel_op_c]     positions
 output_doublepos_filename[path_rel_op_c]          doublepos
 
+output_profiling_filename[path_rel_op_c]          prof.out
+output_profiling_tempfile[path_rel_op_c]          prof.temp
+output_profiling_graph_filename[path_rel_op_c]    profout.png
+
+
 map_directory(md)[list_path_sep]               ../../../maps
 maps_to_use(um)[list_str]                         AmideSC
 couplings_to_use[list_str]                        DipDip :All
@@ -51,6 +56,9 @@ estatic_smooth_range[float]                       5  # this is in angstrom
 start_frame[int]                                  0
 number_frames[int]                                999999999
 stop_frame[int]                                   999999999
+
+profiler[bool]                                    False
+profiler_graph[bool]                              False
 
 # output units
 hamiltonian_units[str]                             cm-1 [eV]
