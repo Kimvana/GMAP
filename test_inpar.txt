@@ -26,17 +26,17 @@ maps_to_use   AmideBB AmideSC  # AmideSC
 # maps_to_use Water
 couplings_to_use DipDip :All
 
-output_format txt
-# output_data dip ham ene ram pos dbp
-output_data ham
-prevent_overwrite False
+output_format       txt
+# output_data         dip ham ene ram pos dbp
+output_data         dip ene ram pos dbp
+prevent_overwrite   False
 
 # estatics_method  perres_nocut
 
 start_frame 0
 number_frames 100000
 
-estatics_method        perres_nocut
+# estatics_method        perres_nocut
 estatic_smooth_range 0
 neutral_charge_threshold 0.01
 
