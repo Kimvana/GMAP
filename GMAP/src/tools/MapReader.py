@@ -546,7 +546,8 @@ class SingleMap(Map):
         self.complete_code((
             "adjust_RunPars",
             "adjust_map_core_raw",
-            "adjust_oscillators"
+            "adjust_oscillators",
+            "filter_oscillators"
         ))
         self.code.GM_adjust_RunPars(self)
 
@@ -1701,7 +1702,7 @@ class SingleCore:
                 "\nCould not interpret the choice for the parameter "
                 "'used_atoms'"
                 f" in the file {mapdir / 'core.txt'}. Please make sure the "
-                "choice consists of nothing but numbers separated by spaces"
+                "choice consists of nothing but numbers separated by spaces "
                 "and/or ranges of integers separated by a hyphen.",
                 "MI_MC_7", exception=ex
             )

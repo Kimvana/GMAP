@@ -24,6 +24,8 @@ output_profiling_graph_filename profout.png
 map_directory                   GMAP/maps
 maps_to_use                     AmideSC
 couplings_to_use                DipDip :All
+singles_whitelist               :All :All
+singles_blacklist               :All :none
 influencers_whitelist           :All
 influencers_blacklist           :None
 influencers_file                GMAP/sourcefiles/infl_file_base.txt

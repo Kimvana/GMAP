@@ -47,6 +47,8 @@ output_profiling_graph_filename[path_rel_op_c]    profout.png
 # ----- Choosing models and methods -----
 map_directory(md)[list_path_sep]                  ../maps
 maps_to_use(um)[list_str]                         AmideSC
+singles_whitelist[list_str]                       :All :All
+singles_blacklist[list_str]                       :All :none
 influencers_whitelist[list_str]                   :All
 influencers_blacklist[list_str]                   :None
 influencers_file[path_sep]                        infl_file_base.txt

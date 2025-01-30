@@ -26,15 +26,16 @@ maps_to_use   AmideBB AmideSC  # AmideSC
 # maps_to_use Water
 couplings_to_use DipDip :All
 
+
 output_format       txt
-# output_data         dip ham ene ram pos dbp
-output_data         dip ene ram pos dbp
+output_data         dip ham ene ram pos dbp
+# output_data         dip ene ram pos dbp
 prevent_overwrite   False
 
 # estatics_method  perres_nocut
 
 start_frame 0
-number_frames 100000
+number_frames 1
 
 # estatics_method        perres_nocut
 estatic_smooth_range 0
@@ -43,6 +44,9 @@ neutral_charge_threshold 0.01
 
 profiler                                    True
 profiler_graph                              True
+
+# singles_whitelist   AmideBB resnames LEU
+# singles_blacklist   AmideBB resnums   20-80
 
 
 AmideSC.frequency_map_choice      Jansen
