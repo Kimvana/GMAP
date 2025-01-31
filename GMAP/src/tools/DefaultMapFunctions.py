@@ -52,8 +52,8 @@ def get_filter_oscillators():
         """
 
         runpars = map_.RunPars.MainRunPars
-        wl_rules = runpars.singles_whitelist.get(map_.name, [[":All"]])
-        bl_rules = runpars.singles_blacklist.get(map_.name, [[":None"]])
+        wl_rules = runpars.singles_whitelist_dict.get(map_.name, [[":All"]])
+        bl_rules = runpars.singles_blacklist_dict.get(map_.name, [[":None"]])
 
         # the 'rules' are lists of lists. Each sublist corresponds to a line
         # from the input file, each item within the sublist is a 'word'
@@ -135,79 +135,80 @@ def filter_single_line(line, BW, found, avail, map_, system):
         black/whitelist rules.
     """
 
-    if line[0].lower() == ":all":
-        if BW == "white":
-            return True, avail.copy()
-        else:
-            return True, set()
-    elif line[0].lower() == ":none":
-        if BW == "white":
-            return True, set()
-        else:
-            return True, found.copy()
-    elif line[0].lower() == "resnums":
-        # we can use/support hyphens, too, but not commas/periods.
-        if not set("".join(line[1:])).issubset("1234567890-"):
-            GM_PT.Printer.warning(
-                f"\nUsing the parameter 'singles_{BW}list', the map "
-                f"{map_.name}"
-                "was requestested certain residue numbers, but this "
-                "specification used non-numeric characters. Please make sure "
-                "to only use numbers and hyphens. ",
-                "SU_NP_8", True, GMAPerrclass=GM_Ex.GmapFileSyntaxError
-            )
-        try:
-            resnums = set(map_.Core.allow_ranges(line[1:], system.nres))
-        except IndexError as IErr:
-            GM_PT.Printer.warning(
-                f"\nUsing the parameter 'singles_{BW}list', the map "
-                f"{map_.name}"
-                "was requestested certain residue numbers, but the specific "
-                "residue numbers requested do not exist in the provided MD "
-                "system. ",
-                "SU_NP_8", True, exception=IErr,
-                GMAPerrclass=GM_Ex.GmapIndexError
-            )
-        except Exception as Ex:
-            GM_PT.Printer.warning(
-                f"\nUsing the parameter 'singles_{BW}list', the map "
-                f"{map_.name}"
-                "was requestested certain residue numbers, but the specific "
-                "choice provided could not be interpreted. Please make sure "
-                "the "
-                "choice consists of nothing but numbers separated by spaces "
-                "and/or ranges of integers separated by a hyphen.",
-                "SU_NP_8", True, exception=Ex,
-                GMAPerrclass=GM_Ex.GmapIndexError
-            )
+    match line[0].lower():
+        case ":all":
+            if BW == "white":
+                return True, avail.copy()
+            else:
+                return True, set()
+        case ":none":
+            if BW == "white":
+                return True, set()
+            else:
+                return True, found.copy()
+        case "resnums":
+            # we can use/support hyphens, too, but not commas/periods.
+            if not set("".join(line[1:])).issubset("1234567890-"):
+                GM_PT.Printer.warning(
+                    f"\nUsing the parameter 'singles_{BW}list', the map "
+                    f"{map_.name}"
+                    "was requestested certain residue numbers, but this "
+                    "specification used non-numeric characters. Please make "
+                    "sure to only use numbers and hyphens. ",
+                    "SU_NP_8", True, GMAPerrclass=GM_Ex.GmapFileSyntaxError
+                )
+            try:
+                resnums = set(map_.Core.allow_ranges(line[1:], system.nres))
+            except IndexError as IErr:
+                GM_PT.Printer.warning(
+                    f"\nUsing the parameter 'singles_{BW}list', the map "
+                    f"{map_.name}"
+                    "was requestested certain residue numbers, but the "
+                    "specific residue numbers requested do not exist in the "
+                    "provided MD system. ",
+                    "SU_NP_8", True, exception=IErr,
+                    GMAPerrclass=GM_Ex.GmapIndexError
+                )
+            except Exception as Ex:
+                GM_PT.Printer.warning(
+                    f"\nUsing the parameter 'singles_{BW}list', the map "
+                    f"{map_.name}"
+                    "was requestested certain residue numbers, but the "
+                    "specific choice provided could not be interpreted. "
+                    "Please make sure the choice consists of nothing but "
+                    "numbers separated by spaces "
+                    "and/or ranges of integers separated by a hyphen.",
+                    "SU_NP_8", True, exception=Ex,
+                    GMAPerrclass=GM_Ex.GmapIndexError
+                )
 
-        # filtered = []
-        # for oscillator in avail:
-        #     if system.resnums[oscillator.used_atoms[0]] in resnums:
-        #         filtered.append(oscillator)
-        # filtered = set(filtered)
-        filtered = {
-            osc for osc in avail
-            if system.resnums[osc.used_atoms[0]] in resnums
-        }
-        if BW == "white":
-            found |= filtered
-        else:
-            found -= filtered
-        return True, found
-    elif line[0].lower() == "resnames":
-        resnames = set(line[1:])
-        filtered = {
-            osc for osc in avail
-            if system.resnames[osc.used_atoms[0]] in resnames
-        }
-        if BW == "white":
-            found |= filtered
-        else:
-            found -= filtered
-        return True, found
-    else:
-        return False, found
+            # filtered = []
+            # for oscillator in avail:
+            #     if system.resnums[oscillator.used_atoms[0]] in resnums:
+            #         filtered.append(oscillator)
+            # filtered = set(filtered)
+            filtered = {
+                osc for osc in avail
+                if system.resnums[osc.used_atoms[0]] in resnums
+            }
+            if BW == "white":
+                found |= filtered
+            else:
+                found -= filtered
+            return True, found
+        case "resnames":
+            resnames = set(line[1:])
+            filtered = {
+                osc for osc in avail
+                if system.resnames[osc.used_atoms[0]] in resnames
+            }
+            if BW == "white":
+                found |= filtered
+            else:
+                found -= filtered
+            return True, found
+        case _:
+            return False, found
 
 
 def get_post_init():

@@ -20,7 +20,8 @@
 
 verbose 3
 verbose_logfile 4
-maps_to_use   AmideBB AmideSC  # AmideSC
+# maps_to_use   AmideBB AmideSC
+maps_to_use   AmideSC
 # couplings_to_use  ProteinAmide   :All
 # couplings_to_use  DipDip  AmideSC:AmideSC
 # maps_to_use Water
@@ -47,6 +48,7 @@ profiler_graph                              True
 
 # singles_whitelist   AmideBB resnames LEU
 # singles_blacklist   AmideBB resnums   20-80
+singles_whitelist   AmideSC resnames ASN
 
 
 AmideSC.frequency_map_choice      Jansen

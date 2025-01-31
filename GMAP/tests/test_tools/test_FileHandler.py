@@ -503,6 +503,7 @@ def test_write_legend():
         )
 
 
+@pytest.mark.nofiles
 def test_write_parameter_file(tmp_path):
     # curdir = Path(__file__).resolve().parent
 

@@ -367,10 +367,8 @@ If you need a place to quickly write something down, do it here! It can be tidie
 
 
 - (KvA) TODO before PR:
-  - write sphinx documentation (docstrings already done) for new parameters in input parameter file, new function in singles main.py
   - implement other filter for BB map? Maybe to filter on the residue name of the second residue? This would in part be to serve as an example...
   - implement tests for new features in GMAP.
-  - manual test whether the results obtained with the BWfilter are the same as without
 - (KvA) TODO:
   - Is it desirable to make a separate cubic mode that's hopefully faster?
   - legacy support:

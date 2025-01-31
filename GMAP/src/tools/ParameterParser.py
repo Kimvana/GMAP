@@ -2411,7 +2411,7 @@ class RunPars:
                         choicedict[map_] = [line[1:]]
                     else:
                         choicedict[map_].append(line[1:])
-            setattr(self, parname, choicedict)
+            setattr(self, f"{parname}_dict", choicedict)
 
     def resolve_errorcodes(self):
         """Fixes any issues due to merging errorcodes from different

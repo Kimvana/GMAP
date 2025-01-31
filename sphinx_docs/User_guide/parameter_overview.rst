@@ -451,6 +451,44 @@ Then, group selection is where you explain what type of oscillators are to be co
 - 'X:' indicates any couplings involving an oscillator of type 'X' - the type of the other oscillator does not matter. The available oscillator types are the same as the available choices for the parameter 'maps_to_use'. There should be no spaces between group names and the colon!
 
 
+singles_whitelist
+=================
+| (no shorthand available)
+| (used by: GEM)
+
+Unlike the influencers, both the whitelist and blacklist variants of this parameter are allowed in a single file. You may even have multiple occurences of each in a single file. First, all whitelists are read/interpreted in order of occurence in the file, then all blacklists.
+
+This parameter gives you more control over what singles/oscillators should be treated. Ones that are chosen will have their properties (frequency/dipole moment/position) calculated and written to the output files. Those that are omitted will not be treated at all.
+
+Anything whitelisted will be included, unless a more specific blacklist rule excludes it again.
+
+This parameter takes a variable amount of arguments. If a map doesn't make any changes, there's two or three: ``singles_whitelist [maps] [method] [choice]``
+``maps`` indicates to which map(s) the choice should be applied. ``:All`` applies the filter to all maps used. ``AA`` applies the choice to only the map named 'AA' (use the same names as those used for the parameter maps_to_use), ``AA,BB`` applies it to both the map named 'AA' and the map named 'BB'. You can put any number of maps here, just make sure that there are no white spaces!
+
+.. note::
+    A map can change the function applying these black- and whitelists. That means maps can support more ways of filtering, or exclude existing ones. Check the documentation of your maps to see what options are available - if nothing is noted/specified, the map most likely just uses the default implementation mentioned here.
+
+``method`` explains how the rest of this line should be interpreted. How you want to select. The two most simple ones are ``:All`` (just whitelist all singles) and ``:None`` (whitelist none of the singles). The other two options are ``resnums`` and ``resnames``. Individual maps may add/remove choices here.
+
+``choice`` gives more details. If you picked 'resnums' as the method, you can give the numbers of the residues that should be included. Any oscillator whose first atom is within a residue with its index / residue number in the provided list will be selected for. You can either provide a list of individual numbers (separated by whitespaces), or a range of numbers: ``1 3-5 7`` means the same as ``1 3 4 5 7``. If you picked 'resnames' as the method, the program instead looks at the name of the residue of the first atom of the oscillator. If you want to allow multiple options, you just add them, separated by a whitespace.
+
+By default, this parameter has the following setting: ``singles_whitelist :All :All``
+
+
+singles_blacklist
+=================
+| (no shorthand available)
+| (used by: GEM)
+
+Unlike the influencers, both the whitelist and blacklist variants of this parameter are allowed in a single file. You may even have multiple occurences of each in a single file. First, all whitelists are read/interpreted in order of occurence in the file, then all blacklists.
+
+This parameter gives you more control over what singles/oscillators should be treated. Ones that are chosen will have their properties (frequency/dipole moment/position) calculated and written to the output files. Those that are omitted will not be treated at all.
+
+Anything blacklisted will be omitted. For more details on exact specifications, see the parameter 'singles_whitelist' above.
+
+By default, this parameter has the following setting: ``singles_blacklist :All :None``
+
+
 influencers_whitelist
 =====================
 | (no shorthand available)

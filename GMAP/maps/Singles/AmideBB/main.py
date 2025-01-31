@@ -159,7 +159,9 @@ def GM_filter_oscillators(map_, system, oscillator_list):
     NtermNBs = {osc.NtermNB for osc in filtered_oscs}
 
     filtered = set(filtered_oscs)
-    map_.non_filtered_oscs = (CtermNBs | NtermNBs) - filtered
+    # a group on a chain end has no NB (hence 'none') so we need to remove
+    # that one too
+    map_.non_filtered_oscs = (CtermNBs | NtermNBs) - filtered - {None}
 
     return filtered_oscs
 
