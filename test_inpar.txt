@@ -50,6 +50,9 @@ profiler_graph                              True
 # singles_blacklist   AmideBB resnums   20-80
 singles_whitelist   AmideSC resnames ASN
 
+singles_whitelist   :All :All
+singles_blacklist   :All :None
+
 
 AmideSC.frequency_map_choice      Jansen
 AmideSC.dipole_map_choice         Jansen

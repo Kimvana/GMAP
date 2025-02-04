@@ -2157,6 +2157,12 @@ class RunPars:
         self.resolve_framenums(CmdPars, InPars, DefPars, RefPars)
         self.resolve_couplings(CmdPars, InPars, DefPars)
         self.resolve_estatics()
+        # dpr(self.singles_whitelist)
+        # dpr(RefPars.choices.get("singles_whitelist", []))
+        # dpr(DefPars.choices.get("singles_whitelist", []))
+        # dpr(InPars.choices.get("singles_whitelist", []))
+        # dpr(CmdPars.choices.get("singles_whitelist", []))
+        # raise KeyError
         self.resolve_singles_BWlist()
 
     def resolve_framenums(self, CmdPars, InPars, DefPars, RefPars):

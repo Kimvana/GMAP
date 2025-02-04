@@ -1612,7 +1612,8 @@ class SingleCore:
                     self.success = False
                     return
 
-    def allow_ranges(self, ix_list, lenlist):
+    @staticmethod
+    def allow_ranges(ix_list, lenlist):
         """Allows the user to select a range of integers to be
         included in a map. Range of integers should be formatted
         with a hyphen between two integers of choice.
@@ -1646,6 +1647,8 @@ class SingleCore:
                     elif len(temp) != 2:
                         raise ValueError
                 else:
+                    if int(elem) > lenlist:
+                        raise IndexError
                     atoms.append(int(elem))
         return atoms
 
@@ -1709,20 +1712,21 @@ class SingleCore:
             self.success = False
             return
 
-        if any(
-            not all(ix in struct.indices for struct in self.functional_group)
-            for ix in used_atoms
-        ):
-            GM_PT.Printer.warning(
-                "\nCould not interpret the choice for the parameter "
-                "'used_atoms'"
-                f" in the file {mapdir / 'core.txt'}. Please make sure the "
-                "indices don't exceed the amount of atoms given for the "
-                "parameter functional_group.",
-                "MI_MC_8"
-            )
-            self.success = False
-            return
+        # I think this is now covered by the changed allow_ranges
+        # if any(
+        #     not all(ix in struct.indices for struct in self.functional_group)
+        #     for ix in used_atoms
+        # ):
+        #     GM_PT.Printer.warning(
+        #         "\nCould not interpret the choice for the parameter "
+        #         "'used_atoms'"
+        #         f" in the file {mapdir / 'core.txt'}. Please make sure the "
+        #         "indices don't exceed the amount of atoms given for the "
+        #         "parameter functional_group.",
+        #         "MI_MC_8"
+        #     )
+        #     self.success = False
+        #     return
 
         return used_atoms
 
@@ -1806,6 +1810,17 @@ class SingleCore:
             u_a_len = len(self.used_atoms)  # Use the shortest structure
             estatic_atoms = self.allow_ranges(
                 rawcore["electrostatic_atoms"], u_a_len)
+        except IndexError as ex:
+            GM_PT.Printer.warning(
+                "\nCould not interpret the choice for the parameter "
+                "'electrostatic_atoms'"
+                f" in the file {mapdir / 'core.txt'}. Please make sure the "
+                "indices don't exceed the amount of atoms given for the "
+                "parameter used_atoms.",
+                "MI_MC_8", exception=ex
+            )
+            self.sucess = False
+            return
         except Exception as ex:
             GM_PT.Printer.warning(
                 "\nCould not interpret the choice for the parameter "
@@ -1818,19 +1833,20 @@ class SingleCore:
             self.success = False
             return
 
-        # now, see if choice is valid
-        maxlen = len(self.used_atoms)
-        if any(ix >= maxlen for ix in estatic_atoms):
-            GM_PT.Printer.warning(
-                "\nCould not interpret the choice for the parameter "
-                "'electrostatic_atoms'"
-                f" in the file {mapdir / 'core.txt'}. Please make sure the "
-                "indices don't exceed the amount of atoms given for the "
-                "parameter used_atoms.",
-                "MI_MC_8"
-            )
-            self.success = False
-            return
+        # I think this is now covered by the changed allow_ranges
+        # # now, see if choice is valid
+        # maxlen = len(self.used_atoms)
+        # if any(ix >= maxlen for ix in estatic_atoms):
+        #     GM_PT.Printer.warning(
+        #         "\nCould not interpret the choice for the parameter "
+        #         "'electrostatic_atoms'"
+        #         f" in the file {mapdir / 'core.txt'}. Please make sure the "
+        #         "indices don't exceed the amount of atoms given for the "
+        #         "parameter used_atoms.",
+        #         "MI_MC_8"
+        #     )
+        #     self.success = False
+        #     return
 
         return estatic_atoms
 
@@ -1871,6 +1887,17 @@ class SingleCore:
             u_a_len = len(self.used_atoms)  # Use the shortest structure
             local_atoms = self.allow_ranges(rawcore["local_atoms"], u_a_len)
 
+        except IndexError as ex:
+            GM_PT.Printer.warning(
+                "\nCould not interpret the choice for the parameter "
+                "'local_atoms'"
+                f" in the file {mapdir / 'core.txt'}. Please make sure the "
+                "indices don't exceed the amount of atoms given for the "
+                "parameter used_atoms.",
+                "MI_MC_8", exception=ex
+            )
+            self.sucess = False
+            return
         except Exception as ex:
             if rawcore["local_atoms"][0].lower() == "none":
                 local_atoms = []
@@ -1886,19 +1913,20 @@ class SingleCore:
                 self.success = False
                 return
 
+        # I think this is now covered by the changed allow_ranges
         # now, see if choice is valid
-        maxlen = len(self.used_atoms)
-        if any(ix >= maxlen for ix in local_atoms):
-            GM_PT.Printer.warning(
-                "\nCould not interpret the choice for the parameter "
-                "'local_atoms'"
-                f" in the file {mapdir / 'core.txt'}. Please make sure the "
-                "indices don't exceed the amount of atoms given for the "
-                "parameter used_atoms.",
-                "MI_MC_8"
-            )
-            self.success = False
-            return
+        # maxlen = len(self.used_atoms)
+        # if any(ix >= maxlen for ix in local_atoms):
+        #     GM_PT.Printer.warning(
+        #         "\nCould not interpret the choice for the parameter "
+        #         "'local_atoms'"
+        #         f" in the file {mapdir / 'core.txt'}. Please make sure the "
+        #         "indices don't exceed the amount of atoms given for the "
+        #         "parameter used_atoms.",
+        #         "MI_MC_8"
+        #     )
+        #     self.success = False
+        #     return
 
         return local_atoms
 

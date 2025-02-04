@@ -179,7 +179,7 @@ def filter_single_line(line, BW, found, avail, map_, system):
                     "numbers separated by spaces "
                     "and/or ranges of integers separated by a hyphen.",
                     "SU_NP_8", True, exception=Ex,
-                    GMAPerrclass=GM_Ex.GmapIndexError
+                    GMAPerrclass=GM_Ex.GmapFileSyntaxError
                 )
 
             # filtered = []
