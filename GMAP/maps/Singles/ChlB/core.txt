@@ -21,7 +21,7 @@ can_output     ham   ene    dip
 # before it is recognized. These must include at least all atoms required later,
 # but there can be more than that.
 
-functional_group_file    funcgroup_renger.txt
+functional_group_file    funcgroup_ua.txt
 
 # -----------------------
 
@@ -32,7 +32,7 @@ functional_group_file    funcgroup_renger.txt
 # first number in the list here, etc. The number represents the index at which
 # that atom is present in the functional_group list.
 
-used_atoms 0-79
+used_atoms 0-46
 
 # -----------------------
 
@@ -43,7 +43,7 @@ used_atoms 0-79
 
 # probably at least the magnesium atom
 
-electrostatic_atoms 0-79
+electrostatic_atoms 0-46
 
 # ----------------------
 
@@ -66,7 +66,7 @@ electrostatic_choice V   # V, E, or G?
 # The number represents the index at which that atom is present in the
 # used_atoms list.
 
-local_atoms 0-79
+local_atoms 0-46
 
 # -------------------
 
@@ -75,8 +75,8 @@ local_atoms 0-79
 # defined by subtracting the position of the zeroeth atom from that of the oneth.
 # the missing ones are found through geometry (cross product)
 
-r_vec     16-32 # this NB to ND
-r_pos     0
+r_vec     16-33 # NB to ND
+r_pos     0 # At the Mg
 
 # ---------------------
 
@@ -85,10 +85,12 @@ r_pos     0
 
 #VEG_reference  residues 0    # take CoM of all atoms in residue which atom 0 of this oscillator belongs to.
 #VEG_reference  position 0  # take #VEG_reference to be this exact position
-VEG_reference  CoM 0 1 2  # take CoM of listed atoms
+VEG_reference  CoM 0 1 2 3 4 # take CoM of listed atoms
 
 # ---------------------
 
-dipole_gas_phase  5.48
-frequency_gas_phase 15926 # from vesna's first paper, Qy, page 1100
-frequency_data_file_linear diffcharges_units_e.txt
+dipole_gas_phase  4.61 # doi:10.1021/jp106323e
+frequency_gas_phase 15455 # doi:10.1021/jp106323e
+frequency_data_file_linear diff_charges_HF-CIS.txt
+
+# position and double position should maybe correspond to Mg (needed to have pos and dbp)
