@@ -13,7 +13,7 @@
 # Could not find the parameter 'can_output' in the core file. 
 # Without it, the map cannot function. Please make sure it is present.
 
-can_output     ham   ene    dip
+can_output     ham   ene    dip#    pos
 
 # -----------------------
 
