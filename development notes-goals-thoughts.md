@@ -367,6 +367,7 @@ If you need a place to quickly write something down, do it here! It can be tidie
 
 
 - (KvA) TODO before PR:
+  - Done!
 - (KvA) TODO:
   - Is it desirable to make a separate cubic mode that's hopefully faster?
   - legacy support:
