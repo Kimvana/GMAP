@@ -466,7 +466,7 @@ This parameter takes a variable amount of arguments. If a map doesn't make any c
 ``maps`` indicates to which map(s) the choice should be applied. ``:All`` applies the filter to all maps used. ``AA`` applies the choice to only the map named 'AA' (use the same names as those used for the parameter maps_to_use), ``AA,BB`` applies it to both the map named 'AA' and the map named 'BB'. You can put any number of maps here, just make sure that there are no white spaces!
 
 .. note::
-    A map can change the function applying these black- and whitelists. That means maps can support more ways of filtering, or exclude existing ones. Check the documentation of your maps to see what options are available - if nothing is noted/specified, the map most likely just uses the default implementation mentioned here.
+    A map can change the function applying these black- and whitelists. That means maps can support more ways of filtering, or exclude existing ones. Check the documentation of your maps to see what options are available - if nothing is noted/specified, the map should just use the default implementation mentioned here.
 
 ``method`` explains how the rest of this line should be interpreted. How you want to select. The two most simple ones are ``:All`` (just whitelist all singles) and ``:None`` (whitelist none of the singles). The other two options are ``resnums`` and ``resnames``. Individual maps may add/remove choices here.
 
