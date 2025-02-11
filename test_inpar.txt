@@ -36,7 +36,10 @@ prevent_overwrite   False
 # estatics_method  perres_nocut
 
 start_frame 0
-number_frames 1
+number_frames 25
+
+batch_size 10
+time_limit 0
 
 # estatics_method        perres_nocut
 estatic_smooth_range 0
