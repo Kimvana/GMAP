@@ -611,3 +611,22 @@ stop_frame
 At what frame number the calculation must stop (exclusive). Counting starts at 0. May occur in a parameter file together with start_frame and number_frames, but the combination of them must make sense.
 With start_frame at 10, number_frames at 20, and stop_frame at 30, the first 10 frames (numbered 0 through 9) will be skipped, the following 20 frames (numbered 10 to 29) will be treated, and the remaining frames (30 and up) will be skipped.
 
+
+time_limit
+==========
+| (no shorthand available)
+| (used by: GEM)
+
+How long the calculation is allowed to take (in minutes). Every 'batch_size' (see below) amount of frames, the program will consider how long it has ran, and how long the next batch of frames will take. If there is not enough time to finish two more batches, another will not be started, to make sure there is enough time to properly close the program.
+
+.. tip::
+    It is recommended to use this parameter when working on a cluster, and set it to the same amount of time as has been requested to use on the cluster.
+
+
+batch_size
+==========
+| (no shorthand available)
+| (used by: GEM)
+
+Every how many frames the program should reconsider the time limit. Counting happens relative to the start frame, so if start_frame is set to 3, and batch_size to 10, the program will check if it can continue the calculation before starting frame 13, 23, 33, etc.
+
