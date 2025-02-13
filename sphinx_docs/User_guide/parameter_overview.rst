@@ -619,6 +619,9 @@ time_limit
 
 How long the calculation is allowed to take (in minutes). Every 'batch_size' (see below) amount of frames, the program will consider how long it has ran, and how long the next batch of frames will take. If there is not enough time to finish two more batches, another will not be started, to make sure there is enough time to properly close the program.
 
+.. tip::
+    It is recommended to use this parameter when working on a cluster, and set it to the same amount of time as has been requested to use on the cluster.
+
 
 batch_size
 ==========
