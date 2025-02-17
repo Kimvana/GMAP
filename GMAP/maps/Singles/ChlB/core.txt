@@ -101,6 +101,6 @@ VEG_reference  CoM 0 1 2 3 4 # take CoM of listed atoms
 
 dipole_gas_phase  4.61 # doi:10.1021/jp106323e
 frequency_gas_phase 15455 # doi:10.1021/jp106323e
-frequency_data_file_linear diff_charges_HF-CIS.txt
+frequency_data_file_linear diff_charges_HF-CIS_Ang_per_inv_cm.txt  # diff_charges_HF-CIS.txt
 
 # position and double position should maybe correspond to Mg (needed to have pos and dbp)
