@@ -27,3 +27,4 @@ position               67
 can_output        ham   ene    dip     pos  dbp
 doublepos_0 60
 doublepos_1 45
+TRESP.charges_filename   TRESP_chla.txt
