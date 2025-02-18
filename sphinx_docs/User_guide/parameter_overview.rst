@@ -238,6 +238,8 @@ topology_file
 
 The filename and location of the topology file to be used during the calculation. Allowed filetypes are the ones listed `here <https://userguide.mdanalysis.org/stable/formats/index.html>`__ that have a tick in the column labeled 'topology'.
 
+A topology file contains all the information that stays the same during the calculation. What are all atoms named? Which atom lives in which residue? What are those residues named? What masses and charges do the atoms have? What element and type are they?
+
 
 trajectory_file
 ===============
@@ -245,6 +247,8 @@ trajectory_file
 | (used by: GEM, DEPICT)
 
 The filename and location of the trajectory file to be used during the calculation. Allowed filetypes are the ones listed `here <https://userguide.mdanalysis.org/stable/formats/index.html>`__ that have a tick in the column labeled 'coordinates'.
+
+A trajectory file contains all information that could change during the simulation - most notably the positions of atoms and the dimensions of the periodic bounding box.
 
 
 *********************************
@@ -530,7 +534,7 @@ estatic_range
 | (no shorthand available)
 | (used by: GEM, DEPICT)
 
-To what distance charges should be considered when computing the electrostatic properties.
+To what distance charges should be considered when computing the electrostatic properties. If the parameter estatic_smooth_range is set to 0, any charges within estatic_range will be fully considered, any outside won't be at all. For details how the parameter estatic_smooth_range influences this, see that entry for more info.
 
 
 estatic_smooth_range
@@ -540,6 +544,8 @@ estatic_smooth_range
 | (used by: GEM, DEPICT)
 
 Over what distance the weight of charges should decrease. This less abrupt edge to the sphere of charges makes for less chaotic results (less variation with slightly different choice of estatic_range).
+
+Lets say estatic_range = R, estatic_smooth_range = S. Any charges within R - S/2 will be considered fully, while any outside R + S/2 will not be considered at all. Between those two distances, the charge will be considered partially, with the part decreasing linearly with distance.
 
 
 

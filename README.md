@@ -14,6 +14,9 @@ This is the development version of GEMAIM.
 5. now, from anywhere, typing ```GMAP``` will start the program!
 6. Don't forget to compile the C library!
 7. note to developers: now, installing is not the only thing that needs to happen. Build your changes before opening a PR. ``pip install build`` if you don't have it yet; then ``python -m build`` (all from repo home directory)
+8. only relevant for some developers: If you want to fully profile the code and have GMAP generate the flow-chart-png for you, an installation of [graphvis](https://graphviz.org/) must be present. It is responsible for executing the 'dot' command on the command line. At the moment of writing this, a single test will fail if graphvis is not installed.
+9. Once you're done, you can deactivate the environment again by typing 'deactivate' (without the quotation marks in the terminal/command line)
+10. If you want to use the program again later, you have to reactivate the environment (step 3), but no futher installing is needed.
 
 ## How to generate the documentation using sphinx:
 Assuming generating from scratch, and inside a venv (see above, always a good habit)
