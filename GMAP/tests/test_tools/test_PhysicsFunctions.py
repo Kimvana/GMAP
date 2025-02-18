@@ -4,12 +4,11 @@ src/tools/PhysicsFunctions.py.
 
 Missing tests:
 
-(@ August 2nd '24):
-110-158, 243-244, 335-356  (29 missed statements)
+(@ September 20th '24):
+111-168, 250-251  (37 missed statements)
 
-- [WIP] calc_frame not yet tested  (110-146)
-- calc_raman not yet tested (as so custom) (243-244)
-- generate_output_structures not yet tested (287-299)
+- [WIP] calc_frame not yet tested  (111-165)
+- calc_raman not yet tested (as so custom) (250-251)
 """
 
 # standard lib imports
@@ -21,7 +20,6 @@ import numpy as np
 # local imports
 from .test_SystemReader import parameter_getter
 from . import test_MapReader as tMR
-# import GMAP.src.tools.CLibLoader as GM_CL
 import GMAP.src.tools.CodingTools as GM_CT
 import GMAP.src.tools.MapReader as GM_MR
 import GMAP.src.tools.PhysicsFunctions as GM_PF
@@ -52,6 +50,87 @@ def test_calc_CoM():
 
     ans = np.array(
         [38.5789473, 11.1578947, 28.3947368], dtype="float32").round(4)
+
+    assert np.all(GM_PF.calc_CoM(System, atlist).round(4) == ans)
+
+    # ------------------------------------------------------------------
+
+    System = GM_CT.CustomClass(**{
+        "positions": np.array([
+            [80, 92, 76],
+            [12, 16, 4],
+            [96, 96, 96],
+            [10, 10, 10]
+        ], dtype="float32"),
+        "masses": np.array([1, 2, 1, 1], dtype="float32"),  # sum = 38
+        "boxvects": np.array([
+            [100, 0, 0],
+            [0, 100, 0],
+            [0, 0, 100]
+        ], dtype="float32")
+    })
+
+    setattr(
+        System, "boxvects_inv",
+        np.linalg.inv(System.boxvects).astype("float32")
+    )
+
+    atlist = [0, 1, 2, 3]
+
+    ans = np.array(
+        [2, 6, -2], dtype="float32").round(4)
+
+    assert np.all(GM_PF.calc_CoM(System, atlist).round(4) == ans)
+
+    # ------------------------------------------------------------------
+
+    System = GM_CT.CustomClass(**{
+        # before moving all into (1, 1, 1) box
+        # 55, 110, 95 (close to Y edge on 'top' (max Z) surface)
+        # 55, 110, 105 (still within in Y dir, outside in Z dir)
+        # 45, 110, 95 (Over Y edge (too small x coord to be in box))
+        # 45, 110, 105 (too small x, too large z)
+        # avg (weights 1,2,3,4) -> 48, 110, 101
+
+        # moving it into box (all in 0-1 boxcoord range):
+        # 55, 110, 95 -> 0.064, 0.53, 0.95 -> no translation
+        # 55, 110, 105 -> 0.036, 0.47, 1.05 -> 15 50 5
+        # 45, 110, 95 -> -0.036, 0.53, 0.95 -> 145, 110, 95
+        # 45, 110, 105 -> -0.064, 0.47, 1.05 -> 105 50 5
+        # avg: 48, 110, 101 -> -0.0228, 0.494, 1.01 -> 8 50 1
+        # (avg is shifted to -0.5, 0.5, as answer will be, too)
+        "positions": np.array([
+            [55, 110, 95],
+            [15, 50, 5],
+            [145, 110, 95],
+            [105, 50, 5]
+        ], dtype="float32"),
+        "masses": np.array([1, 2, 3, 4], dtype="float32"),
+        # top view:
+        #               20    ____________
+        #               |    /(top layer)/
+        #   100   _     ____/_______    /
+        #    60   _    /   /_______/___/
+        #             /  (bottom) /
+        #     0   _  /___________/
+        #             |  |  |     |
+        #             0  20  40   100
+        "boxvects": np.array([
+            [100, 0, 0],
+            [20, 100, 0],
+            [40, 60, 100]
+        ], dtype="float32")
+    })
+
+    setattr(
+        System, "boxvects_inv",
+        np.linalg.inv(System.boxvects).astype("float32")
+    )
+
+    atlist = [0, 1, 2, 3]
+
+    ans = np.array(
+        [8, 50, 1], dtype="float32").round(4)
 
     assert np.all(GM_PF.calc_CoM(System, atlist).round(4) == ans)
 
@@ -95,7 +174,7 @@ def test_system_CoM():
 def test_get_positions():
     cmdline = ["--verbose", "4"]
     (
-        Files, RunPars, RefPars, DefPars, InPars,
+        RunPars, RefPars, DefPars, InPars,
         CmdPars, mapdict, pairs_mapdict
     ) = parameter_getter("test_calc_dipoles_xyz", cmdline)
     # position - 2,  db0 - 3, db1 - 1
@@ -131,7 +210,7 @@ def test_get_positions():
 def test_calc_dipole_xyz():
     cmdline = ["--verbose", "4"]
     (
-        Files, RunPars, RefPars, DefPars, InPars,
+        RunPars, RefPars, DefPars, InPars,
         CmdPars, mapdict, pairs_mapdict
     ) = parameter_getter("test_calc_dipoles_xyz", cmdline)
 
@@ -155,9 +234,9 @@ def test_calc_dipole_xyz():
 
     r_vec_ans = np.array([0.82, 0.84, 0.86], dtype="float32")
     r_vec_ans = np.dot(r_vec_ans, oscillator.rotation_matrix).round(6)
-    # GM_PT.Printer().print(0, r_vec_ans)
-    # GM_PT.Printer().print(0, r_vec)
-    # GM_PT.Printer().print(0, r_pos)
+    # GM_PT.Printer.print(0, r_vec_ans)
+    # GM_PT.Printer.print(0, r_vec)
+    # GM_PT.Printer.print(0, r_pos)
 
     assert np.all(r_vec.round(6) == r_vec_ans)
     assert np.all(r_pos.round(4) == np.array([8, 28, -32], dtype="float32"))
@@ -166,7 +245,7 @@ def test_calc_dipole_xyz():
 def test_calc_dipole_magnitude():
     cmdline = []
     (
-        Files, RunPars, RefPars, DefPars, InPars,
+        RunPars, RefPars, DefPars, InPars,
         CmdPars, mapdict, pairs_mapdict
     ) = parameter_getter("test_calc_dipoles_magnitude", cmdline)
 
@@ -202,7 +281,7 @@ def test_calc_dipole_magnitude():
 def test_calc_frequency():
     cmdline = []
     (
-        Files, RunPars, RefPars, DefPars, InPars,
+        RunPars, RefPars, DefPars, InPars,
         CmdPars, mapdict, pairs_mapdict
     ) = parameter_getter("test_calc_dipoles_magnitude", cmdline)
 
@@ -233,7 +312,7 @@ def test_calc_frequency():
 
     cmdline = []
     (
-        Files, RunPars, RefPars, DefPars, InPars,
+        RunPars, RefPars, DefPars, InPars,
         CmdPars, mapdict, pairs_mapdict
     ) = parameter_getter("test_calc_freq_quad", cmdline)
 
@@ -268,7 +347,7 @@ def test_calc_frequency():
 
     cmdline = []
     (
-        Files, RunPars, RefPars, DefPars, InPars,
+        RunPars, RefPars, DefPars, InPars,
         CmdPars, mapdict, pairs_mapdict
     ) = parameter_getter("test_calc_freq_linquad", cmdline)
 
@@ -347,6 +426,53 @@ def test_calc_coupling():
     # J = -0.0278595882711440427
     assert round(J, 6) == round(outputs["hamiltonian"][0, 1], 6)
     assert round(J, 6) == round(np.float32(-0.0278595882711440427), 6)
+
+
+def test_generate_output_structures():
+    system = GM_CT.CustomClass(**{"nosc": 5})
+
+    runpars = GM_CT.CustomClass(**{"output_data": ["ham"]})
+    out = GM_PF.generate_output_structures(runpars, system)
+    assert [*out.keys()] == ["hamiltonian", "dipole_pos", "dipoles"]
+
+    runpars = GM_CT.CustomClass(**{"output_data": ["ene"]})
+    out = GM_PF.generate_output_structures(runpars, system)
+    assert [*out.keys()] == ["energies"]
+
+    runpars = GM_CT.CustomClass(**{"output_data": ["dip"]})
+    out = GM_PF.generate_output_structures(runpars, system)
+    assert [*out.keys()] == ["dipoles"]
+
+    runpars = GM_CT.CustomClass(**{"output_data": ["ram"]})
+    out = GM_PF.generate_output_structures(runpars, system)
+    assert [*out.keys()] == ["raman"]
+
+    runpars = GM_CT.CustomClass(**{"output_data": ["pos"]})
+    out = GM_PF.generate_output_structures(runpars, system)
+    assert [*out.keys()] == ["positions"]
+
+    runpars = GM_CT.CustomClass(**{"output_data": ["dbp"]})
+    out = GM_PF.generate_output_structures(runpars, system)
+    assert [*out.keys()] == ["doublepos"]
+
+    runpars = GM_CT.CustomClass(**{"output_data": [
+        "ham", "ene", "dip", "ram", "pos", "dbp"]})
+    out = GM_PF.generate_output_structures(runpars, system)
+
+    assert out["hamiltonian"].shape == (5, 5)
+    assert out["hamiltonian"].dtype == np.float32
+    assert out["energies"].shape == (5,)
+    assert out["energies"].dtype == np.float32
+    assert out["dipole_pos"].shape == (5, 3)
+    assert out["dipole_pos"].dtype == np.float32
+    assert out["dipoles"].shape == (5, 3)
+    assert out["dipoles"].dtype == np.float32
+    assert out["raman"].shape == (5, 6)
+    assert out["raman"].dtype == np.float32
+    assert out["positions"].shape == (5, 3)
+    assert out["positions"].dtype == np.float32
+    assert out["doublepos"].shape == (10, 3)
+    assert out["doublepos"].dtype == np.float32
 
 
 def get_System_1():
@@ -439,18 +565,18 @@ def prep_coupling_tests():
         "couplings_to_use": [["DipDip", ":All"]]  # in 'main' maps
     }
     (
-        Files, RunPars, RefPars, DefPars, InPars,
+        RunPars, RefPars, DefPars, InPars,
         CmdPars, singles_mapdict, pairs_mapdict
     ) = tMR.basic_setup(cmdline, inpardict, finish_before="extract_code")
 
-    GM_MR.manage_maps_singles(Files, RunPars, singles_mapdict)
+    GM_MR.manage_maps_singles(RunPars, singles_mapdict)
     oscillators = [get_oscillator_1(), get_oscillator_2()]
     for oscillator in oscillators:
         # assign map to the oscillators
         setattr(
             oscillator, "Map", singles_mapdict["test_calc_dipoles_magnitude"])
 
-    GM_MR.manage_maps_pairs(Files, RunPars, pairs_mapdict)
+    GM_MR.manage_maps_pairs(RunPars, pairs_mapdict)
 
     System = get_System_1()
 

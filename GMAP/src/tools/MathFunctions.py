@@ -1,6 +1,13 @@
+
+# standard library imports
+import math
+
 # 3rd party lib imports
 from numba import njit
 import numpy as np
+
+# local imports
+import GMAP.src.tools.constants as GM_Con
 
 
 # (as I keep searching here for this, I'm putting this here)
@@ -50,6 +57,7 @@ import numpy as np
 # (hence, why A's second dimension must equal B's first)
 
 
+@njit
 def PBC_triclinic(vect, boxvects, boxvects_inv):
     """Translates the vector to within the box centred around the origin
 
@@ -82,7 +90,11 @@ def PBC_triclinic(vect, boxvects, boxvects_inv):
     """
 
     unit_vec = vect @ boxvects_inv
-    return (unit_vec - np.floor(unit_vec + 0.5)) @ boxvects
+    # use the PBC_back2box to prevent code duplication.
+    # however, this function (PBC_triclinic) is not njit'ed, so the 'normal'
+    # PBC_back2box gives a typing error. To avoid it, don't call the njit'ed
+    # PBC_back2box, but the original py-version.
+    return PBC_back2box(unit_vec, boxvects)
 
 
 @njit
@@ -94,6 +106,13 @@ def PBC_back2box(vect, boxvects):
     half = np.float32(0.5)
     return (vect - np.floor(vect + half)) @ boxvects
 
+
+@njit
+def PBC_boxdiff_triclin(boxvect1, boxvect2, boxvects):
+    """Calculates the shortest difference between two given points."""
+
+    boxdiff = boxvect1 - boxvect2
+    return PBC_back2box(boxdiff, boxvects)
 
 # # currently unused - missing docstring
 # def PBC_diff_triclinic(vect1, vect2, boxvects, boxvects_inv):
@@ -134,8 +153,9 @@ def PBC_back2box(vect, boxvects):
 def crossprod(vect1: np.ndarray, vect2: np.ndarray) -> np.ndarray:
     """Calculates the cross product between two vectors of size 3.
 
-    This is faster than the dedicated np method, as there are no checks for the
-    correctness of the provided vectors. The method is njitted for added speed.
+    This is faster than the dedicated np method, as there are no checks
+    for the correctness of the provided vectors. The method is njitted
+    for added speed.
 
     Parameters
     ----------
@@ -160,8 +180,9 @@ def crossprod(vect1: np.ndarray, vect2: np.ndarray) -> np.ndarray:
 def dotprod(vect1: np.ndarray, vect2: np.ndarray) -> float:
     """Calculates the dot product between two vectors of size 3.
 
-    This is faster than the dedicated np method, as there are no checks for the
-    correctness of the provided vectors. The method is njitted for added speed.
+    This is faster than the dedicated np method, as there are no checks
+    for the correctness of the provided vectors. The method is njitted
+    for added speed.
 
     Parameters
     ----------
@@ -182,8 +203,9 @@ def vec3_len(vect: np.ndarray) -> float:  # replacement for np.linalg.norm
     """Calculates the norm (length) of a vector of size 3.
 
     This is a replacement for the function `np.linalg.norm`.
-    This is faster than the dedicated np method, as there are no checks for the
-    correctness of the provided vectors. The method is njitted for added speed.
+    This is faster than the dedicated np method, as there are no checks
+    for the correctness of the provided vectors. The method is njitted
+    for added speed.
 
     Parameters
     ----------
@@ -203,11 +225,11 @@ def vec3_len(vect: np.ndarray) -> float:  # replacement for np.linalg.norm
 def project(vect1: np.ndarray, vect2: np.ndarray) -> np.ndarray:
     """ Calculates the orthogonal part of `vect2` to `vect1`.
 
-    Calculates the part of vector `vect2` that is orthogonal to the vector
-    `vect1` (i.e. it subtracts from `vect2` the part that is along `vect1`,
-    and returns the result).
-    Be aware that because of how numba works, both `vect1` and `vect2` should
-    have float32 as the dtype.
+    Calculates the part of vector `vect2` that is orthogonal to the
+    vector `vect1` (i.e. it subtracts from `vect2` the part that is
+    along `vect1`, and returns the result).
+    Be aware that because of how numba works, both `vect1` and `vect2`
+    should have float32 as the dtype.
 
     Parameters
     ----------
@@ -222,6 +244,153 @@ def project(vect1: np.ndarray, vect2: np.ndarray) -> np.ndarray:
         The part of `vect2` that is orthogonal to `vect1`.
     """
 
-    inprod = dotprod(vect1, vect2)/dotprod(vect1, vect1)
+    inprod = dotprod(vect1, vect2) / dotprod(vect1, vect1)
     vectout = vect2 - inprod*vect1
     return vectout
+
+
+@njit
+def dihedral_base(b0, b1, b2):
+    """Calculates the actual dihedral angle for 3 vectors.
+
+    Given 4 points on a line (p0, p1, p2, p3), looking along the vector
+    p2-p1, determine the apparent angle between p0-p1 and p3-p2.
+
+    b0 is the vector p0-p1, b1 is the vector p2-p1, and b2 is the vector
+    p3-p2.
+
+    source:
+    https://stackoverflow.com/questions/20305272/
+    dihedral-torsion-angle-from-four-points-in-cartesian-coordinates-in-python
+    """
+
+    # normalize b1 so that it does not influence magnitude of vector
+    # rejections that come next
+    b1 /= vec3_len(b1)
+
+    # = projection of b0 onto plane perpendicular to b1 (= b0 minus component
+    # that aligns with b1)
+    # In principle, v = project(b1, b0) would give the same result. However,
+    # project is more expensive, as it divides by dot(b1, b1). This is
+    # basically normalizing, which is here done prior already.
+    v = b0 - dotprod(b0, b1)*b1
+
+    # = projection of b2 onto plane perpendicular to b1 (= b2 minus component
+    # that aligns with b1)
+    w = b2 - dotprod(b2, b1)*b1
+
+    # angle between v and w in a plane is the torsion angle
+    # v and w may not be normalized but that's fine since tan is y/x
+
+    # np.arctan2: computes angle between the vector pointing to (x, y) and the
+    # vector (1, 0) (x axis). arg1 = y, arg2 = x.
+    x = dotprod(v, w)  # how much v and w align
+    y = dotprod(crossprod(b1, v), w)  # cross rotates v 90 degrees.
+    return np.arctan2(y, x)
+
+
+@njit
+def dihedral(p0, p1, p2, p3, boxvects, boxvects_inv):
+    """
+    Calculates the dihedral angle between the supplied points. The order of the
+    points matters: the calculated angle is the following:
+    When looking at these 4 points such that p2 lies behind p1 (or other way
+    around?), we're concerned with the apparent angle p0, p1, p3 (which is
+    identical to the apparent angle p0, p2, p3).
+    """
+
+    b0 = PBC_triclinic(p0 - p1, boxvects, boxvects_inv)
+    b1 = PBC_triclinic(p2 - p1, boxvects, boxvects_inv)
+    b2 = PBC_triclinic(p3 - p2, boxvects, boxvects_inv)
+
+    return dihedral_base(b0, b1, b2)
+
+
+@njit
+def dihedral_boxcoords(p0, p1, p2, p3, boxvects):
+    """
+    Calculates the dihedral angle between the supplied points. The order of the
+    points matters: the calculated angle is the following:
+    When looking at these 4 points such that p2 lies behind p1 (or other way
+    around?), we're concerned with the apparent angle p0, p1, p3 (which is
+    identical to the apparent angle p0, p2, p3).
+    """
+
+    b0 = PBC_boxdiff_triclin(p0, p1, boxvects)
+    b1 = PBC_boxdiff_triclin(p2, p1, boxvects)
+    b2 = PBC_boxdiff_triclin(p3, p2, boxvects)
+
+    return dihedral_base(b0, b1, b2)
+
+
+def calc_color_dist(r1, g1, b1, r2, g2, b2):
+    """Calculates the distance between the two provided colors.
+
+    The distance is calculated using the
+    `redmean method <https://en.wikipedia.org/wiki/Color_difference>`__
+
+    Parameters
+    ----------
+    r1, g1, b1 : int
+        The rgb values of the first color, ints in the interval [0, 255]
+    r1, g1, b1 : int
+        The rgb values of the second color, ints in the interval
+        [0, 255]
+
+    Returns
+    -------
+    delC : float
+        The distance between the two colors. A smaller number means they
+        are more similar. Does not depend on the order of the two
+        colors.
+    """
+
+    # redmean method: https://en.wikipedia.org/wiki/Color_difference
+    r_bar = 0.5 * (r1 + r2)
+    delC = math.sqrt(
+        (2 + r_bar/255) * abs(r1 - r2)**2
+        + 4 * abs(g1 - g2)**2
+        + (2 + (255 - r_bar)/255) * abs(b1 - b2)**2
+    )
+    return delC
+
+
+def convert_color_24_4(r, g, b, lookup={}):
+    """Converts a given 24bit color to the closest 4bit one.
+
+    Calculates the distance of the provided color to each of the 4bit
+    colors, and returns the closest one.
+
+    If a specific 24bit color has been converted, it is saved in the
+    lookup dict for quick reuse.
+
+    Parameters
+    ----------
+    r, g, b : int
+        The rgb values of the color to convert, ints in the interval
+        [0, 255]
+
+    Returns
+    -------
+    outcolor : tuple
+        A tuple of two items, an int and a bool. The integer represents
+        the color (values 0-7), the bool whether it should be bright.
+    """
+
+    rgb = (int(r), int(g), int(b))
+
+    if rgb in lookup:
+        return lookup[rgb]
+
+    maxdist = 765
+    outcolor = (255, 255, 255)
+    for ix, (col, output) in enumerate(GM_Con.printed_colors.items()):
+        delC = calc_color_dist(*rgb, *col)
+        if 0 < ix < 4:
+            delC *= 2
+        if delC < maxdist:
+            maxdist = delC
+            outcolor = output
+
+    lookup[rgb] = outcolor
+    return outcolor

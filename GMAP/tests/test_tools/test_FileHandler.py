@@ -4,40 +4,58 @@ src/tools/FileHandler.py.
 
 Missing tests:
 
-(@ August 2nd '24):
-97, 101-113, 333, 536-547, 565-570 (26 missed statements)
+(@ January 10th '25):
+125, 129-141, 358 (8 missed statements)
 
 (CUHTAT - currently unknown how to access this)
-- Program is run using any OS other than windows 64 bit (97, 101-113)
+- Program is run using any OS other than windows 64 bit (125, 129-141)
   (CUHTAT; at least within one single run, probably impossible)
-- the reference parameter file could not be found (SU_FH_2) (CUHTAT) (333)
-- output files are not cleared yet.  (536-570)  (this happens in GEM, just
-  before the per-frame loop)
+- the reference parameter file could not be found (SU_FH_2) (CUHTAT) (358)
 """
 
 
 # standard library imports
+import datetime
 from pathlib import Path
+import sys
 
 # 3rd party imports
 import numpy as np
 import pytest
 
 # local imports
+import GMAP.src.tools.CmdInterface as GM_CI
 import GMAP.src.tools.CodingTools as GM_CT
+import GMAP.src.tools.constants as GM_Con
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.FileHandler as GM_FH
 
 
+class TestFileLocations:
+    @pytest.mark.nofiles
+    def test_sinprops(self):
+        now = datetime.datetime.now()
+        files = GM_FH.FileLocations(now=now)
+        cmd = tuple(sys.argv)
+        cmd = (Path(cmd[0]).name,) + cmd[1:]
+        assert files.callcommand == " ".join(cmd)
+        assert files.now_str == now.strftime("%Y-%m-%d_%H-%M-%S")
+        curpath = Path(__file__).resolve()
+        assert files.sourcedir_hc == (
+            curpath / "../../../sourcefiles").resolve()
+        assert files.mapdir_hc == (curpath / "../../../maps").resolve()
+        assert files.exec_os in GM_Con.clib_ext_dict.keys()
+        assert files.clib_extension in GM_Con.clib_ext_dict.values()
+
+
 def test_get_bare_file():
-    Files = GM_FH.FileLocations()
     cmd_pardict = {
         "logofile": [Path("logo.txt")]
     }
     files_hc = [Path("default.hc")]
     floc_hc = Path(".")
     flocs = GM_FH.get_bare_file(
-        Files, "logofile", files_hc, floc_hc, cmd_pardict)
+        "logofile", files_hc, floc_hc, cmd_pardict)
     assert flocs == [(floc_hc / "logo.txt").resolve()]
 
 
@@ -379,6 +397,69 @@ def test_write_output_multiplied():
     assert np.all(txtdip == outputs["doublepos"])
 
 
+def test_clear_output_multiple(tmp_path):
+    ohf = tmp_path / "hamfile"
+    ohf_txt = ohf.parent / f"{ohf.name}.txt"
+    ohf_bin = ohf.parent / f"{ohf.name}.bin"
+
+    oef = tmp_path / "enefile"
+    oef_txt = oef.parent / f"{oef.name}.txt"
+    oef_bin = oef.parent / f"{oef.name}.bin"
+
+    odf = tmp_path / "dipfile"
+    odf_txt = odf.parent / f"{odf.name}.txt"
+    odf_bin = odf.parent / f"{odf.name}.bin"
+
+    orf = tmp_path / "ramfile"
+    orf_txt = orf.parent / f"{orf.name}.txt"
+    orf_bin = orf.parent / f"{orf.name}.bin"
+
+    opf = tmp_path / "posfile"
+    opf_txt = opf.parent / f"{opf.name}.txt"
+    opf_bin = opf.parent / f"{opf.name}.bin"
+
+    odpf = tmp_path / "dbpfile"
+    odpf_txt = odpf.parent / f"{odpf.name}.txt"
+    odpf_bin = odpf.parent / f"{odpf.name}.bin"
+
+    txtfiles = (ohf_txt, oef_txt, odf_txt, orf_txt, opf_txt, odpf_txt)
+    binfiles = (ohf_bin, oef_bin, odf_bin, orf_bin, opf_bin, odpf_bin)
+
+    for fname in txtfiles:
+        with open(fname, "w") as fhand:
+            fhand.write("123")
+        with open(fname, "r") as fhand:
+            assert len(fhand.read()) == 3
+
+    for fname in binfiles:
+        with open(fname, "wb") as fhand:
+            fhand.write(bytes([1, 2, 3]))
+        with open(fname, "rb") as fhand:
+            assert len(fhand.read()) == 3
+
+    runpars = GM_CT.CustomClass(**{
+        "output_data": ["ham", "ene", "dip", "ram", "pos", "dbp"],
+        "output_hamiltonian_filename": ohf,
+        "output_energies_filename": oef,
+        "output_dipole_filename": odf,
+        "output_raman_filename": orf,
+        "output_positions_filename": opf,
+        "output_doublepos_filename": odpf,
+        "output_format": ["bin", "txt"]
+    })
+
+    GM_FH.clear_output(runpars)
+
+    for fname in txtfiles:
+        print(fname)
+        with open(fname, "r") as fhand:
+            assert len(fhand.read()) == 0
+
+    for fname in binfiles:
+        with open(fname, "rb") as fhand:
+            assert len(fhand.read()) == 0
+
+
 def test_write_legend():
     def get_resnum_text(resnum):
         return f"living on residue number {resnum}"
@@ -422,11 +503,79 @@ def test_write_legend():
         )
 
 
+@pytest.mark.nofiles
+def test_write_parameter_file(tmp_path):
+    # curdir = Path(__file__).resolve().parent
+
+    # perform first run
+    with open(tmp_path / "input_parameters.txt", "w") as fhand:
+        fhand.write("")
+    (tmp_path / "run1").mkdir()
+    GM_CI.cmd_interface([
+        "GMAP", "GEM", "run",
+        str((tmp_path / "input_parameters.txt").resolve()),
+        "--number_frames", "2",
+        "--output_directory", str((tmp_path / "run1").resolve()),
+        "--log_directory", str((tmp_path / "run1").resolve()),
+        "--estatics_method", "perres_nocut",
+        "--estatic_smooth_range", "0",
+        "--verbose", "1",
+        "--verbose_logfile", "4",
+        "--output_format", "txt\\;",
+        "--maps_to_use", "AmideBB", "AmideSC\\;",  # default is SC only
+        # add 3 coupling lines to see if multiline parameters are written
+        # correctly.
+        "--couplings_to_use", "DipDip", ":All\\;",
+        "--couplings_to_use", "None", "AmideSC:\\;",
+        "--couplings_to_use", "DipDip", "AmideSC:\\;"
+    ])
+
+    # check if first run went without any major errors
+    with open(tmp_path / "run1/log.log", encoding="utf-8") as fhand:
+        output = fhand.read()
+    assert output.endswith(
+        "  ░░▒▒▓▓██ That was all for today, folks. Thank you, and good night! "
+        "██▓▓▒▒░░\n"
+    )
+
+    # as all individual file names have the exact directory location mentioned,
+    # move all files, and re-fill that same old directory
+    (tmp_path / "run1").rename(tmp_path / "run2")
+
+    # perform second run
+    (tmp_path / "run1").mkdir()
+
+    GM_CI.cmd_interface([
+        "GMAP", "GEM", "run",
+        str((tmp_path / "run2/parameters.txt").resolve()),
+        "--number_frames", "2",
+        # "--output_directory", str((tmp_path / "run2").resolve()),
+        # "--log_directory", str((tmp_path / "run2").resolve())
+    ])
+
+    # check if second run went without any major errors
+    with open(tmp_path / "run2/log.log", encoding="utf-8") as fhand:
+        output = fhand.read()
+    assert output.endswith(
+        "  ░░▒▒▓▓██ That was all for today, folks. Thank you, and good night! "
+        "██▓▓▒▒░░\n"
+    )
+
+    # see if outputs of the two runs are equal
+    with open(tmp_path / "run1/parameters.txt", encoding="utf-8") as fhand:
+        pars1 = fhand.read()
+    with open(tmp_path / "run2/parameters.txt", encoding="utf-8") as fhand:
+        pars2 = fhand.read()
+
+    # different paths are expected
+    pars2.replace("run2", "run1")
+    assert pars1 == pars2
+
+
 def test_SU_FH_1():
-    Files = GM_FH.FileLocations()
     cwd = Path(".")
 
     with pytest.raises(GM_Ex.GmapFileNotFoundError, match="SU_FH_1$"):
-        _ = GM_FH.get_def_parfile(Files, {
+        _ = GM_FH.get_def_parfile({
             "default_parameter_filename": [cwd/"doesntexist.dfa"]
         })

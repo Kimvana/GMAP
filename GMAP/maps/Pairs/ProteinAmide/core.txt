@@ -1,0 +1,4 @@
+require_pairs         DipDip ProteinAmide_TDCKrimm ProteinAmide_TDCTasumi ProteinAmide_TCC ProteinAmide_Tasumi ProteinAmide_GLDP
+
+singles_whitelist     AmideBB | AmideSC
+

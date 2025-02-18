@@ -13,7 +13,6 @@ def test_plot_coupling_choices(tmp_path):
 
     # build test data:
     osclist = ["a"] * 4 + ["b"] * 7 + ["c"] * 3 + ["d"] * 5
-    coupmaps = [GM_CT.CustomClass(**{"allpairs": []}) for _ in range(5)]
     coupmapnames = [
         "bbNearNeigh",
         "cdCoupler",
@@ -21,6 +20,8 @@ def test_plot_coupling_choices(tmp_path):
         "aaCoupler",
         "acCoupler"
     ]
+    coupmaps = [GM_CT.CustomClass(
+        **{"allpairs": [], "name": name}) for name in coupmapnames]
     for ix1, map1 in enumerate(osclist):
         for ix2, map2 in enumerate(osclist):
             if ix2 <= ix1:

@@ -1,18 +1,18 @@
 r"""
 Usage:
 
-    GMAP DEPICT
-    GMAP DEPICT help
-prints this help
+GMAP DEPICT
+GMAP DEPICT help
+    prints this help
 
-    GMAP DEPICT calculate [name of input file] [optional parameters]
-Calculates all datapoints for a potential vs estatic_range graph.
+GMAP DEPICT calculate [name of input file] [optional parameters]
+    Calculates all datapoints for a potential vs estatic_range graph.
 
-    GMAP DEPICT show [name of input file] [optional parameters]
-Displays all data calculated previously using calculate.
+GMAP DEPICT show [name of input file] [optional parameters]
+    Displays all data calculated previously using calculate.
 
-    GMAP DEPICT calcshow [name of input file] [optional parameters]
-Performs the functions of both 'calculate' and 'show'
+GMAP DEPICT calcshow [name of input file] [optional parameters]
+    Performs the functions of both 'calculate' and 'show'
 
 
 Dependence of Electrostatic Properties on Individual Charges Taken
@@ -88,8 +88,8 @@ def show_data(Printer, RunPars):
     plt.clf()
 
 
-def DEPICT(callcommand, Files):
-    Printer = GM_PT.Printer()
+def DEPICT(callcommand):
+    Printer = GM_PT.Printer
     alljobs = [
         "calculate",
         "show",
@@ -97,11 +97,11 @@ def DEPICT(callcommand, Files):
     ]
 
     job, in_parfile, argslist = GM_PP.parse_commandline(
-        Files, callcommand, alljobs, "GMAP DEPICT", True, True
+        callcommand, alljobs, "GMAP DEPICT", True, True
     )
 
     RunPars, mapdict, _, _, _, _ = GM_PP.get_parameters(
-        Files, in_parfile, argslist
+        in_parfile, argslist
     )
     Printer.add_time(3, "Parsed GMAP parameters", "ms")
 
@@ -109,17 +109,17 @@ def DEPICT(callcommand, Files):
 
     if job in ("calculate", "calcshow"):
         # do the thing
-        GM_MR.manage_maps(Files, Printer, RunPars, mapdict)
+        GM_MR.manage_maps_singles(RunPars, mapdict)
         Printer.add_time(3, "Added all maps", "ms")
 
         # next - MD system!
-        System = GM_SR.System(Files, RunPars)
+        System = GM_SR.System(RunPars)
         Printer.add_time(3, "Initialized MD system", "ms")
 
         # GEM is now done - let maps initialize as well
         for mapname in System.oscillators_ordered.keys():
             map_ = RunPars.requested_mapdict[mapname]
-            map_.code.GM_post_init(Files, Printer, map_, System)
+            map_.code.GM_post_init(Printer, map_, System)
         Printer.add_time(2, "Initialization complete", "ms")
 
         # initialize C library

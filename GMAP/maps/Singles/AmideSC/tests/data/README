@@ -1,0 +1,3 @@
+These data files are the results as obtained using AIM (V1.0.2 installable), and the MD files (1AKI) that are shipped with GMAP by default.
+
+For the side chains, there are 5 frequency models to test, 2 dipole models, and a couple positions. All of these are independent, so for each there's a separate test, no combination-tests are needed.

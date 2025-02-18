@@ -11,11 +11,14 @@ Missing tests:
 
 # 3rd party imports
 import numpy as np
+import pytest
 
 # local imports
-import GMAP.src.tools.DefaultMapFunctions as GM_DMF
 import GMAP.src.tools.CodingTools as GM_CT
+import GMAP.src.tools.DefaultMapFunctions as GM_DMF
+import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.FileHandler as GM_FH
+import GMAP.src.tools.MapReader as GM_MR
 import GMAP.src.tools.PrintTools as GM_PT
 
 
@@ -32,6 +35,61 @@ def test_get_adjust_map_core_raw():
 def test_get_adjust_oscillators():
     newfunc = GM_DMF.get_adjust_oscillators()
     confirm_returns_last(newfunc)
+
+
+def test_filter_single_line():
+    map_ = GM_CT.CustomClass(**{
+        "name": "mymap",
+        "Core": GM_CT.CustomClass(**{
+            "allow_ranges": GM_MR.SingleCore.allow_ranges
+        })})
+    system = GM_CT.CustomClass(**{
+        "nres": 100,
+        "resnums": [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7],
+        "resnames": list("AABBCCDDEEFFGGHH")
+    })
+
+    oscillators = []
+    for i in range(8):
+        oscillators.append(GM_CT.CustomClass(**{
+            "used_atoms": [i * 2, i * 2 + 1]
+        }))
+
+    fullset = set(oscillators)
+    first_half = set(oscillators[:4])
+
+    assert GM_DMF.filter_single_line(
+        [":All"], "white", first_half, fullset, map_, system) == (
+            True, fullset)
+    assert GM_DMF.filter_single_line(
+        [":All"], "black", first_half, fullset, map_, system) == (
+            True, set())
+    assert GM_DMF.filter_single_line(
+        [":None"], "white", first_half, fullset, map_, system) == (
+            True, set())
+    assert GM_DMF.filter_single_line(
+        [":None"], "black", first_half, fullset, map_, system) == (
+            True, first_half)
+
+    assert GM_DMF.filter_single_line(
+        ["resnums", "0-3"], "white", set(), fullset, map_, system) == (
+            True, first_half)
+    assert GM_DMF.filter_single_line(
+        ["resnums", "4-7"], "black", fullset, fullset, map_, system) == (
+            True, first_half)
+
+    assert GM_DMF.filter_single_line(
+        ["resnames", "A", "B", "C", "D"],
+        "white", set(), fullset, map_, system) == (
+            True, first_half)
+    assert GM_DMF.filter_single_line(
+        ["resnames", "E", "F", "G", "H"],
+        "black", fullset, fullset, map_, system) == (
+            True, first_half)
+
+    assert GM_DMF.filter_single_line(
+        ["unknown_filter"], "white", first_half, fullset, map_, system) == (
+            False, first_half)
 
 
 def test_get_post_init():
@@ -75,8 +133,23 @@ def test_get_str_osc():
     osc1 = GM_CT.CustomClass(**{"used_atoms": [0, 1, 2]})
     osc2 = GM_CT.CustomClass(**{"used_atoms": [3, 4, 5]})
     Syst = GM_CT.CustomClass(**{"resnums": [0, 0, 0, 1, 1, 1]})
-    assert newfunc(Syst, None, osc1) == "living on residue number 0"
-    assert newfunc(Syst, None, osc2) == "living on residue number 1"
+    assert newfunc(None, Syst, osc1) == "living on residue number 0"
+    assert newfunc(None, Syst, osc2) == "living on residue number 1"
+
+
+def test_report_system():
+    newfunc = GM_DMF.get_report_system()
+    map_ = GM_CT.CustomClass(**{"name": "A map for testing"})
+    syst = GM_CT.CustomClass(**{"oscillators_ordered": {
+        "A map for testing": [3, 5, 1, 8, 9]}})
+    assert newfunc(map_, syst) == "A map for testing:       5"
+
+
+def test_report_references():
+    newfunc = GM_DMF.get_report_references()
+    map_ = GM_CT.CustomClass(**{"references": "this is a reference"})
+    system = GM_CT.CustomClass(**{})
+    assert newfunc(map_, system) == "this is a reference"
 
 
 def test_get_get_VEG_ref():
@@ -86,7 +159,6 @@ def test_get_get_VEG_ref():
             "VEG_reference": VEGref_res
         }
     })
-    _ = GM_FH.FileLocations()  # still needed for initialization
 
     mainfunc = GM_DMF.get_get_VEG_ref(map_)
     subfunc = GM_DMF.VEG_from_residues(VEGref_res[1:])
@@ -112,7 +184,6 @@ def test_VEG_from_residues():
             "VEG_reference": VEGref_res
         }
     })
-    _ = GM_FH.FileLocations()  # still needed for initialization
     subfunc = GM_DMF.VEG_from_residues(["0", "2"])
 
     Syst = get_syst_VEGtests()
@@ -131,7 +202,6 @@ def test_VEG_from_com():
             "VEG_reference": VEGref_CoM
         }
     })
-    _ = GM_FH.FileLocations()  # still needed for initialization
 
     subfunc = GM_DMF.VEG_from_com(["0", "2"])
 
@@ -151,7 +221,6 @@ def test_interpret_position():
             "VEG_reference": VEGref_pos
         }
     })
-    _ = GM_FH.FileLocations()  # still needed for initialization
     subfunc = GM_DMF.interpret_position(map_, VEGref_pos[1:], "VEG_reference")
 
     Syst = get_syst_VEGtests()
@@ -168,16 +237,15 @@ def test_interpret_position():
 def test_MI_MC_9(capsys):
     # too few opening brackets (should be 4 instead of two)
     VEGref_pos = ["position", "((0+1)/2.0)+2)/2.0)"]
-    Files = GM_FH.FileLocations()
 
     map_ = GM_CT.CustomClass(**{
         "rawcore": {
             "VEG_reference": VEGref_pos
         },
-        "directory": Files.cwd
+        "directory": GM_FH.FileLocations.cwd
     })
     _ = GM_DMF.interpret_position(map_, VEGref_pos[1:], "VEG_reference")
-    GM_PT.Printer().print_backlog()
+    GM_PT.Printer.print_backlog()
     captured = capsys.readouterr()
     assert captured.out.endswith("MI_MC_9\n")
 
@@ -190,6 +258,54 @@ def test_MI_MC_9(capsys):
 
     # out = np.array([1.25, 10, 20])
     # assert np.all(subfunc(map_, Syst, osc) == out)
+
+
+def test_SU_NP_8(capsys):
+    map_ = GM_CT.CustomClass(**{
+        "name": "mymap",
+        "Core": GM_CT.CustomClass(**{
+            "allow_ranges": GM_MR.SingleCore.allow_ranges}),
+        "RunPars": GM_CT.CustomClass(**{
+            "MainRunPars": GM_CT.CustomClass(**{
+                "singles_whitelist_dict": {"mymap": [[":All"]]},
+                "singles_blacklist_dict": {"mymap": [[":None"]]}})})
+    })
+    system = GM_CT.CustomClass(**{
+        "nres": 100})
+    oscillators = []
+    for i in range(8):
+        oscillators.append(GM_CT.CustomClass(**{
+            "used_atoms": [i * 2, i * 2 + 1]
+        }))
+
+    func = GM_DMF.get_filter_oscillators()
+
+    map_.RunPars.MainRunPars.singles_whitelist_dict["mymap"] = [["unknown"]]
+    with pytest.raises(GM_Ex.GmapFileSyntaxError, match="SU_NP_8$"):
+        func(map_, system, oscillators)
+    map_.RunPars.MainRunPars.singles_whitelist_dict["mymap"] = [[":All"]]
+
+    map_.RunPars.MainRunPars.singles_blacklist_dict["mymap"] = [["unknown"]]
+    with pytest.raises(GM_Ex.GmapFileSyntaxError, match="SU_NP_8$"):
+        func(map_, system, oscillators)
+    map_.RunPars.MainRunPars.singles_blacklist_dict["mymap"] = [[":None"]]
+
+    # ----------------
+    # errors in filter_single_line()
+
+    # Trigger the first error (non-ints in input)
+    with pytest.raises(GM_Ex.GmapFileSyntaxError, match="SU_NP_8$"):
+        _ = GM_DMF.filter_single_line(
+            ["resnums", "not", "a", "number"], "white", set(), set("hello"),
+            map_, system)
+
+    with pytest.raises(GM_Ex.GmapIndexError, match="SU_NP_8$"):
+        _ = GM_DMF.filter_single_line(
+            ["resnums", "102"], "white", set(), set("hello"), map_, system)
+
+    with pytest.raises(GM_Ex.GmapFileSyntaxError, match="SU_NP_8$"):
+        _ = GM_DMF.filter_single_line(
+            ["resnums", "5-7-3"], "white", set(), set("hello"), map_, system)
 
 
 # ==================================================

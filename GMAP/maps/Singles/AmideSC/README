@@ -1,0 +1,98 @@
+sections:
+- intended use
+- how to use
+- available parameters
+- warnings that can be raised by this map
+
+
+
+intended use
+------------
+
+This map is intended for use with amide (~N(D)C(=O)~) (smiles notation) groups, specifically those that live in proteins, on the sidechains. In other words, it looks for the outer ends of the asparagine (ASN) and glutamine (GLN) residues:  ~N(D)C(:O):O
+
+The goal is to calculate the absorption frequency of the Amide I mode, where the C=O bond stretches.
+
+The notation is not wrong - these maps assume in their frequency calculations that this is a deuterated group. If non-deuterated values are desired, the resulting spectrum should be blue-shifted by about 10 cm-1. (https://doi.org/10.1063/5.0064518)
+
+
+
+how to use
+----------
+
+Be aware that the maps used in this overarching map have been designed to be used in combination with certain other maps, or with certain force fields. While a map should still work with a different forcefield, it is still highly recommended to use the intended/tested combinations. 
+- In general, the OPLS-AA forcefield is recommended, except for the Tokmakoff map, which has been designed for the CHARMM-27 forcefield.
+- The Jansen dipole map should only be used together with the Jansen frequency map (this is enforced by this map).
+- It is common to also calculate couplings when working with amides. This should be done with one of the specially-designed amide coupling maps. See (https://doi.org/10.1021/acs.jctc.6b00420) to find out what coupling map is best for your usecase.
+- The peaks for these systems take up the same spectral space as backbone amides, so to get better agreement with experiment, you'll probably want to use the backbone map along this one.
+
+
+Available parameters
+--------------------
+
+When using this map, the following parameters become available to use in any input parameter source (default file, input file, command line):
+
+AmideSC.frequency_map_choice
+    shorthand: AmideSC.fmc
+    options: Tokmakoff, Skinner, Jansen, Cho, Hirst (default = Skinner)
+
+    Indicate the program which frequency map should be used. Skinner is the default as it gives the best result for 2-dimensional IR absorption spectra, while being fairly cheap. It is also the only map which has a separately-developed map for sidechains, instead of using the backbone maps with a fixed shift.  (https://doi.org/10.1021/acs.jctc.6b00420)
+
+    Tokmakoff, Cho and Hirst maps are cheaper than Skinner, but still provide decent results. Jansen is more expensive than Skinner, but gives results closer to experiment when predicting linear IR spectra. (same reference)
+
+AmideSC.dipole_map_choice
+    shorthand: AmideSC.dmc
+    options: Torii, Jansen (default = Torii)
+
+    Indicates which dipole map should be used. Torii is the default as the Skinner frequency map assumes it, and is more general. Jansen should only be used when using the Jansen frequency map, too.
+
+AmideSC.residue_order
+    no shorthand
+    options: resname, resnum (default = resnum)
+
+    In what order the residues should be saved. This influences all output files (like hamiltonian, dipoles, etc). The difference is caused by the fact this map treats two different protein residues. The exact functioning can be best explained by an example:
+
+    Assume we have a protein with the following groups (GLU=Q, ASN=N, GLY=G=standard):   GQGGNGNQGNGGQ. Note, there is a glutamine at positions 1, 7, 12 and a asparagine at 4, 6, 9.
+
+    The order provided by resname: N4, N6, N9, Q1, Q7, Q12
+    The order provided by resnum: Q1, N4, N6, Q7, N9, Q12
+
+    resnum has been taken as the default, as this is the same order that AIM uses.
+
+AmideSC.pos_choice
+    no shorthand
+    options: C, O, N, D, Torii (default = C)
+
+    When saving the position of this group, what position should be taken. The first four options save the position of that atom, Torii saves the position at which the Torii dipoles are assumed. This is in between the CNO atoms: 0.077*C + 0.665*O + 0.258*N
+
+AmideSC.dp1_choice
+    no shorthand
+    options: C, O, N, D, Torii (default = C)
+
+    When saving the doublepos of this group, what position should be taken as first position. The first four options save the position of that atom, Torii saves the position at which the Torii dipoles are assumed. This is in between the CNO atoms: 0.077*C + 0.665*O + 0.258*N
+
+AmideSC.dp2_choice
+    no shorthand
+    options: C, O, N, D, Torii (default = N)
+
+    When saving the doublepos of this group, what position should be taken as second position. The first four options save the position of that atom, Torii saves the position at which the Torii dipoles are assumed. This is in between the CNO atoms: 0.077*C + 0.665*O + 0.258*N
+
+AmideSC.legacy_mode
+    no shorthand
+    options: None, AIM, AmideImaps
+
+    There are some small differences between the different programs. For this map, the differences are very small: in the case this parameter is set to AIM, the positions are slightly different. Imagine the MD calculations returning a cubic box with all sides of length 100. When GMAP returns the positions, all components will lie between -50 and 50. However, when AIM returns the positions, all components will fall between 0 and 100.
+
+
+
+warnings that can be raised by this map
+---------------------------------------
+
+map_AmideSC_1
+    This error is raised when the Jansen dipole map is requested without the
+    Jansen frequency map. The Jansen dipole map may be used if and only if the Jansen frequency map is used in the same run.
+
+    This has to do with the fact that both maps require knowledge of the electrostatic gradient, and no other frequency map does. If any other frequency map is used, no gradient data will be collected, so results from this map will be wrong.
+
+    Another reason is the fact that the two maps have been developed together with the intention of them working together. That means that to obtain the best results with either one, the other is needed, too.
+

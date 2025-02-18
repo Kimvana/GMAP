@@ -6,40 +6,28 @@ other custom python files stored in the same directory (or a directory
 therein) as this file.
 """
 
+# 3rd party imports
 import numpy as np
 
-import GMAP.src.tools.MathFunctions as GM_MF
-import GMAP.src.tools.PhysicsFunctions as GM_PF
+# GMAP imports
+import GMAP.src.tools.constants as GM_Con
+# import GMAP.src.tools.MathFunctions as GM_MF
+# import GMAP.src.tools.PhysicsFunctions as GM_PF
+# import GMAP.src.tools.DefaultMapFunctions as GM_DMF
+# import GMAP.src.tools.PrintTools as GM_PT
 
-
-# A function to adjust the parameters of the map. For some kinds of
-# parameter (especially if theres multiple that are linked), the way
-# RunPar is built might not be correct. In this function, the user can
-# fix that.
-def GM_adjust_RunPars(Files, Map):
-    """Makes the necessary changes to Map.RunPar.
-
-    Is expected to not return anything - return value is not caught.
-
-    Parameters
-    ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties.
-        Has to be updated after RunPars is finalized.
-    Map : :class:`~GMAP.src.tools.MapReader.Map`
-        The object that stores everything the program currently knows
-        about this map.
-    """
-
-    pass
+# own module imports
+import AmideSC_code.calculation_methods as MC_CM
+import AmideSC_code.parameter_changer as MC_PC
+# from .MapCode import parameter_changer as MC_PC
+# from .MapCode import calculation_methods as MC_CM
 
 
 # A function to adjust the choices made in core.txt. Perhaps, based on
 # a detected parameter, a different choice is preferred. This function
 # allows to make a different choice, **in the same format as the file**.
 # if more complex behaviour is desired, a separate function is needed.
-def GM_adjust_map_core_raw(Files, Map):
+def GM_adjust_map_core_raw(map_):
     """Makes the necessary changes to the 'raw' input read from core.txt.
 
     Is expected to not return anything - return value is not caught.
@@ -52,39 +40,27 @@ def GM_adjust_map_core_raw(Files, Map):
     have a list as value, in which other lists appear - one for each
     line.
 
-    The purpose of this function is to change this dictionary. Perhaps,
-    a rule in core.txt is dependent on a parameter of the map. This
-    function can make a decision based on those parameters (stored in
-    Map.RunPars).
+    The core.txt file has to be changed because the parameters of this
+    map allow to change between models, each of which has their own
+    files.
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties.
-        Has to be updated after RunPars is finalized.
-    Map : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
         The object that stores everything the program currently knows
         about this map.
     """
 
-    choice = Map.RunPars.pos_choice
-    match choice:
-        case "C":  # the default
-            Map.rawcore["position"] = ["0"]
-        case "O":
-            Map.rawcore["position"] = ["1"]
-        case "N":
-            Map.rawcore["position"] = ["3"]
-        case "D":
-            Map.rawcore["position"] = ["4"]
+    # still to do (for emaps):
+    # assume_length_units, VEG_reference
+
+    # still to do:
+    # dipoles, doublepos, xyz?? (or fixed across all maps?)
+
+    MC_PC.adjust_map_core_raw(map_)
 
 
-# A function to adjust the oscillators found for this map. Gets a list
-# of oscillators, and is supposed to return a list of oscillators.
-# For example, this function could remove some of the oscillators for
-# some reason, and return the rest.
-def GM_adjust_oscillators(Files, Map, Syst, oscillator_list):
+def GM_adjust_oscillators(map_, system, oscillator_list):
     """Makes the necessary changes to the list of oscillators.
 
     The program finds all oscillators mathing the instructions from
@@ -107,10 +83,6 @@ def GM_adjust_oscillators(Files, Map, Syst, oscillator_list):
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties.
-        Has to be updated after RunPars is finalized.
     Map : :class:`~GMAP.src.tools.MapReader.Map`
         The object that stores everything the program currently knows
         about this map.
@@ -127,252 +99,88 @@ def GM_adjust_oscillators(Files, Map, Syst, oscillator_list):
         All oscillators belonging to a single struct of this map.
     """
 
-    return oscillator_list
+    if map_.RunPars.residue_order == "resname":
+        return oscillator_list
+
+    # now, choice is 'resnum'. To change order to AIM order:
+    newlist = []
+    while len(oscillator_list) > 0:
+        smallest_ix = 0
+        smallest_resix = 999999999
+        for ix, oscillator in enumerate(oscillator_list):
+            resix = system.resnums[oscillator.used_atoms[0]]
+            if resix < smallest_resix:
+                smallest_resix = resix
+                smallest_ix = ix
+        newlist.append(oscillator_list.pop(smallest_ix))
+    return newlist
 
 
 # A place to do further initialization if a map requires it. Think of
 # things like building further lookup tables, for instance.
 # (for AmideBB - find neighbours!)
-def GM_post_init(Files, Map, Syst):
-    pass
+def GM_post_init(map_, system):
+    """Do some final initializations that need to happen before the
+    calculation starts.
 
-
-# A place to do things before the main loop starts (create datastructures
-# to be filled in, for example). GEM itself builds the coupling table at
-# this point in time. Any preparation stuff that only requires constant
-# properties (masses, charges, bonds, for example) should be done here.
-def GM_pre_run(Map, Syst):
-    pass
-
-
-# A place to do things before the properties for this frame are being
-# calculated. Any preparation stuff that requires frame-dependent
-# data should be done here. AIM calculated the CoMs here, GEM also
-# builds hamiltonian (as its contents change per frame)
-def GM_pre_frame(Map, Syst):
-    pass
-
-
-# A place to do things with the results from this frame. GEM itself
-# writes information like the hamiltonian to files at this point in time.
-def GM_post_frame(Map, Syst):
-    pass
-
-
-# A place to wrap up the entire calculation. GEM itself reports on
-# calculation time and treated frames at this point in time.
-def GM_post_run(Map, Syst):
-    pass
-
-
-# This is what GMAP assumes this function to contain if it is not specified.
-# If oscillators belonging to this map should be reported any differently, that
-# method should be specified here.
-def placeholder_GM_str_osc(Syst, Map, osc):
-    return f"living on residue number {Syst.resnums[osc.used_atoms[0]]}"
-
-
-# !!!! ATTENTION !!!! - THIS IS A PLACEHOLDER!
-# GMAP will not actually 'see' this function and use it. If you want to
-# have this function, just use `def GM_get_rotation_matrix` - see the manual
-# for more information. This placeholder is just here for illustration (but
-# this map does not actually need this function).
-def placeholder_GM_get_rotation_matrix(
-    Map, Syst, osc
-):
-    """Finds the rotation matrix for a given oscillator.
-
-    Most maps are encoded in local cartesian coordinates (a rotation
-    and/or translation of the global cartesian coordinates - not sheared
-    or box coordinates). So in order to be able to apply the map, the
-    transformation must be performed.
-
-    .. note::
-        This function is called by the program every time it needs to
-        know how
-        to rotate for this group. This rotation will be different for
-        each individual oscillator (so each molecule), each frame.
+    Checks include:
+    - comparing RunPars of this map to that of AmideSC, if the latter is
+      present and active
+    - initializing the prepro properties/files
+    - Assigning the correct functions based on the parameter choices
+    - Finding and assigning the neighbours of each group
+    - Identifying all atoms local to each oscillator.
 
     Parameters
     ----------
-    Map : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
         The object that stores everything the program currently knows
         about this map.
-    Syst : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.SystemReader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
-        The specific oscillator for which the transformation is required.
-
-    Returns
-    -------
-    rotation_matrix : `np.ndarray`
-        A 3*3 matrix containing the rotation matrix. If a vector in
-        global coordinates is multiplied with this matrix, the result
-        should be that vector expressed in the coordinate system of this
-        oscillator.
     """
 
-    x_uvec = (osc.positions_box[1] - osc.positions_box[0]) @ Syst.boxvects
-    x_uvec /= GM_MF.vec3_len(x_uvec)
-    y_uvec = (osc.positions_box[3] - osc.positions_box[0]) @ Syst.boxvects
-    y_uvec = GM_MF.project(x_uvec, y_uvec)
-    y_uvec /= GM_MF.vec3_len(y_uvec)
-    z_uvec = GM_MF.crossprod(x_uvec, y_uvec)
-    z_uvec /= GM_MF.vec3_len(z_uvec)
+    if map_.RunPars.dipole_map_choice == "Torii":
+        map_.code.GM_calculate_dipole = MC_CM.calc_dipole_Torii
+        map_.Core.dipole_gas_phase = np.float32(map_.Core.dipole_gas_phase)
+        map_.Core.dipole_Torii_angle = np.float32(
+            1 / np.tan(GM_Con.deg2rad * map_.RunPars.Torii_dipole_angle))
 
-    return np.array([x_uvec, y_uvec, z_uvec])
+    if map_.RunPars.legacy_mode == "AIM":
+        map_.code.GM_get_position_DMF = map_.code.GM_get_position
+        map_.code.GM_get_position = MC_CM.get_position
 
 
-# returns the dipole position and vector for osc. To be used during a
-# frame - must be fast.
-# A map creator can write this function themselves, or let it be automatically
-# generated by GEM during runtime
+def GM_str_osc(map_, system, oscillator):
+    """Explains how an oscillator should be printed.
 
-# !!!! ATTENTION !!!! - THIS IS A PLACEHOLDER!
-# GMAP will not actually 'see' this function and use it. If you want to
-# have this function, just use `def GM_get_dipole_dir` - see the manual for
-# more information. This placeholder is just here for illustration (but
-# this map does not actually need this function).
-def placeholder_GM_get_dipole_dir(Map, Syst, osc):
-    """Finds the dipole moment direction and its position of a given
-    oscillator.
-
-    Most spectroscopic techniques require to know the dipole moment of
-    each oscillator. Usually, this dipole moment can be approximated
-    easily without calculating it. When defining a dipole moment just
-    in terms of atom positions (as facilitated in core.txt) does not
-    suffice, this function can be used.
-
-    .. note::
-        This function is called by the program every time it needs to
-        know the dipole moment
-        of this group. This dipole will be different for
-        each individual oscillator (so each molecule), each frame.
+    Example print: 'binding the residues GLY36 and LYS37'
 
     Parameters
     ----------
-    Map : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
         The object that stores everything the program currently knows
         about this map.
-    Syst : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.SystemReader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
-        The specific oscillator for which the transformation is required.
+    oscillator : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        The specific oscillator for which the string is required.
 
     Returns
     -------
-    r_vec : `np.ndarray`
-        A length-3 vector containing the direction of the dipole moment.
-        The vector must be normalized.
-    r_pos : `np.ndarray`
-        A length-3 vector containing the position of the dipole moment.
-        The vector must lie within the simulation box.
+    string : str
+        The string that should be printed.
     """
 
-    r_vec = (osc.positions_box[1] - osc.positions_box[0]) @ Syst.boxvects
-    r_pos = Syst.positions[osc.used_atoms[0]]
-    return r_vec, r_pos
-
-
-# the actual magnitude of the dipole moment
-
-# !!!! ATTENTION !!!! - THIS IS A PLACEHOLDER!
-# GMAP will not actually 'see' this function and use it. If you want to
-# have this function, just use `def GM_get_dipole_mag` - see the manual for
-# more information. This placeholder is just here for illustration (but
-# this map does not actually need this function).
-def placeholder_GM_get_dipole_mag(Map, Syst, osc):
-    """Finds the magnitude for a given dipole moment.
-
-    Most spectroscopic techniques require to know the dipole moment of
-    each oscillator. Usually, this dipole moment can be approximated
-    easily without calculating it. When defining a dipole moment magnitude
-    using a base value and an optional standard-format VEG-dependence does not
-    suffice, this function can be used.
-
-    .. note::
-        This function is called by the program every time it needs to
-        know the magnitude of the dipole moment
-        of this group. This magnitude could be different for
-        each individual oscillator (so each molecule), each frame, so it
-        will be called that often. But it doesn't always have to return
-        something different.
-
-    Parameters
-    ----------
-    Map : :class:`~GMAP.src.tools.MapReader.Map`
-        The object that stores everything the program currently knows
-        about this map.
-    Syst : :class:`~GMAP.src.tools.SystemReader.System`
-        The object that stores everything the program currently knows
-        about the system being treated (names, numbers, types, masses,
-        charges of all atoms, for example)
-    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
-        The specific oscillator for which the transformation is required.
-
-    Returns
-    -------
-    magnitude : `np.float32`
-        The length that the dipole moment vector should have.
-    """
-
-    return np.float32(0.3)
-
-
-# !!!! ATTENTION !!!! - THIS IS A PLACEHOLDER!
-# GMAP will not actually 'see' this function and use it. If you want to
-# have this function, just use `def GM_get_dipole` - see the manual for
-# more information. This placeholder is just here for illustration (but
-# this map does not actually need this function).
-def placeholder_GM_calculate_dipole(Map, Syst, osc):
-    """Finds a given dipole moment and its position.
-
-    Most spectroscopic techniques require to know the dipole moment of
-    each oscillator. Usually, this dipole moment can be approximated
-    easily without calculating it. When a dipole has a more complex
-    format than the program uses by default, this function can be used.
-
-    .. note::
-        This function is simply the call to GM_get_dipole_dir, and then
-        multiplying the resulting r_vec with the result of
-        GM_get_dipole_mag. If only one of those two needs to be changed,
-        it is recommended to make the change there, instead of here.
-
-    Parameters
-    ----------
-    Map : :class:`~GMAP.src.tools.MapReader.Map`
-        The object that stores everything the program currently knows
-        about this map.
-    Syst : :class:`~GMAP.src.tools.SystemReader.System`
-        The object that stores everything the program currently knows
-        about the system being treated (names, numbers, types, masses,
-        charges of all atoms, for example)
-    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
-        The specific oscillator for which the transformation is required.
-
-    Returns
-    -------
-    r_vec : `np.ndarray`
-        A length-3 vector containing the direction of the dipole moment.
-        Datatype of this array must be float32!
-    r_pos : `np.ndarray`
-        A length-3 vector containing the position of the dipole moment.
-        The vector must lie within the simulation box.
-        Datatype of this array must be float32!
-    """
-
-    r_vec, r_pos = Map.code.GM_get_dipole_dir(Map, Syst, osc)
-    r_vec *= Map.code.GM_get_dipole_mag(Map, Syst, osc)
-    return r_vec, r_pos
-
-
-def placeholder_GM_calculate_frequency(Map, Syst, osc):
-    return Map.Core.frequency_gas_phase + np.sum(np.multiply(
-        osc.VEGout, Map.Core.frequency_data_array_linear))
+    at0 = oscillator.used_atoms[0]
+    return (
+        # living on the residue GLN36
+        f"living on the residue {system.resnames[at0]}{system.resnums[at0]}"
+    )
 
 
 def GM_calculate_raman(Map, Syst, osc):
@@ -394,9 +202,9 @@ def GM_calculate_raman(Map, Syst, osc):
     # the rotation matrix is available as long as the map specifies
     # estatic_choice to be E or G (which is the case here). It is made
     # available immediately at the beginning of the frame.
-    COvec = osc.roation_matrix[0, :]
-    CNvec = osc.roation_matrixrot_mat[1, :]
-    Zvec = osc.roation_matrixrot_mat[2, :]
+    COvec = osc.rotation_matrix[0, :]
+    CNvec = osc.rotation_matrix[1, :]
+    Zvec = osc.rotation_matrix[2, :]
 
     theta = 34*np.pi/180
     raman_tensor_local = np.diag([20, 4, 1])
@@ -449,57 +257,65 @@ def GM_calculate_raman(Map, Syst, osc):
     return raman_tensor_system[np.triu_indices(3)]
 
 
-# !!!! ATTENTION !!!! - THIS IS A PLACEHOLDER!
-# GMAP will not actually 'see' this function and use it. If you want to
-# have this function, just use `def GM_get_VEG_ref` - see the manual for
-# more information. This placeholder is just here for illustration (but
-# this map does not actually need this function).
-def placeholder_GM_get_VEG_ref_residues(Map, Syst, osc):
-    atnums = []
-    for atom in [0]:
-        resnum = Syst.resnums[osc.used_atoms[atom]]
-        atnums.extend([*range(
-            Syst.residues.first_ix[resnum],
-            Syst.residues.last_ix[resnum] + 1
-        )])
-    CoM = GM_PF.calc_CoM(Syst, atnums)
-    return CoM
+def GM_report_references(map_, system):
+    """Returns all references that should be reported for this map.
 
+    This function does not have to account for which outputs are
+    actually requested from the program - the text in the reporttext
+    field in the references.bib file already does that. It indicates
+    for which methods it should be reported, and with which text.
 
-# !!!! ATTENTION !!!! - THIS IS A PLACEHOLDER!
-# GMAP will not actually 'see' this function and use it. If you want to
-# have this function, just use `def GM_get_VEG_ref` - see the manual for
-# more information. This placeholder is just here for illustration (but
-# this map does not actually need this function).
-def placeholder_GM_get_VEG_ref_com(Map, Syst, osc):
-    atnums = []
-    for atom in [0, 1, 3, 4]:
-        atnums.append(osc.used_atoms[atom])
-    CoM = GM_PF.calc_CoM(Syst, atnums)
-    return CoM
+    If this function is absent from a main.py, map_.references will be
+    returned in it's entirety. The purpose of this function is to
+    return a selection/subset of that dictionary, instead.
 
-
-# A function to adjust the final python objects built out of the
-# core.txt file. If more complex behaviour is desired than the file
-# format currently supports, an alternative function can be created
-# here.
-# !!!!!!!!!!!!!!!!!!!!!
-# is this actually needed? Or does this influence the customizable
-# functions only, anyways?
-def GM_adjust_map_core_results(Files, Map):
-    """Makes the necessary changes to the results derived from core.txt
-
-    Is expected to not return anything - return value is not caught.
+    In the case of this mapping, there are different methods for
+    computing the different properties of the system, so we only want
+    to send those of the selected mapping through, and leave the rest.
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties.
-        Has to be updated after RunPars is finalized.
-    Map : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
         The object that stores everything the program currently knows
         about this map.
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
+
+    Returns
+    -------
+    references_dict : dict
+        This dict should be a slice/part of the full map_.references
+        dict. Therefore, an explanation of the map_.references dict:
+
+        The keys in this dictionary are the separate keys listed in the
+        reference.bib file's 'mapkey' field. If the reference has
+        multiple keys in that field, it will occur multiple times in the
+        dictionary, once for each key.
+
+        Associated with each key is a list of
+        :class:`~GMAP.src.tools.ReferenceHandler.Reference` objects,
+        each of which corresponds to a single entry in the .bib file.
     """
 
-    pass
+    report_these = []
+
+    # This map has a whole bunch of references stored, but not (nearly) all
+    # are actually used in a single calculation... Find those that are.
+    report_these.append("RamanAmide")
+
+    # freq map used:
+    report_these.append(f"Emap{map_.RunPars.frequency_map_choice}SC")
+
+    report_dict = {key: map_.references[key] for key in report_these}
+    report_dict["CP_DipDip"] = []
+
+    # dip map used:
+    if map_.RunPars.dipole_map_choice == "Torii":
+        report_dict["CP_DipDip"].extend(map_.references["DmapTorii"])
+    else:
+        report_dict["CP_DipDip"].extend(map_.references["DmapJansenSC"])
+
+    # select the actual references for the chosen keys
+    return report_dict

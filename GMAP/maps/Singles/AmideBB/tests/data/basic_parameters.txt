@@ -1,0 +1,12 @@
+topology_file            ../../../../../sourcefiles/pdb_1AKI.tpr
+trajectory_file          ../../../../../sourcefiles/pdb_1AKI_50frame.xtc
+
+verbose                  4
+verbose_logfile          4
+maps_to_use              AmideBB
+couplings_to_use         None :All
+output_format            txt
+prevent_overwrite        False
+estatics_method          perres_nocut  # essential in simulating AIM data
+estatic_smooth_range     0
+number_frames            1

@@ -1,0 +1,40 @@
+sections:
+- intended use
+- how to use
+- available parameters
+- warnings that can be raised by this map
+
+
+
+intended use
+------------
+
+This map is intended for use with amide (~N(D)C(=O)~) (smiles notation) groups, specifically those that are found in the protein backbone. In other words, it looks for the amide units formed through linking amino acids.
+
+The goal is to calculate the coupling between two consecutive amide groups in the backbone.
+
+
+how to use
+----------
+
+This map is not designed and intended for stand-alone use, and should never be requested directly. Instead, it should be used together with the 'ProteinAmide' map, which you should request as the coupling map. The main reason for this is that GMAP cannot identify direct neighbours, and apply a different map for them.
+
+Furthermore, this map is specifically designed for coupling AmideI singles map. It has been tested to work with the AmideBB and AmideSC singles maps, so we recommend to only couple those types of oscillators with this map. Any MD-system requirements for those maps automatically apply here as well.
+
+
+Available parameters
+--------------------
+
+When using this map, the following parameters become available to use in any input parameter source (default file, input file, command line):
+
+None. This map has no custom settings to be used.
+
+
+warnings that can be raised by this map
+---------------------------------------
+
+map_ProteinAmide_GLDP_1
+    This error is raised when any of the neighbour influence maps has the wrong dimensions, or anything else is wrong with the file.
+
+map_ProteinAmide_GLDP_2
+    While determining the chirality of residues between two amide oscillators, a residue was found that is not a GLY residue, but neither has a CB atom. Therefore, this cannot be a cannonical aminoacid, or you are using an unexpected nomenclature. If you are sure you are applying the right map to the right system, please get in touch with the map developers to solve this issue.

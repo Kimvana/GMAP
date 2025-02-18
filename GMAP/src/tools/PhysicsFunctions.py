@@ -5,14 +5,26 @@ import numpy as np
 
 # local imports
 import GMAP.src.tools.CLibLoader as GM_CL
+import GMAP.src.tools.PrintTools as GM_PT
 
 
 def calc_CoM(System, atomlist):
     """Calculate the centre of mass of a given set of atoms.
 
+    How to?
+
+    - Convert a list of positions to box coordinates
+    - Translate by the first atom position (center the first atom)
+    - Shift all atoms so they are in the 'middle' box (between -0.5 and
+      0.5 box vectors), i.e. closest position to the first atom
+    - Undo the translation by the first atom position
+    - Do the actual calculation (center of mass)
+    - Shift the result to the middle box and then convert back to
+      cartesian coordinates.
+
     Parameters
     ----------
-    System : :class:`~GMAP.src.tools.SystemReader.System
+    System : :class:`~GMAP.src.tools.SystemReader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -27,10 +39,23 @@ def calc_CoM(System, atomlist):
         centre of mass.
     """
 
+    # converting positions into box coordinates
     allpos_box = System.positions[atomlist] @ System.boxvects_inv
-    masses = System.masses[atomlist]
+    # Translating by position of first atom
+    shift = allpos_box[0].copy()
+    allpos_box -= shift
 
+    # shift to 'middle' box, undo first-atom-translation
+    allpos_box -= np.floor(allpos_box + 0.5) - shift
+
+    # do the calculation
+    masses = System.masses[atomlist]
     CoM_box = np.sum(allpos_box * masses[:, None], axis=0) / np.sum(masses)
+
+    # This current CoM_box can be saved/used as is!
+    # (as long as in-C implementation does the shift after diff calc)
+
+    # convert back to cartesian
     CoM = (CoM_box - np.floor(CoM_box + 0.5)) @ System.boxvects
     return CoM
 
@@ -66,16 +91,26 @@ def system_CoM(
 
     # for each residue, rewrite of calc_CoM for numba
     for resix in range(nres):
+        # converting positions into box coordinates
         allpos_box = positions[
             res_first_ix[resix]: res_last_ix[resix]+1
         ] @ boxvects_inv
-        masses_res = masses[res_first_ix[resix]: res_last_ix[resix]+1]
 
+        # Translating by position of first atom
+        shift = allpos_box[0].copy()
+        allpos_box -= shift
+
+        # shift to 'middle' box, undo first-atom-translation
+        allpos_box -= np.floor(allpos_box + half) - shift
+
+        # do the calculation
+        masses_res = masses[res_first_ix[resix]: res_last_ix[resix]+1]
         CoM_box = np.sum(
             allpos_box * masses_res[:, None], axis=0
         ) / np.sum(masses_res)
-        CoM_array[resix] = (
-            CoM_box - np.floor(CoM_box + half)) @ boxvects
+
+        # convert back to cartesian
+        CoM_array[resix] = (CoM_box - np.floor(CoM_box + half)) @ boxvects
 
     return CoM_array
 
@@ -90,8 +125,8 @@ def calc_frame(RunPars, System, outputs):
     Parameters
     ----------
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
-        The 'main' RunPars instance containing all the basic run-defining
-        parameters.
+        The 'main' RunPars instance containing all the basic
+        run-defining parameters.
     System : :class:`~GMAP.src.tools.SystemReader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
@@ -108,17 +143,33 @@ def calc_frame(RunPars, System, outputs):
     """
 
     VEGlib = GM_CL.VEG_CLib()
+    printer = GM_PT.Printer
 
+    printer.add_time(4, "VEG-related properties:", "VEGprop", "ms")
     for oscix, oscillator in enumerate(System.oscillators):
         # Do we need the estatics?
+        printer.add_time(5, "", "VEGcalc")
         if any(data in RunPars.output_data for data in ("ham", "dip", "ene")):
             if oscillator.Map.Core.electrostatic_choice in ("V", "E", "G"):
                 # calculate VEG
-                VEGlib.calcVEG_perres_mm(System, RunPars, oscillator)
+                if RunPars.estatics_method == "perres":
+                    VEGlib.calcVEG_perres_mm(System, RunPars, oscillator)
+                elif RunPars.estatics_method == "perres_nocut":
+                    VEGlib.calcVEG_perres_mm_nocut(System, RunPars, oscillator)
 
             # ROTATE VEG
             if oscillator.Map.Core.electrostatic_choice in ("E", "G"):
                 oscillator.rotate_VEG()
+
+        printer.add_time(5, "", "VEGuse")
+
+        if "ene" in RunPars.output_data and oscillator.Map.Core.ham_first:
+            outputs["energies"][oscix] = calc_frequency(
+                System, oscillator)
+
+        if "ham" in RunPars.output_data and oscillator.Map.Core.ham_first:
+            outputs["hamiltonian"][oscix, oscix] = calc_frequency(
+                System, oscillator)
 
         # do we need dipoles?
         # we also need dipoles for the (full) hamiiltonian.
@@ -129,16 +180,16 @@ def calc_frame(RunPars, System, outputs):
             if any(data in RunPars.output_data for data in ("ham")):
                 outputs["dipole_pos"][oscix] = r_pos  # only ham!
 
-        if "ene" in RunPars.output_data:
+        if "ram" in RunPars.output_data:
+            outputs["raman"][oscix] = calc_raman(System, oscillator)
+
+        if "ene" in RunPars.output_data and not oscillator.Map.Core.ham_first:
             outputs["energies"][oscix] = calc_frequency(
                 System, oscillator)
 
-        if "ham" in RunPars.output_data:
+        if "ham" in RunPars.output_data and not oscillator.Map.Core.ham_first:
             outputs["hamiltonian"][oscix, oscix] = calc_frequency(
                 System, oscillator)
-
-        if "ram" in RunPars.output_data:
-            outputs["raman"][oscix] = calc_raman(System, oscillator)
 
         if "pos" in RunPars.output_data:
             outputs["positions"][oscix] = get_positions(System, oscillator)
@@ -151,8 +202,10 @@ def calc_frame(RunPars, System, outputs):
 
     # calculate the couplings for the hamiltonian
     if "ham" in RunPars.output_data:
+        printer.add_time(4, "Preparing coupling:", "PrepCoup", "ms")
         prep_coupling(RunPars, System)
 
+        printer.add_time(4, "Calculating coupling:", "CalcCoup", "ms")
         calc_coupling(RunPars, System, outputs)
 
     return outputs
@@ -286,8 +339,8 @@ def get_doublepos(System, oscillator):
     Returns
     -------
     doublepos : `np.ndarray`
-        Two length-3 vectors representing the positions of the oscillator.
-        Datatype of these arrays must be float32!
+        Two length-3 vectors representing the positions of the
+        oscillator. Datatype of these arrays must be float32!
     """
 
     map_ = oscillator.Map
@@ -307,8 +360,8 @@ def prep_coupling(RunPars, System):
     Parameters
     ----------
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
-        The 'main' RunPars instance containing all the basic run-defining
-        parameters.
+        The 'main' RunPars instance containing all the basic
+        run-defining parameters.
     System : :class:`~GMAP.src.tools.SystemReader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
@@ -331,8 +384,8 @@ def calc_coupling(RunPars, System, outputs):
     Parameters
     ----------
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
-        The 'main' RunPars instance containing all the basic run-defining
-        parameters.
+        The 'main' RunPars instance containing all the basic
+        run-defining parameters.
     System : :class:`~GMAP.src.tools.SystemReader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
@@ -358,8 +411,8 @@ def generate_output_structures(RunPars, System):
     Parameters
     ----------
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
-        The 'main' RunPars instance containing all the basic run-defining
-        parameters.
+        The 'main' RunPars instance containing all the basic
+        run-defining parameters.
     System : :class:`~GMAP.src.tools.SystemReader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
@@ -384,13 +437,13 @@ def generate_output_structures(RunPars, System):
     if any(data in RunPars.output_data for data in ("ham", "dip")):
         outputs["dipoles"] = np.zeros((nosc, 3), dtype="float32")
 
+    if any(data in RunPars.output_data for data in ("ram",)):
+        outputs["raman"] = np.zeros((nosc, 6), dtype="float32")
+
     if any(data in RunPars.output_data for data in ("pos",)):
         outputs["positions"] = np.zeros((nosc, 3), dtype="float32")
 
     if any(data in RunPars.output_data for data in ("dbp",)):
         outputs["doublepos"] = np.zeros((nosc*2, 3), dtype="float32")
-
-    if any(data in RunPars.output_data for data in ("dbp",)):
-        outputs["raman"] = np.zeros((nosc, 6), dtype="float32")
 
     return outputs
