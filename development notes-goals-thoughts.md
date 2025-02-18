@@ -414,6 +414,14 @@ Why? The colors are stored in binary format. Counting from the right, the first 
   - ```pytest testing/``` runs all tests defined in a file stored in a given directory
   - A specific test can be found like this: ```pytest test_mod.py::test_func```, ```pytest test_mod.py::TestClass::test_method```
   - ```-m``` allows selecting tests with certain markers. Just as with ```-k```, you can add logic to these (using and, or, not, etc). ```-m slow``` only runs tests that have the ```@pytest.mark.slow``` decorator.
+
+Pytest also gives the ability to generate a web page to look at everything in more detail. It can also answer the question "which test(s) cover this line?". To get an answer to this question, perform the following steps:
+- run ```pytest --cov-context=test --cov-report term-missing:skip-covered --cov=src -x tests```
+- run ```coverage html --show-contexts```
+- open the file it said it created
+- navigate to 'functions', scroll down to the function you want to check out, click it.
+- Here, scroll to the line, and on the right side of the screen, click the dropdown menu.
+
 - (KvA) Gave every warning it's own error code. Currently, there are two uses in mind - Providing a way for the unittests to check whether the program was quit for the right reason, and providing a way for users to easily get more information on a specific issue in the manual - In the manual, they're easy to find, and references to other places in the manual can easily be added there. But maybe, more uses can be implemented in the future? for example, a way to skip/silence warnings of a specific error code?
 - (KvA) list-type parameters must always come with at least one choice (at least, when parsing from the command line). But maybe, that choice can just be '\\;'?
 - (KvA) RefPars is just a tool for reading parameter inputs, and creating the corresponding parameter datastructures. After they've been made, it's served its purpose, and is no longer needed. Any function after should only use defpars, not refpars.
