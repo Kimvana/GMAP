@@ -945,9 +945,9 @@ class System:
         clib = GM_CL.VEG_CLib()
         clib.positions_to_box(self)
 
-        self.residues.CoM_c = np.zeros((self.nres, 3), dtype="float32")
+        self.residues.CoM = np.zeros((self.nres, 3), dtype="float32")
         self.residues.CoM_c = np.ctypeslib.as_ctypes(
-            np.ravel(self.residues.CoM_c))
+            np.ravel(self.residues.CoM))
         clib.calc_CoM_box(self)  # fill CoM_c. Results are calculated in box c.
 
     def print_system(self, RunPars):
