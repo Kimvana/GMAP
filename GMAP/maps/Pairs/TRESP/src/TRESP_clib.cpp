@@ -4,8 +4,12 @@
 
 // These files are not from default libraries, or within this map folder.
 // Instead, they should be manually included during installation:
+
 // windows (my machine, edit path):
 // cl.exe /LD /Fe: TRESP_clib_Win64bit /I\github\GEMAIM-dev\GMAP\sourcefiles TRESP_clib.cpp
+
+// linux (Kai's cluster, edit path):
+// g++ -fPIC -shared -o TRESP_clib_Linux.so -I/scratch/p302934/GMAP_fin/GMAP/GMAP/sourcefiles TRESP_clib.cpp
 #include "vectormath.cpp"  // in GMAP sourcefiles directory
 
 #ifdef _WIN32
