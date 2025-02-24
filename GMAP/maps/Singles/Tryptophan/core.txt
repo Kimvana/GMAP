@@ -1,0 +1,27 @@
+# core file for the TRP_UV map in GMAP
+
+functional_group_file    TRP_functional_group.txt
+
+used_atoms All 			# use all atoms in the TRP molecules for the electrostatic interactions
+
+electrostatic_atoms All
+electrostatic_choice V   	# the potential
+
+local_atoms All
+
+frequency_gas_phase 38900 	#  
+frequency_data_file_linear difference_charges.txt
+
+dipole_gas_phase  ?
+
+r_vec 5 - 0.5*15 - 0.5*17    # Y-axis in direction of CD1 from midtpoint of CH2 and CZ3
+r_pos 7*0.5+10*0.5        		# The position between CD2 and CE2
+
+position 7*0.5+10*0.5 			# write positions to file. The position of the molecule is set at the mg atom position, used for coupling on the fly in NISE
+
+doublepos_0 5			# Nitrogen atoms A and C
+doublepos_1 0.5*15 + 0.5*17			# In case the extended dipole is required
+
+VEG_reference position ?  	# position of Mg
+
+can_output pos dip ene ham dbp
