@@ -28,6 +28,8 @@ output_doublepos_filename[path_rel_op_c]          doublepos
 map_directory(md)[list_path_sep]               ../../../maps
 maps_to_use(um)[list_str]                         AmideSC
 couplings_to_use[list_str]                        DipDip :All
+singles_whitelist[list_str]                       :All :All
+singles_blacklist[list_str]                       :All :None
 influencers_whitelist[list_str]                   :All
 influencers_blacklist[list_str]                   :None
 influencers_file[path_sep]                        ../../../sourcefiles/infl_file_base.txt
@@ -55,6 +57,8 @@ estatic_smooth_range[float]                       5  # this is in angstrom
 start_frame[int]                                  0
 number_frames[int]                                999999999
 stop_frame[int]                                   999999999
+time_limit[int]                                   999999  # 2y in minutes
+batch_size[int]                                   25  # frames before time appl
 
 profiler[bool]                                    False
 profiler_graph[bool]                              False

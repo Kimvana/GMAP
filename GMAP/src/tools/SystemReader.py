@@ -469,8 +469,17 @@ class System:
             if checked:
                 checked_oscillators.append(checked)
 
+        filtered_oscillators = []
+        for oscillators in checked_oscillators:
+            map_ = oscillators[0].Map
+            filtered = map_.code.GM_filter_oscillators(
+                map_, self, oscillators
+            )
+            if filtered:
+                filtered_oscillators.append(filtered)
+
         self.oscillators = [
-            oscillator for oscillators in checked_oscillators
+            oscillator for oscillators in filtered_oscillators
             for oscillator in oscillators
         ]
         for oscix, oscillator in enumerate(self.oscillators):

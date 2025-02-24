@@ -1,2 +1,2 @@
 # too few rows and columns
-0
+2 4

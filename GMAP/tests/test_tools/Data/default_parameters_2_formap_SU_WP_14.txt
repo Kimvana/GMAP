@@ -26,6 +26,8 @@ output_doublepos_filename       doublepos
 map_directory                   ../../../maps
 maps_to_use                     AmideSC
 couplings_to_use                DipDip :All
+singles_whitelist               :All :All
+singles_blacklist               :All :None
 influencers_whitelist           :All
 influencers_blacklist           :None
 influencers_file                ../../../sourcefiles/infl_file_base.txt
@@ -52,6 +54,8 @@ estatic_smooth_range            5  # this is in angstrom
 start_frame                     0
 number_frames                   999999999
 stop_frame                      999999999
+time_limit                      999999  # 2y in minutes
+batch_size                      25  # frames before time appl
 
 profiler                        False
 profiler_graph                  False
