@@ -2,7 +2,7 @@
 
 This is the development version of GEMAIM. 
 
-## How to use:
+## How to install (general users):
 1. Clone this github repo, and navigate to the directory this file is located in.
 2. Using ```python -m venv env_GMAP```, create a virtual environment.
 3. Activate the environment by running
@@ -11,12 +11,20 @@ This is the development version of GEMAIM.
 4. Install GEMAIM:
 * (general users) run ```python3 -m pip install .```
 * (developers) run ```python3 -m pip install -e ".[testing]"```
-5. now, from anywhere, typing ```GMAP``` will start the program!
-6. Don't forget to compile the C library!
-7. note to developers: now, installing is not the only thing that needs to happen. Build your changes before opening a PR. ``pip install build`` if you don't have it yet; then ``python -m build`` (all from repo home directory)
-8. only relevant for some developers: If you want to fully profile the code and have GMAP generate the flow-chart-png for you, an installation of [graphvis](https://graphviz.org/) must be present. It is responsible for executing the 'dot' command on the command line. At the moment of writing this, a single test will fail if graphvis is not installed.
-9. Once you're done, you can deactivate the environment again by typing 'deactivate' (without the quotation marks in the terminal/command line)
-10. If you want to use the program again later, you have to reactivate the environment (step 3), but no futher installing is needed.
+5. now, from anywhere, typing ```GMAP``` will start the program. If not, something has gone wrong. However, we're not done yet.
+6. Don't forget to compile the GMAP C library! There are also some maps that might need to have their C libraries installed, they will mention this in their README. Compilation instructions are system dependent, and given lower down in this file. After this installation, the program is ready for use.
+7. Once you're done using the program, you can deactivate the environment again by typing 'deactivate' (without the quotation marks in the terminal/command line).
+
+### How to install (developers)
+1. Follow steps 1-6 of the non-developer guide.
+2. Build your changes before opening a PR. ``pip install build`` if you don't have it yet; then ``python -m build`` (all from repo home directory)
+3. only relevant for some developers: If you want to fully profile the code and have GMAP generate the flow-chart-png for you, an installation of [graphvis](https://graphviz.org/) must be present. It is responsible for executing the 'dot' command on the command line. At the moment of writing this, a single test will fail if graphvis is not installed.
+
+### How to use (after installing)
+1. Make sure you installed the program.
+2. Activate the environment you created during installation. Activation instructions are in step 3 of the installation instructions.
+3. Run the program; do what you want to do.
+4. After you're done, you deactivate your environment, just as in step 7 of installation.
 
 ## How to generate the documentation using sphinx:
 Assuming generating from scratch, and inside a venv (see above, always a good habit)
@@ -51,6 +59,7 @@ When you've made some choices to the code, and would like to rebuild the docs, n
 ## how to compile C code
 
 - compiled versions of the (VEG) c library are included in the respository. However, these are system dependent and you may need to recompile it for your own system.
+- If you need to compile any files, be it for GMAP itself or for one of the maps used by it, make sure to navigate to the directory containing the .cpp file before following further compilation instructions.
 
 ### windows
 
