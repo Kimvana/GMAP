@@ -2,7 +2,20 @@
 
 This is the development version of GEMAIM. 
 
-## How to install (general users):
+on this page:
+- [How to install](#how-to-install-general-users)
+- [How to generate the documentation using sphinx](#how-to-generate-the-documentation-using-sphinx)
+- [How to compile C code](#how-to-compile-c-code)
+- [Differences between GMAP and AIM](#differences-between-gmap-and-aim)
+
+
+## How to install 
+
+The installation instructions mention using a venv. This virtual environment is a little like a quarantine for modules. Anything you do in the virtual environment, stays there. So if multiple programs need different versions of the same module, you don't have to keep re-installing that module when switching programs.
+
+While the instructions work without one, it is definitely good practice to use one, so we highly recommend it!
+
+### Installation for general users:
 1. Clone this github repo, and navigate to the directory this file is located in.
 2. Using ```python -m venv env_GMAP```, create a virtual environment.
 3. Activate the environment by running
@@ -15,7 +28,7 @@ This is the development version of GEMAIM.
 6. Don't forget to compile the GMAP C library! There are also some maps that might need to have their C libraries installed, they will mention this in their README. Compilation instructions are system dependent, and given lower down in this file. After this installation, the program is ready for use.
 7. Once you're done using the program, you can deactivate the environment again by typing 'deactivate' (without the quotation marks in the terminal/command line).
 
-### How to install (developers)
+### Installation for developers
 1. Follow steps 1-6 of the non-developer guide.
 2. Build your changes before opening a PR. ``pip install build`` if you don't have it yet; then ``python -m build`` (all from repo home directory)
 3. only relevant for some developers: If you want to fully profile the code and have GMAP generate the flow-chart-png for you, an installation of [graphvis](https://graphviz.org/) must be present. It is responsible for executing the 'dot' command on the command line. At the moment of writing this, a single test will fail if graphvis is not installed.
@@ -98,4 +111,57 @@ Please note that depending on your mac version, the instructions are slightly di
   - ```cc -fPIC -dynamiclib -std=c++11 -stdlib=libc++ -o scriptname_MacOS.dylib scriptname.cpp``` (needed on newer versions like Sonoma 14.6.1 to avoid alias warnings)
   
 For example, the VEG library can be compiled with ```g++ -fPIC -shared -o VEG_MacOS.dylib VEG.cpp``` or ```cc -fPIC -dynamiclib -std=c++11 -stdlib=libc++ -o VEG_MacOS.dylib VEG.cpp```
+
+
+
+## Differences between GMAP and AIM
+
+On a glance, the GMAP package might seem similar to AIM. How does it differ, and why should one want to switch from AIM to GMAP?
+
+### GMAP has a larger scope
+This might be pedantic, but GMAP is not comparable to AIM. AIM is a program that does a single thing, while GMAP is a package with multiple functionalities. One of the tools it contains, GEM, **is** comparable to AIM. It was the first tool to be developed within the package.
+
+
+### Major differences between GMAP/GEM and AIM
+
+- **Extended to UV-vis.** GEM is designed with a broader scope in mind from the beginning. One of the big consequences of this is that GEM can deal with electronic spectra predictions (UV-vis) much more easily than AIM could.
+- **Non-orthorhomic system support.** The GMAP package has functionality that allows GEM to treat MD systems that have non-90-degree angles (not orthorhombic). These systems are often preferred in MD simulations (especilly of proteins), as they require less solvent.
+- **Multiple-residue-oscillators.** GEM can work with singles/oscillators/dyes that live on multiple residues much more easily than AIM could. The Amide-I vibration of proteins (backbone) is one example of such an oscillator (and had a special implementation in AIM), other examples can be found in, for example, polymers.
+- **Support for much larger MD systems.** GEM can output just energies/frequencies (the diagonal of the hamiltonian), while AIM had to output the full upper-diagonal hamiltonian. This means the largest feasible system (for subsequent treating with NISE) is at least tens of thousands of singles for GEM, opposed to roughly 1.5 thousand for AIM. 
+
+
+### Differences in function between GMAP/GEM and AIM
+
+- **Soft cutoff.** GMAP supports a soft cutoff where the 'weight' with which a charge is considered decreases with distance, whereas AIM either considered an atom, or it didn't.
+- **Double positions output.** GMAP has the double-positions output, which NISE requires for some calculations.
+- **NSA not yet implemented.** GMAP does not yet have the NSA algorithm implemented for faster electrostatics.
+- **Mandatory C code.** GEM cannot run without a compiled C library. This makes the code much easier to maintain, and NISE also requires users to know how to compile C.
+- **Coupling method selection.** GEM has more freedom than AIM with choosing coupling methods. GEM allows on a per-singles-map basis to choose the method, while AIM only allows turning dipole-dipole coupling on or off between (mis)matched pairs.
+- **Missing features.** The following features were present in AIM, but not yet in GMAP/GEM. They are planned, so should be coming in due time. Need them now, contact us to see if we can find a workaround!
+  - The functionality of the AIM parameter Scale_LR_coupling has not yet been implemented.
+  - GEM cannot yet work with non-Gromacs files.
+- **Easier whitelisting/blacklisting of singles** By default, GMAP can work with residue numbers and residue names (number/name of the residue of the zeroeth atom of the oscillator), but maps can add their own.
+- **Legend file output.** The legend file contains a short description for each row in the hamiltonian/dipoles array. No more second-guessing which frequency belongs to which site!
+- **Coupling method visualization output.** The couplingvis file has a diagram showing which coupling method has been used for which coupling value in the hamiltonian. Especially useful for mixed systems (e.g. proteins) that use multiple coupling methods at the same time.
+- **Automated testing suite.** While most users won't see anything directly from the tests, their existence means its much easier to confirm the code functions as expected, with no bugs or the like.
+
+
+
+### Quality of Life differences between GMAP/GEM and AIM
+
+- **Code-free maps.** When creating a map for GMAP, it is no longer needed to know code. AIM however requires some python for every map. Often very simple code, but code nonetheless. GMAP can support a variety of maps without any code. Where code is needed (more complex mappings do), it is easier to integrate with the main program.
+- **Automatic installation.** GMAP must be automatically installed, while this was optional for AIM. The GMAP installation is up-to-date with the newer conventions (whereas that of AIM isn't). This also means GMAP will come with a wheel. No more manual installation of dependencies.
+- **Begone, resnames file.** The resnames file as it existed with AIM is no longer a thing. GMAP now has an influencer file system, but it is optional. During a run, the log file / command line output will mention which residues are(n't) considered, and only if that doesn't match the users needs/desires, will the user have to touch it. 
+- **More legible command line output.** GMAP has a clearer output/report on the command line. It has colors (optional!), says what it's doing, and it reports more discovered information sooner (e.g. how many molecules were found in the MD system). It also indicates when (day/date/time) it started and thinks it'll finish. It still tells (as a stopwatch, in minutes/hours) how long it's been running, and how much longer it'll need, just like AIM.
+- **Command line parameter specification.** GMAP allows parameter specification on the command line. Want to do a series of calculations with the same input file, but change one parameter per calculation? Prefer seeing parameter choices in the call to GMAP? This feature is the answer. You can still use input parameter files in the same way as you could with AIM.
+- **Easier troubleshooting.** Got an error from the program? It now has an error code associated with it. There is an error page in the manual, listing all possible codes. Each code has some explanation and, where relevant, links to relevant documentation pages to get more information on how to solve the error.
+- **More maps.** GMAP will ship with a larger variety of maps than AIM did.
+- **Incomplete maps.** GEM can deal with incomplete maps, as long as they specify their incompleteness correctly. No need to specify how to calculate the Raman tensor if you tell GEM your map cannot compute those anyways.
+- **Calling GMAP from another python script.** While in theory possible, AIM never explicitly supported this. Now, GMAP contains no quit()'s, exit()'s, or sys.exit()'s. Only raise's. This makes it easier to catch a failed run when calling GMAP from another python script directly. There's also a function designed as the gateway into GMAP that your script can directly call.
+- **Units are dead, long live the units.** GMAP is more flexible using different units than AIM was. The user can specify in which units the output files should be given, and custom-made maps can mention what units their contents assume.
+- **Variable parameters.** This is highly-map specific, but the AmideBB and AmideSC maps are shipped with variable parameters. The angles/magnitudes used by various models can now be changed using those parameters.
+- **Better file management.** A small change can make a huge difference. When GMAP creates new files, it makes sure to not overwrite any old ones of the same name if they already exist. Unless you tell it it should, of course!
+- **Web-based manual.** The GMAP manual is website-based, instead of AIM's pdf text beast. Pages are linked together, and even the full documentation of the codebase can be found (helpful for developers).
+- **Silencing warnings.** Ever screamed at your PC "I know, stupid thing! But it doesn't matter!"? We have. Now, you can tell the program to not complain/quit at any warning of your choice. However, use it at your own risk, the warnings are there for a reason!
+
 

@@ -17,9 +17,9 @@ Calling the program
 
 These commands do the same, provided you have a program-specific input file with parameters:
 
-'manual' AIM:  ``your/AIM/path/AIM.py AIMinputfile.txt``
-installable AIM:  ``AIM run AIMinputfile.txt``
-GMAP:  ``GMAP GEM run GEMinputfile.txt``
+| 'manual' AIM:  ``your/AIM/path/AIM.py AIMinputfile.txt``
+| installable AIM:  ``AIM run AIMinputfile.txt``  (requires installation first)
+| GMAP:  ``GMAP GEM run GEMinputfile.txt``  (requires installation first)
 
 
 
@@ -41,6 +41,9 @@ trjfile
 
 sourcedir
     :ref:`source_directory <UserGuide_page_parameter_overview_sourcedir>` is equivalent, but the GMAP sourcefiles directory is not a one-to-one copy of the AIM one.
+
+referencefile
+    GMAP has all references stored in the separate maps, so this file (and the corresponding parameter) no longer exists.
 
 def_parfile
     :ref:`default_parameter_filename <UserGuide_page_parameter_overview_defpar>` is fully equivalent.
@@ -176,7 +179,7 @@ end_frame
     :ref:`stop_frame <UserGuide_page_parameter_overview_stopframe>` is fully equivalent.
 
 max_time
-    :ref:`stop_frame <UserGuide_page_parameter_overview_stopframe>` is fully equivalent.
+    :ref:`time_limit <UserGuide_page_parameter_overview_timelimit>` is fully equivalent.
 
 SphereSize
     :ref:`estatic_range <UserGuide_page_parameter_overview_estatrange>` is fully equivalent.
@@ -206,17 +209,23 @@ Scale_LR_coupling
     Scaling of long-range couplings has not yet been implemented in GMAP/GEM, so there is no equivalent parameter.
 
 Use_AmGroup_selection_criteria
-    This has been replaced by 
+    This has been replaced by :ref:`singles_whitelist <UserGuide_page_parameter_overview_singWL>` and :ref:`singles_blacklist <UserGuide_page_parameter_overview_singBL>`
 
 resnum_whitelist
+    :ref:`singles_whitelist <UserGuide_page_parameter_overview_singWL>` has a similar function, but different language/method of use.
 
 resnum_blacklist
+    :ref:`singles_blacklist <UserGuide_page_parameter_overview_singBL>` has a similar function, but different language/method of use.
 
 resname_whitelist
+    :ref:`singles_whitelist <UserGuide_page_parameter_overview_singWL>` has a similar function, but different language/method of use.
 
 resname_blacklist
+    :ref:`singles_blacklist <UserGuide_page_parameter_overview_singBL>` has a similar function, but different language/method of use.
 
 TreatNN
+    This is no longer covered by GMAP. Instead, you need to tell the AmideBB map your choice for this one - they have this parameter now. See the readme of that map for more information; parameter to be used is:
 
+    - ``AmideBB.consider_nearest_neighbours``
 
 

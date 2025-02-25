@@ -9,6 +9,10 @@ Everyone should follow the 'simple' installation instructions. For developers of
 
 If you plan to create a map, you might already benefit from a developer-level installation, especially if your map needs a main.py file.
 
+The installation instructions mention using a venv. This virtual environment is a little like a quarantine for modules. Anything you do in the virtual environment, stays there. So if multiple programs need different versions of the same module, you don't have to keep re-installing that module when switching programs.
+
+While the instructions work without one, it is definitely good practice to use one, so we highly recommend it!
+
 
 
 ****************************************

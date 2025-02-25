@@ -589,6 +589,8 @@ Then, group selection is where you explain what type of oscillators are to be co
 - 'X:' indicates any couplings involving an oscillator of type 'X' - the type of the other oscillator does not matter. The available oscillator types are the same as the available choices for the parameter 'maps_to_use'. There should be no spaces between group names and the colon!
 
 
+.. _UserGuide_page_parameter_overview_singWL:
+
 singles_whitelist
 =================
 | (no shorthand available)
@@ -612,6 +614,8 @@ This parameter takes a variable amount of arguments. If a map doesn't make any c
 
 By default, this parameter has the following setting: ``singles_whitelist :All :All``
 
+
+.. _UserGuide_page_parameter_overview_singBL:
 
 singles_blacklist
 =================
@@ -793,6 +797,8 @@ Whether the program should make a pretty image with profiling information. This 
 
 This parameter has no meaning/use when the ``profiler`` parameter is set to false.
 
+
+.. _UserGuide_page_parameter_overview_timelimit:
 
 time_limit
 ==========
