@@ -1,6 +1,6 @@
 newstruct  # flag to indicate a new structure
            # blank line is fully optional
-[CLA]        # name of the residue. If multiple options, separate by, euh, what?
+[CLA]      # name of the residue.
 C19  # 1
 C18  # 2
 C20  # 3
