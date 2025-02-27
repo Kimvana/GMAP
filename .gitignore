@@ -9,5 +9,18 @@ env_**
 **.obj
 sphinx_docs/_build/**
 **.png
+**#
 
 GMAP/.coverage**
+GMAP/crash*.log
+GMAP/log.log
+GMAP/dipoles.txt
+GMAP/doublepos.txt
+GMAP/energies.txt
+GMAP/hamiltonian.txt
+GMAP/positions.txt
+GMAP/raman_tensor.txt
+log.log
+GMAP/tests/test_tools/Data/log.log
+
+

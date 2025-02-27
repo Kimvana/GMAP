@@ -11,9 +11,10 @@ type                   standard
 
 VEG_reference CoM 2 3
 
-frequency_gas_phase 1500
-dipole_gas_phase 0.3
+dipole_gas_phase      0.3 0.2 0.1
+dipole_data_file      xyz dipolemap.txt
 
-multiply_freq   2A
+frequency_gas_phase   1234
+frequency_data_file_linear   freqmap.txt
 
-
+assume_length_units    doesntexist

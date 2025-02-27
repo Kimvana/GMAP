@@ -578,6 +578,17 @@ If you use different units, you can do the unit conversion yourself using the fu
     bohr
         Bohr, a0, A0, au, AU
 
+*************
+multiply_freq
+*************
+
+| *optional parameter*
+
+There might be some unit conversions that can't be covered by the keyword 'assume_length_units'. In some of those cases, this parameter could help:
+
+The value supplied here (a whole or decimal number) will be multiplied with all the values in the files specified using 'frequency_data_file_linear'  and 'frequency_data_file_quadratic'. This could be useful for a factor like 1/(4 pi epsilon).
+
+
 
 *********
 ham_first
