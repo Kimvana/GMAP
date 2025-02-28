@@ -96,7 +96,11 @@ To use the input file, open a command prompt (windows) or terminal (unix). Navig
 
 ``GMAP GEM run GEM_input.txt``
 
-This should start the program. If not, check out the troubleshooting section at the bottom of this page. 
+This should start the program. If not, check out the troubleshooting section at the bottom of this page. If everything went well, GMAP will show you all steps of the way, and end with the sentence "That was all for today, folks. Thank you, and good night!". This will be the first part of the program output:
+
+.. image:: images/amide-out1.jpg
+    :alt: The first bit of output of the program.
+
 
 
 
