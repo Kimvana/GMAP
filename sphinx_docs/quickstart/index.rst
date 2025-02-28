@@ -31,12 +31,12 @@ You are a busy person and want to quickly get started with GMAP. Here you can fi
     
     .. grid-item-card::
         :margin: 0 3 0 0
-        :link: running_from_script
+        :link: tutorials/index
         :link-type: doc
 
-        **Running from script**
+        **Tutorials**
         ^^^^^^^^^^^^^^^^^^^^^^^^^
-        Explanation on how to run GMAP from within a python script opposed to calling it on the command line.
+        Examples on GMAP usage.
 
 
 .. toctree::
@@ -45,4 +45,4 @@ You are a busy person and want to quickly get started with GMAP. Here you can fi
     
     installation
     forAIMusers
-    running_from_script
+    tutorials/index

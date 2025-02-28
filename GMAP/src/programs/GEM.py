@@ -716,13 +716,11 @@ def GEM(callcommand):
     # calculate all (requested) frames
     trj_loop(RunPars, System)
 
-    dpr("creating stats")
     # finalize profiler
     if RunPars.profiler:
         profile.create_stats()
         profile.dump_stats(RunPars.log_profiling_filename)
 
-    dpr("running gprof")
     if RunPars.profiler_graph:
         strcommand = [
             "gprof2dot", "-f", "pstats",
