@@ -18,14 +18,35 @@
 # topology_file D:\Data\PhD\Tutorials\PsbS-Deq\PsbS_Deq_A_200.tpr
 # trajectory_file D:\Data\PhD\Tutorials\PsbS-Deq\PsbS_Deq_A_200_short.xtc
 
+# Amber
+# topology_file D:\Data\PhD\Tutorials\amber\fdh.top
+# trajectory_file D:\Data\PhD\Tutorials\amber\MD_FDH.nc
+# trajectory_file D:\Data\PhD\Tutorials\amber\MD_FDH_2.mdcrd
+# trajectory_file D:\Data\PhD\Tutorials\amber\MD_FDH_2_angle.mdcrd
+# trajectory_file D:\Data\PhD\Tutorials\amber\MD_FDH_angle.mdcrd
+
+# CHARMM
+# topology_file D:\Data\PhD\Tutorials\insulin\wtdim.psf
+# trajectory_file D:\Data\PhD\Tutorials\insulin\wtdim10.dcd
+# topology_file D:\Data\PhD\Tutorials\insulin\wtmo.psf
+# trajectory_file D:\Data\PhD\Tutorials\insulin\wtmo.crd
+
+# NAMD
+# topology_file D:\Data\PhD\Tutorials\Thomas\step3_pbcsetup.psf
+# trajectory_file D:\Data\PhD\Tutorials\Thomas\snapshot1.cor
+topology_file D:\Data\PhD\Tutorials\Thomas\mds_0_1.gro
+trajectory_file D:\Data\PhD\Tutorials\Thomas\mds_0_1.gro
+
 verbose 3
 verbose_logfile 4
-# maps_to_use   AmideBB AmideSC
-maps_to_use   AmideSC
-# couplings_to_use  ProteinAmide   :All
+maps_to_use   AmideBB AmideSC
+AmideBB.include_protein_residues HSD
+
+# maps_to_use   AmideSC
+couplings_to_use  ProteinAmide   :All
 # couplings_to_use  DipDip  AmideSC:AmideSC
 # maps_to_use Water
-couplings_to_use TRESP :All
+# couplings_to_use TRESP :All
 
 
 output_format       txt
@@ -36,7 +57,7 @@ prevent_overwrite   False
 # estatics_method  perres_nocut
 
 start_frame 0
-number_frames 25
+number_frames 2
 
 batch_size 10
 time_limit 0
@@ -51,10 +72,10 @@ profiler_graph                              True
 
 # singles_whitelist   AmideBB resnames LEU
 # singles_blacklist   AmideBB resnums   20-80
-singles_whitelist   AmideSC resnames ASN
+# singles_whitelist   AmideSC resnames ASN
 
-singles_whitelist   :All :All
-singles_blacklist   :All :None
+# singles_whitelist   :All :All
+# singles_blacklist   :All :None
 
 
 AmideSC.frequency_map_choice      Jansen

@@ -238,6 +238,16 @@ topology_file
 
 The filename and location of the topology file to be used during the calculation. Allowed filetypes are the ones listed `here <https://userguide.mdanalysis.org/stable/formats/index.html>`__ that have a tick in the column labeled 'topology'.
 
+The following have been tested/confirmed usable with GMAP:
+
+- GROMACS: .tpr (recommended)
+- CHARMM: .psf
+
+
+The following have been tested/confirmed **un**usable with GMAP:
+
+- GROMACS: .gro (lacks charge information)
+
 
 trajectory_file
 ===============
@@ -245,6 +255,16 @@ trajectory_file
 | (used by: GEM, DEPICT)
 
 The filename and location of the trajectory file to be used during the calculation. Allowed filetypes are the ones listed `here <https://userguide.mdanalysis.org/stable/formats/index.html>`__ that have a tick in the column labeled 'coordinates'.
+
+The following have been tested/confirmed usable with GMAP:
+
+- GROMACS: .xtc (recommended), .gro
+- CHARMM: .psf
+
+
+The following have been tested/confirmed **un**usable with GMAP:
+
+- CHARMM: .crd (lacks PBC box dimensions)
 
 
 *********************************

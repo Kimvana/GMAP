@@ -219,11 +219,6 @@ class System:
         # TO DO - analogue of AIMs ResidueFinder and IXFinder
         self.residues = Residues(self)
 
-        # TO DO - way to find molnums for non-gromacs systems
-        #         ?is this necessary? or can we make do without??
-
-        self.molnums = self.universe.atoms.molnums
-
         # TO DO - analogue for AIM's residues.protein_init?
         #         or should this be part of the protein maps?
 

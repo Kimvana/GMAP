@@ -45,6 +45,14 @@ def GM_adjust_map_core_raw(map_):
         "CYS", "GLY", "PRO", "ALA", "VAL", "ILE", "LEU", "MET", "PHE",
         "TYR", "TRP"
     ]
+
+    extended = set(map_.RunPars.include_protein_residues)
+    extended.discard("None")
+    if len(extended) > 0:
+        extended = list(extended)
+        all_amino_acid_codes += extended
+    print(len(all_amino_acid_codes), all_amino_acid_codes)
+
     amino_acids_joined = ",".join(all_amino_acid_codes)
 
     oldentry = map_.rawcore["functional_group"]
