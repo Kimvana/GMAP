@@ -19,6 +19,8 @@ Strictly speaking, amide I' is used for the deuterated vibrations as found when 
 how to use
 ----------
 
+When you want to calculate a full hamiltonian for a protein, you'll most likely want to use this map in combination with two others. Besides this map, consider using the AmideSC map (for amide groups in the side chains), and the ProteinAmide map (for calculating couplings between protein amides). Please note that while the AmideBB and AmideSC maps are singles maps, the ProteinAmide is a pairs map.
+
 Be aware that the maps used in this overarching map have been designed to be used in combination with specific other maps, or with specific force fields. While a map should still work with a different forcefield, it is still highly recommended to use the intended/tested combinations or validate the alternative choice before using it. 
 - In general, the OPLS-AA forcefield is recommended, except for the Tokmakoff map, which has been designed for the CHARMM-27 forcefield.
 - The Jansen dipole map should always be used together with the Jansen frequency map (this is enforced by this map).
@@ -88,10 +90,14 @@ AmideBB.legacy_mode
     no shorthand
     options: None, AIM, AmideImaps (default = None)
 
-    Whether to recreate the results as produced by the precursors of this package. These are the differences:
+    Whether to recreate the results as produced by the precursors of this package. All options create results of the same format and magnitude, making all of them valid for use with software like NISE.
+    
+    These are the differences:
 
     - All positions lie between 0 and the box size for AIM, while None and AmideImaps have them lie between -0.5 and 0.5 times the box size.
     - When there are two prolines back to back, what map is used changes a little bit between modes. AmideImaps assigned a Gly-Pro map for those cases, while AIM and None assign a Pro-Gly map.
+
+    Which should you use? If you just want to compute spectra, stick with 'none'. It gives the most recent, detailed version, with any known bugs fixed. The main reason for changing to a legacy mode is for re-creating results from previous versions, so comparison between different results or packages can be made.
 
 AmideBB.allow_map_mismatch
     no shorthand

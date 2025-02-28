@@ -9,6 +9,10 @@ VEG_clib_file[path_rel_sd]                        VEG
 log_directory[path_dir_lg]                        [N/A]
 log_filename[path_rel_lg_c]                       log.log
 
+log_profiling_filename[path_rel_op_c]             prof.out
+log_profiling_tempfile[path_rel_op_c]             prof.temp
+log_profiling_graph_filename[path_rel_op_c]       profout.png
+
 output_directory[path_dir_op]                     [N/A]
 output_parameter_filename[path_rel_op_c]          parameters.txt
 output_legend_filename[path_rel_op_c]             legend.txt
@@ -20,11 +24,6 @@ output_energies_filename(oef)[path_rel_op_c]      energies
 output_raman_filename(orf)[path_rel_op_c]         raman_tensor
 output_positions_filename(opf)[path_rel_op_c]     positions
 output_doublepos_filename[path_rel_op_c]          doublepos
-
-output_profiling_filename[path_rel_op_c]          prof.out
-output_profiling_tempfile[path_rel_op_c]          prof.temp
-output_profiling_graph_filename[path_rel_op_c]    profout.png
-
 
 map_directory(md)[list_path_sep]               ../../../maps
 maps_to_use(um)[list_str]                         AmideSC
