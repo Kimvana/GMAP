@@ -51,7 +51,6 @@ def GM_adjust_map_core_raw(map_):
     if len(extended) > 0:
         extended = list(extended)
         all_amino_acid_codes += extended
-    print(len(all_amino_acid_codes), all_amino_acid_codes)
 
     amino_acids_joined = ",".join(all_amino_acid_codes)
 
