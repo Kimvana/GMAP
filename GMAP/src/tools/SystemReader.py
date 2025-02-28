@@ -87,11 +87,6 @@ class System:
     residues : :class:`~GMAP.src.tools.SystemReader.Residues`
         This class contains information on a per-residue basis instead
         of a per-atom basis like this class does.
-    molnums : `np.ndarray`
-        A 1D array of length self.natoms storing the number of the
-        molecule each atom belongs to. First molecule is numbered 0,
-        each subsequent molecule gets an index 1 larger than the
-        previous one. Counting never resets.
     rightangled : bool
         Whether self.angles only contains 90 degree angles.
     neutral : bool
