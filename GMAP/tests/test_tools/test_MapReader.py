@@ -1658,6 +1658,30 @@ class TestSingleCore:
             ], dtype="float32").round(2))
         assert CoreBase.frequency_data_array_linear is None
 
+    def test_freqmult(self):
+
+        cmdline = [
+            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+        ]
+        inpardict = {}
+        mapname = "test_freqmult"
+
+        (
+            RunPars, RefPars, DefPars, InPars, CmdPars,
+            mapdict, pairs_mapdict
+        ) = basic_setup(
+            cmdline, inpardict, finish_before="Core", mapname=mapname
+        )
+        map_ = mapdict[mapname]
+        CoreBase = basic_setup_core(
+            map_, finish_before="positions")
+
+        assert np.all(
+            CoreBase.frequency_data_array_linear == np.array([
+                [0, 2, 4, 6, 0, 0, 0, 0, 0, 0],
+                [8, 10, 12, 14, 0, 0, 0, 0, 0, 0]
+            ], dtype="float32").round(2))
+
     def test_posonlymap(self):
         cmdline = [
             "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
@@ -1737,13 +1761,13 @@ class TestSingleCore:
         self.basis_test_MI_MC(
             "MI_MC_7", capfd, "test_MI_MC_7_7", "length_units")
         self.basis_test_MI_MC(
-            "MI_MC_7", capfd, "test_MI_MC_7_8", "positions")
+            "MI_MC_7", capfd, "test_MI_MC_7_8", "estatic_choice")
         self.basis_test_MI_MC(
             "MI_MC_7", capfd, "test_MI_MC_7_9", "estatic_choice")
         self.basis_test_MI_MC(
             "MI_MC_7", capfd, "test_MI_MC_7_10", "estatic_choice")
         self.basis_test_MI_MC(
-            "MI_MC_7", capfd, "test_MI_MC_7_11", "estatic_choice")
+            "MI_MC_7", capfd, "test_MI_MC_7_11", "positions")
 
     def test_MI_MC_8(self, capfd):
         self.basis_test_MI_MC(
@@ -1781,6 +1805,8 @@ class TestSingleCore:
             "MI_MC_12", capfd, "test_MI_MC_12_1", "ham_first")
         self.basis_test_MI_MC(
             "MI_MC_12", capfd, "test_MI_MC_12_2", "func_group")
+        self.basis_test_MI_MC(
+            "MI_MC_12", capfd, "test_MI_MC_12_3", "positions")
 
     def basis_test_MI_MC(
         self, errcode, capfd, mapname=None, finish_before=None
@@ -2180,6 +2206,12 @@ def basic_setup_core(map_, finish_before=None):
         return CoreBase
 
     setattr(CoreBase, "length_units", CoreBase.parse_length_units(
+        map_.rawcore, map_.directory))
+
+    if finish_before == "freq_multiplier":
+        return CoreBase
+
+    setattr(CoreBase, "freq_multiplier", CoreBase.parse_multiply_freq(
         map_.rawcore, map_.directory))
 
     if finish_before == "change_arrays":

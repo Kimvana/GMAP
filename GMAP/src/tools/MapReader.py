@@ -1157,6 +1157,10 @@ class SingleCore:
         if not self.success:
             return
 
+        self.freq_multiplier = self.parse_multiply_freq(rawcore, Map.directory)
+        if not self.success:
+            return
+
         self.change_map_units_decision()
 
         self.parse_positions(rawcore, Map.directory)
@@ -2505,24 +2509,65 @@ class SingleCore:
             return "bohr"
         else:
             GM_PT.Printer.warning(
-                "\nCould not interpret the choice for the parameter "
+                "\nCould not interpret the choice for the keyword "
                 "'assume_length_units'"
                 f" in the file {mapdir / 'core.txt'}. Please make sure "
-                "the choice is either 'bohr' or 'angstrom.",
-                "MI_MC_7", False
+                "the choice is either 'bohr' or 'angstrom'.",
+                "MI_MC_12", False
             )
             self.success = False
             return "ang"
+
+    def parse_multiply_freq(self, rawcore, mapdir):
+        """Parse the value all freq constants should be multiplied with
+
+        Parameters
+        ----------
+        rawcore : dict of str - list of str pairs
+            The raw contents of the file core.txt
+        mapdir : pathlib.Path
+            The path to the directory in which the map is defined.
+
+        Returns
+        -------
+        multiplier : float
+            The value all frequency constants should be multiplied with
+        """
+
+        if "multiply_freq" not in rawcore:
+            return 1
+
+        try:
+            multiplier = float(rawcore["multiply_freq"][0])
+        except Exception:
+            GM_PT.Printer.warning(
+                "\nCould not interpret the choice for the keyword "
+                f"'multiply_freq' in the file {mapdir / 'core.txt'}. "
+                "Please make sure the choice only contains numbers (and "
+                "optionally a single '.') that represent a decimal value.",
+                "MI_MC_7", False
+            )
+            self.success = False
+            return 1
+
+        return multiplier
 
     def change_map_units_decision(self):
         """See whether to change units, and by what amount."""
 
         if self.length_units == "ang":  # conversions are only for bohr
-            return
+            pass
+        else:
+            # this could be made conditional if others are added later!
+            conv_factor = GM_Con.bohr2ang
+            self.change_map_units(conv_factor)
 
-        # this could be made conditional if others are added later!
-        conv_factor = GM_Con.bohr2ang
-        self.change_map_units(conv_factor)
+        # now, also use the frequency multiplier
+        if not isinstance(self.frequency_data_array_linear, type(None)):
+            self.frequency_data_array_linear *= self.freq_multiplier
+
+        if not isinstance(self.frequency_data_array_quadratic, type(None)):
+            self.frequency_data_array_quadratic *= self.freq_multiplier
 
     def change_map_units(self, conv_factor):
         """Actually changes the units of constants.

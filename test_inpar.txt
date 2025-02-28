@@ -25,7 +25,7 @@ maps_to_use   AmideSC
 # couplings_to_use  ProteinAmide   :All
 # couplings_to_use  DipDip  AmideSC:AmideSC
 # maps_to_use Water
-couplings_to_use DipDip :All
+couplings_to_use TRESP :All
 
 
 output_format       txt
