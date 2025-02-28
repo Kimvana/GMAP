@@ -11,7 +11,7 @@ import GMAP.src.tools.DefaultMapFunctions as GM_DMF
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.ParameterParser as GM_PP
 import GMAP.src.tools.PrintTools as GM_PT
-# from GMAP.src.tools.PrintTools import devprint as dpr
+from GMAP.src.tools.PrintTools import devprint as dpr
 
 
 class System:
@@ -244,6 +244,12 @@ class System:
         #     self.masses_c = np.ctypeslib.as_ctypes(self.masses)
         #     self.res_COM_c = np.ctypeslib.as_ctypes(
         #         np.zeros((self.nres * 3), dtype='float32'))
+
+        for i in range(170, 270):
+            dpr(
+                self.atnums[i], self.atnames[i], self.resnums[i],
+                self.resnames[i]
+            )
 
     def abs_resnums(self):
         """Renumbers residue numbers so they start at 0, and never reset
