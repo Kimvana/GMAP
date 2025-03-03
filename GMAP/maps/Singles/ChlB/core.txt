@@ -13,7 +13,7 @@
 # Could not find the parameter 'can_output' in the core file. 
 # Without it, the map cannot function. Please make sure it is present.
 
-can_output     ham   ene    dip#    pos
+can_output     ham   ene    dip    pos
 
 # -----------------------
 
@@ -45,8 +45,6 @@ used_atoms 0-46
 
 electrostatic_atoms 0-46
 
-assume_length_units    Bohr
-
 # ----------------------
 
 # The highest order gradient of electrostatic properties needed. If only the
@@ -72,12 +70,11 @@ local_atoms 0-46
 
 # -------------------
 
-# This is the position where the transition dipole is placed for TDC following
-# Skinner
-position               0.58*1 + 0.42*0
-# This is the position of hydrogen and oxygen
-doublepos_0            1
-doublepos_1            0
+# This is the position where the transition dipole is placed
+position       0
+# These are the positions of NB and ND atoms
+doublepos_0            16
+doublepos_1            33
 
 
 # how to calculate the different directions. Currently only supports subtraction.
@@ -93,9 +90,7 @@ r_pos     0 # At the Mg
 # What should be the midpoint of the sphere defining the charges that can
 # influence VEG.
 
-#VEG_reference  residues 0    # take CoM of all atoms in residue which atom 0 of this oscillator belongs to.
-#VEG_reference  position 0  # take #VEG_reference to be this exact position
-VEG_reference  CoM 0 1 2 3 4 # take CoM of listed atoms
+VEG_reference  position 0 # take CoM of listed atoms
 
 # ---------------------
 
