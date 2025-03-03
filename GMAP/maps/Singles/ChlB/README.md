@@ -1,0 +1,3 @@
+## Chlorophyll b (CHLB) 
+
+This type of chlorophyll can be described as a complex molecule with a porphyrin ring structure coordinated to a magnesium ion at its center. Like Chlorophyll a, Chlorophyll b contains a porphyrin ring, but it differs from Chlorophyll a in having a formyl group (-CHO) at the C7 position instead of a methyl group (-CH₃). This molecule plays a vital role in photosynthesis, acting as a light-harvesting pigment. 
