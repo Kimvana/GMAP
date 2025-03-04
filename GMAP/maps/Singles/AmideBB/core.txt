@@ -40,3 +40,8 @@ frequency_data_file_linear    Skinner.txt
 position       0  # carbon atom
 doublepos_0    0  # carbon atom
 doublepos_1    3  # nitrogen atom
+
+
+# this one is not actually used as the 'CP_TRESP_get_charges' function in
+# main.py overrides it. Still needs to be here though.
+TRESP.charges_filename   TRESP_gen.txt

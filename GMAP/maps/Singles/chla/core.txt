@@ -1,0 +1,30 @@
+(env_GMAP) [p302934@login2 chla]$ vi core.txt 
+
+# first attempt at the core.txt file for the bchlc map in GMAP
+functional_group_file   bcha_funcgroup.txt
+
+# all specified
+used_atoms All
+
+# probably at least the magnesium atom, which is 26, zero based
+electrostatic_atoms All
+electrostatic_choice V   # V E or G?
+
+local_atoms All
+
+frequency_gas_phase 14706  # Qy 680 nm
+frequency_data_file_linear freq_fluct_file_BChla_units_angstrom_per_cm_addfactor.txt   ##charge obtain from this ref: https://doi-org.proxy-ub.rug.nl/10.1021/jp106323e
+
+dipole_gas_phase  4.49 # 4.49 was found in Phys. Chem. Chem. Phys., 2017, 19, 18311--18320
+
+r_vec 60 - 45    # the position of the third N atom minus the first N atom
+r_pos 67        # The position of the Magnesium atom
+
+VEG_reference position 67  # position of Mg
+
+# This is the position where the transition dipole is placed for TDC following
+position               67
+can_output        ham   ene    dip     pos  dbp
+doublepos_0 60
+doublepos_1 45
+TRESP.charges_filename   TRESP_chla.txt
