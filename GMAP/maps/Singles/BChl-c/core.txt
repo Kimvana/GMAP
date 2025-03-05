@@ -24,4 +24,4 @@ doublepos_1 2			# In case the extended dipole is required
 
 VEG_reference position 26  	# position of Mg
 
-can_output pos dip ene ham
+can_output pos dip ene ham dbp
