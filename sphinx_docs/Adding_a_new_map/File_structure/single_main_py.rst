@@ -270,6 +270,139 @@ Default implementation
 
 
 
+.. #region GM_filter_oscillators
+
+GM_filter_oscillators
+===========================
+
+This is where a map is supposed to process the user choice for the parameters singles_whitelist and singles_blacklist. The choice for this parameter is saved (parsed) in the RunPars object. RunPars.singles_whitelist_dict for the whitelist choice, and RunPars.singles_blacklist_dict for the blacklist choice. Both contain a dictionary - if you enter the name of your map as a key into this dictionary, out pops a list. Each item in this list corresponds to a single line in the parameter file, and is itself a list of 'words' (result of line.split()). The parameter name and map name have already been stripped from the list, so the first item of the list is the ``method`` field as described on the  :ref:`input parameters page <UserGuide_page_parameter_overview>`.
+
+This function is expected to return a list of oscillators, preferably in the same order as the oscillator_list that entered the function, but only containing those selected by the user.
+
+.. tip::
+    At first, this function might feel very similar to GM_adjust_oscillators. They are even called back-to-back by the program, with the output of GM_adjust_oscillators being the input for this one.
+
+    It therefore, in theory, is possible to have one of these two do the work of both, but this is adviced against. While GM_adjust_oscillators is meant to find all oscillators present in the system exactly once, GM_filter_oscillators is meant to take a subset of all available onces based on user choice.
+
+
+Example uses
+------------
+
+A map needs to know what groups were chosen
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The (early) AmideBB map is an example of this. To calculate a certain correction to the frequency, it wants to know the positions of the neighbouring groups. However, it is possible that a group itself was selected for by a user, but (one of) its neighbours was not. This is an issue as GMAP does not automatically update/generate the positions of an oscillator that hasn't been chosen. Therefore, it wants to know which neighbours have not been chosen, so it can update them itself.
+
+A different method of black-/whitelisting oscillators is desired
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The (future) AmideBB could be an example of this. GMAP only allows for looking for the residue number/name of the residue of the first atom. However, a user might want to sort by the residue name of the second half of the oscillator instead.
+
+It is suggested that custom implementations still use the 'filter_single_line' function, as this allows to easily implement default behaviour. Then, if that function returns 'False' as success, it didn't recognize the method, indicating for the maps custom implementation that that line requires further processing.
+
+
+Available attributes of map\_
+-----------------------------
+
+.. hlist::
+    :columns: 4
+
+    * self.directory
+    * self.corepath
+    * self.name
+    * self.type
+    * self.success
+    * self.avail_files
+    * self.RefPars
+    * self.DefPars
+    * self.InPars
+    * self.CmdPars
+    * self.RunPars
+    * self.code
+    * self.rawcore
+    * self.Core
+
+
+Parameters
+----------
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
+    The object that stores everything the program currently knows
+    about this map.
+system : :class:`~GMAP.src.tools.SystemReader.System`
+    The object that stores everyting the program currently knows about the MD system.
+oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    The oscillators that were identified as a good match for this map.
+
+Returns
+-------
+oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    The oscillators that were identified as selected by the user.
+
+Default implementation
+----------------------
+
+This is an approximate implementation omitting some checks/safety/details, intended to get the idea across. If you need to see the full implementation, look at the function ``get_filter_oscillators`` from DefaultMapFunctions.py.
+
+.. code-block:: python
+
+    def GM_filter_oscillators(map_, system, oscillator_list):
+        runpars = map_.RunPars.MainRunPars
+        wl_rules = runpars.singles_whitelist_dict.get(map_.name, [[":All"]])
+        bl_rules = runpars.singles_blacklist_dict.get(map_.name, [[":None"]])
+
+        filtered = set()
+        oscset = set(oscilator_list)
+        for rule in wl_rules:
+            filtered = filter_single_line(
+                rule, "white", filtered, oscset, map_, system)
+        
+        for rule in bl_rules:
+            filtered = filter_single_line(
+                rule, "black", filtered, oscset, map_, system)
+        
+        filtered_list = [osc for osc in oscillator_list if osc in filtered]
+        return filtered_list
+    
+
+    def filter_single_line(line, BW, found, avail, map_, system):
+        match line[0].lower():
+            case ":all":
+                if BW == "white":
+                    return True, avail.copy()
+                else:
+                    return True, set()
+            case ":none":
+                if BW == "white":
+                    return True, set()
+                else:
+                    return True, found.copy()
+            case "resnums":
+                numbers = set(map_.Core.allow_ranges(line[1:], system.nres))
+                filtered = {
+                    osc for osc in avail
+                    if system.resnums[osc.used_atoms[0]] in resnums
+                }
+                if BW == "white":
+                    found |= filtered
+                else:
+                    found -= filtered
+                return True, found
+            case "resnames":
+                resnames = set(line[1:])
+                filtered = {
+                    osc for osc in avail
+                    if system.resnames[osc.used_atoms[0]] in resnames
+                }
+                if BW == "white":
+                    found |= filtered
+                else:
+                    found -= filtered
+                return True, found
+            case _:
+                return False, found
+
+.. #endregion
+
+
+
 .. #region GM_post_init
 
 GM_post_init

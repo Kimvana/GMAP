@@ -27,7 +27,9 @@ For more information, check the manual on N/A.
 
 
 # standard lib imports
+import cProfile
 import datetime
+import subprocess
 import sys
 
 # 3rd party lib imports
@@ -42,6 +44,7 @@ import GMAP.src.tools.ParameterParser as GM_PP
 import GMAP.src.tools.PhysicsFunctions as GM_PF
 import GMAP.src.tools.Plotter as GM_Pl
 import GMAP.src.tools.PrintTools as GM_PT
+from GMAP.src.tools.PrintTools import devprint as dpr
 import GMAP.src.tools.ReferenceHandler as GM_RH
 import GMAP.src.tools.SystemReader as GM_SR
 
@@ -96,7 +99,7 @@ def manage_frame(frame, RunPars):
         verbose_level, framenum, RunPars.start_frame, RunPars.stop_frame)
 
     # Check if there is enough time to do another batch of frames
-    # (to avoid running longer than the max amount of time)
+    return early_stop(framenum, RunPars)
 
 
 def print_frame_ETA(verbose, framenum, startframe, endframe):
@@ -189,6 +192,45 @@ def print_frame_ETA(verbose, framenum, startframe, endframe):
     GM_PT.Printer.print(verbose, " | ".join(toprint))
 
 
+def early_stop(framenum, RunPars):
+    """Determines whether to stop the calculation early, or to continue.
+
+    This decision is based on the amount of remaining time, used time,
+    and frame batch size. Basically, the program divides all frames to
+    calculate in batches of a size determined by the user. Every first
+    frame of a batch (except the very first batch), the program sees how
+    long batches have taken until now, and whether there is enough time
+    to finish another.
+    If there is not enough time to finish two more, the next batch will
+    not start. This is done to ensure that there is also enough time for
+    the program to finish things off after the last batch.
+    """
+
+    relframenum = framenum - RunPars.start_frame
+    if relframenum == 0:  # don't quit on first frame
+        return False
+
+    # only consider quitting after completing a batch
+    if relframenum % RunPars.batch_size != 0:
+        return False
+
+    # now, actually check whether the next batch will fit.
+    timer = GM_PT.Printer.Timer
+    now_ns = timer.get_time("FrameUpdate")
+    start_heavy_ns = timer.get_time("StartLoop")
+    ns_per_frame = int((now_ns - start_heavy_ns) / (relframenum))
+    avail_time_ns = RunPars.time_limit * 60 * 1000000000
+
+    # if we could do another two batches, allow this batch to continue.
+    # why two? because we also need time to finish up the calculation
+    # after the last batch.
+    if avail_time_ns - now_ns > 2 * ns_per_frame * RunPars.batch_size:
+        return False
+    else:
+        RunPars.end_frame = framenum
+        return True
+
+
 # TO DO inside!
 def trj_loop(RunPars, System):
     """Performs the main per-frame loop for GEM.
@@ -231,9 +273,12 @@ def trj_loop(RunPars, System):
     for mapname in System.oscillators_ordered.keys():  # singles
         map_ = RunPars.requested_mapdict[mapname]
         map_.code.GM_pre_run(map_, System)
-    for mapname in System.oscillators_ordered_coup.keys():  # pairs
-        map_ = RunPars.requested_pairmapdict[mapname]
-        map_.code.GM_pre_run(map_, System)
+
+    # pair maps only need to prepare if couplings are to be calculated.
+    if "ham" in RunPars.output_data:
+        for mapname in System.oscillators_ordered_coup.keys():  # pairs
+            map_ = RunPars.requested_pairmapdict[mapname]
+            map_.code.GM_pre_run(map_, System)
 
     # And in case maps did anything weird...
     RunPars.manage_dtypes()
@@ -291,9 +336,12 @@ def trj_loop(RunPars, System):
         for mapname in System.oscillators_ordered.keys():  # singles
             map_ = RunPars.requested_mapdict[mapname]
             map_.code.GM_pre_frame(map_, System)
-        for mapname in System.oscillators_ordered_coup.keys():  # pairs
-            map_ = RunPars.requested_pairmapdict[mapname]
-            map_.code.GM_pre_frame(map_, System)
+
+        # pair maps only need to be called if couplings are to be calculated.
+        if "ham" in RunPars.output_data:
+            for mapname in System.oscillators_ordered_coup.keys():  # pairs
+                map_ = RunPars.requested_pairmapdict[mapname]
+                map_.code.GM_pre_frame(map_, System)
 
         GM_PT.Printer.add_time(
             4, "map init done. next: calculation", "Calc", "ms")
@@ -308,9 +356,12 @@ def trj_loop(RunPars, System):
         for mapname in System.oscillators_ordered.keys():  # singles
             map_ = RunPars.requested_mapdict[mapname]
             map_.code.GM_post_frame(map_, System)
-        for mapname in System.oscillators_ordered_coup.keys():  # pairs
-            map_ = RunPars.requested_pairmapdict[mapname]
-            map_.code.GM_post_frame(map_, System)
+
+        # pair maps only need to be called if couplings are to be calculated.
+        if "ham" in RunPars.output_data:
+            for mapname in System.oscillators_ordered_coup.keys():  # pairs
+                map_ = RunPars.requested_pairmapdict[mapname]
+                map_.code.GM_post_frame(map_, System)
 
         GM_PT.Printer.add_time(
             4, "map final done. next: write output", "FrameWrite", "ms")
@@ -333,9 +384,12 @@ def trj_loop(RunPars, System):
     for mapname in System.oscillators_ordered.keys():  # singles
         map_ = RunPars.requested_mapdict[mapname]
         map_.code.GM_post_run(map_, System)
-    for mapname in System.oscillators_ordered_coup.keys():  # pairs
-        map_ = RunPars.requested_pairmapdict[mapname]
-        map_.code.GM_post_run(map_, System)
+
+    # pair maps only need to do postcalc if couplings are to be calculated.
+    if "ham" in RunPars.output_data:
+        for mapname in System.oscillators_ordered_coup.keys():  # pairs
+            map_ = RunPars.requested_pairmapdict[mapname]
+            map_.code.GM_post_run(map_, System)
 
     # print all that the user does not yet know
     # (profiler?)
@@ -461,7 +515,10 @@ def print_treated_avail_frames(RunPars, System):
 
     GM_PT.header(2, "MD frames", "doublebox_bare")
     msg = "Frames treated:     " + " " * 12
-    pr.print(1, f"{msg}{RunPars.start_frame}-{RunPars.stop_frame}")
+
+    # if the calculation was stopped early, the attribute end_frame exists.
+    last_frame = getattr(RunPars, "end_frame", RunPars.stop_frame)
+    pr.print(1, f"{msg}{RunPars.start_frame}-{last_frame}")
     msg = "Frames requested:   " + " " * 12
     pr.print(2, f"{msg}{RunPars.start_frame}-{RunPars.stop_frame}")
     msg = "Frames available:   " + " " * 12
@@ -533,6 +590,12 @@ def print_in_output_filenames(RunPars):
     report_files(RunPars, "ram", "Raman", 2, 2)
     report_files(RunPars, "pos", "Positions", 2, 2)
     report_files(RunPars, "dbp", "Doublepos", 2, 2)
+    if RunPars.profiler:
+        fname = RunPars.output_profiling_filename
+        pr.print(2, f"profiler output:            {fname}")
+    if RunPars.profiler_graph:
+        fname = RunPars.output_profiling_graph_filename
+        pr.print(2, f"profiler visualization:     {fname}")
 
 
 def print_relevant_references(RunPars, system):
@@ -561,10 +624,11 @@ def print_relevant_references(RunPars, system):
         all_references.append(
             singles_map.code.GM_report_references(singles_map, system))
 
-    for pairs_map in system.oscillators_ordered_coup.keys():
-        pairs_map = RunPars.requested_pairmapdict[pairs_map]
-        all_references.append(
-            pairs_map.code.GM_report_references(pairs_map, system))
+    if "ham" in RunPars.output_data:
+        for pairs_map in system.oscillators_ordered_coup.keys():
+            pairs_map = RunPars.requested_pairmapdict[pairs_map]
+            all_references.append(
+                pairs_map.code.GM_report_references(pairs_map, system))
 
     GM_RH.report_references(RunPars, all_references)
 
@@ -591,6 +655,12 @@ def GEM(callcommand):
         RunPars, singles_mapdict, pairs_mapdict, CmdPars, InPars, DefPars,
         RefPars
     ) = GM_PP.get_parameters(in_parfile, argslist)
+
+    # If requested, profile the run.
+    if RunPars.profiler:
+        profile = cProfile.Profile()
+        profile.enable()
+
     GM_PT.Printer.add_time(
         3, "Finished GMAP parameters, start adding maps", "AddMaps", "ms")
 
@@ -600,14 +670,18 @@ def GEM(callcommand):
     GM_MR.manage_maps_singles(RunPars, singles_mapdict)
     GM_MR.manage_maps_pairs(RunPars, pairs_mapdict)
     GM_PT.Printer.add_time(
-        2, "Added all maps, start initializing MD system", "MDinit", "ms")
+        2, "Added all maps, start loading C libraries", "ClibLoad", "ms")
+
+    # initialize C library
+    GM_CL.VEG_CLib(RunPars)
+
+    GM_PT.Printer.add_time(
+        3, "Libraries loaded, start initializing MD system", "MDinit",
+        "ms"
+    )
 
     # Looking at MD system - finding oscillators.
     System = GM_SR.System(RunPars)
-
-    # Save overview of found coupling maps to file.
-    if "ham" in RunPars.output_data:
-        GM_Pl.plot_coupling_choices(RunPars, System)
 
     GM_PT.Printer.add_time(
         3, "Initialized MD system, start initializing maps", "MapInit", "ms")
@@ -616,26 +690,54 @@ def GEM(callcommand):
     for mapname in System.oscillators_ordered.keys():  # singles
         map_ = RunPars.requested_mapdict[mapname]
         map_.code.GM_post_init(map_, System)
-    for mapname in System.oscillators_ordered_coup.keys():  # pairs
-        map_ = RunPars.requested_pairmapdict[mapname]
-        map_.code.GM_post_init(map_, System)
+
+    # Report on what the system looks like (needs singles mapinit)
+    System.print_system(RunPars)
+
     GM_PT.Printer.add_time(
-        3, "Initialization complete, start loading C libraries",
-        "ClibLoad", "ms"
-    )
+        3, "Initialization complete, start considering pairs", "MDinit", "ms")
+
+    if "ham" in RunPars.output_data:
+        # prepare all pair lookup tables.
+        System.order_oscillators_pairs(RunPars)
+
+        # let all coupling maps initialize
+        for mapname in System.oscillators_ordered_coup.keys():  # pairs
+            map_ = RunPars.requested_pairmapdict[mapname]
+            map_.code.GM_post_init(map_, System)
+
+        # Save overview of found coupling maps to file.
+        GM_Pl.plot_coupling_choices(RunPars, System)
 
     # Write output parameter file
     GM_FH.write_parameter_file(
         RefPars, RunPars, System, CmdPars, InPars, DefPars)
 
-    # Report on what the system looks like
-    System.print_system(RunPars)
-
-    # initialize C library
-    GM_CL.VEG_CLib(RunPars)
-
     # calculate all (requested) frames
     trj_loop(RunPars, System)
+
+    dpr("creating stats")
+    # finalize profiler
+    if RunPars.profiler:
+        profile.create_stats()
+        profile.dump_stats(RunPars.output_profiling_filename)
+
+    dpr("running gprof")
+    if RunPars.profiler_graph:
+        strcommand = [
+            "gprof2dot", "-f", "pstats",
+            RunPars.output_profiling_filename, "-o",
+            RunPars.output_profiling_tempfile]
+        subprocess.run(strcommand)
+
+        dpr("running dot")
+        strcommand = [
+            "dot", "-Tpng", "-o", RunPars.output_profiling_graph_filename,
+            RunPars.output_profiling_tempfile]
+        subprocess.run(strcommand)
+
+        # remove the tempfile again
+        RunPars.output_profiling_tempfile.unlink()
 
     print_calculation_summary(RunPars, System)
 

@@ -4,6 +4,7 @@ import numpy as np
 
 # GMAP imports
 import GMAP.src.tools.constants as GM_Con
+import GMAP.src.tools.DefaultMapFunctions as GM_DMF
 import GMAP.src.tools.PrintTools as GM_PT
 # from GMAP.src.tools.PrintTools import devprint as dpr
 
@@ -81,10 +82,10 @@ def GM_adjust_oscillators(map_, system, oscillator_list):
 
     Parameters
     ----------
-    Map : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
         The object that stores everything the program currently knows
         about this map.
-    Syst : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.SystemReader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -114,6 +115,55 @@ def GM_adjust_oscillators(map_, system, oscillator_list):
                 break  # Nosc can at most have a single Cterm neighbour
 
     return oscillator_list
+
+
+def GM_filter_oscillators(map_, system, oscillator_list):
+    """Filter through the found oscillators based on the black- and
+    whitelist settings.
+
+    For this map specific, we just use the code provided by GM_DMF, but
+    we use this custom function to intercept the results from the
+    default version - we need to see whether the selected oscillators
+    have any neighbours that are not in the selection.
+
+    Reason for this is the nearest-neighbour correction to the
+    frequency. This correction needs to know the positions of the atoms
+    of the neighbouring oscillator, which are not updated/generated
+    for oscillators that are not within system.oscillators.
+
+    We notice those oscillators, so we can update them manually each
+    frame, so the positions are available, up-to-date, and thus correct.
+
+    Parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+        The object that stores everything the program currently knows
+        about this map.
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
+    oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        All oscillators belonging to this map.
+
+    Returns
+    -------
+    filtered_oscs : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        All oscillators belonging to a single struct of this map.
+    """
+
+    filterfunc = GM_DMF.get_filter_oscillators()
+    filtered_oscs = filterfunc(map_, system, oscillator_list)
+
+    CtermNBs = {osc.CtermNB for osc in filtered_oscs}
+    NtermNBs = {osc.NtermNB for osc in filtered_oscs}
+
+    filtered = set(filtered_oscs)
+    # a group on a chain end has no NB (hence 'none') so we need to remove
+    # that one too
+    map_.non_filtered_oscs = (CtermNBs | NtermNBs) - filtered - {None}
+
+    return filtered_oscs
 
 
 # A place to do further initialization if a map requires it. Think of
@@ -215,6 +265,13 @@ def GM_post_init(map_, system):
     MC_NM.read_maps(map_)
     MC_CM.determine_maps(oscillator_list, map_, system)
 
+    if "TRESP" in main_runpars.requested_pairmapdict.keys():
+        trespmap = main_runpars.requested_pairmapdict["TRESP"]
+        map_.rawcore["TRESP.charges_filename"] = ["TRESP_gen.txt"]
+        map_.Core.TRESP_gen_charges = trespmap.code.get_charges(trespmap, map_)
+        map_.rawcore["TRESP.charges_filename"] = ["TRESP_pro.txt"]
+        map_.Core.TRESP_pro_charges = trespmap.code.get_charges(trespmap, map_)
+
     if not map_.success:
         GM_PT.Printer.warning(
             "An issue occurred while initializing the AmideBB map stored at "
@@ -224,6 +281,29 @@ def GM_post_init(map_, system):
             "information. Quitting!",
             "map_AmideBB_0", True
         )
+
+
+def GM_pre_frame(map_, system):
+    """Do the things that need to happen in preparation for the next
+    frame.
+
+    We just need to update the oscillators that are not requested for
+    calculations themselves, but next to oscillators that are. See
+    the docstring of GM_filter_oscillators for more info.
+
+    Parameters
+    ----------
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+        The object that stores everything the program currently knows
+        about this map.
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
+    """
+
+    for oscillator in map_.non_filtered_oscs:
+        oscillator.frame_update(system)
 
 
 def GM_str_osc(map_, system, oscillator):
@@ -258,6 +338,13 @@ def GM_str_osc(map_, system, oscillator):
     )
 
 
+def CP_TRESP_get_charges(map_, system, osc):
+    if osc.resnames[1] == "PRO":
+        return map_.Core.TRESP_pro_charges
+    else:
+        return map_.Core.TRESP_gen_charges
+
+
 def GM_calculate_frequency(map_, system, osc):
     """Calculates the oscillating frequency for a given oscillator
 
@@ -286,7 +373,17 @@ def GM_calculate_frequency(map_, system, osc):
         gasfreq = map_.Core.frequency_gas_phase
         freqarr = map_.Core.frequency_data_array_linear
 
+    # np.seterr(all='raise')
+    # try:
     freq = gasfreq + np.sum(np.multiply(osc.VEGout, freqarr))
+    # except Exception as ex:
+    #     dpr(osc.oscix)
+    #     dpr(osc.VEGout)
+    #     dpr(freqarr)
+    #     if osc.oscix > 10:
+    #         raise ex
+    #     else:
+    #         freq = gasfreq
 
     if (
         map_.RunPars.frequency_map_choice != "Tokmakoff"

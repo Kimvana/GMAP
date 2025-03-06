@@ -15,40 +15,55 @@
 # topology_file D:\Data\PhD\Tutorials\C8S3\md_300_1ns_xtc4fs.tpr
 # trajectory_file D:\Data\PhD\Tutorials\C8S3\md_300_1ns_xtc4fs.gro
 
-topology_file     D:\Data\PhD\Tutorials\H2OinMeCN\topol.tpr
-trajectory_file   D:\Data\PhD\Tutorials\H2OinMeCN\traj.trr
-
+# topology_file D:\Data\PhD\Tutorials\PsbS-Deq\PsbS_Deq_A_200.tpr
+# trajectory_file D:\Data\PhD\Tutorials\PsbS-Deq\PsbS_Deq_A_200_short.xtc
 
 verbose 3
 verbose_logfile 4
-# maps_to_use   AmideBB AmideSC  # AmideSC
+# maps_to_use   AmideBB AmideSC
+maps_to_use   AmideSC
 # couplings_to_use  ProteinAmide   :All
 # couplings_to_use  DipDip  AmideSC:AmideSC
-maps_to_use Water
-couplings_to_use DipDip :All
+# maps_to_use Water
+couplings_to_use TRESP :All
 
-output_format txt
-# output_data dip ham ene ram pos dbp
-output_data ham
-prevent_overwrite False
 
-estatics_method  perres_nocut
+output_format       txt
+output_data         dip ham ene ram pos dbp
+# output_data         dip ene ram pos dbp
+prevent_overwrite   False
+
+# estatics_method  perres_nocut
 
 start_frame 0
-number_frames 1
+number_frames 25
 
-estatics_method        perres_nocut
+batch_size 10
+time_limit 0
+
+# estatics_method        perres_nocut
 estatic_smooth_range 0
 neutral_charge_threshold 0.01
 
-AmideSC.frequency_map_choice     Jansen
-AmideSC.dipole_map_choice        Torii
 
-AmideBB.frequency_map_choice     Jansen
-AmideBB.dipole_map_choice        Torii
+profiler                                    True
+profiler_graph                              True
 
-ProteinAmide.coupling_choice     DipDip
-ProteinAmide.NN_coupling_choice  DipDip
+# singles_whitelist   AmideBB resnames LEU
+# singles_blacklist   AmideBB resnums   20-80
+singles_whitelist   AmideSC resnames ASN
 
+singles_whitelist   :All :All
+singles_blacklist   :All :None
+
+
+AmideSC.frequency_map_choice      Jansen
+AmideSC.dipole_map_choice         Jansen
+
+AmideBB.frequency_map_choice      Jansen
+AmideBB.dipole_map_choice         Jansen
+
+ProteinAmide.coupling_choice      TCC
+ProteinAmide.NN_coupling_choice   GLDP
 
 # influencers_blacklist SOL | CL

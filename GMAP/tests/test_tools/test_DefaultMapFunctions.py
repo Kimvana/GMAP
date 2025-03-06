@@ -11,11 +11,14 @@ Missing tests:
 
 # 3rd party imports
 import numpy as np
+import pytest
 
 # local imports
-import GMAP.src.tools.DefaultMapFunctions as GM_DMF
 import GMAP.src.tools.CodingTools as GM_CT
+import GMAP.src.tools.DefaultMapFunctions as GM_DMF
+import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.FileHandler as GM_FH
+import GMAP.src.tools.MapReader as GM_MR
 import GMAP.src.tools.PrintTools as GM_PT
 
 
@@ -32,6 +35,61 @@ def test_get_adjust_map_core_raw():
 def test_get_adjust_oscillators():
     newfunc = GM_DMF.get_adjust_oscillators()
     confirm_returns_last(newfunc)
+
+
+def test_filter_single_line():
+    map_ = GM_CT.CustomClass(**{
+        "name": "mymap",
+        "Core": GM_CT.CustomClass(**{
+            "allow_ranges": GM_MR.SingleCore.allow_ranges
+        })})
+    system = GM_CT.CustomClass(**{
+        "nres": 100,
+        "resnums": [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7],
+        "resnames": list("AABBCCDDEEFFGGHH")
+    })
+
+    oscillators = []
+    for i in range(8):
+        oscillators.append(GM_CT.CustomClass(**{
+            "used_atoms": [i * 2, i * 2 + 1]
+        }))
+
+    fullset = set(oscillators)
+    first_half = set(oscillators[:4])
+
+    assert GM_DMF.filter_single_line(
+        [":All"], "white", first_half, fullset, map_, system) == (
+            True, fullset)
+    assert GM_DMF.filter_single_line(
+        [":All"], "black", first_half, fullset, map_, system) == (
+            True, set())
+    assert GM_DMF.filter_single_line(
+        [":None"], "white", first_half, fullset, map_, system) == (
+            True, set())
+    assert GM_DMF.filter_single_line(
+        [":None"], "black", first_half, fullset, map_, system) == (
+            True, first_half)
+
+    assert GM_DMF.filter_single_line(
+        ["resnums", "0-3"], "white", set(), fullset, map_, system) == (
+            True, first_half)
+    assert GM_DMF.filter_single_line(
+        ["resnums", "4-7"], "black", fullset, fullset, map_, system) == (
+            True, first_half)
+
+    assert GM_DMF.filter_single_line(
+        ["resnames", "A", "B", "C", "D"],
+        "white", set(), fullset, map_, system) == (
+            True, first_half)
+    assert GM_DMF.filter_single_line(
+        ["resnames", "E", "F", "G", "H"],
+        "black", fullset, fullset, map_, system) == (
+            True, first_half)
+
+    assert GM_DMF.filter_single_line(
+        ["unknown_filter"], "white", first_half, fullset, map_, system) == (
+            False, first_half)
 
 
 def test_get_post_init():
@@ -200,6 +258,54 @@ def test_MI_MC_9(capsys):
 
     # out = np.array([1.25, 10, 20])
     # assert np.all(subfunc(map_, Syst, osc) == out)
+
+
+def test_SU_NP_8(capsys):
+    map_ = GM_CT.CustomClass(**{
+        "name": "mymap",
+        "Core": GM_CT.CustomClass(**{
+            "allow_ranges": GM_MR.SingleCore.allow_ranges}),
+        "RunPars": GM_CT.CustomClass(**{
+            "MainRunPars": GM_CT.CustomClass(**{
+                "singles_whitelist_dict": {"mymap": [[":All"]]},
+                "singles_blacklist_dict": {"mymap": [[":None"]]}})})
+    })
+    system = GM_CT.CustomClass(**{
+        "nres": 100})
+    oscillators = []
+    for i in range(8):
+        oscillators.append(GM_CT.CustomClass(**{
+            "used_atoms": [i * 2, i * 2 + 1]
+        }))
+
+    func = GM_DMF.get_filter_oscillators()
+
+    map_.RunPars.MainRunPars.singles_whitelist_dict["mymap"] = [["unknown"]]
+    with pytest.raises(GM_Ex.GmapFileSyntaxError, match="SU_NP_8$"):
+        func(map_, system, oscillators)
+    map_.RunPars.MainRunPars.singles_whitelist_dict["mymap"] = [[":All"]]
+
+    map_.RunPars.MainRunPars.singles_blacklist_dict["mymap"] = [["unknown"]]
+    with pytest.raises(GM_Ex.GmapFileSyntaxError, match="SU_NP_8$"):
+        func(map_, system, oscillators)
+    map_.RunPars.MainRunPars.singles_blacklist_dict["mymap"] = [[":None"]]
+
+    # ----------------
+    # errors in filter_single_line()
+
+    # Trigger the first error (non-ints in input)
+    with pytest.raises(GM_Ex.GmapFileSyntaxError, match="SU_NP_8$"):
+        _ = GM_DMF.filter_single_line(
+            ["resnums", "not", "a", "number"], "white", set(), set("hello"),
+            map_, system)
+
+    with pytest.raises(GM_Ex.GmapIndexError, match="SU_NP_8$"):
+        _ = GM_DMF.filter_single_line(
+            ["resnums", "102"], "white", set(), set("hello"), map_, system)
+
+    with pytest.raises(GM_Ex.GmapFileSyntaxError, match="SU_NP_8$"):
+        _ = GM_DMF.filter_single_line(
+            ["resnums", "5-7-3"], "white", set(), set("hello"), map_, system)
 
 
 # ==================================================

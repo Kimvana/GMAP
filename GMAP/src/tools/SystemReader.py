@@ -6,11 +6,12 @@ import MDAnalysis as MDA
 import numpy as np
 
 # local imports
+import GMAP.src.tools.CLibLoader as GM_CL
 import GMAP.src.tools.DefaultMapFunctions as GM_DMF
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.ParameterParser as GM_PP
-import GMAP.src.tools.PhysicsFunctions as GM_PF
 import GMAP.src.tools.PrintTools as GM_PT
+# from GMAP.src.tools.PrintTools import devprint as dpr
 
 
 class System:
@@ -135,7 +136,7 @@ class System:
         # sort all oscillators, make usable lookup-tables. Also, determine
         # correct coupling map for each oscillator pair (and build tables
         # for the pairs, too)
-        self.order_oscillators(RunPars)
+        self.order_oscillators_singles(RunPars)
 
         for oscillator in self.oscillators:
             oscillator.frame_update(self)
@@ -232,7 +233,15 @@ class System:
 
         # TO DO - C support?
         self.positions_c = np.ctypeslib.as_ctypes(np.ravel(self.positions))
+        self.masses_c = np.ctypeslib.as_ctypes(self.masses)
         self.charges_c = np.ctypeslib.as_ctypes(self.charges)
+        self.positions_box = np.zeros_like(self.positions)
+        self.positions_box_c = np.ctypeslib.as_ctypes(np.ravel(
+            self.positions_box))
+        # calculate the box position of each atom
+        clib = GM_CL.VEG_CLib()
+        clib.positions_to_box(self)
+
         # if RunPar.use_c_lib:
         #     self.charges = self.charges.astype('float32')
         #     self.charges_c = np.ctypeslib.as_ctypes(self.charges)
@@ -275,6 +284,10 @@ class System:
         ).astype('float32')
         self.safesphere = 0.5 * self.boxvects.diagonal().min()
         self.boxvects_inv = np.linalg.inv(self.boxvects).astype('float32')
+
+        self.boxvects_c = np.ctypeslib.as_ctypes(np.ravel(self.boxvects))
+        self.boxvects_inv_c = np.ctypeslib.as_ctypes(np.ravel(
+            self.boxvects_inv))
 
         self.boxdims_c = np.ctypeslib.as_ctypes(self.boxdims)
         self.halfbox_c = np.ctypeslib.as_ctypes(self.halfbox)
@@ -456,14 +469,33 @@ class System:
             if checked:
                 checked_oscillators.append(checked)
 
+        filtered_oscillators = []
+        for oscillators in checked_oscillators:
+            map_ = oscillators[0].Map
+            filtered = map_.code.GM_filter_oscillators(
+                map_, self, oscillators
+            )
+            if filtered:
+                filtered_oscillators.append(filtered)
+
         self.oscillators = [
-            oscillator for oscillators in checked_oscillators
+            oscillator for oscillators in filtered_oscillators
             for oscillator in oscillators
         ]
         for oscix, oscillator in enumerate(self.oscillators):
             oscillator.oscix = oscix
 
         self.nosc = len(self.oscillators)
+        # GM_PT.Printer.print(2, f"found {self.nosc} oscillators.")
+        if self.nosc == 0:
+            GM_PT.Printer.warning(
+                "\nNone of the requested oscillators could be found in the "
+                "supplied MD system. Either change the choice for the "
+                "parameter maps_to_use, or for the parameters topology_file "
+                "and/or trajectory_file. Quitting!"
+                "MD_SU_7", True,
+                GMAPerrclass=GM_Ex.GmapValueError
+            )
 
     def find_oscillators_perstruct(self, struct, map_):
         """Finds all oscillators matching the given structure.
@@ -762,6 +794,8 @@ class System:
         outlist = []
 
         found_ix = base_residue[found_local_ix]  # get global index
+        found_bounds = self.universe.atoms[found_ix].bonded_atoms
+        found_bounds = set([atom.ix for atom in found_bounds])
 
         # convert struct-ix to residue-ix
         target_residue, target_local_ix = struct.indices[new_local_ix]
@@ -770,7 +804,7 @@ class System:
         for new_residue in all_oscillators[target_residue]:
             new_ix = new_residue[target_local_ix]  # get global index
             # if it is attached, add it
-            if self.confirm_bond(found_ix, new_ix):
+            if new_ix in found_bounds:
                 new_osc = base_residue[:]
 
                 # write the global indices of added piece to original
@@ -780,7 +814,7 @@ class System:
                 outlist.append(new_osc)
         return outlist
 
-    def order_oscillators(self, RunPars):
+    def order_oscillators_singles(self, RunPars):
         """Sort all present oscillators by their map.
 
         Parameters
@@ -803,6 +837,16 @@ class System:
             else:
                 self.oscillators_ordered[mapname].append(oscillator)
                 self.oscillators_ordered_ix[mapname].append(oscix)
+
+    def order_oscillators_pairs(self, RunPars):
+        """Sort all present oscillators by their map.
+
+        Parameters
+        ----------
+        RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+            The 'main' RunPars instance containing all the basic
+            run-defining parameters.
+        """
 
         # for each oscillator pair, determine which coupling map should
         # treat it. That coupling map has the chance to change it.
@@ -896,13 +940,15 @@ class System:
         self.positions_c = np.ctypeslib.as_ctypes(np.ravel(self.positions))
         self.determine_box()
         printer.add_time(4, "Center of Mass:", "COM", "ms")
-        self.residues.CoM = GM_PF.system_CoM(
-            self.positions, self.masses, self.boxvects_inv,
-            self.boxvects, self.residues.first_ix, self.residues.last_ix,
-            self.nres
-        )
+
+        # calculate the box position of each atom
+        clib = GM_CL.VEG_CLib()
+        clib.positions_to_box(self)
+
+        self.residues.CoM_c = np.zeros((self.nres, 3), dtype="float32")
         self.residues.CoM_c = np.ctypeslib.as_ctypes(
-            np.ravel(self.residues.CoM))
+            np.ravel(self.residues.CoM_c))
+        clib.calc_CoM_box(self)  # fill CoM_c. Results are calculated in box c.
 
     def print_system(self, RunPars):
         """Reports what the MD system looks like - what oscillators were
@@ -1230,7 +1276,7 @@ class Oscillator:
         # sure they are 'centered' around one of the atoms of the molecule.
         # the assumption here is that all atoms of the molecule are reasonably
         # close together (at least much closer than a box length)
-        self.positions_box = (self.positions @ Syst.boxvects_inv)
+        self.positions_box = Syst.positions_box[self.used_atoms]
         shift = self.positions_box[0].copy()
         self.positions_box -= shift
         self.positions_box -= np.floor(self.positions_box + 0.5) - shift

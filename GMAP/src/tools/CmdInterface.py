@@ -7,7 +7,6 @@ import GMAP
 from GMAP.src.tools.Exceptions import GmapAttributeError
 import GMAP.src.tools.FileHandler as GM_FH
 from GMAP.src.tools.PrintTools import Printer
-# from GMAP.src.tools.PrintTools import devprint as dpr
 
 
 def _report_unknown_choice():

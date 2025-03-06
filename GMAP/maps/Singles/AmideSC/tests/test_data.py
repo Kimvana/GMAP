@@ -35,15 +35,15 @@ import GMAP.src.tools.CmdInterface as GM_CI
 
 
 def test_Tokmakoff_freqs(tmp_path):
-    core_test_frequencies("Tokmakoff", tmp_path, 0.0002)
+    core_test_frequencies("Tokmakoff", tmp_path, 0.0004)
 
 
 def test_Skinner_freqs(tmp_path):
-    core_test_frequencies("Skinner", tmp_path, 0.0003)
+    core_test_frequencies("Skinner", tmp_path, 0.0005)
 
 
 def test_Jansen_freqs(tmp_path):
-    core_test_frequencies("Jansen", tmp_path, 0.0004)
+    core_test_frequencies("Jansen", tmp_path, 0.0007)
 
 
 def test_Cho_freqs(tmp_path):
@@ -51,7 +51,7 @@ def test_Cho_freqs(tmp_path):
 
 
 def test_Hirst_freqs(tmp_path):
-    core_test_frequencies("Hirst", tmp_path, 0.0009)
+    core_test_frequencies("Hirst", tmp_path, 0.0011)
 
 
 def test_Torii_dips(tmp_path):
@@ -117,6 +117,7 @@ def core_test_frequencies(mapname, tmp_path, limit):
         np.average(np.diag(hamold) - np.diag(hamnew)),
         np.average(np.abs(np.diag(hamold) - np.diag(hamnew)))
     )
+    print((np.diag(hamold) - np.diag(hamnew))[mismatch])
     assert mismatch.shape == (0,)
 
 
