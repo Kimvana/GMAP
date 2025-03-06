@@ -40,7 +40,7 @@ How to install (developers)
 ****************************************
 
 1. Follow steps 1-6 of the non-developer guide.
-2. Build your changes before opening a PR. ``pip install build`` if you don't have it yet; then ``python -m build`` (all from repo home directory)
+2. Build your changes before opening a pull request. ``pip install build`` if you don't have it yet; then ``python -m build`` (all from repo home directory)
 3. only relevant for some developers: If you want to fully profile the code and have GMAP generate the flow-chart-png for you, an installation of [graphvis](https://graphviz.org/) must be present. It is responsible for executing the 'dot' command on the command line. At the moment of writing this, a single test will fail if graphvis is not installed.
 
 
