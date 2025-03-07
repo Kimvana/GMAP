@@ -241,7 +241,7 @@ The filename and location of the topology file to be used during the calculation
 The following have been tested/confirmed usable with GMAP:
 
 - GROMACS: .tpr (recommended)
-- CHARMM: .psf
+- CHARMM/NAMD: .psf
 - Amber: .top
 
 
@@ -260,7 +260,7 @@ The filename and location of the trajectory file to be used during the calculati
 The following have been tested/confirmed usable with GMAP:
 
 - GROMACS: .xtc (recommended), .gro
-- CHARMM: .psf
+- CHARMM/NAMD: .psf
 - Amber: .mdcrd*, .nc
 
 \* Note that there appear to be different types of amber .mdcrd files. Some do contain information on the dimensions of the simulation box, others do not. GMAP needs one that does.
@@ -268,8 +268,7 @@ The following have been tested/confirmed usable with GMAP:
 
 The following have been tested/confirmed **un**usable with GMAP:
 
-- CHARMM: .crd (lacks PBC box dimensions)
-- NAMD: .cor (MDAnalysis does not support this file type)
+- CHARMM/NAMD: .crd (lacks PBC box dimensions), .cor (MDAnalysis does not support this file type)
 
 
 *********************************
