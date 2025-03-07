@@ -122,6 +122,7 @@ def GM_get_dipole_mag(Map, Syst, osc):
     return (
         (0.7112 + 75.59 * E) * mug  # mu_i
         * (0.1934 - 0.175e-5 * freq)  # x_i
-        * (1.611 + 5.893e-4 * freq)  # p_i
-        * 0.393456 # convert from Bohr e to Debye
+        / 0.393456 # convert from Bohr e to Debye
+        # * (1.611 + 5.893e-4 * freq)  # p_i
+
     )
