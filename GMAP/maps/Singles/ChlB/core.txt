@@ -32,7 +32,7 @@ functional_group_file    funcgroup_ua.txt
 # first number in the list here, etc. The number represents the index at which
 # that atom is present in the functional_group list.
 
-used_atoms 0-46
+used_atoms 0-69
 
 # -----------------------
 
@@ -43,7 +43,7 @@ used_atoms 0-46
 
 # probably at least the magnesium atom
 
-electrostatic_atoms 0-46
+electrostatic_atoms 0-69
 
 # ----------------------
 
@@ -73,8 +73,8 @@ local_atoms 0-46
 # This is the position where the transition dipole is placed
 position       0
 # These are the positions of NB and ND atoms
-doublepos_0            16
-doublepos_1            33
+doublepos_0            45
+doublepos_1            60
 
 
 # how to calculate the different directions. Currently only supports subtraction.
@@ -82,19 +82,19 @@ doublepos_1            33
 # defined by subtracting the position of the zeroeth atom from that of the oneth.
 # the missing ones are found through geometry (cross product)
 
-r_vec     16-33 # NB to ND
-r_pos     0 # At the Mg
+r_vec     45-60 # NB to ND
+r_pos     67 # At the Mg
 
 # ---------------------
 
 # What should be the midpoint of the sphere defining the charges that can
 # influence VEG.
 
-VEG_reference  position 0 # take CoM of listed atoms
+VEG_reference  position 67 # Mg atom
 
 # ---------------------
 
-dipole_gas_phase  4.61 # doi:10.1021/jp106323e
+dipole_gas_phase  4.61 # 4.49 for Chla, 4.61 for Chlb # doi:10.1021/jp106323e
 frequency_gas_phase 15455 # doi:10.1021/jp106323e
 frequency_data_file_linear diff_charges_HF-CIS_Ang_per_inv_cm.txt  # diff_charges_HF-CIS.txt
 
