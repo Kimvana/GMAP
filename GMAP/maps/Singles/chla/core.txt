@@ -15,7 +15,7 @@ local_atoms All
 frequency_gas_phase 14706  # Qy 680 nm
 frequency_data_file_linear freq_fluct_file_BChla_units_angstrom_per_cm_addfactor.txt   ##charge obtain from this ref: https://doi-org.proxy-ub.rug.nl/10.1021/jp106323e
 
-dipole_gas_phase  4.49 # 4.49 was found in Phys. Chem. Chem. Phys., 2017, 19, 18311--18320
+dipole_gas_phase  5.47 # 4.49 was found in Phys. Chem. Chem. Phys., 2017, 19, 18311--18320   # 5.47 obtained from doi:10.1021/jp106323e
 
 r_vec 60 - 45    # the position of the third N atom minus the first N atom
 r_pos 67        # The position of the Magnesium atom
