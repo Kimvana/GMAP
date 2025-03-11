@@ -34,7 +34,9 @@ def calc_dipole_Torii(map_, system, osc):
     pos_O_box = osc.positions_box[1]
     pos_N_box = osc.positions_box[3]
     COvec = GM_MF.PBC_boxdiff_triclin(pos_O_box, pos_C_box, system.boxvects)
+    COvec /= GM_MF.vec3_len(COvec)
     CNvec = GM_MF.PBC_boxdiff_triclin(pos_N_box, pos_C_box, system.boxvects)
+    CNvec /= GM_MF.vec3_len(CNvec)
 
     # position of dipole vector
     r_pos = osc.positions[0] + 0.665*COvec + 0.258*CNvec

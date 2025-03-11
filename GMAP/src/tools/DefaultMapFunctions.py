@@ -3,6 +3,7 @@
 import numpy as np
 
 # local imports
+import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.MathFunctions as GM_MF
 import GMAP.src.tools.PhysicsFunctions as GM_PF
 import GMAP.src.tools.PrintTools as GM_PT
@@ -28,6 +29,186 @@ def get_adjust_map_core_raw():
 
 def get_adjust_oscillators():
     return returns_last
+
+
+def get_filter_oscillators():
+    """provides the default for the function GM_filter_oscillators.
+
+    Returns
+    -------
+    GM_filter_oscillators : function
+        The function that should be called to apply user-requested,
+        run-specific oscillator black/whitelists to the oscillators
+        found in the system.
+    """
+
+    def filter_oscillators(map_, system, oscillators):
+        """The default function for applying black/whitelist filters.
+
+        Options supported by default:
+        - :All and :None
+        - resnums - these indicate the residue number of the first atom
+        - resnames - assumed a residue name.
+        """
+
+        runpars = map_.RunPars.MainRunPars
+        wl_rules = runpars.singles_whitelist_dict.get(map_.name, [[":All"]])
+        bl_rules = runpars.singles_blacklist_dict.get(map_.name, [[":None"]])
+
+        # the 'rules' are lists of lists. Each sublist corresponds to a line
+        # from the input file, each item within the sublist is a 'word'
+
+        # first, select all in whitelist from oscillators
+        filtered = set()
+        oscset = set(oscillators)
+        for rule in wl_rules:
+            success, filtered = filter_single_line(
+                rule, "white", filtered, oscset, map_, system)
+            if not success:
+                GM_PT.Printer.warning(
+                    "\nUsing the parameter 'singles_whitelist', the map "
+                    f"{map_.name} "
+                    "requestested a specific selection, but it was not "
+                    "recognized. ",
+                    "SU_NP_8", True, GMAPerrclass=GM_Ex.GmapFileSyntaxError
+                )
+
+        # from the whitelisted, remove all those in blacklist.
+        for rule in bl_rules:
+            success, filtered = filter_single_line(
+                rule, "black", filtered, oscset, map_, system
+            )
+            if not success:
+                GM_PT.Printer.warning(
+                    "\nUsing the parameter 'singles_whitelist', the map "
+                    f"{map_.name} "
+                    "requestested a specific selection, but it was not "
+                    "recognized. ",
+                    "SU_NP_8", True, GMAPerrclass=GM_Ex.GmapFileSyntaxError
+                )
+
+        # sort the oscillators in correct order (same as before)
+        filtered_list = [osc for osc in oscillators if osc in filtered]
+        return filtered_list
+    return filter_oscillators
+
+
+def filter_single_line(line, BW, found, avail, map_, system):
+    """Apply the filter rule on a single line to the current list of
+    found oscillators.
+
+    This function has been designed with the assumption that the
+    whitelist should be applied first, then the blacklist.
+
+    Parameters
+    ----------
+    line : list
+        The contents of a single line from an input file. This contains
+        the instructions only - the 'singles_BWlist' label and map name
+        have already been stripped off.
+    BW : string
+        Should either be "black" or "white". Anything that does not
+        exactly match "white" (case sensitive) is taken to be "black".
+        Indicates whether we're blacklisting or whitelisting currently.
+    found : set of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        The oscillators that should be kept, (i.e. have already been
+        found) considering the black/whitelist lines so far.
+    avail : set of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        The oscillators that are available in the system.
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+        The object that stores everything the program currently knows
+        about the map the oscillators belong to.
+    system : :class:`~GMAP.src.tools.SystemReader.System`
+        The object that stores everything the program currently knows
+        about the system being treated (names, numbers, types, masses,
+        charges of all atoms, for example)
+
+    Returns
+    -------
+    success : bool
+        Whether the contents of the line were recognized correctly. This
+        allows maps writing a custom GM_filter_oscillators to still use
+        this function first to give the same support as GMAP, and then
+        also apply their own rules.
+    found : set of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        The oscillators that should be used given the already processed
+        black/whitelist rules.
+    """
+
+    match line[0].lower():
+        case ":all":
+            if BW == "white":
+                return True, avail.copy()
+            else:
+                return True, set()
+        case ":none":
+            if BW == "white":
+                return True, set()
+            else:
+                return True, found.copy()
+        case "resnums":
+            # we can use/support hyphens, too, but not commas/periods.
+            if not set("".join(line[1:])).issubset("1234567890-"):
+                GM_PT.Printer.warning(
+                    f"\nUsing the parameter 'singles_{BW}list', the map "
+                    f"{map_.name}"
+                    "was requestested certain residue numbers, but this "
+                    "specification used non-numeric characters. Please make "
+                    "sure to only use numbers and hyphens. ",
+                    "SU_NP_8", True, GMAPerrclass=GM_Ex.GmapFileSyntaxError
+                )
+            try:
+                resnums = set(map_.Core.allow_ranges(line[1:], system.nres))
+            except IndexError as IErr:
+                GM_PT.Printer.warning(
+                    f"\nUsing the parameter 'singles_{BW}list', the map "
+                    f"{map_.name}"
+                    "was requestested certain residue numbers, but the "
+                    "specific residue numbers requested do not exist in the "
+                    "provided MD system. ",
+                    "SU_NP_8", True, exception=IErr,
+                    GMAPerrclass=GM_Ex.GmapIndexError
+                )
+            except Exception as Ex:
+                GM_PT.Printer.warning(
+                    f"\nUsing the parameter 'singles_{BW}list', the map "
+                    f"{map_.name}"
+                    "was requestested certain residue numbers, but the "
+                    "specific choice provided could not be interpreted. "
+                    "Please make sure the choice consists of nothing but "
+                    "numbers separated by spaces "
+                    "and/or ranges of integers separated by a hyphen.",
+                    "SU_NP_8", True, exception=Ex,
+                    GMAPerrclass=GM_Ex.GmapFileSyntaxError
+                )
+
+            # filtered = []
+            # for oscillator in avail:
+            #     if system.resnums[oscillator.used_atoms[0]] in resnums:
+            #         filtered.append(oscillator)
+            # filtered = set(filtered)
+            filtered = {
+                osc for osc in avail
+                if system.resnums[osc.used_atoms[0]] in resnums
+            }
+            if BW == "white":
+                found |= filtered
+            else:
+                found -= filtered
+            return True, found
+        case "resnames":
+            resnames = set(line[1:])
+            filtered = {
+                osc for osc in avail
+                if system.resnames[osc.used_atoms[0]] in resnames
+            }
+            if BW == "white":
+                found |= filtered
+            else:
+                found -= filtered
+            return True, found
+        case _:
+            return False, found
 
 
 def get_post_init():
@@ -72,7 +253,7 @@ def get_str_osc():
 def get_report_system():
     def base_str_getter(Map, Syst):
         name = Map.name + ":"
-        amount = len(Syst.oscillators_ordered[Map.name])
+        amount = len(Syst.oscillators_ordered.get(Map.name, []))
         return f"{name: <21} {amount: >4}"
     return base_str_getter
 

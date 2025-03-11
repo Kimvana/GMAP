@@ -87,11 +87,6 @@ class System:
     residues : :class:`~GMAP.src.tools.SystemReader.Residues`
         This class contains information on a per-residue basis instead
         of a per-atom basis like this class does.
-    molnums : `np.ndarray`
-        A 1D array of length self.natoms storing the number of the
-        molecule each atom belongs to. First molecule is numbered 0,
-        each subsequent molecule gets an index 1 larger than the
-        previous one. Counting never resets.
     rightangled : bool
         Whether self.angles only contains 90 degree angles.
     neutral : bool
@@ -218,11 +213,6 @@ class System:
 
         # TO DO - analogue of AIMs ResidueFinder and IXFinder
         self.residues = Residues(self)
-
-        # TO DO - way to find molnums for non-gromacs systems
-        #         ?is this necessary? or can we make do without??
-
-        self.molnums = self.universe.atoms.molnums
 
         # TO DO - analogue for AIM's residues.protein_init?
         #         or should this be part of the protein maps?
@@ -469,8 +459,17 @@ class System:
             if checked:
                 checked_oscillators.append(checked)
 
+        filtered_oscillators = []
+        for oscillators in checked_oscillators:
+            map_ = oscillators[0].Map
+            filtered = map_.code.GM_filter_oscillators(
+                map_, self, oscillators
+            )
+            if filtered:
+                filtered_oscillators.append(filtered)
+
         self.oscillators = [
-            oscillator for oscillators in checked_oscillators
+            oscillator for oscillators in filtered_oscillators
             for oscillator in oscillators
         ]
         for oscix, oscillator in enumerate(self.oscillators):

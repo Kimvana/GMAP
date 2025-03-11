@@ -117,7 +117,7 @@ def calc_coupling(oscix1, oscix2, pos_arr, vec_arr, boxvects):
 
     # derived value:
     # 4piEinv = 1/(4 * pi * eps_0) Jm/C^2
-    # Gives 5034.11656 cm^-1 * ang*3 Deb^-2
+    # Gives 5034.11656 cm^-1 * ang^3 Deb^-2
 
     fourPiEps_inv = np.float32(5034.11656)
     # the positions array is in box-coordinates -> easy subtraction, then
