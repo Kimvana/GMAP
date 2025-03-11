@@ -613,6 +613,30 @@ Then, group selection is where you explain what type of oscillators are to be co
 - 'X:' indicates any couplings involving an oscillator of type 'X' - the type of the other oscillator does not matter. The available oscillator types are the same as the available choices for the parameter 'maps_to_use'. There should be no spaces between group names and the colon!
 
 
+.. _UserGuide_page_parameter_overview_usecoup:
+
+couplings_scale
+===============
+| (no shorthand available)
+| (used by: GEM)
+
+.. note::
+    This parameter differs from the others in that it may be used multiple times within a single file.
+
+.. important::
+    This parameter pulls information from lower priority sources, even if specified in a higher priority one:
+
+    If the default file says 'all couplings should be multiplied by 2', and you specify in the input file that the couplings of type 'A' should be multiplied by 3, then couplings of type 'B' will still be multiplied by 2, as you didn't specify anything else for them.
+
+    In other words, for every type of coupling, the program separately walks through all parameter files.
+
+    If a certain type of pair is covered by multiple lines in the same parameter file, the one lowest down will take precedence.
+
+The value by which to multiply all couplings of the given type. This parameter expects 2 parts on each line. Just as with the parameter couplings_to_use, the first one is the name of the coupling map. This may be any map, including those only assigned through other coupling maps. The second part is the value by which the couplings should be multiplied.
+
+If the requested coupling map shows up in the 'couplingvis' pdf, those values will be multiplied by the value provided on this line.
+
+
 .. _UserGuide_page_parameter_overview_singWL:
 
 singles_whitelist

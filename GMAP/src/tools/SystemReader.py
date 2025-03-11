@@ -889,7 +889,7 @@ class System:
         # save each list of pairs to the map that should be coupling it.
         for coupmapname, pairlist in coup_v_allpair.items():
             coupmap = RunPars.requested_pairmapdict[coupmapname]
-            coupmap.allpairs = pairlist
+            coupmap.allpairs = np.array(pairlist, dtype="int32")
 
         # for each coupling map, determine which oscillators are coupled
         # by that map (no coupled oscillators - not in the dict)

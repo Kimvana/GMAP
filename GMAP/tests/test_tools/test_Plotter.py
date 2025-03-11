@@ -37,6 +37,8 @@ def test_plot_coupling_choices(tmp_path):
                 coupmaps[2].allpairs.append(pair)
             elif map1 == "a":
                 coupmaps[3].allpairs.append(pair)
+    for coupmap in coupmaps:
+        coupmap.allpairs = np.array(coupmap.allpairs, dtype="int32")
 
     runpars = GM_CT.CustomClass(**{
         "requested_pairmapdict": {

@@ -44,7 +44,7 @@ It is probable that the map wants to save information between functions, too, ju
 - self.code (type module) contains all functions defined in main.py. Any functions that the program needs, but are not specified in main.py are automatically filled in. Any object that the program does not require, but is still there, is also available.
 - self.rawcore (type dict of str-list pairs) contains the information from core.txt, before parsing. The function GM_adjust_map_core_raw can change this simple structure before it is being parsed into more complex structures and functions later.
 - self.Core (type :class:`~GMAP.src.tools.MapReader.PairCore`) contains the information from core.txt, after parsing.
-- self.allpairs (type list of tuple of 2 ints) contains all pairs that should be coupled using this pair map. This list has already taken into account any changes due to the function change_coup_type. The data type of this attribute can be changed by a map (preferably in GM_pre_run). This is encouraged if the map is expected to be used often (>~2000 occurences in a single hamiltonian), so the functions doing the coupling calculations can be optimized as well.
+- self.allpairs (type numpy array, dtype int32, shape (npairs, 2) ) contains all pairs that should be coupled using this pair map. This array has already taken into account any changes due to the function change_coup_type. Looping over a numpy array isn't fast, so any maps are encouraged to use these arrays wisely.
 
 
 Syst

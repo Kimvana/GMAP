@@ -706,6 +706,9 @@ def GEM(callcommand):
             map_ = RunPars.requested_pairmapdict[mapname]
             map_.code.GM_post_init(map_, System)
 
+        # obtain all multiply factors of all coupling maps
+        RunPars.final_resolve_coupling_scale()
+
         # Save overview of found coupling maps to file.
         GM_Pl.plot_coupling_choices(RunPars, System)
 

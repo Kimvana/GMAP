@@ -410,7 +410,7 @@ def test_calc_coupling():
 
     # osclist = System.oscillators_ordered_coup["DipDip"]
     oscixlist = System.oscillators_ordered_coup_ix["DipDip"]
-    coupmap.allpairs = [(oscixlist[0], oscixlist[1])]
+    coupmap.allpairs = np.array([(oscixlist[0], oscixlist[1])], dtype="int32")
     outputs = {"hamiltonian": np.zeros((2, 2), dtype="float32")}
     GM_PF.calc_coupling(RunPars, System, outputs)
     J = outputs["hamiltonian"][1, 0]
@@ -577,6 +577,7 @@ def prep_coupling_tests():
             oscillator, "Map", singles_mapdict["test_calc_dipoles_magnitude"])
 
     GM_MR.manage_maps_pairs(RunPars, pairs_mapdict)
+    RunPars.final_resolve_coupling_scale()
 
     System = get_System_1()
 
