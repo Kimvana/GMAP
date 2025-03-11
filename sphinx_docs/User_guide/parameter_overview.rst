@@ -613,7 +613,7 @@ Then, group selection is where you explain what type of oscillators are to be co
 - 'X:' indicates any couplings involving an oscillator of type 'X' - the type of the other oscillator does not matter. The available oscillator types are the same as the available choices for the parameter 'maps_to_use'. There should be no spaces between group names and the colon!
 
 
-.. _UserGuide_page_parameter_overview_usecoup:
+.. _UserGuide_page_parameter_overview_scalecoup:
 
 couplings_scale
 ===============
