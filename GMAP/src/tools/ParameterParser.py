@@ -2585,6 +2585,16 @@ class RunPars:
         return failed_couppairs
 
     def final_resolve_coupling_scale(self):
+        """Figure out which coupling methods should get with factor.
+
+        The scaling keyword allows the ':All' syntax, but at the regular
+        place (RunPars.resolve()) the full set isn't known yet.
+
+        So, this function has to be called later when all relevant
+        coupling maps have been identified. This means the couplings
+        have to be identified in the larger system!
+        """
+
         self.coupling_scale_factors_dict = {}
 
         for mapname in self.requested_pairmapdict.keys():
