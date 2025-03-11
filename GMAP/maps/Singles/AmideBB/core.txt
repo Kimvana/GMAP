@@ -2,7 +2,8 @@
 can_output  ham ene dip ram pos dbp
 
 # does not cover prepros
-functional_group [anyprot] N CA C(1) O [anyprot] N(1) H CA C
+functional_group [anyprot] N CA C(1) O [anyprot] N(1) H,HN CA C
+# in   H,HN    H is for GROMACS/amber, HN is for CHARMM
 
 # pre-prolines!
 functional_group [anyprot] N CA C(1) O [PRO] N(1) CD CA C

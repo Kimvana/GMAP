@@ -238,6 +238,17 @@ topology_file
 
 The filename and location of the topology file to be used during the calculation. Allowed filetypes are the ones listed `here <https://userguide.mdanalysis.org/stable/formats/index.html>`__ that have a tick in the column labeled 'topology'.
 
+The following have been tested/confirmed usable with GMAP:
+
+- GROMACS: .tpr (recommended)
+- CHARMM/NAMD: .psf
+- Amber: .top
+
+
+The following have been tested/confirmed **un**usable with GMAP:
+
+- GROMACS: .gro (lacks charge information)
+
 
 trajectory_file
 ===============
@@ -245,6 +256,19 @@ trajectory_file
 | (used by: GEM, DEPICT)
 
 The filename and location of the trajectory file to be used during the calculation. Allowed filetypes are the ones listed `here <https://userguide.mdanalysis.org/stable/formats/index.html>`__ that have a tick in the column labeled 'coordinates'.
+
+The following have been tested/confirmed usable with GMAP:
+
+- GROMACS: .xtc (recommended), .gro
+- CHARMM/NAMD: .psf
+- Amber: .mdcrd*, .nc
+
+\* Note that there appear to be different types of amber .mdcrd files. Some do contain information on the dimensions of the simulation box, others do not. GMAP needs one that does.
+
+
+The following have been tested/confirmed **un**usable with GMAP:
+
+- CHARMM/NAMD: .crd (lacks PBC box dimensions), .cor (MDAnalysis does not support this file type)
 
 
 *********************************

@@ -131,6 +131,7 @@ def core_test_frequencies(mapname, NNtreat, tmp_path, limit):
     # they disagree.
     # The value of 0.0002 should be large enough to allow for float errors,
     # but small enough to catch everything else.
+    assert bool(np.any(np.isnan(np.diag(hamnew)))) is False
     mismatch = np.where(np.abs(np.diag(hamold) - np.diag(hamnew)) > limit)[0]
     print(mismatch)
     print(np.diag(hamold)[mismatch])
@@ -215,6 +216,7 @@ def core_test_raman(fbonus, tmp_path, limit):
 
 def core_compare_dippos(oldfile, newfile, limit):
     mismatch = np.where((oldfile - newfile) > limit)
+    assert bool(np.any(np.isnan(newfile))) is False
     print(mismatch)
     print(oldfile[mismatch[0], mismatch[1]])
     print(newfile[mismatch[0], mismatch[1]])
