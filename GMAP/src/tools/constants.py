@@ -15,6 +15,7 @@ import GMAP.src.tools.CodingTools as GM_CT
 h = 6.62607015e-34  # planck constant in (J Hz-1)
 c = 2.99792458e8  # speed of light in (m s-1)
 e = 1.602176634e-19  # elementary charge in (coulombs)
+eps = 8.854187818814e-12  # vacuum permittivity in (C2 kg-1 m-3 s2)
 deg2rad = np.float32(np.pi/180)  # 1 degree in radians
 rad2deg = np.float32(180/np.pi)
 
@@ -27,6 +28,12 @@ ang2bohr = angstrom/bohr  # converting from angstroms to bohr
 # energies
 eV = 1.602176634e-19  # eV in J
 cm2eV = 100 * h * c / eV
+J2cm = 1 / (100 * h * c)
+
+i4pieps = 1 / (4 * np.pi * eps)  # 1 / (4 * pi * vacuum_permittivity)
+# e^2 * i4pieps, but not in SI, rather angstroms for distance, and
+# wavenumbers for energies.
+e2i4pieps_angcm = e * e * i4pieps * J2cm / angstrom
 
 # dipoles
 Debye = 1e-21 / c  # debye in (coulomb meter)
