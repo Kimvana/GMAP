@@ -158,10 +158,10 @@ def get_charges(map_, oscmap):
             "Please make sure the choice only contains numbers (and "
             "optionally a single '.') that represent a decimal value. "
             "Alternatively, make sure it is a python-parsable string. ",
-            "MI_MC_7", False
+            "map_TRESP_5", False
         )
         map_.success = False
-        return 1
+        return None
 
     try:
         multiplier = float(pars["multiplier"])
@@ -172,9 +172,9 @@ def get_charges(map_, oscmap):
             "Please make sure the choice only contains numbers (and "
             "optionally a single '.') that represent a decimal value. "
             "Alternatively, make sure it is a python-parsable string.2 ",
-            "MI_MC_7", False
+            "map_TRESP_5", False
         )
         map_.success = False
-        return 1
+        return None
 
     return contents * multiplier

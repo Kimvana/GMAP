@@ -64,6 +64,9 @@ map_TRESP_3
 map_TRESP_4
     The file supplied contains too many values. There should at most be as many values (= filled lines) in the file as there are atoms specified in the map's core.txt file under 'used_atoms'.
 
+map_TRESP_5
+    The parameter TRESP.charges_multiply couldn't be converted to a simple number.
+
 
 important notes for singles-map developers
 ------------------------------------------
