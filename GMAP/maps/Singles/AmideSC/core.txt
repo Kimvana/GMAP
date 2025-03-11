@@ -145,4 +145,6 @@ type   standard     # standard, linear
 
 TRESP.charges_filename   TRESP_gen.txt
 
+multiply_freq  GM_con.bohr2ang * 2
+
 

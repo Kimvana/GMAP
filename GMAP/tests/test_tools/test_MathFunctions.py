@@ -11,7 +11,7 @@ import numpy as np
 import pytest
 
 # local imports
-import GMAP.src.tools.constants as GM_Con
+import GMAP.src.tools.constants as GM_con
 import GMAP.src.tools.MathFunctions as GM_MF
 
 
@@ -173,9 +173,9 @@ def test_dihedral_base(b0, b1, b2, expt):
     b0 = np.array(b0, dtype='float32')
     b1 = np.array(b1, dtype='float32')
     b2 = np.array(b2, dtype='float32')
-    assert round(GM_MF.dihedral_base(b0, b1, b2) * GM_Con.rad2deg, 4) == expt
+    assert round(GM_MF.dihedral_base(b0, b1, b2) * GM_con.rad2deg, 4) == expt
     assert round(
-        GM_MF.dihedral_base.py_func(b0, b1, b2) * GM_Con.rad2deg, 4) == expt
+        GM_MF.dihedral_base.py_func(b0, b1, b2) * GM_con.rad2deg, 4) == expt
 
 
 @pytest.mark.parametrize(("p0", "p1", "p2", "p3", "boxvects", "expt"), [
@@ -216,9 +216,9 @@ def test_dihedral(p0, p1, p2, p3, boxvects, expt):
     boxvects = np.array(boxvects, dtype='float32')
     boxvects_inv = np.linalg.inv(boxvects)
     assert round(GM_MF.dihedral(
-        p0, p1, p2, p3, boxvects, boxvects_inv) * GM_Con.rad2deg, 4) == expt
+        p0, p1, p2, p3, boxvects, boxvects_inv) * GM_con.rad2deg, 4) == expt
     assert round(GM_MF.dihedral.py_func(
-        p0, p1, p2, p3, boxvects, boxvects_inv) * GM_Con.rad2deg, 4) == expt
+        p0, p1, p2, p3, boxvects, boxvects_inv) * GM_con.rad2deg, 4) == expt
 
 
 @pytest.mark.parametrize(("p0", "p1", "p2", "p3", "boxvects", "expt"), [
@@ -258,6 +258,6 @@ def test_dihedral_boxcoords(p0, p1, p2, p3, boxvects, expt):
     p3 = np.array(p3, dtype='float32')
     boxvects = np.array(boxvects, dtype='float32')
     assert round(GM_MF.dihedral_boxcoords(
-        p0, p1, p2, p3, boxvects) * GM_Con.rad2deg, 4) == expt
+        p0, p1, p2, p3, boxvects) * GM_con.rad2deg, 4) == expt
     assert round(GM_MF.dihedral_boxcoords.py_func(
-        p0, p1, p2, p3, boxvects) * GM_Con.rad2deg, 4) == expt
+        p0, p1, p2, p3, boxvects) * GM_con.rad2deg, 4) == expt

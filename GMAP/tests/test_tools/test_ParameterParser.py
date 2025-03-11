@@ -25,7 +25,7 @@ import pytest
 
 # local imports
 from GMAP.src.programs.GEM import alljobs
-import GMAP.src.tools.constants as GM_Con
+import GMAP.src.tools.constants as GM_con
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.FileHandler as GM_FH
 import GMAP.src.tools.MapReader as GM_MR
@@ -663,17 +663,17 @@ class TestRawPars:
         assert InPars.choices == {
             "verbose": [4],
             "hamiltonian_units": ["eV"],
-            "hamiltonian_multiplier": [GM_Con.cm2eV],
+            "hamiltonian_multiplier": [GM_con.cm2eV],
             "energies_units": ["eV"],
-            "energies_multiplier": [GM_Con.cm2eV],
+            "energies_multiplier": [GM_con.cm2eV],
             "dipoles_units": ["eBohr"],
-            "dipoles_multiplier": [GM_Con.Debye2ea0],
+            "dipoles_multiplier": [GM_con.Debye2ea0],
             "raman_units": ["Bohr3"],
-            "raman_multiplier": [GM_Con.ang2bohr**3],
+            "raman_multiplier": [GM_con.ang2bohr**3],
             "positions_units": ["Bohr"],
-            "positions_multiplier": [GM_Con.ang2bohr],
+            "positions_multiplier": [GM_con.ang2bohr],
             "doublepos_units": ["Bohr"],
-            "doublepos_multiplier": [GM_Con.ang2bohr],
+            "doublepos_multiplier": [GM_con.ang2bohr],
             "bool_test1": [False],
             "bool_test2": [True],
             "int_test_free_list": [88, 44],

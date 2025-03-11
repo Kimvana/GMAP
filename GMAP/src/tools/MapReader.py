@@ -7,13 +7,14 @@ import sys
 import numpy as np
 
 # local imports
-import GMAP.src.tools.constants as GM_Con
+import GMAP.src.tools.constants as GM_con
 import GMAP.src.tools.DefaultMapFunctions as GM_DMF
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.FileHandler as GM_FH
 import GMAP.src.tools.ParameterParser as GM_PP
 import GMAP.src.tools.PrintTools as GM_PT
 import GMAP.src.tools.ReferenceHandler as GM_RH
+# from GMAP.src.tools.PrintTools import devprint as dpr
 
 
 class Map:
@@ -2537,14 +2538,31 @@ class SingleCore:
         if "multiply_freq" not in rawcore:
             return 1
 
+        cmdstr = "multiplier = " + " ".join(rawcore["multiply_freq"])
+        pars = {}
         try:
-            multiplier = float(rawcore["multiply_freq"][0])
+            exec(cmdstr, globals(), pars)
         except Exception:
             GM_PT.Printer.warning(
                 "\nCould not interpret the choice for the keyword "
                 f"'multiply_freq' in the file {mapdir / 'core.txt'}. "
                 "Please make sure the choice only contains numbers (and "
-                "optionally a single '.') that represent a decimal value.",
+                "optionally a single '.') that represent a decimal value. "
+                "Alternatively, make sure it is a python-parsable string. ",
+                "MI_MC_7", False
+            )
+            self.success = False
+            return 1
+
+        try:
+            multiplier = float(pars["multiplier"])
+        except Exception:
+            GM_PT.Printer.warning(
+                "\nCould not interpret the choice for the keyword "
+                f"'multiply_freq' in the file {mapdir / 'core.txt'}. "
+                "Please make sure the choice only contains numbers (and "
+                "optionally a single '.') that represent a decimal value. "
+                "Alternatively, make sure it is a python-parsable string.2 ",
                 "MI_MC_7", False
             )
             self.success = False
@@ -2559,7 +2577,7 @@ class SingleCore:
             pass
         else:
             # this could be made conditional if others are added later!
-            conv_factor = GM_Con.bohr2ang
+            conv_factor = GM_con.bohr2ang
             self.change_map_units(conv_factor)
 
         # now, also use the frequency multiplier
