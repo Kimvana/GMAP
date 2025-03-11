@@ -26,6 +26,7 @@ Be aware that the maps used in this overarching map have been designed to be use
 - The Jansen dipole map should always be used together with the Jansen frequency map (this is enforced by this map).
 - It is common to also calculate couplings when working with amides. This should be done with one of the specially-designed amide coupling maps. See (https://doi.org/10.1021/acs.jctc.6b00420) to find out what coupling map is best for your usecase.
 - The peaks for these systems take up the same spectral space as sidechain amides, so to get better agreement with experiment, you'll probably want to use the sidechain map along this one.
+- The map has been confirmed to work with GROMACs, CHARMM, NAMD and Amber. If you use the map on MD files from any software with GROMACS (or just any system with non-cannonical amino acids), make sure to use the parameter AmideBB.include_protein_residues (more information below) in your runs.
 
 
 

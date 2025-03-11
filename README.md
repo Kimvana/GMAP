@@ -139,7 +139,6 @@ This might be pedantic, but GMAP is not comparable to AIM. AIM is a program that
 - **Coupling method selection.** GEM has more freedom than AIM with choosing coupling methods. GEM allows on a per-singles-map basis to choose the method, while AIM only allows turning dipole-dipole coupling on or off between (mis)matched pairs.
 - **Missing features.** The following features were present in AIM, but not yet in GMAP/GEM. They are planned, so should be coming in due time. Need them now, contact us to see if we can find a workaround!
   - The functionality of the AIM parameter Scale_LR_coupling has not yet been implemented.
-  - GEM cannot yet work with non-Gromacs files.
 - **Easier whitelisting/blacklisting of singles** By default, GMAP can work with residue numbers and residue names (number/name of the residue of the zeroeth atom of the oscillator), but maps can add their own.
 - **Legend file output.** The legend file contains a short description for each row in the hamiltonian/dipoles array. No more second-guessing which frequency belongs to which site!
 - **Coupling method visualization output.** The couplingvis file has a diagram showing which coupling method has been used for which coupling value in the hamiltonian. Especially useful for mixed systems (e.g. proteins) that use multiple coupling methods at the same time.
