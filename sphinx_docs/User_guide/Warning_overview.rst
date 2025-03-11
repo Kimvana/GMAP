@@ -344,6 +344,10 @@ MI_MC_12
 --------
 The mentioned parameter can only take a limited amount of options, and one of those used is not one of them. [Cite relevant manual page!!]
 
+MI_MC_13
+--------
+The mentioned parameter can take either the form of a decimal number, or of something python can interpret. Any constants in the numpy library (e.g. np.pi) are available, as well as all constants in the GMAP constants module.  [Cite relevant manual page!!]
+
 
 MI_MM
 ======

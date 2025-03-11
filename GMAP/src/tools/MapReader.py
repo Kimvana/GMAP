@@ -2549,7 +2549,7 @@ class SingleCore:
                 "Please make sure the choice only contains numbers (and "
                 "optionally a single '.') that represent a decimal value. "
                 "Alternatively, make sure it is a python-parsable string. ",
-                "MI_MC_7", False
+                "MI_MC_13", False
             )
             self.success = False
             return 1
@@ -2562,8 +2562,8 @@ class SingleCore:
                 f"'multiply_freq' in the file {mapdir / 'core.txt'}. "
                 "Please make sure the choice only contains numbers (and "
                 "optionally a single '.') that represent a decimal value. "
-                "Alternatively, make sure it is a python-parsable string.2 ",
-                "MI_MC_7", False
+                "Alternatively, make sure it is a python-parsable string. ",
+                "MI_MC_13", False
             )
             self.success = False
             return 1

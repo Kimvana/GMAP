@@ -588,6 +588,8 @@ There might be some unit conversions that can't be covered by the keyword 'assum
 
 The value supplied here (a whole or decimal number) will be multiplied with all the values in the files specified using 'frequency_data_file_linear'  and 'frequency_data_file_quadratic'. This could be useful for a factor like 1/(4 pi epsilon).
 
+If preferred, this keyword also accepts certain constants. All constants available in the numpy library (e.g. np.pi) are available, as well as all constants in the GMAP constants module.
+
 
 
 *********
