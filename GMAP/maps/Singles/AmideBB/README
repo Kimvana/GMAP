@@ -48,6 +48,13 @@ AmideBB.dipole_map_choice
 
     Indicates which dipole map should be used. Torii is the default as the Skinner frequency map assumes it, and is more general. Jansen should only be used when using the Jansen frequency map, too.
 
+AmideBB.include_protein_residues
+    no shorthand
+
+    Which residue names exist in the simulation that are a part of the protein, but not cannonical amino acids. Any residues mentioned here are expected to contain the amide-backbone of N, CA, and C atoms. If a middle-chain residue, it also must have an 'O' atom (the double-bounded one to C), and H/HN (depending on software, HN for CHARMM, H for GROMACS/amber) atom on the nitrogen. A chain-ending residue needs only one of these two.
+
+    If a special residue does not make these requirements, a separate line in the core.txt file needs to be created for it instead.
+
 AmideBB.residue_order
     no shorthand
     options: resname, resnum (default = resnum)

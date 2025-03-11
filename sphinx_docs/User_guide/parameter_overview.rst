@@ -362,6 +362,17 @@ The filename and location of the topology file to be used during the calculation
 
 A topology file contains all the information that stays the same during the calculation. What are all atoms named? Which atom lives in which residue? What are those residues named? What masses and charges do the atoms have? What element and type are they?
 
+The following have been tested/confirmed usable with GMAP:
+
+- GROMACS: .tpr (recommended)
+- CHARMM/NAMD: .psf
+- Amber: .top
+
+
+The following have been tested/confirmed **un**usable with GMAP:
+
+- GROMACS: .gro (lacks charge information)
+
 
 .. _UserGuide_page_parameter_overview_trjfile:
 
@@ -373,6 +384,19 @@ trajectory_file
 The filename and location of the trajectory file to be used during the calculation. Allowed filetypes are the ones listed `here <https://userguide.mdanalysis.org/stable/formats/index.html>`__ that have a tick in the column labeled 'coordinates'.
 
 A trajectory file contains all information that could change during the simulation - most notably the positions of atoms and the dimensions of the periodic bounding box.
+
+The following have been tested/confirmed usable with GMAP:
+
+- GROMACS: .xtc (recommended), .gro
+- CHARMM/NAMD: .psf
+- Amber: .mdcrd*, .nc
+
+\* Note that there appear to be different types of amber .mdcrd files. Some do contain information on the dimensions of the simulation box, others do not. GMAP needs one that does.
+
+
+The following have been tested/confirmed **un**usable with GMAP:
+
+- CHARMM/NAMD: .crd (lacks PBC box dimensions), .cor (MDAnalysis does not support this file type)
 
 
 *********************************

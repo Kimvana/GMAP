@@ -45,6 +45,13 @@ def GM_adjust_map_core_raw(map_):
         "CYS", "GLY", "PRO", "ALA", "VAL", "ILE", "LEU", "MET", "PHE",
         "TYR", "TRP"
     ]
+
+    extended = set(map_.RunPars.include_protein_residues)
+    extended.discard("None")
+    if len(extended) > 0:
+        extended = list(extended)
+        all_amino_acid_codes += extended
+
     amino_acids_joined = ",".join(all_amino_acid_codes)
 
     oldentry = map_.rawcore["functional_group"]
@@ -265,6 +272,13 @@ def GM_post_init(map_, system):
     MC_NM.read_maps(map_)
     MC_CM.determine_maps(oscillator_list, map_, system)
 
+    if "TRESP" in main_runpars.requested_pairmapdict.keys():
+        trespmap = main_runpars.requested_pairmapdict["TRESP"]
+        map_.rawcore["TRESP.charges_filename"] = ["TRESP_gen.txt"]
+        map_.Core.TRESP_gen_charges = trespmap.code.get_charges(trespmap, map_)
+        map_.rawcore["TRESP.charges_filename"] = ["TRESP_pro.txt"]
+        map_.Core.TRESP_pro_charges = trespmap.code.get_charges(trespmap, map_)
+
     if not map_.success:
         GM_PT.Printer.warning(
             "An issue occurred while initializing the AmideBB map stored at "
@@ -329,6 +343,13 @@ def GM_str_osc(map_, system, oscillator):
         f"binding the residues {system.resnames[at0]}{system.resnums[at0]}"
         f" and {system.resnames[at3]}{system.resnums[at3]}"
     )
+
+
+def CP_TRESP_get_charges(map_, system, osc):
+    if osc.resnames[1] == "PRO":
+        return map_.Core.TRESP_pro_charges
+    else:
+        return map_.Core.TRESP_gen_charges
 
 
 def GM_calculate_frequency(map_, system, osc):
