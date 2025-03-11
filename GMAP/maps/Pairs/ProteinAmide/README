@@ -43,10 +43,15 @@ ProteinAmide.legacy_mode
     no shorthand
     options: None, AIM, AmideImaps (default = None)
 
-    Whether to recreate the results as produced by the precursors of this package. These are the differences:
+    Whether to recreate the results as produced by the precursors of this package. All options create results of the same format and magnitude, making all of them valid for use with software like NISE.
+    
+    These are the differences:
+
     - (method selection) AmideImaps always assigned GLDP for two backbone neighbours that had non-bordering residue numbers - i.e. opposite 'ends' of a cyclic chain. AIM (and GMAP default) apply the requested nearest-neighbour choice to this case.
     - (method selection) AmideImaps always assigned a TDC method to the coupling between two sidechains, instead of also allowing for TCC coupling. So, if TCC coupling is requested during this legacy mode, any two sidechains will be coupled by TDCTasumi instead.
     - (GLDP model only) When there are two prolines back to back, what map is used changes a little bit between modes. AmideImaps assigned a Gly-Pro map for those cases, while AIM and None assign a Pro-Gly map.
+
+    Which should you use? If you just want to compute spectra, stick with 'none'. It gives the most recent, detailed version, with any known bugs fixed. The main reason for changing to a legacy mode is for re-creating results from previous versions, so comparison between different results or packages can be made.
 
 
 warnings that can be raised by this map

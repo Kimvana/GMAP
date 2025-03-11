@@ -405,7 +405,7 @@ There is no bond information in the supplied MD system, but this information is 
 - Use a different format of topology file. `This website <https://userguide.mdanalysis.org/stable/formats/index.html>`__ has an extensive table of available formats for different MD software. Make sure you pick a format which lists 'bonds' in the column 'Attributes read'. Here an overview of options for a few common MD packages:
 
   - Gromacs: .tpr
-  - Amber: top, prmtop or parm7
+  - Amber: .top, .prmtop or .parm7
   - Charmm: .psf
   - NAMD: .psf
 

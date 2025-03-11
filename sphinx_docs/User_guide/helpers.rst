@@ -1,8 +1,8 @@
 .. _UserGuide_page_helpers:
 
-=======
+##################
 Helpers
-=======
+##################
 
 Helpers are intended to provide the user with functionality
 that isn't (yet) integrated into GMAP. They are not a core part
