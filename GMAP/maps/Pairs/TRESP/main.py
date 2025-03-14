@@ -63,7 +63,7 @@ def GM_pre_run(map_, system):
     map_.charge_array = np.array(map_.charge_array, dtype="float32")
     map_.charge_array_c = np.ctypeslib.as_ctypes(map_.charge_array)
 
-    map_.allpairs = np.array(map_.allpairs, dtype="int32")
+    # map_.allpairs = np.array(map_.allpairs, dtype="int32")
     map_.allpairs_c = np.ctypeslib.as_ctypes(np.ravel(map_.allpairs))
     map_.n_allpairs = np.int32(map_.allpairs.shape[0])
 

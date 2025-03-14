@@ -9,9 +9,9 @@ VEG_clib_file[path_rel_sd]                        VEG
 log_directory[path_dir_lg]                        [N/A]
 log_filename[path_rel_lg_c]                       log.log
 
-log_profiling_filename[path_rel_op_c]             prof.out
-log_profiling_tempfile[path_rel_op_c]             prof.temp
-log_profiling_graph_filename[path_rel_op_c]       profout.png
+log_profiling_filename[path_rel_lg_c]             prof.out
+log_profiling_tempfile[path_rel_lg_c]             prof.temp
+log_profiling_graph_filename[path_rel_lg_c]       profout.png
 
 output_directory[path_dir_op]                     [N/A]
 output_parameter_filename[path_rel_op_c]          parameters.txt
@@ -29,6 +29,7 @@ output_doublepos_filename[path_rel_op_c]          doublepos
 map_directory(md)[list_path_sep]               ../../../maps
 maps_to_use(um)[list_str]                         AmideSC
 couplings_to_use[list_str]                        DipDip :All
+couplings_scale[list_str]                         :All  1
 singles_whitelist[list_str]                       :All :All
 singles_blacklist[list_str]                       :All :None
 influencers_blacklist[list_str]                   :None
