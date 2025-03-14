@@ -50,8 +50,9 @@ def GM_pre_run(map_, system):
 
     map_.osclens = np.array(map_.osclens, dtype="int32")
     map_.osclens_c = np.ctypeslib.as_ctypes(map_.osclens)
-    map_.oscstart = np.concatenate((
-        np.zeros(1, dtype="int32"), np.cumsum(map_.osclens)[:-1]), dtype="int32")
+    map_.oscstart = np.concatenate(
+        (np.zeros(1, dtype="int32"), np.cumsum(map_.osclens)[:-1]),
+        dtype="int32")  # set the dtype again, as linux changes it here.
     map_.oscstart_c = np.ctypeslib.as_ctypes(map_.oscstart)
     print(map_.oscstart_c)
     map_.all_used_ats = np.array(map_.all_used_ats, dtype="int32")
@@ -63,7 +64,7 @@ def GM_pre_run(map_, system):
     map_.charge_array = np.array(map_.charge_array, dtype="float32")
     map_.charge_array_c = np.ctypeslib.as_ctypes(map_.charge_array)
 
-    map_.allpairs = np.array(map_.allpairs, dtype="int32")
+    # map_.allpairs = np.array(map_.allpairs, dtype="int32")
     map_.allpairs_c = np.ctypeslib.as_ctypes(np.ravel(map_.allpairs))
     map_.n_allpairs = np.int32(map_.allpairs.shape[0])
 

@@ -4,16 +4,16 @@ src/tools/ParameterParser.py.
 
 Missing tests:
 
-(@ September 20th '24):
-376-377, 438, 1183, 1296, 1847-1848 (7 missed statements)
+(@ March 11th '25):
+384-385, 446, 1191, 1304, 1855-1856 (7 missed statements)
 
 (CUHTAT - currently unknown how to access this )
-- SU_FP_7 (CUHTAT)   (376-377)
-- RefPars parse choice - unknown dtype (CUHTAT)  (438)
-- RawPars verify choice - unknown dtype (CUHTAT)  (1183)
+- SU_FP_7 (CUHTAT)   (383-384)
+- RefPars parse choice - unknown dtype (CUHTAT)  (445)
+- RawPars verify choice - unknown dtype (CUHTAT)  (1190)
 - RawPars checkparexist - variable may occur multiple times, but is also
-  not expected in deffiles (N/A in refpars)  (1296)
-- RunPars unknown loc for -md - SU_NP_3   (CUHTAT, SU_PP_3!)  (1847-1848)
+  not expected in deffiles (N/A in refpars)  (1303)
+- RunPars unknown loc for -md - SU_NP_3   (CUHTAT, SU_PP_3!)  (1854-1855)
 """
 
 # standard library imports
@@ -77,6 +77,9 @@ class TestRefPars:
             "VEG_clib_file": [
                 Path("VEG" + GM_FH.FileLocations.clib_extension)],
             "log_filename": [Path("log.log")],
+            "log_profiling_filename": [Path("prof.out")],
+            "log_profiling_tempfile": [Path("prof.temp")],
+            "log_profiling_graph_filename": [Path("profout.png")],
             "output_parameter_filename": [Path("parameters.txt")],
             "output_legend_filename": [Path("legend.txt")],
             "output_couplingvis_filename": [Path("couplingvisualization.pdf")],
@@ -87,12 +90,12 @@ class TestRefPars:
             "output_raman_filename": [Path("raman_tensor")],
             "output_positions_filename": [Path("positions")],
             "output_doublepos_filename": [Path("doublepos")],
-            "output_profiling_filename": [Path("prof.out")],
-            "output_profiling_tempfile": [Path("prof.temp")],
-            "output_profiling_graph_filename": [Path("profout.png")],
             "map_directory": [Path("../../../maps")],
             "maps_to_use": ["AmideSC"],
-            "couplings_to_use": ["DipDip", ":All"],
+            "couplings_to_use": [["DipDip", ":All"]],
+            "couplings_scale": [[":All", "1"]],
+            "singles_whitelist": [[":All", ":All"]],
+            "singles_blacklist": [[":All", ":None"]],
             "influencers_whitelist": [":All"],
             "influencers_blacklist": [":None"],
             "influencers_file": [Path(
@@ -118,6 +121,8 @@ class TestRefPars:
             "start_frame": [0],
             "number_frames": [999999999],
             "stop_frame": [999999999],
+            "time_limit": [999999],
+            "batch_size": [25],
             "profiler": [False],
             "profiler_graph": [False],
             "hamiltonian_units": ["cm-1"],
@@ -210,16 +215,16 @@ class TestRefPars:
             "source_directory": [
                 "default_parameter_filename",
                 "VEG_clib_file"],
-            "log_directory": ["log_filename"],
+            "log_directory": [
+                "log_filename", "log_profiling_filename",
+                "log_profiling_tempfile", "log_profiling_graph_filename"],
             "output_directory": [
                 "output_parameter_filename",
                 "output_legend_filename", "output_couplingvis_filename",
                 "output_estatics_filename", "output_hamiltonian_filename",
                 "output_dipole_filename", "output_energies_filename",
                 "output_raman_filename",
-                "output_positions_filename", "output_doublepos_filename",
-                "output_profiling_filename", "output_profiling_tempfile",
-                "output_profiling_graph_filename"
+                "output_positions_filename", "output_doublepos_filename"
             ],
             "path_test_dir1": ["path_test_rel11"],
             "path_test_dir2": [
@@ -241,6 +246,9 @@ class TestRefPars:
             "VEG_clib_file",
             "log_directory",
             "log_filename",
+            "log_profiling_filename",
+            "log_profiling_tempfile",
+            "log_profiling_graph_filename",
             "output_directory",
             "output_parameter_filename",
             "output_legend_filename",
@@ -252,9 +260,6 @@ class TestRefPars:
             "output_raman_filename",
             "output_positions_filename",
             "output_doublepos_filename",
-            "output_profiling_filename",
-            "output_profiling_tempfile",
-            "output_profiling_graph_filename",
             "map_directory",
             "influencers_file",
             "path_test_free",
@@ -269,6 +274,9 @@ class TestRefPars:
         ]
         assert RefPars.filepars_create == [
             "log_filename",
+            "log_profiling_filename",
+            "log_profiling_tempfile",
+            "log_profiling_graph_filename",
             "output_parameter_filename",
             "output_legend_filename",
             "output_couplingvis_filename",
@@ -279,9 +287,6 @@ class TestRefPars:
             "output_raman_filename",
             "output_positions_filename",
             "output_doublepos_filename",
-            "output_profiling_filename",
-            "output_profiling_tempfile",
-            "output_profiling_graph_filename",
             "path_test_free_new",
             "path_test_free_new_list",
             "path_test_rel21_new",
@@ -294,6 +299,8 @@ class TestRefPars:
             "start_frame",
             "number_frames",
             "stop_frame",
+            "time_limit",
+            "batch_size",
             "couplingvis_dpi",
             "int_test_free",
             "int_test_choice",
@@ -333,6 +340,9 @@ class TestRefPars:
         assert RefPars.strpars == [
             "maps_to_use",
             "couplings_to_use",
+            "couplings_scale",
+            "singles_whitelist",
+            "singles_blacklist",
             "influencers_whitelist",
             "influencers_blacklist",
             "influencers_select_atoms",
@@ -364,6 +374,9 @@ class TestRefPars:
             "map_directory",
             "maps_to_use",
             "couplings_to_use",
+            "couplings_scale",
+            "singles_whitelist",
+            "singles_blacklist",
             "influencers_whitelist",
             "influencers_blacklist",
             "influencers_select_atoms",
@@ -528,6 +541,9 @@ class TestRawPars:
             "VEG_clib_file": [
                 Path("VEG" + GM_FH.FileLocations.clib_extension)],
             "log_filename": [Path("log.log")],
+            "log_profiling_filename": [Path("prof.out")],
+            "log_profiling_tempfile": [Path("prof.temp")],
+            "log_profiling_graph_filename": [Path("profout.png")],
             "output_parameter_filename": [Path("parameters.txt")],
             "output_legend_filename": [Path("legend.txt")],
             "output_couplingvis_filename": [Path("couplingvisualization.pdf")],
@@ -538,12 +554,12 @@ class TestRawPars:
             "output_raman_filename": [Path("raman_tensor")],
             "output_positions_filename": [Path("positions")],
             "output_doublepos_filename": [Path("doublepos")],
-            "output_profiling_filename": [Path("prof.out")],
-            "output_profiling_tempfile": [Path("prof.temp")],
-            "output_profiling_graph_filename": [Path("profout.png")],
             "map_directory": [Path("../../../maps")],
             "maps_to_use": ["AmideSC"],
             "couplings_to_use": [["DipDip", ":All"]],
+            "couplings_scale": [[":All", "1"]],
+            "singles_whitelist": [[":All", ":All"]],
+            "singles_blacklist": [[":All", ":None"]],
             "influencers_whitelist": [":All"],
             "influencers_blacklist": [":None"],
             "influencers_file": [sd/"infl_file_base.txt"],
@@ -567,6 +583,8 @@ class TestRawPars:
             "start_frame": [0],
             "number_frames": [999999999],
             "stop_frame": [999999999],
+            "time_limit": [999999],
+            "batch_size": [25],
             "profiler": [False],
             "profiler_graph": [False],
             "hamiltonian_units": ["cm-1"],
@@ -1471,6 +1489,62 @@ class TestRunPars:
             False
         )
 
+    def test_resolve_singles_BWlist(self):
+        cmdline = [
+            "--int_test_nodef", "22",
+            "--path_test_nodef", "tests/test_tools/test_MathFunctions.py"
+        ]
+        pardict = {
+            "maps_to_use": ["AmideSC", "AmideBB", "CystBridge"],
+            "singles_whitelist": [["AmideSC", "2"], ["AmideSC", "4"]]
+        }
+        curpath = Path("")
+        (
+            RefPars, DefPars, InPars, _, CmdPars
+        ) = TestRunPars.setup_for_runpars(pardict, curpath, cmdline)
+
+        runpars = GM_PP.RunPars(CmdPars, InPars, DefPars, RefPars, True)
+        assert len(runpars.singles_whitelist_dict["AmideSC"]) == 2
+
+        cmdline = [
+            "--int_test_nodef", "22",
+            "--path_test_nodef", "tests/test_tools/test_MathFunctions.py"
+        ]
+        pardict = {
+            "maps_to_use": ["AmideSC", "AmideBB", "CystBridge"],
+            "singles_whitelist": [
+                ["AmideSC", "2"], ["AmideSC", "4"], [":All", "2"]]
+        }
+        curpath = Path("")
+        (
+            RefPars, DefPars, InPars, _, CmdPars
+        ) = TestRunPars.setup_for_runpars(pardict, curpath, cmdline)
+
+        runpars = GM_PP.RunPars(CmdPars, InPars, DefPars, RefPars, True)
+        assert len(runpars.singles_whitelist_dict["AmideSC"]) == 3
+
+    def test_final_resolve_coupling_scale(self):
+        cmdline = [
+            "--int_test_nodef", "22",
+            "--path_test_nodef", "tests/test_tools/test_MathFunctions.py"
+        ]
+        pardict = {
+            "maps_to_use": ["AmideSC", "AmideBB", "CystBridge"],
+            "couplings_scale": [["DipDip", "2"]]
+        }
+        curpath = Path("")
+        (
+            RefPars, DefPars, InPars, _, CmdPars
+        ) = TestRunPars.setup_for_runpars(pardict, curpath, cmdline)
+
+        runpars = GM_PP.RunPars(CmdPars, InPars, DefPars, RefPars, True)
+        runpars.requested_pairmapdict = {"map": "dummy"}
+        runpars.final_resolve_coupling_scale()
+        assert runpars.coupling_scale_factors_dict == {
+            "map": 1.0,
+            "DipDip": 2.0
+        }
+
     def test_SU_NP_1(self):
         cmdline = [
             "--path_test_nodef", "tests/test_tools/test_MathFunctions.py"
@@ -1566,7 +1640,7 @@ class TestRunPars:
 
         # --------------------------------------------------------------
 
-        # invalid amount of items in 'pair' (not 1 colon)
+        # invalid amount of items in coupling choice 'pair' (not 1 colon)
         cmdline = [
             "--int_test_nodef", "22",
             "--path_test_nodef", "tests/test_tools/test_MathFunctions.py"
@@ -1582,7 +1656,7 @@ class TestRunPars:
 
         # --------------------------------------------------------------
 
-        # first item in pair is 'nothing'
+        # first item in coupling choice pair is 'nothing'
         cmdline = [
             "--int_test_nodef", "22",
             "--path_test_nodef", "tests/test_tools/test_MathFunctions.py"
@@ -1592,6 +1666,66 @@ class TestRunPars:
             "couplings_to_use": [
                 ["None", ":CystBridge"],
             ]
+        }
+        self.systest_runpars(
+            cmdline, "SU_NP_8", GM_Ex.GmapFileSyntaxError, pardict)
+
+        # --------------------------------------------------------------
+
+        # invalid length for coupling scaling
+        cmdline = [
+            "--int_test_nodef", "22",
+            "--path_test_nodef", "tests/test_tools/test_MathFunctions.py"
+        ]
+        pardict = {
+            "maps_to_use": ["AmideSC", "AmideBB", "CystBridge"],
+            "couplings_scale": [
+                ["DipDip"],
+            ]
+        }
+        self.systest_runpars(
+            cmdline, "SU_NP_8", GM_Ex.GmapFileSyntaxError, pardict)
+
+        # --------------------------------------------------------------
+
+        # invalid coupling scale choice (can't be float'ed)
+        cmdline = [
+            "--int_test_nodef", "22",
+            "--path_test_nodef", "tests/test_tools/test_MathFunctions.py"
+        ]
+        pardict = {
+            "maps_to_use": ["AmideSC", "AmideBB", "CystBridge"],
+            "couplings_scale": [
+                ["DipDip", "one"],
+            ]
+        }
+        self.systest_runpars(
+            cmdline, "SU_NP_8", GM_Ex.GmapValueError, pardict)
+
+        # --------------------------------------------------------------
+
+        # singles_B/Wlist have fewer than 2 arguments
+        cmdline = [
+            "--int_test_nodef", "22",
+            "--path_test_nodef", "tests/test_tools/test_MathFunctions.py",
+            "--singles_whitelist", ":All\\;"
+        ]
+        pardict = {
+            "maps_to_use": ["AmideSC", "AmideBB", "CystBridge"]
+        }
+        self.systest_runpars(
+            cmdline, "SU_NP_8", GM_Ex.GmapFileSyntaxError, pardict)
+
+        # --------------------------------------------------------------
+
+        # singles_B/Wlist has invalid map choice
+        cmdline = [
+            "--int_test_nodef", "22",
+            "--path_test_nodef", "tests/test_tools/test_MathFunctions.py",
+            "--singles_whitelist", ":notvalid", "choice\\;"
+        ]
+        pardict = {
+            "maps_to_use": ["AmideSC", "AmideBB", "CystBridge"]
         }
         self.systest_runpars(
             cmdline, "SU_NP_8", GM_Ex.GmapFileSyntaxError, pardict)

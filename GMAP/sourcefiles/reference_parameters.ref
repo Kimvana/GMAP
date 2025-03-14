@@ -18,6 +18,10 @@ VEG_clib_file[path_rel_sd]                        VEG
 log_directory[path_dir_lg]                        [N/A]
 log_filename[path_rel_lg_c]                       log.log
 
+log_profiling_filename[path_rel_lg_c]          prof.out
+log_profiling_tempfile[path_rel_lg_c]          prof.temp
+log_profiling_graph_filename[path_rel_lg_c]    profout.png
+
 
 # ----- program output locations -----
 output_directory[path_dir_op]                     [N/A]
@@ -33,10 +37,6 @@ output_raman_filename(orf)[path_rel_op_c]         raman_tensor
 output_positions_filename(opf)[path_rel_op_c]     positions
 output_doublepos_filename[path_rel_op_c]          doublepos
 
-output_profiling_filename[path_rel_op_c]          prof.out
-output_profiling_tempfile[path_rel_op_c]          prof.temp
-output_profiling_graph_filename[path_rel_op_c]    profout.png
-
 
 
 ########################
@@ -47,12 +47,15 @@ output_profiling_graph_filename[path_rel_op_c]    profout.png
 # ----- Choosing models and methods -----
 map_directory(md)[list_path_sep]                  ../maps
 maps_to_use(um)[list_str]                         AmideSC
+singles_whitelist[list_str]                       :All :All
+singles_blacklist[list_str]                       :All :None
 influencers_whitelist[list_str]                   :All
 influencers_blacklist[list_str]                   :None
 influencers_file[path_sep]                        infl_file_base.txt
 influencers_select_atoms[list_str]                segid *
 
 couplings_to_use[list_str]                        DipDip :All
+couplings_scale[list_str]                         :All  1
 output_data[list_str]                             [ham] [dip] ene [pos] dbp ram
 estatics_method[str]                              [perres] perres_nocut
 neutral_charge_threshold[float]                   0.0001
@@ -70,6 +73,8 @@ estatic_smooth_range[float]                       5  # this is in angstrom
 start_frame[int]                                  0
 number_frames[int]                                999999999
 stop_frame[int]                                   999999999
+time_limit[int]                                   999999  # 2y in minutes
+batch_size[int]                                   25  # frames before time appl
 
 
 # ----- Choosing what the program outputs look like -----

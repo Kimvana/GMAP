@@ -12,6 +12,7 @@ import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.FileHandler as GM_FH
 import GMAP.src.tools.MapReader as GM_MR
 import GMAP.src.tools.PrintTools as GM_PT
+# from GMAP.src.tools.PrintTools import devprint as dpr
 
 
 class RefPars:
@@ -120,8 +121,12 @@ class RefPars:
         self.add_groups()
         self.nondefcount = 0
 
+        # compounds means that this parameter is allowed to occur on multiple
+        # lines.
         if self.is_main:
-            self.compounds = ("couplings_to_use",)
+            self.compounds = (
+                "couplings_to_use", "couplings_scale", "singles_whitelist",
+                "singles_blacklist")
         else:
             self.compounds = tuple()
 
@@ -140,6 +145,9 @@ class RefPars:
 
         # for fixing intertwined / more convoluted parameters (main file only)
         if is_main:
+            for parname, choice in self.choices.items():
+                if parname in self.compounds:
+                    self.choices[parname] = [choice]
             self.resolve()
 
     @classmethod
@@ -2149,7 +2157,15 @@ class RunPars:
 
         self.resolve_framenums(CmdPars, InPars, DefPars, RefPars)
         self.resolve_couplings(CmdPars, InPars, DefPars)
+        self.resolve_coupling_scale(CmdPars, InPars, DefPars)
         self.resolve_estatics()
+        # dpr(self.singles_whitelist)
+        # dpr(RefPars.choices.get("singles_whitelist", []))
+        # dpr(DefPars.choices.get("singles_whitelist", []))
+        # dpr(InPars.choices.get("singles_whitelist", []))
+        # dpr(CmdPars.choices.get("singles_whitelist", []))
+        # raise KeyError
+        self.resolve_singles_BWlist()
 
     def resolve_framenums(self, CmdPars, InPars, DefPars, RefPars):
         """Make sure the combination of frame numbers makes sense.
@@ -2255,10 +2271,7 @@ class RunPars:
         # Later sources modify the choices from earlier!
         for source in (DefPars, InPars, CmdPars):
             if "couplings_to_use" in source.choices:
-                if isinstance(source, RefPars):
-                    couplist.extend([source.choices["couplings_to_use"]])
-                else:
-                    couplist.extend(source.choices["couplings_to_use"])
+                couplist.extend(source.choices["couplings_to_use"])
 
         # now, find all pairs of couplings, and assign the correct
         # coupling choice to them.
@@ -2311,6 +2324,65 @@ class RunPars:
             else:
                 self.coupling_v_pair_dict[value] = [key]
 
+    def resolve_coupling_scale(self, CmdPars, InPars, DefPars):
+        """Interprets the requested coupling scaling choices
+
+        The coupling scaling choices are provided on multiple lines,
+        possibly from multiple sources (so a single choice can be
+        changed without having to re-specify all). Combining is simple:
+        the sources are read in increasing order of importance, from
+        beginning to end. every next/new line can overwrite any previous
+        lines.
+
+        Any verification of coupling map validity can't be made, as the
+        maps have not been loaded in yet at the time of this function.
+
+        Parameters
+        ----------
+        CmdPars : :class:`RawPars`
+            Contains any parameter choices made on the command line
+        InPars : :class:`RawPars`
+            Contains any parameter choices made in the input parameter
+            file
+        DefPars : :class:`RawPars` or :class:`RefPars`
+            Contains all default parameter choices. Might be RefPars,
+            might be from a separate default parameters file.
+        """
+
+        couplist = []
+
+        # Later sources modify the choices from earlier!
+        for source in (DefPars, InPars, CmdPars):
+            if "couplings_scale" in source.choices:
+                couplist.extend(source.choices["couplings_scale"])
+
+        self.all_coupling_scale_factors = []
+
+        # coupline corresponds to a single line from RawPars files, and
+        # contains information about a single coupling map.
+        for coupline in couplist:
+            if len(coupline) != 2:
+                GM_PT.Printer.warning(
+                    "\nThe parameter couplings_scale must always take 2 "
+                    "arguments, but only one was provided. Please make sure "
+                    "you specify this parameter correctly.",
+                    "SU_NP_8", True, GMAPerrclass=GM_Ex.GmapFileSyntaxError
+                )
+
+            try:
+                _ = float(coupline[1])
+            except ValueError:
+                # don't know which others can be triggered here.
+                GM_PT.Printer.warning(
+                    "\nThe second argument for the parameter couplings_scale "
+                    "must be convertable to a decimal number, but this was "
+                    "not possible here. Please make sure "
+                    "you specify this parameter correctly.",
+                    "SU_NP_8", True, GMAPerrclass=GM_Ex.GmapValueError
+                )
+
+            self.all_coupling_scale_factors.append(coupline)
+
     def resolve_estatics(self):
         """Resolves any issues that can result from estatic choices.
         """
@@ -2339,6 +2411,74 @@ class RunPars:
                 "with smoothing.",
                 "SU_NP_7", True, GMAPerrclass=GM_Ex.GmapParameterError
             )
+
+    def resolve_singles_BWlist(self):
+        """Interprets the black-/whitelisting of oscillators.
+
+        Steps:
+        - check if there are at least 2 arguments for each occurence/
+          line - the first is for the map, second for the rule.
+        - check whether the first argument is either ':All', or a
+          chosen/used singles map.
+        - make a dict, and sort all lines into it:
+          - The keys are the map names
+          - The values are lists, each item in which is a line from the
+            file corresponding to that map.
+
+        The goal is to have a dictionary ready for maps to filter their
+        oscillators with. By not imposing any further rules on the
+        formatting of this line, maps can easily employ their own
+        further filters.
+        """
+
+        parstring = "parameters singles_whitelist and singles_blacklist"
+        for line in self.singles_whitelist + self.singles_blacklist:
+            # check if there are at least 2 arguments for each occurence/line
+            if len(line) < 2:
+                GM_PT.Printer.warning(
+                    f"\nThe {parstring} "
+                    "must always take 2 or more "
+                    "arguments, but only one was provided. Please make sure "
+                    "you specify this parameter correctly.",
+                    "SU_NP_8", True, GMAPerrclass=GM_Ex.GmapFileSyntaxError
+                )
+            # check whether the first argumentis either :All, or a chosen/used
+            # singles map.
+            if (
+                # line[0] not in self.maps_to_use
+                any(
+                    map_ not in self.maps_to_use
+                    for map_ in line[0].split(","))
+                and line[0].lower() != ":all"
+            ):
+                GM_PT.Printer.warning(
+                    f"\nThe first argument for the {parstring} indicates "
+                    "what map(s) that filter should be applied to. "
+                    "Please make sure you only indicate maps here that are "
+                    "also chosen under the parameter 'maps_to_use'\n"
+                    "As a mismatch in names might indicate a mistake in the "
+                    "indication, the program is now stopped.",
+                    "SU_NP_8", True, GMAPerrclass=GM_Ex.GmapFileSyntaxError
+                )
+
+        # make a dict, and sort all lines into it:
+        for parname in ("singles_whitelist", "singles_blacklist"):
+            choicedict = {}
+            for line in getattr(self, parname):
+                if line[0].lower() == ":all":
+                    for map_ in self.maps_to_use:
+                        if map_ not in choicedict:
+                            choicedict[map_] = [line[1:]]
+                        else:
+                            choicedict[map_].append(line[1:])
+                    continue
+
+                for map_ in line[0].split(","):
+                    if map_ not in choicedict:
+                        choicedict[map_] = [line[1:]]
+                    else:
+                        choicedict[map_].append(line[1:])
+            setattr(self, f"{parname}_dict", choicedict)
 
     def resolve_errorcodes(self):
         """Fixes any issues due to merging errorcodes from different
@@ -2443,6 +2583,33 @@ class RunPars:
             if key in ((pair[0], pair[1]), (pair[1], pair[0])):
                 coupdict[key] = coupmap
         return failed_couppairs
+
+    def final_resolve_coupling_scale(self):
+        """Figure out which coupling methods should get with factor.
+
+        The scaling keyword allows the ':All' syntax, but at the regular
+        place (RunPars.resolve()) the full set isn't known yet.
+
+        So, this function has to be called later when all relevant
+        coupling maps have been identified. This means the couplings
+        have to be identified in the larger system!
+        """
+
+        self.coupling_scale_factors_dict = {}
+
+        for mapname in self.requested_pairmapdict.keys():
+            self.coupling_scale_factors_dict[mapname] = 1
+
+        # these lines are already ordered such that the least important source
+        # comes first -> more important sources will overwrite.
+        for coupline in self.all_coupling_scale_factors:
+            mapname = coupline[0]
+            factor = float(coupline[1])
+            if mapname.lower() == ":all":
+                for key in self.coupling_scale_factors_dict.keys():
+                    self.coupling_scale_factors_dict[key] = factor
+            else:
+                self.coupling_scale_factors_dict[mapname] = factor
 
     # Called by GEM.trj_loop()
     def manage_dtypes(self):

@@ -5,6 +5,10 @@ source_directory                GMAP/sourcefiles
 VEG_clib_file                   VEG
 log_filename                    log.log
 
+log_profiling_filename          prof.out
+log_profiling_tempfile          prof.temp
+log_profiling_graph_filename    profout.png
+
 output_parameter_filename       parameters.txt
 output_legend_filename          legend.txt
 output_couplingvis_filename     couplingvisualization.pdf
@@ -16,14 +20,13 @@ output_raman_filename           raman_tensor
 output_positions_filename       positions
 output_doublepos_filename       doublepos
 
-output_profiling_filename       prof.out
-output_profiling_tempfile       prof.temp
-output_profiling_graph_filename profout.png
-
 
 map_directory                   GMAP/maps
 maps_to_use                     AmideSC
 couplings_to_use                DipDip :All
+couplings_scale                 :All  1
+singles_whitelist               :All :All
+singles_blacklist               :All :none
 influencers_whitelist           :All
 influencers_blacklist           :None
 influencers_file                GMAP/sourcefiles/infl_file_base.txt
@@ -51,6 +54,8 @@ estatic_smooth_range                        5  # this is in angstrom
 start_frame                                 0
 number_frames                               999999999
 stop_frame                                  999999999
+time_limit                                  999999  # 2y in minutes
+batch_size                                  25  # frames before time appl
 
 profiler                        False
 profiler_graph                  False

@@ -99,7 +99,7 @@ def manage_frame(frame, RunPars):
         verbose_level, framenum, RunPars.start_frame, RunPars.stop_frame)
 
     # Check if there is enough time to do another batch of frames
-    # (to avoid running longer than the max amount of time)
+    return early_stop(framenum, RunPars)
 
 
 def print_frame_ETA(verbose, framenum, startframe, endframe):
@@ -190,6 +190,45 @@ def print_frame_ETA(verbose, framenum, startframe, endframe):
         toprint.append(f"{datestr: <14}")
 
     GM_PT.Printer.print(verbose, " | ".join(toprint))
+
+
+def early_stop(framenum, RunPars):
+    """Determines whether to stop the calculation early, or to continue.
+
+    This decision is based on the amount of remaining time, used time,
+    and frame batch size. Basically, the program divides all frames to
+    calculate in batches of a size determined by the user. Every first
+    frame of a batch (except the very first batch), the program sees how
+    long batches have taken until now, and whether there is enough time
+    to finish another.
+    If there is not enough time to finish two more, the next batch will
+    not start. This is done to ensure that there is also enough time for
+    the program to finish things off after the last batch.
+    """
+
+    relframenum = framenum - RunPars.start_frame
+    if relframenum == 0:  # don't quit on first frame
+        return False
+
+    # only consider quitting after completing a batch
+    if relframenum % RunPars.batch_size != 0:
+        return False
+
+    # now, actually check whether the next batch will fit.
+    timer = GM_PT.Printer.Timer
+    now_ns = timer.get_time("FrameUpdate")
+    start_heavy_ns = timer.get_time("StartLoop")
+    ns_per_frame = int((now_ns - start_heavy_ns) / (relframenum))
+    avail_time_ns = RunPars.time_limit * 60 * 1000000000
+
+    # if we could do another two batches, allow this batch to continue.
+    # why two? because we also need time to finish up the calculation
+    # after the last batch.
+    if avail_time_ns - now_ns > 2 * ns_per_frame * RunPars.batch_size:
+        return False
+    else:
+        RunPars.end_frame = framenum
+        return True
 
 
 # TO DO inside!
@@ -476,7 +515,10 @@ def print_treated_avail_frames(RunPars, System):
 
     GM_PT.header(2, "MD frames", "doublebox_bare")
     msg = "Frames treated:     " + " " * 12
-    pr.print(1, f"{msg}{RunPars.start_frame}-{RunPars.stop_frame}")
+
+    # if the calculation was stopped early, the attribute end_frame exists.
+    last_frame = getattr(RunPars, "end_frame", RunPars.stop_frame)
+    pr.print(1, f"{msg}{RunPars.start_frame}-{last_frame}")
     msg = "Frames requested:   " + " " * 12
     pr.print(2, f"{msg}{RunPars.start_frame}-{RunPars.stop_frame}")
     msg = "Frames available:   " + " " * 12
@@ -549,10 +591,10 @@ def print_in_output_filenames(RunPars):
     report_files(RunPars, "pos", "Positions", 2, 2)
     report_files(RunPars, "dbp", "Doublepos", 2, 2)
     if RunPars.profiler:
-        fname = RunPars.output_profiling_filename
+        fname = RunPars.log_profiling_filename
         pr.print(2, f"profiler output:            {fname}")
     if RunPars.profiler_graph:
-        fname = RunPars.output_profiling_graph_filename
+        fname = RunPars.log_profiling_graph_filename
         pr.print(2, f"profiler visualization:     {fname}")
 
 
@@ -664,6 +706,9 @@ def GEM(callcommand):
             map_ = RunPars.requested_pairmapdict[mapname]
             map_.code.GM_post_init(map_, System)
 
+        # obtain all multiply factors of all coupling maps
+        RunPars.final_resolve_coupling_scale()
+
         # Save overview of found coupling maps to file.
         GM_Pl.plot_coupling_choices(RunPars, System)
 
@@ -678,24 +723,24 @@ def GEM(callcommand):
     # finalize profiler
     if RunPars.profiler:
         profile.create_stats()
-        profile.dump_stats(RunPars.output_profiling_filename)
+        profile.dump_stats(RunPars.log_profiling_filename)
 
     dpr("running gprof")
     if RunPars.profiler_graph:
         strcommand = [
             "gprof2dot", "-f", "pstats",
-            RunPars.output_profiling_filename, "-o",
-            RunPars.output_profiling_tempfile]
+            RunPars.log_profiling_filename, "-o",
+            RunPars.log_profiling_tempfile]
         subprocess.run(strcommand)
 
         dpr("running dot")
         strcommand = [
-            "dot", "-Tpng", "-o", RunPars.output_profiling_graph_filename,
-            RunPars.output_profiling_tempfile]
+            "dot", "-Tpng", "-o", RunPars.log_profiling_graph_filename,
+            RunPars.log_profiling_tempfile]
         subprocess.run(strcommand)
 
         # remove the tempfile again
-        RunPars.output_profiling_tempfile.unlink()
+        RunPars.log_profiling_tempfile.unlink()
 
     print_calculation_summary(RunPars, System)
 

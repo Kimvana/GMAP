@@ -4,8 +4,12 @@
 
 // These files are not from default libraries, or within this map folder.
 // Instead, they should be manually included during installation:
+
 // windows (my machine, edit path):
 // cl.exe /LD /Fe: TRESP_clib_Win64bit /I\github\GEMAIM-dev\GMAP\sourcefiles TRESP_clib.cpp
+
+// linux (Kai's cluster, edit path):
+// g++ -fPIC -shared -o TRESP_clib_Linux.so -I/scratch/p302934/GMAP_fin/GMAP/GMAP/sourcefiles TRESP_clib.cpp
 #include "vectormath.cpp"  // in GMAP sourcefiles directory
 
 #ifdef _WIN32
@@ -22,6 +26,34 @@ extern "C" {
         float *diff_charges, int *osc_used_ats, float *positions_box,
         float *boxvects, int totosc, float *hamiltonian
     ) {
+        /*
+        Tresp multiplies the found J by 116141.70590152.
+        Why, what is this number?
+
+        1/4pieps = 8.9875517862(14) e9 Nm^2C^-2 (coulombs constant)
+        e = 1.602176634 * e-19 C  (elementary charge)
+
+        newton = kg m s-2
+        1/4pieps = 8.9875517862(14) e9 kg m^3s-2C^-2 (coulombs constant)
+
+        e^2/4pieps = 23.070775507894 e-29 kg m^3 s^-2
+                   = 23.070775507894 e-29 Jm
+
+        h = 6.62607015 e-34 Js
+        c = 2.99792458 e8 m s-1
+        hc = 19.864458571489287 e-26  Jm
+        J = 1/hc = 0.05034116567542709302218551285258 e-26 m-1
+        J = 1/hc = (1/1.98644586) * 10^25 1/m
+        J = 5.03411656 * 10^22 1/cm (joule in wavenumbers)
+
+        e^2/4pieps = 23.0707755078585 e-29 Jm
+                   = 23.0707755078585 e-29 5.03411656 e22 m cm-1
+                   = 116.14097303 e-7 m cm-1
+        
+        using ang: 116.140973210 e3 ang cm-1
+                 = 116140.973210 ang cm-1
+        */
+
         int pairix, oscix1, oscix2, ix1, ix2, osc1len, osc2len, TRix1, TRix2;
         float tempvec[3], diff[3], r2, ir, J;
         for (pairix = 0; pairix < npairs; pairix++) {
