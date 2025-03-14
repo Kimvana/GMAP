@@ -80,8 +80,6 @@ class TRESP_Clib(metaclass=GM_CT.Singleton):
             variable, as it depends on the amount of singles in the
             calculation.
         """
-        print(map_.oscstart_c,type(map_.oscstart_c))
-        print(map_.name)
         self.clib.calc_coupling(
             map_.n_allpairs,  # npairs
             map_.allpairs_c,  # allpairs

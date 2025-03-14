@@ -54,7 +54,6 @@ def GM_pre_run(map_, system):
         (np.zeros(1, dtype="int32"), np.cumsum(map_.osclens)[:-1]),
         dtype="int32")  # set the dtype again, as linux changes it here.
     map_.oscstart_c = np.ctypeslib.as_ctypes(map_.oscstart)
-    print(map_.oscstart_c)
     map_.all_used_ats = np.array(map_.all_used_ats, dtype="int32")
     map_.all_used_ats_c = np.ctypeslib.as_ctypes(map_.all_used_ats)
 
