@@ -450,6 +450,19 @@ class System:
 
         # feed the found oscillators to the maps, let them have a look
         # at them / edit.
+
+        nosc = sum([len(oscillators) for oscillators in allgroups])
+        # GM_PT.Printer.print(2, f"found {self.nosc} oscillators.")
+        if nosc == 0:
+            GM_PT.Printer.warning(
+                "\nNone of the requested oscillators could be found in the "
+                "supplied MD system. Either change the choice for the "
+                "parameter maps_to_use, or for the parameters topology_file "
+                "and/or trajectory_file. Quitting!"
+                "MD_SU_7", True,
+                GMAPerrclass=GM_Ex.GmapValueError
+            )
+
         checked_oscillators = []
         for oscillators in allgroups:
             map_ = oscillators[0].Map
