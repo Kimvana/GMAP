@@ -465,6 +465,8 @@ class System:
 
         checked_oscillators = []
         for oscillators in allgroups:
+            if len(oscillators) == 0:
+                continue
             map_ = oscillators[0].Map
             checked = map_.code.GM_adjust_oscillators(
                 map_, self, oscillators
@@ -474,6 +476,8 @@ class System:
 
         filtered_oscillators = []
         for oscillators in checked_oscillators:
+            if len(oscillators) == 0:
+                continue
             map_ = oscillators[0].Map
             filtered = map_.code.GM_filter_oscillators(
                 map_, self, oscillators
