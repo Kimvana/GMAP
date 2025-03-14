@@ -1,0 +1,34 @@
+can_output     ham   ene    dip    pos    dbp
+
+functional_group_file    funcgroup_ua.txt
+
+used_atoms 0-69
+
+electrostatic_atoms 0-69
+
+electrostatic_choice V   # V, E, or G?
+
+local_atoms 0-69
+
+# This is the position where the transition dipole is placed
+position       69
+# These are the positions of NB and ND atoms
+doublepos_0            45
+doublepos_1            60
+
+r_vec     45-60 # NB to ND
+r_pos     69 # At the Mg
+
+# What should be the midpoint of the sphere defining the charges that can
+# influence VEG.
+
+VEG_reference  position 69 # Mg atom
+
+dipole_gas_phase  4.61 # 4.49 for Chla, 4.61 for Chlb # doi:10.1021/jp106323e
+frequency_gas_phase 15313 # doi:10.1021/jp106323e
+frequency_data_file_linear diff_charges_HF-CIS.txt
+multiply_freq 1161409.733
+
+# position and double position should maybe correspond to Mg (needed to have pos and dbp)
+
+TRESP.charges_filename TRESP_chlb.txt
