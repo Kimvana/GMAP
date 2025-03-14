@@ -49,7 +49,7 @@ def plot_coupling_choices(RunPars, System):
     # Obtain colors for plotting
     presentcoupmaps = [
         coupmap for coupmap in RunPars.requested_pairmapdict.values()
-        if len(coupmap.allpairs) != 0]
+        if coupmap.allpairs.shape[0] != 0]
     ncoupmaps = len(presentcoupmaps)
     # ncoupmaps = len(RunPars.requested_pairmapdict)
     if ncoupmaps > 28:  # the discrete rainbow can support 28 colors max.
@@ -64,9 +64,9 @@ def plot_coupling_choices(RunPars, System):
     coupmap_image = np.zeros((nosc, nosc, 3), dtype="float32")
     coupmap_image[:, :] = no_data
     for ix, coupmap in enumerate(presentcoupmaps):
-        if len(coupmap.allpairs) == 0:
+        if coupmap.allpairs.shape[0] == 0:
             continue
-        rows, cols = np.array(coupmap.allpairs).T
+        rows, cols = coupmap.allpairs.T
         coupmap_image[rows, cols, :] = colors[ix % 28]
         coupmap_image[cols, rows, :] = colors[ix % 28]
 

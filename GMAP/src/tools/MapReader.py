@@ -694,11 +694,10 @@ class PairMap(Map):
 
     Attributes
     ----------
-    allpairs : list of tuple of 2 ints
-        A list of all pairs that should be coupled by this map. A pair
-        is indicated by the oscix of each oscillator involved. Maps can
-        (and probably should) change the data type of this attribute -
-        this can severely impact calculation times.
+    allpairs : ``np.ndarray``
+        Contains all pairs that should be coupled by this map. The array
+        is of dtype 'int32', and contains a row for each pair. A pair
+        is indicated by the oscix of each oscillator involved.
     """
 
     def initialize(self):
@@ -721,7 +720,7 @@ class PairMap(Map):
 
         self.parse_references()
 
-        self.allpairs = []
+        self.allpairs = np.zeros((0, 0), dtype="int32")
 
         self.code = self.extract_code()
         if not self.code:

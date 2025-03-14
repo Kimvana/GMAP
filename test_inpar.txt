@@ -50,7 +50,8 @@ AmideBB.include_protein_residues HSD HIE
 # couplings_to_use  DipDip  AmideSC:AmideSC
 # maps_to_use Water
 # couplings_to_use TRESP :All
-couplings_to_use TRESP :All
+couplings_to_use DipDip :All
+couplings_scale DipDip 1
 
 
 output_format       txt

@@ -24,6 +24,7 @@ output_doublepos_filename       doublepos
 map_directory                   GMAP/maps
 maps_to_use                     AmideSC
 couplings_to_use                DipDip :All
+couplings_scale                 :All  1
 singles_whitelist               :All :All
 singles_blacklist               :All :none
 influencers_whitelist           :All
