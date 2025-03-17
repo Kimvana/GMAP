@@ -18,6 +18,10 @@ VEG_clib_file[path_rel_sd]                        VEG
 log_directory[path_dir_lg]                        [N/A]
 log_filename[path_rel_lg_c]                       log.log
 
+log_profiling_filename[path_rel_lg_c]          prof.out
+log_profiling_tempfile[path_rel_lg_c]          prof.temp
+log_profiling_graph_filename[path_rel_lg_c]    profout.png
+
 
 # ----- program output locations -----
 output_directory[path_dir_op]                     [N/A]
@@ -32,10 +36,6 @@ output_dipole_filename(odf)[path_rel_op_c]        dipoles
 output_raman_filename(orf)[path_rel_op_c]         raman_tensor
 output_positions_filename(opf)[path_rel_op_c]     positions
 output_doublepos_filename[path_rel_op_c]          doublepos
-
-output_profiling_filename[path_rel_op_c]          prof.out
-output_profiling_tempfile[path_rel_op_c]          prof.temp
-output_profiling_graph_filename[path_rel_op_c]    profout.png
 
 
 
@@ -55,6 +55,7 @@ influencers_file[path_sep]                        infl_file_base.txt
 influencers_select_atoms[list_str]                segid *
 
 couplings_to_use[list_str]                        DipDip :All
+couplings_scale[list_str]                         :All  1
 output_data[list_str]                             [ham] [dip] ene [pos] dbp ram
 estatics_method[str]                              [perres] perres_nocut
 neutral_charge_threshold[float]                   0.0001

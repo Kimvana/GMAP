@@ -125,7 +125,8 @@ class RefPars:
         # lines.
         if self.is_main:
             self.compounds = (
-                "couplings_to_use", "singles_whitelist", "singles_blacklist")
+                "couplings_to_use", "couplings_scale", "singles_whitelist",
+                "singles_blacklist")
         else:
             self.compounds = tuple()
 
@@ -2156,6 +2157,7 @@ class RunPars:
 
         self.resolve_framenums(CmdPars, InPars, DefPars, RefPars)
         self.resolve_couplings(CmdPars, InPars, DefPars)
+        self.resolve_coupling_scale(CmdPars, InPars, DefPars)
         self.resolve_estatics()
         # dpr(self.singles_whitelist)
         # dpr(RefPars.choices.get("singles_whitelist", []))
@@ -2321,6 +2323,65 @@ class RunPars:
                 self.coupling_v_pair_dict[value].append(key)
             else:
                 self.coupling_v_pair_dict[value] = [key]
+
+    def resolve_coupling_scale(self, CmdPars, InPars, DefPars):
+        """Interprets the requested coupling scaling choices
+
+        The coupling scaling choices are provided on multiple lines,
+        possibly from multiple sources (so a single choice can be
+        changed without having to re-specify all). Combining is simple:
+        the sources are read in increasing order of importance, from
+        beginning to end. every next/new line can overwrite any previous
+        lines.
+
+        Any verification of coupling map validity can't be made, as the
+        maps have not been loaded in yet at the time of this function.
+
+        Parameters
+        ----------
+        CmdPars : :class:`RawPars`
+            Contains any parameter choices made on the command line
+        InPars : :class:`RawPars`
+            Contains any parameter choices made in the input parameter
+            file
+        DefPars : :class:`RawPars` or :class:`RefPars`
+            Contains all default parameter choices. Might be RefPars,
+            might be from a separate default parameters file.
+        """
+
+        couplist = []
+
+        # Later sources modify the choices from earlier!
+        for source in (DefPars, InPars, CmdPars):
+            if "couplings_scale" in source.choices:
+                couplist.extend(source.choices["couplings_scale"])
+
+        self.all_coupling_scale_factors = []
+
+        # coupline corresponds to a single line from RawPars files, and
+        # contains information about a single coupling map.
+        for coupline in couplist:
+            if len(coupline) != 2:
+                GM_PT.Printer.warning(
+                    "\nThe parameter couplings_scale must always take 2 "
+                    "arguments, but only one was provided. Please make sure "
+                    "you specify this parameter correctly.",
+                    "SU_NP_8", True, GMAPerrclass=GM_Ex.GmapFileSyntaxError
+                )
+
+            try:
+                _ = float(coupline[1])
+            except ValueError:
+                # don't know which others can be triggered here.
+                GM_PT.Printer.warning(
+                    "\nThe second argument for the parameter couplings_scale "
+                    "must be convertable to a decimal number, but this was "
+                    "not possible here. Please make sure "
+                    "you specify this parameter correctly.",
+                    "SU_NP_8", True, GMAPerrclass=GM_Ex.GmapValueError
+                )
+
+            self.all_coupling_scale_factors.append(coupline)
 
     def resolve_estatics(self):
         """Resolves any issues that can result from estatic choices.
@@ -2522,6 +2583,33 @@ class RunPars:
             if key in ((pair[0], pair[1]), (pair[1], pair[0])):
                 coupdict[key] = coupmap
         return failed_couppairs
+
+    def final_resolve_coupling_scale(self):
+        """Figure out which coupling methods should get with factor.
+
+        The scaling keyword allows the ':All' syntax, but at the regular
+        place (RunPars.resolve()) the full set isn't known yet.
+
+        So, this function has to be called later when all relevant
+        coupling maps have been identified. This means the couplings
+        have to be identified in the larger system!
+        """
+
+        self.coupling_scale_factors_dict = {}
+
+        for mapname in self.requested_pairmapdict.keys():
+            self.coupling_scale_factors_dict[mapname] = 1
+
+        # these lines are already ordered such that the least important source
+        # comes first -> more important sources will overwrite.
+        for coupline in self.all_coupling_scale_factors:
+            mapname = coupline[0]
+            factor = float(coupline[1])
+            if mapname.lower() == ":all":
+                for key in self.coupling_scale_factors_dict.keys():
+                    self.coupling_scale_factors_dict[key] = factor
+            else:
+                self.coupling_scale_factors_dict[mapname] = factor
 
     # Called by GEM.trj_loop()
     def manage_dtypes(self):

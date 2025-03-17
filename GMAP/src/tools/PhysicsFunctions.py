@@ -400,6 +400,11 @@ def calc_coupling(RunPars, System, outputs):
         coupmap.code.GM_calc_coupling(
             coupmap, System, outputs["hamiltonian"])
 
+        # scale all couplings with the parameter from the input parameters
+        arr = coupmap.allpairs
+        outputs["hamiltonian"][arr[:, 0], arr[:, 1]] *= (
+            RunPars.coupling_scale_factors_dict[coupmapname])
+
 
 def generate_output_structures(RunPars, System):
     """The heart of the per-frame loop. Does the actual calculations.

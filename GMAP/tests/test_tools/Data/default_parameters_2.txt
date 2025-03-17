@@ -7,6 +7,10 @@ VEG_clib_file                   VEG
 log_directory
 log_filename                    log.log
 
+log_profiling_filename          prof.out
+log_profiling_tempfile          prof.temp
+log_profiling_graph_filename    profout.png
+
 output_parameter_filename       parameters.txt
 output_legend_filename          legend.txt
 output_couplingvis_filename     couplingvisualization.pdf
@@ -18,14 +22,10 @@ output_raman_filename           raman_tensor
 output_positions_filename       positions
 output_doublepos_filename       doublepos
 
-output_profiling_filename       prof.out
-output_profiling_tempfile       prof.temp
-output_profiling_graph_filename profout.png
-
-
 map_directory                   ../../../maps
 maps_to_use                     AmideSC
 couplings_to_use                DipDip :All
+couplings_scale                 :All  1
 singles_whitelist               :All :All
 singles_blacklist               :All :None
 influencers_whitelist           :All
