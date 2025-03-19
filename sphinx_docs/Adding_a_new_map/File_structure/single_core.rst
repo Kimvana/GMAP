@@ -588,7 +588,11 @@ There might be some unit conversions that can't be covered by the keyword 'assum
 
 The value supplied here (a whole or decimal number) will be multiplied with all the values in the files specified using 'frequency_data_file_linear'  and 'frequency_data_file_quadratic'. This could be useful for a factor like 1/(4 pi epsilon).
 
-If preferred, this keyword also accepts certain constants. All constants available in the numpy library (e.g. np.pi) are available, as well as all constants in the GMAP constants module.
+If preferred, this keyword also accepts certain constants. All constants available in the numpy and scipy constants library (e.g. np.pi and sp_con.pi) are available, as well as all constants in the GMAP constants module. When using constants from sp_con, please be aware of the difference between the basic constants (e.g. ``sp_con.hbar``) and the 'physical_constants' dictionary (e.g. ``sp_con.physical_constants["Bohr radius"][0]``). The latter requires the additional ``[0]`` to have a number. An overview of all available constants:
+
+- `Constants available in numpy <https://numpy.org/doc/stable/reference/constants.html>`__ . Please note that numpy is available as ``np``.
+- `Constants available in scipy constants <https://docs.scipy.org/doc/scipy/reference/constants.html>`__ . Please note that scipy constants is available as ``sp_con``.
+- `Constants available in GMAP constants <AddMap_FileStruct_GMAPconstants>`. Please note that this module is available as ``GM_con``.
 
 
 
