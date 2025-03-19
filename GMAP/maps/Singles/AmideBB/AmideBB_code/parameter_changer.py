@@ -6,7 +6,7 @@ from pathlib import Path
 import numpy as np
 
 # GMAP imports
-import GMAP.src.tools.constants as GM_Con
+import GMAP.src.tools.constants as GM_con
 import GMAP.src.tools.PrintTools as GM_PT
 
 
@@ -226,7 +226,7 @@ def initialize_prepro_properties(map_):
         map_.success = False
     else:
         if map_.Core.length_units == "bohr":
-            conv_factor = GM_Con.bohr2ang
+            conv_factor = GM_con.bohr2ang
             pp_freqarr[:, 0] *= conv_factor
             pp_freqarr[:, 1:4] *= conv_factor**2
             pp_freqarr[:, 4:] *= conv_factor**3
@@ -257,7 +257,7 @@ def initialize_prepro_properties(map_):
     map_.Core.dipole_data_array_prepro = dip_arr.reshape((3, -1, 10))
 
     if map_.Core.length_units == "bohr":
-        conv_factor = GM_Con.bohr2ang
+        conv_factor = GM_con.bohr2ang
         map_.Core.dipole_data_array_prepro[:, :, 0] *= conv_factor
         map_.Core.dipole_data_array_prepro[:, :, 1:4] *= conv_factor**2
         map_.Core.dipole_data_array_prepro[:, :, 4:] *= conv_factor**3

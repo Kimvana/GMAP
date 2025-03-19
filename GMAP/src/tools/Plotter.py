@@ -10,7 +10,7 @@ import numpy as np
 
 # local imports
 import GMAP.src.tools.ColorSchemes as GM_CS
-import GMAP.src.tools.constants as GM_Con
+import GMAP.src.tools.constants as GM_con
 import GMAP.src.tools.MathFunctions as GM_MF
 
 
@@ -154,7 +154,7 @@ def plot_color_conv():
                     r, g, b = (rgb["r"], rgb["g"], rgb["b"])
                     row.append((f"{r:0>3}", f"{g:0>3}", f"{b:0>3}"))
                     # then the adjusted-color one
-                    r, g, b = GM_Con.printed_colors_r[GM_MF.convert_color_24_4(
+                    r, g, b = GM_con.printed_colors_r[GM_MF.convert_color_24_4(
                         rgb["r"], rgb["g"], rgb["b"]
                     )]
                     row.append((f"{r:0>3}", f"{g:0>3}", f"{b:0>3}"))
