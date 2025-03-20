@@ -5,15 +5,15 @@ src/tools/PhysicsFunctions.py.
 Missing tests:
 
 (@ January 10nd '25):
-329-337, 1598  (5 missed statements)
+330-338, 1603  (5 missed statements)
 
 (CUHTAT - currently unknown how to access this )
 - Map.append_core() - there was some issue with the corefile (CUHTAT)
-  (329-337)
+  (330-338)
   Any stuff wrong with the corefile will have its own warning call (and not
   use raise) - MI_MC_5
 - The structure of the map has no bonds (but the parameter giving bonds has
-  been used) (1598)
+  been used) (1603)
 """
 
 
@@ -1766,8 +1766,6 @@ class TestSingleCore:
             "MI_MC_7", capfd, "test_MI_MC_7_9", "estatic_choice")
         self.basis_test_MI_MC(
             "MI_MC_7", capfd, "test_MI_MC_7_10", "estatic_choice")
-        self.basis_test_MI_MC(
-            "MI_MC_7", capfd, "test_MI_MC_7_11", "positions")
 
     def test_MI_MC_8(self, capfd):
         self.basis_test_MI_MC(
@@ -1807,6 +1805,12 @@ class TestSingleCore:
             "MI_MC_12", capfd, "test_MI_MC_12_2", "func_group")
         self.basis_test_MI_MC(
             "MI_MC_12", capfd, "test_MI_MC_12_3", "positions")
+
+    def test_MI_MC_13(self, capfd):
+        self.basis_test_MI_MC(
+            "MI_MC_13", capfd, "test_MI_MC_13_1", "positions")
+        self.basis_test_MI_MC(
+            "MI_MC_13", capfd, "test_MI_MC_13_2", "positions")
 
     def basis_test_MI_MC(
         self, errcode, capfd, mapname=None, finish_before=None

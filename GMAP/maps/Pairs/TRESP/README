@@ -64,6 +64,9 @@ map_TRESP_3
 map_TRESP_4
     The file supplied contains too many values. There should at most be as many values (= filled lines) in the file as there are atoms specified in the map's core.txt file under 'used_atoms'.
 
+map_TRESP_5
+    The parameter TRESP.charges_multiply couldn't be converted to a simple number. map_TRESP_5 is this map's version of MI_MC_13.
+
 
 important notes for singles-map developers
 ------------------------------------------
@@ -75,6 +78,8 @@ To make your map ready for TRESP, you have to have difference charges supplied. 
 There can at most be a charge for every atom declared under 'used_atoms'. If there are fewer charges (just N in total), only the first N atoms of those specified under used_atoms will be used. You cannot truly 'skip' an atom in used charges, but by adding a '0' (zero) in the partial charges file for the 'skipped' atom will produce results as if it was skipped. This will harm performance, though, so try to avoid doing so!
 
 The difference charges go in a separate file declared using the keyword 'TRESP.charges_filename' in the core.txt file. Each charge should go on a separate line. The file can contain comments indicated using a '#'.
+
+The contents of the file mentioned using the keyword 'TRESP.charges_filename' in the core.txt file, can be multiplied with any given value provided using the keyword 'TRESP.charges_filename'. Specifying a value for this keyword happens in the same way as for the singles-keyword multiply_freq.
 
 If your singles map is more complex, it might happen that not all singles found for your map should get the same set of difference charges. One example of this is the AmideBB map. If that is the case, you can specify the following function (signature) in your main.py file:
 CP_TRESP_get_charges(map_, system, osc)

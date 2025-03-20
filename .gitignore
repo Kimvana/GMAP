@@ -10,6 +10,7 @@ env_**
 sphinx_docs/_build/**
 **.png
 **#
+build/**
 
 GMAP/.coverage**
 GMAP/crash*.log
