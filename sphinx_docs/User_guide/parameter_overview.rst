@@ -362,6 +362,17 @@ The filename and location of the topology file to be used during the calculation
 
 A topology file contains all the information that stays the same during the calculation. What are all atoms named? Which atom lives in which residue? What are those residues named? What masses and charges do the atoms have? What element and type are they?
 
+The following have been tested/confirmed usable with GMAP:
+
+- GROMACS: .tpr (recommended)
+- CHARMM/NAMD: .psf
+- Amber: .top
+
+
+The following have been tested/confirmed **un**usable with GMAP:
+
+- GROMACS: .gro (lacks charge information)
+
 
 .. _UserGuide_page_parameter_overview_trjfile:
 
@@ -373,6 +384,19 @@ trajectory_file
 The filename and location of the trajectory file to be used during the calculation. Allowed filetypes are the ones listed `here <https://userguide.mdanalysis.org/stable/formats/index.html>`__ that have a tick in the column labeled 'coordinates'.
 
 A trajectory file contains all information that could change during the simulation - most notably the positions of atoms and the dimensions of the periodic bounding box.
+
+The following have been tested/confirmed usable with GMAP:
+
+- GROMACS: .xtc (recommended), .gro
+- CHARMM/NAMD: .psf
+- Amber: .mdcrd*, .nc
+
+\* Note that there appear to be different types of amber .mdcrd files. Some do contain information on the dimensions of the simulation box, others do not. GMAP needs one that does.
+
+
+The following have been tested/confirmed **un**usable with GMAP:
+
+- CHARMM/NAMD: .crd (lacks PBC box dimensions), .cor (MDAnalysis does not support this file type)
 
 
 *********************************
@@ -587,6 +611,30 @@ Then, group selection is where you explain what type of oscillators are to be co
 - ':diff' indicates all couplings between two oscillators of a different type (for example, coupling an amide group with a chlorophyll molecule)
 - 'X:Y' indicates couplings between one oscillator of type 'X', and one of type 'Y'. The available oscillator types are the same as the available choices for the parameter 'maps_to_use'. There should be no spaces between group names and the colon!
 - 'X:' indicates any couplings involving an oscillator of type 'X' - the type of the other oscillator does not matter. The available oscillator types are the same as the available choices for the parameter 'maps_to_use'. There should be no spaces between group names and the colon!
+
+
+.. _UserGuide_page_parameter_overview_scalecoup:
+
+couplings_scale
+===============
+| (no shorthand available)
+| (used by: GEM)
+
+.. note::
+    This parameter differs from the others in that it may be used multiple times within a single file.
+
+.. important::
+    This parameter pulls information from lower priority sources, even if specified in a higher priority one:
+
+    If the default file says 'all couplings should be multiplied by 2.0', and you specify in the input file that the couplings of type 'A' should be multiplied by 3.5, then couplings of type 'B' will still be multiplied by 2.0, as you didn't specify anything else for them.
+
+    In other words, for every type of coupling, the program separately walks through all parameter files.
+
+    If a certain type of pair is covered by multiple lines in the same parameter file, the one lowest down will take precedence.
+
+The value by which to multiply all couplings of the given type. This parameter expects two parts on each line. Just as with the parameter couplings_to_use, the first one is the name of the coupling map. This may be any map, including those only assigned through other coupling maps. The second part is the value by which the couplings should be multiplied.
+
+If the requested coupling map shows up in the 'couplingvis' pdf, those values will be multiplied by the value provided on this line.
 
 
 .. _UserGuide_page_parameter_overview_singWL:

@@ -69,7 +69,7 @@ resnamesfile
       - :ref:`influencers_select_atoms <UserGuide_page_parameter_overview_inflSA>` allows an MDAnalysis-style filter for selecting influencing residues/atoms. Most versatile and powerful, but often more than needed, and you do need to know their selection language.
 
 atnamesfile
-    The current version of GEM does not support anything but Gromacs, so this parameter does not exist within GMAP.
+    The AmideBB map has non-Gromacs support build in - no need to specify your version explicitly, making this parameter redundant.
 
 libfile
     :ref:`VEG_clib_file <UserGuide_page_parameter_overview_VEGlib>` is fully equivalent.
@@ -200,13 +200,13 @@ NSA_spheresize
     The neighbour-searching algorithm has not yet been implemented in GMAP/GEM, so there is no equivalent parameter.
 
 atom_based_chainID
-    The current version of GEM does not support anything but Gromacs, so this parameter does not exist within GMAP.
+    The AmideBB map has non-Gromacs support build in - no need to adjust for your version explicitly, making this parameter redundant.
 
 use_protein_specials
     This is no longer covered by GMAP. Instead, you should need to tell the AmideBB map the choice for this one, but it does not yet support this.
 
 Scale_LR_coupling
-    Scaling of long-range couplings has not yet been implemented in GMAP/GEM, so there is no equivalent parameter.
+    :ref:`estatic_range <UserGuide_page_parameter_overview_scalecoup>` is equivalent, but has more freedom than in AIM.
 
 Use_AmGroup_selection_criteria
     This has been replaced by :ref:`singles_whitelist <UserGuide_page_parameter_overview_singWL>` and :ref:`singles_blacklist <UserGuide_page_parameter_overview_singBL>`

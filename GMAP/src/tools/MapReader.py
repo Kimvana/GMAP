@@ -7,13 +7,14 @@ import sys
 import numpy as np
 
 # local imports
-import GMAP.src.tools.constants as GM_Con
+import GMAP.src.tools.constants as GM_con
 import GMAP.src.tools.DefaultMapFunctions as GM_DMF
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.FileHandler as GM_FH
 import GMAP.src.tools.ParameterParser as GM_PP
 import GMAP.src.tools.PrintTools as GM_PT
 import GMAP.src.tools.ReferenceHandler as GM_RH
+# from GMAP.src.tools.PrintTools import devprint as dpr
 
 
 class Map:
@@ -693,11 +694,10 @@ class PairMap(Map):
 
     Attributes
     ----------
-    allpairs : list of tuple of 2 ints
-        A list of all pairs that should be coupled by this map. A pair
-        is indicated by the oscix of each oscillator involved. Maps can
-        (and probably should) change the data type of this attribute -
-        this can severely impact calculation times.
+    allpairs : ``np.ndarray``
+        Contains all pairs that should be coupled by this map. The array
+        is of dtype 'int32', and contains a row for each pair. A pair
+        is indicated by the oscix of each oscillator involved.
     """
 
     def initialize(self):
@@ -720,7 +720,7 @@ class PairMap(Map):
 
         self.parse_references()
 
-        self.allpairs = []
+        self.allpairs = np.zeros((0, 0), dtype="int32")
 
         self.code = self.extract_code()
         if not self.code:
@@ -2537,15 +2537,32 @@ class SingleCore:
         if "multiply_freq" not in rawcore:
             return 1
 
+        cmdstr = "multiplier = " + " ".join(rawcore["multiply_freq"])
+        pars = {}
         try:
-            multiplier = float(rawcore["multiply_freq"][0])
+            exec(cmdstr, globals(), pars)
         except Exception:
             GM_PT.Printer.warning(
                 "\nCould not interpret the choice for the keyword "
                 f"'multiply_freq' in the file {mapdir / 'core.txt'}. "
                 "Please make sure the choice only contains numbers (and "
-                "optionally a single '.') that represent a decimal value.",
-                "MI_MC_7", False
+                "optionally a single '.') that represent a decimal value. "
+                "Alternatively, make sure it is a python-parsable string. ",
+                "MI_MC_13", False
+            )
+            self.success = False
+            return 1
+
+        try:
+            multiplier = float(pars["multiplier"])
+        except Exception:
+            GM_PT.Printer.warning(
+                "\nCould not interpret the choice for the keyword "
+                f"'multiply_freq' in the file {mapdir / 'core.txt'}. "
+                "Please make sure the choice only contains numbers (and "
+                "optionally a single '.') that represent a decimal value. "
+                "Alternatively, make sure it is a python-parsable string. ",
+                "MI_MC_13", False
             )
             self.success = False
             return 1
@@ -2559,7 +2576,7 @@ class SingleCore:
             pass
         else:
             # this could be made conditional if others are added later!
-            conv_factor = GM_Con.bohr2ang
+            conv_factor = GM_con.bohr2ang
             self.change_map_units(conv_factor)
 
         # now, also use the frequency multiplier
