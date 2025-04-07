@@ -11,7 +11,7 @@ sections:
 
 Intended use
 ------------
-This map is intended to use for Chlorophyll b (CLB) molecules. The parameters in this map are taken from literature, specifically from
+This map is intended for treating Chlorophyll B (CLB) molecules in proteins. The parameters in this map are taken from literature, specifically from
 DFT calculations of the S0 and S1 (QY) transitions of Chl b. Parameters are available both for the electrostatic solvent shift, transition
 dipole coupling, and TrEsp coupling.  
 
