@@ -2,9 +2,9 @@
 
 functional_group_file    functional_group.txt
 
-used_atoms 3-18 			# TRP molecules for the electrostatic interactions
+used_atoms All 			# TRP molecules for the electrostatic interactions
 
-electrostatic_atoms All
+electrostatic_atoms 2-18
 electrostatic_choice V   	# the potential
 
 local_atoms 2-18           # Backbone CONH are included in potential
