@@ -5,6 +5,7 @@ A file containing all kinds of constants that the program might need.
 
 # 3rd party lib imports
 import numpy as np
+import scipy.constants as sp_con
 
 
 # local imports
@@ -12,21 +13,30 @@ import GMAP.src.tools.CodingTools as GM_CT
 
 
 # constants
-h = 6.62607015e-34  # planck constant in (J Hz-1)
-c = 2.99792458e8  # speed of light in (m s-1)
-e = 1.602176634e-19  # elementary charge in (coulombs)
+h = sp_con.h  # 6.62607015e-34  # planck constant in (J Hz-1)
+c = sp_con.c  # 2.99792458e8  # speed of light in (m s-1)
+e = sp_con.e  # 1.602176634e-19  # elementary charge in (coulombs)
+# vacuum permittivity in (C2 kg-1 m-3 s2)
+eps = sp_con.epsilon_0  # 8.854187818814e-12
 deg2rad = np.float32(np.pi/180)  # 1 degree in radians
 rad2deg = np.float32(180/np.pi)
 
 # lengths
-angstrom = 1e-10  # angstrom in m
-bohr = 5.29177210544e-11  # bohr in m
+angstrom = sp_con.angstrom  # 1e-10  # angstrom in m
+# 5.29177210544e-11  # bohr in m
+bohr = sp_con.physical_constants["Bohr radius"][0]  # 0 is value, 1/2 error
 bohr2ang = bohr/angstrom  # converting from bohrs to angstroms
 ang2bohr = angstrom/bohr  # converting from angstroms to bohr
 
 # energies
-eV = 1.602176634e-19  # eV in J
+eV = sp_con.eV  # 1.602176634e-19  # eV in J
 cm2eV = 100 * h * c / eV
+J2cm = 1 / (100 * h * c)
+
+i4pieps = 1 / (4 * np.pi * eps)  # 1 / (4 * pi * vacuum_permittivity)
+# e^2 * i4pieps, but not in SI, rather angstroms for distance, and
+# wavenumbers for energies.
+e2i4pieps_angcm = e * e * i4pieps * J2cm / angstrom
 
 # dipoles
 Debye = 1e-21 / c  # debye in (coulomb meter)

@@ -4,7 +4,7 @@ from numba import njit
 import numpy as np
 
 # gmap imports
-import GMAP.src.tools.constants as GM_Con
+import GMAP.src.tools.constants as GM_con
 import GMAP.src.tools.MathFunctions as GM_MF
 
 
@@ -117,7 +117,7 @@ def calc_coupling(oscix1, oscix2, pos_arr, vec_arr, boxvects):
 
     # derived value:
     # 4piEinv = 1/(4 * pi * eps_0) Jm/C^2
-    # Gives 5034.11656 cm^-1 * ang*3 Deb^-2
+    # Gives 5034.11656 cm^-1 * ang^3 Deb^-2
 
     fourPiEps_inv = np.float32(5034.11656)
     # the positions array is in box-coordinates -> easy subtraction, then
@@ -153,4 +153,4 @@ def GM_pre_run(map_, system):
     map_.dipole_vec_arr = np.zeros((system.nosc, 3), dtype="float32")
     map_.dipole_pos_arr = np.zeros((system.nosc, 3), dtype="float32")
     map_.Core.dipole_Torii_angle = np.float32(
-        1 / np.tan(GM_Con.deg2rad * map_.RunPars.Torii_dipole_angle))
+        1 / np.tan(GM_con.deg2rad * map_.RunPars.Torii_dipole_angle))

@@ -591,10 +591,10 @@ def print_in_output_filenames(RunPars):
     report_files(RunPars, "pos", "Positions", 2, 2)
     report_files(RunPars, "dbp", "Doublepos", 2, 2)
     if RunPars.profiler:
-        fname = RunPars.output_profiling_filename
+        fname = RunPars.log_profiling_filename
         pr.print(2, f"profiler output:            {fname}")
     if RunPars.profiler_graph:
-        fname = RunPars.output_profiling_graph_filename
+        fname = RunPars.log_profiling_graph_filename
         pr.print(2, f"profiler visualization:     {fname}")
 
 
@@ -706,6 +706,9 @@ def GEM(callcommand):
             map_ = RunPars.requested_pairmapdict[mapname]
             map_.code.GM_post_init(map_, System)
 
+        # obtain all multiply factors of all coupling maps
+        RunPars.final_resolve_coupling_scale()
+
         # Save overview of found coupling maps to file.
         GM_Pl.plot_coupling_choices(RunPars, System)
 
@@ -720,24 +723,24 @@ def GEM(callcommand):
     # finalize profiler
     if RunPars.profiler:
         profile.create_stats()
-        profile.dump_stats(RunPars.output_profiling_filename)
+        profile.dump_stats(RunPars.log_profiling_filename)
 
     dpr("running gprof")
     if RunPars.profiler_graph:
         strcommand = [
             "gprof2dot", "-f", "pstats",
-            RunPars.output_profiling_filename, "-o",
-            RunPars.output_profiling_tempfile]
+            RunPars.log_profiling_filename, "-o",
+            RunPars.log_profiling_tempfile]
         subprocess.run(strcommand)
 
         dpr("running dot")
         strcommand = [
-            "dot", "-Tpng", "-o", RunPars.output_profiling_graph_filename,
-            RunPars.output_profiling_tempfile]
+            "dot", "-Tpng", "-o", RunPars.log_profiling_graph_filename,
+            RunPars.log_profiling_tempfile]
         subprocess.run(strcommand)
 
         # remove the tempfile again
-        RunPars.output_profiling_tempfile.unlink()
+        RunPars.log_profiling_tempfile.unlink()
 
     print_calculation_summary(RunPars, System)
 

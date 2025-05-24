@@ -251,8 +251,6 @@ class Universe:
         self.halfbox = self.boxdims/2
         self.halfbox = self.halfbox.astype('float32')
 
-        self.molnums = self.universe.atoms.molnums
-
         self.charges = self.charges.astype('float32')
         self.charges_c = np.ctypeslib.as_ctypes(self.charges)
         self.masses = self.masses.astype('float32')

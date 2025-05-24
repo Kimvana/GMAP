@@ -47,7 +47,7 @@ class TestSystem:
         all_properties = (
             System.atnums, System.atnames, System.resnums, System.resnames,
             System.positions, System.masses, System.charges, System.types,
-            System.segids, System.molnums
+            System.segids
         )
 
         assert all(item.shape[0] == 33876 for item in all_properties)
@@ -62,7 +62,6 @@ class TestSystem:
         assert np.all(System.atnums == np.arange(System.natoms))
         # assert that residue numbers only increase (so they're unique)
         assert np.all(np.diff(System.resnums) >= 0)
-        assert np.all(np.diff(System.molnums) >= 0)
 
         # first [0] to select 0th axis, second to select first occurence
         first_sol_at = np.where(System.resnames == "SOL")[0][0]
