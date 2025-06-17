@@ -13,7 +13,7 @@ frequency_gas_phase 38900 	#
 frequency_data_file_linear difference_charges.txt
 
 # Conversion factor for e^2/4 pi epsilon 1161409.733
-multiply_freq 1161409.733
+multiply_freq 116140.9733 # Should be changed to recently introduced standard
 
 dipole_gas_phase  2.07  # Debye from ACSCent. Sci. 2023, 9,352−361
 
