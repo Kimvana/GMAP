@@ -92,6 +92,7 @@ def core_test_frequencies(mapname, tmp_path, limit, nameadd=""):
     oldcoups = hamold[np.triu_indices(145, k=1)]
     newcoups = hamnew[np.triu_indices(145, k=1)]
 
+    assert bool(np.any(np.isnan(newcoups))) is False
     mismatch = np.where(np.abs(oldcoups - newcoups) > limit)[0]
     print(mismatch)
     print(oldcoups[mismatch])

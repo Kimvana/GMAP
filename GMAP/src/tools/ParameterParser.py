@@ -7,7 +7,7 @@ import numpy as np
 
 # local imports
 import GMAP.src.tools.StringClasses as GM_SC
-import GMAP.src.tools.constants as GM_Con
+import GMAP.src.tools.constants as GM_con
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.FileHandler as GM_FH
 import GMAP.src.tools.MapReader as GM_MR
@@ -125,7 +125,8 @@ class RefPars:
         # lines.
         if self.is_main:
             self.compounds = (
-                "couplings_to_use", "singles_whitelist", "singles_blacklist")
+                "couplings_to_use", "couplings_scale", "singles_whitelist",
+                "singles_blacklist")
         else:
             self.compounds = tuple()
 
@@ -546,22 +547,22 @@ class RefPars:
         if self.choices["hamiltonian_units"][0] == "cm-1":
             self.choices["hamiltonian_multiplier"] = [1.0]
         else:  # eV
-            self.choices["hamiltonian_multiplier"] = [GM_Con.cm2eV]
+            self.choices["hamiltonian_multiplier"] = [GM_con.cm2eV]
 
         if self.choices["energies_units"][0] == "cm-1":
             self.choices["energies_multiplier"] = [1.0]
         else:  # eV
-            self.choices["energies_multiplier"] = [GM_Con.cm2eV]
+            self.choices["energies_multiplier"] = [GM_con.cm2eV]
 
         if self.choices["dipoles_units"][0] == "Debye":
             self.choices["dipoles_multiplier"] = [1.0]
         else:  # ea0
-            self.choices["dipoles_multiplier"] = [GM_Con.Debye2ea0]
+            self.choices["dipoles_multiplier"] = [GM_con.Debye2ea0]
 
         if self.choices["raman_units"][0] == "Ang3":
             self.choices["raman_multiplier"] = [1.0]
         else:  # bohr3
-            self.choices["raman_multiplier"] = [GM_Con.ang2bohr ** 3]
+            self.choices["raman_multiplier"] = [GM_con.ang2bohr ** 3]
         # else:
         # There is only one unit option for raman at the moment, as the
         # units used in raman are a bit (very) confusing. If we ever want
@@ -571,7 +572,7 @@ class RefPars:
             case "Ang":
                 self.choices["positions_multiplier"] = [1.0]
             case "Bohr":
-                self.choices["positions_multiplier"] = [GM_Con.ang2bohr]
+                self.choices["positions_multiplier"] = [GM_con.ang2bohr]
             case "nm":
                 self.choices["positions_multiplier"] = [0.1]
 
@@ -579,7 +580,7 @@ class RefPars:
             case "Ang":
                 self.choices["doublepos_multiplier"] = [1.0]
             case "Bohr":
-                self.choices["doublepos_multiplier"] = [GM_Con.ang2bohr]
+                self.choices["doublepos_multiplier"] = [GM_con.ang2bohr]
             case "nm":
                 self.choices["doublepos_multiplier"] = [0.1]
 
@@ -1502,7 +1503,7 @@ class RawPars:
                 if self.choices["hamiltonian_units"][0] == "cm-1":
                     self.choices["hamiltonian_multiplier"] = [1.0]
                 else:  # eV
-                    self.choices["hamiltonian_multiplier"] = [GM_Con.cm2eV]
+                    self.choices["hamiltonian_multiplier"] = [GM_con.cm2eV]
 
         if "energies_units" in self.choices:
             if self.is_default:  # for default, use multiplier
@@ -1519,7 +1520,7 @@ class RawPars:
                 if self.choices["energies_units"][0] == "cm-1":
                     self.choices["energies_multiplier"] = [1.0]
                 else:  # eV
-                    self.choices["energies_multiplier"] = [GM_Con.cm2eV]
+                    self.choices["energies_multiplier"] = [GM_con.cm2eV]
 
         if "dipoles_units" in self.choices:
             if self.is_default:  # for default, use multiplier
@@ -1536,7 +1537,7 @@ class RawPars:
                 if self.choices["dipoles_units"][0] == "Debye":
                     self.choices["dipoles_multiplier"] = [1.0]
                 else:  # eV
-                    self.choices["dipoles_multiplier"] = [GM_Con.Debye2ea0]
+                    self.choices["dipoles_multiplier"] = [GM_con.Debye2ea0]
 
         if "raman_units" in self.choices:
             if self.is_default:  # for default, use multiplier
@@ -1553,7 +1554,7 @@ class RawPars:
                 if self.choices["raman_units"][0] == "Ang3":
                     self.choices["raman_multiplier"] = [1.0]
                 else:  # bohr3
-                    self.choices["raman_multiplier"] = [GM_Con.ang2bohr ** 3]
+                    self.choices["raman_multiplier"] = [GM_con.ang2bohr ** 3]
 
         if "positions_units" in self.choices:
             if self.is_default:  # for default, use multiplier
@@ -1572,7 +1573,7 @@ class RawPars:
                         self.choices["positions_multiplier"] = [1.0]
                     case "Bohr":
                         self.choices["positions_multiplier"] = [
-                            GM_Con.ang2bohr]
+                            GM_con.ang2bohr]
                     case "nm":
                         self.choices["positions_multiplier"] = [0.1]
 
@@ -1593,7 +1594,7 @@ class RawPars:
                         self.choices["doublepos_multiplier"] = [1.0]
                     case "Bohr":
                         self.choices["doublepos_multiplier"] = [
-                            GM_Con.ang2bohr]
+                            GM_con.ang2bohr]
                     case "nm":
                         self.choices["doublepos_multiplier"] = [0.1]
 
@@ -2156,6 +2157,7 @@ class RunPars:
 
         self.resolve_framenums(CmdPars, InPars, DefPars, RefPars)
         self.resolve_couplings(CmdPars, InPars, DefPars)
+        self.resolve_coupling_scale(CmdPars, InPars, DefPars)
         self.resolve_estatics()
         # dpr(self.singles_whitelist)
         # dpr(RefPars.choices.get("singles_whitelist", []))
@@ -2321,6 +2323,65 @@ class RunPars:
                 self.coupling_v_pair_dict[value].append(key)
             else:
                 self.coupling_v_pair_dict[value] = [key]
+
+    def resolve_coupling_scale(self, CmdPars, InPars, DefPars):
+        """Interprets the requested coupling scaling choices
+
+        The coupling scaling choices are provided on multiple lines,
+        possibly from multiple sources (so a single choice can be
+        changed without having to re-specify all). Combining is simple:
+        the sources are read in increasing order of importance, from
+        beginning to end. every next/new line can overwrite any previous
+        lines.
+
+        Any verification of coupling map validity can't be made, as the
+        maps have not been loaded in yet at the time of this function.
+
+        Parameters
+        ----------
+        CmdPars : :class:`RawPars`
+            Contains any parameter choices made on the command line
+        InPars : :class:`RawPars`
+            Contains any parameter choices made in the input parameter
+            file
+        DefPars : :class:`RawPars` or :class:`RefPars`
+            Contains all default parameter choices. Might be RefPars,
+            might be from a separate default parameters file.
+        """
+
+        couplist = []
+
+        # Later sources modify the choices from earlier!
+        for source in (DefPars, InPars, CmdPars):
+            if "couplings_scale" in source.choices:
+                couplist.extend(source.choices["couplings_scale"])
+
+        self.all_coupling_scale_factors = []
+
+        # coupline corresponds to a single line from RawPars files, and
+        # contains information about a single coupling map.
+        for coupline in couplist:
+            if len(coupline) != 2:
+                GM_PT.Printer.warning(
+                    "\nThe parameter couplings_scale must always take 2 "
+                    "arguments, but only one was provided. Please make sure "
+                    "you specify this parameter correctly.",
+                    "SU_NP_8", True, GMAPerrclass=GM_Ex.GmapFileSyntaxError
+                )
+
+            try:
+                _ = float(coupline[1])
+            except ValueError:
+                # don't know which others can be triggered here.
+                GM_PT.Printer.warning(
+                    "\nThe second argument for the parameter couplings_scale "
+                    "must be convertable to a decimal number, but this was "
+                    "not possible here. Please make sure "
+                    "you specify this parameter correctly.",
+                    "SU_NP_8", True, GMAPerrclass=GM_Ex.GmapValueError
+                )
+
+            self.all_coupling_scale_factors.append(coupline)
 
     def resolve_estatics(self):
         """Resolves any issues that can result from estatic choices.
@@ -2522,6 +2583,33 @@ class RunPars:
             if key in ((pair[0], pair[1]), (pair[1], pair[0])):
                 coupdict[key] = coupmap
         return failed_couppairs
+
+    def final_resolve_coupling_scale(self):
+        """Figure out which coupling methods should get with factor.
+
+        The scaling keyword allows the ':All' syntax, but at the regular
+        place (RunPars.resolve()) the full set isn't known yet.
+
+        So, this function has to be called later when all relevant
+        coupling maps have been identified. This means the couplings
+        have to be identified in the larger system!
+        """
+
+        self.coupling_scale_factors_dict = {}
+
+        for mapname in self.requested_pairmapdict.keys():
+            self.coupling_scale_factors_dict[mapname] = 1
+
+        # these lines are already ordered such that the least important source
+        # comes first -> more important sources will overwrite.
+        for coupline in self.all_coupling_scale_factors:
+            mapname = coupline[0]
+            factor = float(coupline[1])
+            if mapname.lower() == ":all":
+                for key in self.coupling_scale_factors_dict.keys():
+                    self.coupling_scale_factors_dict[key] = factor
+            else:
+                self.coupling_scale_factors_dict[mapname] = factor
 
     # Called by GEM.trj_loop()
     def manage_dtypes(self):

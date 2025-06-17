@@ -16,11 +16,67 @@ Please note that when paths are supplied, they should either be absolute, or spe
 Some parameters store paths that can be relative to a directory stored in a different parameter. Where this is the case, this is denoted. Please note that when a file path and a directory path are given, the file path is assumed relative to the directory path. If only the file path is given, it is assumed relative to the source. If only the directory is given, file paths from lower-precedence sources are assumed relative to it.
 
 
+
+****************************************
+Frequently used parameters
+****************************************
+
+You are likely to be looking for these:
+
+- :ref:`verbose <UserGuide_page_parameter_overview_verbose>` indicates how much information the program should give while running.
+- :ref:`safe_mode <UserGuide_page_parameter_overview_safemode>` can be useful if your command line software cannot deal with some things printed.
+- :ref:`topology_file <UserGuide_page_parameter_overview_topfile>` is used to indicate what file the topology should be read from.
+- :ref:`trajectory_file <UserGuide_page_parameter_overview_trjfile>` is used to indicate what file the trajectory should be read from.
+- :ref:`prevent_overwrite <UserGuide_page_parameter_overview_prevoverwr>` indicates what the program should do if the requested filename is already used.
+- :ref:`output_format <UserGuide_page_parameter_overview_outform>` indicates whether you'd like a binary output, text output, or both.
+- :ref:`maps_to_use <UserGuide_page_parameter_overview_usemaps>` indicates what kind of singles/oscillators/molecules GMAP should perfrom the calculation on.
+- :ref:`couplings_to_use <UserGuide_page_parameter_overview_usecoup>` indicates whether and how couplings should be calculated.
+- :ref:`estatics_method <UserGuide_page_parameter_overview_estatmeth>` indicates what method of calculating electrostatics should be used. This influences the results, and some maps might request a certain choice here.
+- :ref:`estatic_range <UserGuide_page_parameter_overview_estatrange>` indicates how far away charges may be and still influence the computed electrostatics
+
+
+
+****************************************
+Example input file
+****************************************
+
+The input file supports python-style comments - anything after the '#' character is ignored by GMAP. 
+
+This example is suitable for a first run when doing just a small number of frames. When doing long runs suitable for NISE spectra, mind the 'output_format' parameter - we only want binary output when considering more than a few frames!
+
+.. code-block:: text
+
+    # The directory containing this input file contains another directory
+    # called 'MD_data', which contains the topology and trajectory files.
+    topology_file                        MD_data/1AKI_topology.tpr
+    trajectory_file                      MD_data/1AKI_trajectory.xtc
+
+    maps_to_use                          AmideBB AmideSC
+    couplings_to_use                     ProteinAmide :All
+
+    # These are for the first test run on your system, they allow checking
+    # whether everything goes as it should!
+    output_format                        txt  # change to bin for longer runs
+    number_frames                        2
+    verbose_logfile                      4
+
+    # Example using parameters from maps
+    AmideSC.frequency_map_choice         Jansen
+    AmideSC.dipole_map_choice            Jansen
+    AmideBB.frequency_map_choice         Jansen
+    AmideBB.dipole_map_choice            Jansen
+    ProteinAmide.coupling_choice         TCC
+    ProteinAmide.NN_coupling_choice      GLDP
+
+
+
 **********************
 Parameters for visuals
 **********************
 
 These change how GMAP looks in the command line.
+
+.. _UserGuide_page_parameter_overview_verbose:
 
 verbose
 =======
@@ -30,6 +86,7 @@ verbose
 
 How verbose the prints to the command line should be. When 0 is chosen, nothing but errors will be reported. Different from the parameter verbose_logfile
 
+.. _UserGuide_page_parameter_overview_safemode:
 
 safe_mode
 =========
@@ -85,6 +142,8 @@ Applies both to the command line output, as to the files written by the program.
 parameters for file paths
 *************************
 
+.. _UserGuide_page_parameter_overview_sourcedir:
+
 source_directory
 ================
 | (shorthand: -sd)
@@ -92,6 +151,8 @@ source_directory
 
 The location of the sourcefiles directory. This directory stores all data required for the program to run. The parameter default_parameter_filename will be assumed relative to this directory when applicable.
 
+
+.. _UserGuide_page_parameter_overview_defpar:
 
 default_parameter_filename
 ==========================
@@ -101,6 +162,8 @@ default_parameter_filename
 The filename of the default parameter file. This parameter is not allowed to be present in the default parameter file. This file must contain all possible parameters (except those it cannot). It does not need to contain any parameters from maps, but if it contains any from any map, it must contain all of that specific map. The path stored here will be assumed to be relative to the directory given in the parameter source_directory when applicable. 
 
 
+.. _UserGuide_page_parameter_overview_VEGlib:
+
 VEG_clib_file
 =============
 | (no shorthand available)
@@ -108,6 +171,8 @@ VEG_clib_file
 
 The filename of the (compiled!) VEG c-library. This will be either a '.dll' file (Windows), a '.so' file (Linux), or a '.dylib' file (MacOS). This file contains the code for calculating electrostatic properties of the system. The path stored in this parameter will be assumed to be relative to the directory given in the parameter source_directory when applicable.
 
+
+.. _UserGuide_page_parameter_overview_logdir:
 
 log_directory
 =============
@@ -117,6 +182,8 @@ log_directory
 The location of the log directory. In this directory, all files relating to logging the program flow are located. The parameter log_filename will be assumed relative to this directory when applicable.
 
 
+.. _UserGuide_page_parameter_overview_logfile:
+
 log_filename
 ============
 | (no shorthand available)
@@ -125,6 +192,47 @@ log_filename
 The filename of the log file. This file contains the same, or similar information as the prints to the command line, depending on the choice for the parameters verbose and verbose_logfile. The path stored here will be assumed to be relative to the directory given in the parameter log_directory when applicable.
 
 
+.. _UserGuide_page_parameter_overview_proffile:
+
+log_profiling_filename
+======================
+| (no shorthand available)
+| (used by: GEM)
+
+The file name of the output file for the profiling functionality. This file is not meant for human eyes - it should either be parsed interactively using a command line parser, or be turned into a graph. The path stored here will be assumed to be relative to the directory given in the parameter log_directory when applicable.
+
+.. hint::
+    This is a parameter that should only be needed by GMAP developers, and maybe a map developer here or there. The file is created using/by the cProfile module.
+
+
+.. _UserGuide_page_parameter_overview_proftemp:
+
+log_profiling_tempfile
+======================
+| (no shorthand available)
+| (used by: GEM)
+
+The file name of the temporary file for the profiling functionality. This file is not meant to be stored, but it has to exist at some point in time. This is a way to make sure that we're not accidentally overwriting an important file; just to delete it later. The path stored here will be assumed to be relative to the directory given in the parameter log_directory when applicable.
+
+.. hint::
+    The contents of this file aren't directly relevant. The file is written by the gprof2dot module, and will only be created by GMAP when running dot. After dot is done, the file is removed. The contents of this file are then found in the resulting png, in a much more human-readable format.
+
+
+.. _UserGuide_page_parameter_overview_profgraphfile:
+
+log_profiling_graph_filename
+============================
+| (no shorthand available)
+| (used by: GEM)
+
+The file name of output image for the profiling functionality. This image is the main purpose of the profiler, and can be easily understood. The path stored here will be assumed to be relative to the directory given in the parameter log_directory when applicable.
+
+.. hint::
+    This is a parameter that should only be needed by GMAP developers, and maybe a map developer here or there. The file is created using/by the dot command of the graphvis program that needs to be installed separately. This image is the main goal of profiling GMAP.
+
+
+.. _UserGuide_page_parameter_overview_outdir:
+
 output_directory
 ================
 | (no shorthand available)
@@ -132,6 +240,8 @@ output_directory
 
 The location of the output directory. All output files generated by the program will be put here. The parameters output_hamiltonian_filename and output_dipole_filename will be assumed relative to this directory when applicable.
 
+
+.. _UserGuide_page_parameter_overview_outparfile:
 
 output_parameter_filename
 =========================
@@ -173,6 +283,8 @@ output_estatics_filename
 The filename of the electrostatics output file, _with_ extension! This file contains electrostatic properties. The path stored here will be assumed to be relative to the directory given in the parameter output_directory when applicable.
 
 
+.. _UserGuide_page_parameter_overview_outhamfile:
+
 output_hamiltonian_filename
 ===========================
 | (shorthand: -ohf)
@@ -191,6 +303,8 @@ The filename of the energies output file, _without_ extension! Depending on the 
 The energies file contains just the diagonal of the Hamiltonian.
 
 
+.. _UserGuide_page_parameter_overview_outdipfile:
+
 output_dipole_filename
 ======================
 | (shorthand: -odf)
@@ -199,6 +313,8 @@ output_dipole_filename
 The filename of the dipole output file, _without_ extension! Depending on the output format of choice, this file may either be in binary, or in txt format. The path stored here will be assumed to be relative to the directory given in the parameter output_directory when applicable.
 
 
+.. _UserGuide_page_parameter_overview_outramfile:
+
 output_raman_filename
 ======================
 | (shorthand: -orf)
@@ -206,6 +322,8 @@ output_raman_filename
 
 The filename of the raman output file, _without_ extension! Depending on the output format of choice, this file may either be in binary, or in txt format. The path stored here will be assumed to be relative to the directory given in the parameter output_directory when applicable.
 
+
+.. _UserGuide_page_parameter_overview_outposfile:
 
 output_positions_filename
 =========================
@@ -223,6 +341,8 @@ output_doublepos_filename
 The filename of the double positions output file, _without_ extension! Depending on the output format of choice, this file may either be in binary, or in txt format. The path stored here will be assumed to be relative to the directory given in the parameter output_directory when applicable.
 
 
+.. _UserGuide_page_parameter_overview_mapdir:
+
 map_directory
 =============
 | (shorthand: -md)
@@ -231,6 +351,8 @@ map_directory
 The location of the maps directory. Multiple directories are allowed to be given. Within a maps directory, the maps that can be used are stored. See :ref:`adding a new map <UserGuide_page_adding_map>` for more information on what maps are and how to make one.
 
 
+.. _UserGuide_page_parameter_overview_topfile:
+
 topology_file
 =============
 | (shorthand: -top)
@@ -238,6 +360,21 @@ topology_file
 
 The filename and location of the topology file to be used during the calculation. Allowed filetypes are the ones listed `here <https://userguide.mdanalysis.org/stable/formats/index.html>`__ that have a tick in the column labeled 'topology'.
 
+A topology file contains all the information that stays the same during the calculation. What are all atoms named? Which atom lives in which residue? What are those residues named? What masses and charges do the atoms have? What element and type are they?
+
+The following have been tested/confirmed usable with GMAP:
+
+- GROMACS: .tpr (recommended)
+- CHARMM/NAMD: .psf
+- Amber: .top
+
+
+The following have been tested/confirmed **un**usable with GMAP:
+
+- GROMACS: .gro (lacks charge information)
+
+
+.. _UserGuide_page_parameter_overview_trjfile:
 
 trajectory_file
 ===============
@@ -246,11 +383,28 @@ trajectory_file
 
 The filename and location of the trajectory file to be used during the calculation. Allowed filetypes are the ones listed `here <https://userguide.mdanalysis.org/stable/formats/index.html>`__ that have a tick in the column labeled 'coordinates'.
 
+A trajectory file contains all information that could change during the simulation - most notably the positions of atoms and the dimensions of the periodic bounding box.
+
+The following have been tested/confirmed usable with GMAP:
+
+- GROMACS: .xtc (recommended), .gro
+- CHARMM/NAMD: .psf
+- Amber: .mdcrd*, .nc
+
+\* Note that there appear to be different types of amber .mdcrd files. Some do contain information on the dimensions of the simulation box, others do not. GMAP needs one that does.
+
+
+The following have been tested/confirmed **un**usable with GMAP:
+
+- CHARMM/NAMD: .crd (lacks PBC box dimensions), .cor (MDAnalysis does not support this file type)
+
 
 *********************************
 parameters for how to write files
 *********************************
 
+
+.. _UserGuide_page_parameter_overview_verboselog:
 
 verbose_logfile
 ===============
@@ -269,6 +423,8 @@ dont_report_error
 What errors shouldn't be printed. Error codes are of the format AA_BB_C. To silence a very specific error, give the entire code. To silence a specific group, leave the varying parts blank (but leave the underscores): AA_BB\_ will silence all errors starting with AA_BB\_, AA__C will silence all errors that start with AA and end with C (with variable middle part), etc. You can keep as many parts blank as you want.
 
 
+.. _UserGuide_page_parameter_overview_prevoverwr:
+
 prevent_overwrite
 =================
 | (no shorthand available)
@@ -277,6 +433,8 @@ prevent_overwrite
 
 Whether the files created by the program should or shouldn't overwrite existing files. When set to True, the existing file will be renamed, and the requested name will be used for the new file. When set to False, the old file will be overwritten, and the data inside lost forever.
 
+
+.. _UserGuide_page_parameter_overview_outform:
 
 output_format
 =============
@@ -410,6 +568,8 @@ parameters for specifying calculation settings
 **********************************************
 
 
+.. _UserGuide_page_parameter_overview_usemaps:
+
 maps_to_use
 ===========
 | (shorthand: -um)
@@ -417,6 +577,8 @@ maps_to_use
 
 Which maps should be considered in the calculation. Or, in other words, which kinds of oscillators should be found, and calculated properties for. There are limited choices - namely, the names of the maps supplied through the parameter map_directory.
 
+
+.. _UserGuide_page_parameter_overview_usecoup:
 
 couplings_to_use
 ================
@@ -451,6 +613,32 @@ Then, group selection is where you explain what type of oscillators are to be co
 - 'X:' indicates any couplings involving an oscillator of type 'X' - the type of the other oscillator does not matter. The available oscillator types are the same as the available choices for the parameter 'maps_to_use'. There should be no spaces between group names and the colon!
 
 
+.. _UserGuide_page_parameter_overview_scalecoup:
+
+couplings_scale
+===============
+| (no shorthand available)
+| (used by: GEM)
+
+.. note::
+    This parameter differs from the others in that it may be used multiple times within a single file.
+
+.. important::
+    This parameter pulls information from lower priority sources, even if specified in a higher priority one:
+
+    If the default file says 'all couplings should be multiplied by 2.0', and you specify in the input file that the couplings of type 'A' should be multiplied by 3.5, then couplings of type 'B' will still be multiplied by 2.0, as you didn't specify anything else for them.
+
+    In other words, for every type of coupling, the program separately walks through all parameter files.
+
+    If a certain type of pair is covered by multiple lines in the same parameter file, the one lowest down will take precedence.
+
+The value by which to multiply all couplings of the given type. This parameter expects two parts on each line. Just as with the parameter couplings_to_use, the first one is the name of the coupling map. This may be any map, including those only assigned through other coupling maps. The second part is the value by which the couplings should be multiplied.
+
+If the requested coupling map shows up in the 'couplingvis' pdf, those values will be multiplied by the value provided on this line.
+
+
+.. _UserGuide_page_parameter_overview_singWL:
+
 singles_whitelist
 =================
 | (no shorthand available)
@@ -475,6 +663,8 @@ This parameter takes a variable amount of arguments. If a map doesn't make any c
 By default, this parameter has the following setting: ``singles_whitelist :All :All``
 
 
+.. _UserGuide_page_parameter_overview_singBL:
+
 singles_blacklist
 =================
 | (no shorthand available)
@@ -489,6 +679,8 @@ Anything blacklisted will be omitted. For more details on exact specifications, 
 By default, this parameter has the following setting: ``singles_blacklist :All :None``
 
 
+.. _UserGuide_page_parameter_overview_inflWL:
+
 influencers_whitelist
 =====================
 | (no shorthand available)
@@ -499,6 +691,8 @@ influencers_whitelist
 
 Atoms belonging to a residue of (one of) the given name(s) will be taken into account when calculating electrostatics for the oscillators. For more information on how to specify influencers, see :ref:`Specifying influencers <UserGuide_page_influencer_specification>`.
 
+
+.. _UserGuide_page_parameter_overview_inflBL:
 
 influencers_blacklist
 =====================
@@ -511,6 +705,8 @@ influencers_blacklist
 Atoms belonging to a residue of (one of) the given name(s) will **not** be taken into account when calculating electrostatics for the oscillators. For more information on how to specify influencers, see :ref:`Specifying influencers <UserGuide_page_influencer_specification>`.
 
 
+.. _UserGuide_page_parameter_overview_inflfile:
+
 influencers_file
 ================
 | (no shorthand available)
@@ -521,6 +717,8 @@ influencers_file
 
 Atoms belonging to a residue of (one of) the given name(s) on the line starting with 'choice' in this file will be taken into account when calculating electrostatics for the oscillators. For more information on how to specify influencers, see :ref:`Specifying influencers <UserGuide_page_influencer_specification>`. This file should be given relative to the place where the parameter is specified.
 
+
+.. _UserGuide_page_parameter_overview_inflSA:
 
 influencers_select_atoms
 ========================
@@ -536,13 +734,15 @@ In case the influencers should be defined differently from the 'default' method 
     The used MDAnalysis functionality can make a noticable impact on calculation times, especially when using the program in parallel (multiple CPUs / cores / nodes). Most usecases should be fine, but if you notice a big difference for your calculations, please reach out to the developers of GMAP.
 
 
+.. _UserGuide_page_parameter_overview_estatmeth:
+
 estatics_method
 ===============
 | (no shorthand available)
 | (options: perres, perres_nocut)
 | (used by: GEM)
 
-How the elecctrostatics should be calculated. For perres_nocut, if an influencing residue is within range of the oscillating residue, all its atoms can influence all oscillating atoms. This is the way AIM calculated the electrostatic properties. This method ignores any choices made for estatic_smooth_range. 
+How the electrostatics should be calculated. For perres_nocut, if an influencing residue is within range of the oscillating residue, all its atoms can influence all oscillating atoms. This is the way AIM calculated the electrostatic properties. This method ignores any choices made for estatic_smooth_range. 
 For perres, if an influencer is within range of the oscillating residues, its individual atoms are considered. Only the atoms that are within range of the oscillating residue will actually be considered, the others are ignored.
 
 
@@ -563,12 +763,14 @@ guess_bonds
 Whether the program should guess bonds for the supplied universe. This should only be used if bond information if absolutely necessary, and there really is no topology file with bond information available. Bonds are guessed by `MDAnalysis <https://userguide.mdanalysis.org/stable/formats/guessing.html#types>`__.
 
 
+.. _UserGuide_page_parameter_overview_estatrange:
+
 estatic_range
 =============
 | (no shorthand available)
 | (used by: GEM, DEPICT)
 
-To what distance charges should be considered when computing the electrostatic properties.
+To what distance charges should be considered when computing the electrostatic properties. If the parameter estatic_smooth_range is set to 0, any charges within estatic_range will be fully considered, any outside won't be at all. For details how the parameter estatic_smooth_range influences this, see that entry for more info.
 
 
 estatic_smooth_range
@@ -579,7 +781,11 @@ estatic_smooth_range
 
 Over what distance the weight of charges should decrease. This less abrupt edge to the sphere of charges makes for less chaotic results (less variation with slightly different choice of estatic_range).
 
+Lets say estatic_range = R, estatic_smooth_range = S. Any charges within R - S/2 will be considered fully, while any outside R + S/2 will not be considered at all. Between those two distances, the charge will be considered partially, with the part decreasing linearly with distance.
 
+
+
+.. _UserGuide_page_parameter_overview_startframe:
 
 start_frame
 ===========
@@ -589,6 +795,8 @@ start_frame
 At what frame number the calculation must start. Counting starts at 0. May occur in a parameter file together with number_frames and/or stop_frame, but the combination of them must make sense.
 With start_frame at 10, number_frames at 20, and stop_frame at 30, the first 10 frames (numbered 0 through 9) will be skipped, the following 20 frames (numbered 10 to 29) will be treated, and the remaining frames (30 and up) will be skipped.
 
+
+.. _UserGuide_page_parameter_overview_numframe:
 
 number_frames
 =============
@@ -603,6 +811,8 @@ With start_frame at 10, number_frames at 20, and stop_frame at 30, the first 10 
     use (the amount of different estatic_range). Each whole number starting from estatic_range will be used.
 
 
+.. _UserGuide_page_parameter_overview_stopframe:
+
 stop_frame
 ==========
 | (no shorthand available)
@@ -611,6 +821,32 @@ stop_frame
 At what frame number the calculation must stop (exclusive). Counting starts at 0. May occur in a parameter file together with start_frame and number_frames, but the combination of them must make sense.
 With start_frame at 10, number_frames at 20, and stop_frame at 30, the first 10 frames (numbered 0 through 9) will be skipped, the following 20 frames (numbered 10 to 29) will be treated, and the remaining frames (30 and up) will be skipped.
 
+
+.. _UserGuide_page_parameter_overview_prof:
+
+profiler
+========
+| (no shorthand available)
+| (options: true, t, false, f)
+| (used by: GEM)
+
+Whether the program should be profiled. This gives more detailed insight in calculation run times and why it wasn't faster. This parameter should reasonably only be relevant for GMAP developers, and maybe sometimes a map developer.
+
+
+.. _UserGuide_page_parameter_overview_profgraph:
+
+profiler_graph
+==============
+| (no shorthand available)
+| (options: true, t, false, f)
+| (used by: GEM)
+
+Whether the program should make a pretty image with profiling information. This gives more detailed insight in calculation run times and why it wasn't faster. This parameter should reasonably only be relevant for GMAP developers, and maybe sometimes a map developer.
+
+This parameter has no meaning/use when the ``profiler`` parameter is set to false.
+
+
+.. _UserGuide_page_parameter_overview_timelimit:
 
 time_limit
 ==========

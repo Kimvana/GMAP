@@ -10,10 +10,12 @@ GMAP documentation
 
     .. grid-item-card::
         :margin: 0 3 0 0
+        :link: quickstart/index
+        :link-type: doc
 
-        **Installation**
+        **Quickstart guide**
         ^^^^^^^^^^^^^^^^
-        It would be really nice to have some instructions on how to install GMAP!
+        Here you can find instructions on how to install and get going with GMAP quickly!
 
     .. grid-item-card::
         :margin: 0 3 0 0
@@ -67,6 +69,7 @@ GMAP documentation
     :maxdepth: 4
     :hidden:
 
+    quickstart/index
     User_guide/index
     Theory/index
     Adding_a_new_map/index
