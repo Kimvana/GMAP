@@ -160,10 +160,10 @@ class System:
         self.rightangled = check_box_rightangled(self.universe)
         if self.rightangled:
             if RunPars.treat_box == "auto":
-                RunPars.treat_box == "orthorhombic"
+                RunPars.treat_box = "orthorhombic"
         else:
             if RunPars.treat_box == "auto":
-                RunPars.treat_box == "triclinic"
+                RunPars.treat_box = "triclinic"
 
         self.neutral = check_box_charge(RunPars, self.charges)
 
