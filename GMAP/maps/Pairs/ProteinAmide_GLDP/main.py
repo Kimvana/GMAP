@@ -165,7 +165,7 @@ def GM_calc_coupling(map_, system, hamiltonian):
     """
 
     for pair in map_.allpairs:
-        J = map_.map_per_pair[pair].get_coupling(
+        J = map_.map_per_pair[tuple(pair)].get_coupling(
             system.oscillators[pair[0]],
             system.oscillators[pair[1]], system)
         hamiltonian[pair[0], pair[1]] = J
@@ -187,8 +187,8 @@ def GM_pre_run(map_, system):
 
     map_.map_per_pair = {}
     for pair in map_.allpairs:
-        map_.map_per_pair[pair] = map_.neighbormaps["GLDP" + determine_map(
-            pair, map_, system)]
+        map_.map_per_pair[tuple(pair)] = map_.neighbormaps[
+            "GLDP" + determine_map(pair, map_, system)]
 
 
 def determine_map(pair, map_, system):

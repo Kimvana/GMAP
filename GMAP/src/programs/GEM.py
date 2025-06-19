@@ -315,7 +315,7 @@ def trj_loop(RunPars, System):
             break
 
         # rebuild the frame-specific data (positions, box, etc)
-        System.update_properties()
+        System.update_properties(RunPars)
         GM_PT.Printer.add_time(
             4, "done system updates. next: osc updates", "OscUpdate", "ms")
         for oscillator in System.oscillators:

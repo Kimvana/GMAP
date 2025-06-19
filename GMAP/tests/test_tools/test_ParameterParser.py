@@ -48,6 +48,7 @@ class TestRefPars:
             "output_format": ["bin", "txt"],
             "output_data": ["ham", "dip", "ene", "pos", "dbp", "ram"],
             "estatics_method": ["perres", "perres_nocut"],
+            "treat_box": ["auto", "orthorhombic", "triclinic"],
             "hamiltonian_units": ["cm-1", "eV"],
             "energies_units": ["cm-1", "eV"],
             "dipoles_units": ["Debye", "eBohr"],
@@ -116,6 +117,7 @@ class TestRefPars:
             "estatics_method": ["perres"],
             "neutral_charge_threshold": [0.0001],
             "guess_bonds": [False],
+            "treat_box": ["auto"],
             "estatic_range": [20.0],
             "estatic_smooth_range": [5.0],
             "start_frame": [0],
@@ -351,6 +353,7 @@ class TestRefPars:
             "output_format",
             "output_data",
             "estatics_method",
+            "treat_box",
             "hamiltonian_units",
             "energies_units",
             "dipoles_units",
@@ -578,6 +581,7 @@ class TestRawPars:
             "estatics_method": ["perres"],
             "neutral_charge_threshold": [0.0001],
             "guess_bonds": [False],
+            "treat_box": ["auto"],
             "estatic_range": [20.0],
             "estatic_smooth_range": [5.0],
             "start_frame": [0],
@@ -2317,7 +2321,7 @@ def test_get_parameters():
     # has already been tested separately.
     assert InPars.fname.name == "test_inpar.txt"
     assert DefPars == RefPars
-    assert len(mapdict) == 5
+    assert len(mapdict) == 6
     assert CmdPars.choices == {}
 
     (
