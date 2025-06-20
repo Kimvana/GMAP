@@ -84,61 +84,16 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
         ]
         self.clib.calc_CoM_box.restype = None
 
-        self.clib.calcVEG_perres_mm_triclin.argtypes = [
-            ct.POINTER(ct.c_int),  # tocalc
-            ct.c_int,  # n_osc_ats
-            ct.POINTER(ct.c_float),  # spherepos
-            ct.c_int,  # calc_choice
-            ct.POINTER(ct.c_float),  # positions
-            ct.POINTER(ct.c_float),  # charges
-            ct.POINTER(ct.c_int),  # influencer_atoms
-            ct.c_int,  # n_influencers
-            ct.POINTER(ct.c_float),  # COMs
-            ct.POINTER(ct.c_int),  # res_first_ix
-            ct.POINTER(ct.c_int),  # res_last_ix
-            ct.c_int,  # n_res
-            ct.POINTER(ct.c_int),  # local_atoms
-            ct.c_int,  # n_locals
-            ct.c_float,  # r_sphere
-            ct.c_float,  # r_smooth
-            ct.POINTER(ct.c_float),  # halfbox
-            ct.POINTER(ct.c_float),  # boxdims
-            ct.POINTER(ct.c_float)  # out
-        ]
-        self.clib.calcVEG_perres_mm_triclin.restype = None
-
-        self.clib.calcVEG_perres_mm_triclin_nocut.argtypes = [
-            ct.POINTER(ct.c_int),  # tocalc
-            ct.c_int,  # n_osc_ats
-            ct.POINTER(ct.c_float),  # spherepos
-            ct.c_int,  # calc_choice
-            ct.POINTER(ct.c_float),  # positions
-            ct.POINTER(ct.c_float),  # charges
-            ct.POINTER(ct.c_int),  # influencer_atoms
-            ct.c_int,  # n_influencers
-            ct.POINTER(ct.c_float),  # COMs
-            ct.POINTER(ct.c_int),  # res_first_ix
-            ct.POINTER(ct.c_int),  # res_last_ix
-            ct.c_int,  # n_res
-            ct.POINTER(ct.c_int),  # local_atoms
-            ct.c_int,  # n_locals
-            ct.c_float,  # r_sphere
-            ct.POINTER(ct.c_float),  # halfbox
-            ct.POINTER(ct.c_float),  # boxdims
-            ct.POINTER(ct.c_float)  # out
-        ]
-        self.clib.calcVEG_perres_mm_triclin_nocut.restype = None
-
         self.clib.calcVEG_perres_mm_rhombic.argtypes = [
             ct.POINTER(ct.c_int),  # tocalc
             ct.c_int,  # n_osc_ats
             ct.POINTER(ct.c_float),  # spherepos
             ct.c_int,  # calc_choice
-            ct.POINTER(ct.c_float),  # positions_box
+            ct.POINTER(ct.c_float),  # positions
             ct.POINTER(ct.c_float),  # charges
             ct.POINTER(ct.c_int),  # influencer_atoms
             ct.c_int,  # n_influencers
-            ct.POINTER(ct.c_float),  # COMs_box
+            ct.POINTER(ct.c_float),  # COMs
             ct.POINTER(ct.c_int),  # res_first_ix
             ct.POINTER(ct.c_int),  # res_last_ix
             ct.c_int,  # n_res
@@ -146,8 +101,8 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
             ct.c_int,  # n_locals
             ct.c_float,  # r_sphere
             ct.c_float,  # r_smooth
-            ct.POINTER(ct.c_float),  # boxvects
-            ct.POINTER(ct.c_float),  # boxvects)inv
+            ct.POINTER(ct.c_float),  # halfbox
+            ct.POINTER(ct.c_float),  # boxdims
             ct.POINTER(ct.c_float)  # out
         ]
         self.clib.calcVEG_perres_mm_rhombic.restype = None
@@ -157,6 +112,51 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
             ct.c_int,  # n_osc_ats
             ct.POINTER(ct.c_float),  # spherepos
             ct.c_int,  # calc_choice
+            ct.POINTER(ct.c_float),  # positions
+            ct.POINTER(ct.c_float),  # charges
+            ct.POINTER(ct.c_int),  # influencer_atoms
+            ct.c_int,  # n_influencers
+            ct.POINTER(ct.c_float),  # COMs
+            ct.POINTER(ct.c_int),  # res_first_ix
+            ct.POINTER(ct.c_int),  # res_last_ix
+            ct.c_int,  # n_res
+            ct.POINTER(ct.c_int),  # local_atoms
+            ct.c_int,  # n_locals
+            ct.c_float,  # r_sphere
+            ct.POINTER(ct.c_float),  # halfbox
+            ct.POINTER(ct.c_float),  # boxdims
+            ct.POINTER(ct.c_float)  # out
+        ]
+        self.clib.calcVEG_perres_mm_rhombic_nocut.restype = None
+
+        self.clib.calcVEG_perres_mm_triclin.argtypes = [
+            ct.POINTER(ct.c_int),  # tocalc
+            ct.c_int,  # n_osc_ats
+            ct.POINTER(ct.c_float),  # spherepos
+            ct.c_int,  # calc_choice
+            ct.POINTER(ct.c_float),  # positions_box
+            ct.POINTER(ct.c_float),  # charges
+            ct.POINTER(ct.c_int),  # influencer_atoms
+            ct.c_int,  # n_influencers
+            ct.POINTER(ct.c_float),  # COMs_box
+            ct.POINTER(ct.c_int),  # res_first_ix
+            ct.POINTER(ct.c_int),  # res_last_ix
+            ct.c_int,  # n_res
+            ct.POINTER(ct.c_int),  # local_atoms
+            ct.c_int,  # n_locals
+            ct.c_float,  # r_sphere
+            ct.c_float,  # r_smooth
+            ct.POINTER(ct.c_float),  # boxvects
+            ct.POINTER(ct.c_float),  # boxvects_inv
+            ct.POINTER(ct.c_float)  # out
+        ]
+        self.clib.calcVEG_perres_mm_triclin.restype = None
+
+        self.clib.calcVEG_perres_mm_triclin_nocut.argtypes = [
+            ct.POINTER(ct.c_int),  # tocalc
+            ct.c_int,  # n_osc_ats
+            ct.POINTER(ct.c_float),  # spherepos
+            ct.c_int,  # calc_choice
             ct.POINTER(ct.c_float),  # positions_box
             ct.POINTER(ct.c_float),  # charges
             ct.POINTER(ct.c_int),  # influencer_atoms
@@ -169,10 +169,10 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
             ct.c_int,  # n_locals
             ct.c_float,  # r_sphere
             ct.POINTER(ct.c_float),  # boxvects
-            ct.POINTER(ct.c_float),  # boxvects)inv
+            ct.POINTER(ct.c_float),  # boxvects_inv
             ct.POINTER(ct.c_float)  # out
         ]
-        self.clib.calcVEG_perres_mm_rhombic_nocut.restype = None
+        self.clib.calcVEG_perres_mm_triclin_nocut.restype = None
 
     def positions_to_box(self, system):
         self.clib.transform_vectors(

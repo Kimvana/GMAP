@@ -506,6 +506,7 @@ class TestVClib:
             [-0.0000657027858745066498382, -0.0000657027858745066498382]
         ], dtype="float32").round(8)
         assert np.all(oscillator.VEGout[:, 1:4].round(8) == ans.T)
+        print(ans)
 
         # gradients
         ans = np.array([[
@@ -549,6 +550,7 @@ class TestVClib:
                 -0.000008146924, 0.000006172839,
                 -0.000002554094, 0.000003086419]   # Gyz
         ]], dtype="float32").sum(2).round(10)
+        print(ans)
         assert np.all(oscillator.VEGout[:, 4:].round(10) == ans)
 
     def test_CL_VG_1(self):

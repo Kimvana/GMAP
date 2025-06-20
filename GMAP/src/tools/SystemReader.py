@@ -942,7 +942,7 @@ class System:
         if RunPars.treat_box == "orthorhombic":
             self.residues.CoM_c = np.zeros((self.nres, 3), dtype="float32")
             self.residues.CoM_c = np.ctypeslib.as_ctypes(
-                np.ravel(self.residues.CoM_box_c))
+                np.ravel(self.residues.CoM_c))
             clib.CoM_frombox(self)
 
     def print_system(self, RunPars):
