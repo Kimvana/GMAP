@@ -137,6 +137,7 @@ class TestRefPars:
             "positions_multiplier": [1],
             "doublepos_units": ["Ang"],
             "doublepos_multiplier": [1],
+            "positions_center": [0.5, 0.5, 0.5],
             "couplingvis_figsize": [8],
             "couplingvis_dpi": [100],
             "str_test_free": ["freechoice"],
@@ -319,6 +320,7 @@ class TestRefPars:
             "raman_multiplier",
             "positions_multiplier",
             "doublepos_multiplier",
+            "positions_center",
             "couplingvis_figsize",
             "float_test_free",
             "float_test_choice",
@@ -383,6 +385,7 @@ class TestRefPars:
             "dont_report_error",
             "output_format",
             "output_data",
+            "positions_center",
             "str_test_free_list",
             "str_test_choice_list",
             "str_test_choice_list2",
@@ -599,6 +602,7 @@ class TestRawPars:
             "positions_multiplier": [1],
             "doublepos_units": ["Ang"],
             "doublepos_multiplier": [1],
+            "positions_center": [0.5, 0.5, 0.5],
             "couplingvis_figsize": [8],
             "couplingvis_dpi": [100],
             "str_test_free": ["freechoice"],
@@ -2317,7 +2321,7 @@ def test_get_parameters():
     # has already been tested separately.
     assert InPars.fname.name == "test_inpar.txt"
     assert DefPars == RefPars
-    assert len(mapdict) == 5
+    assert len(mapdict) == 6
     assert CmdPars.choices == {}
 
     (

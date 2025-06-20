@@ -74,6 +74,8 @@ positions_multiplier            1
 doublepos_units                 Ang
 doublepos_multiplier            1
 
+positions_center                0.5 0.5 0.5
+
 couplingvis_figsize             8  # width of figure in inches
 couplingvis_dpi                 100
 

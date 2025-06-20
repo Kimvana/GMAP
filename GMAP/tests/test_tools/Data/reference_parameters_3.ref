@@ -80,5 +80,7 @@ doublepos_units[str]                               Ang [Bohr] nm
 doublepos_multiplier[float]                        1 
 # polarizabilities -> ang^3, bohr^3
 
+positions_center[list_float]                       0.5 0.5 0.5
+
 couplingvis_figsize[float]                         8  # width of figure in inches
 couplingvis_dpi[int]                               100

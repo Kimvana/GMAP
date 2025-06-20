@@ -584,6 +584,16 @@ class RefPars:
             case "nm":
                 self.choices["doublepos_multiplier"] = [0.1]
 
+        nvals = len(self.choices.get("positions_center", [0.5, 0.5, 0.5]))
+        if nvals != 3:
+            GM_PT.Printer.warning(
+                "\nEncountered an issue with the following parameter source: "
+                f"{self.fname}. The parameter positions_center must take "
+                f"Exactly 3 values, but {nvals} were detected. "
+                "Please make sure there are exactly 3.",
+                "SU_FP_6", True, GMAPerrclass=GM_Ex.GmapValueError
+            )
+
     @staticmethod
     def parse_key(string):
         """Extracts parameter name, shorthand and type from key in file
@@ -1597,6 +1607,16 @@ class RawPars:
                             GM_con.ang2bohr]
                     case "nm":
                         self.choices["doublepos_multiplier"] = [0.1]
+
+        nvals = len(self.choices.get("positions_center", [0.5, 0.5, 0.5]))
+        if nvals != 3:
+            GM_PT.Printer.warning(
+                "\nEncountered an issue with the following parameter source: "
+                f"{self.fname}. The parameter positions_center must take "
+                f"Exactly 3 values, but {nvals} were detected. "
+                "Please make sure there are exactly 3.",
+                "SU_FP_6", True, GMAPerrclass=GM_Ex.GmapValueError
+            )
 
     def finalize_map_pars(self):
         """Check whether `not_found` is empty

@@ -114,3 +114,5 @@ positions_units[str]                               [Ang] Bohr nm
 positions_multiplier[float]                        1.0
 doublepos_units[str]                               [Ang] Bohr nm
 doublepos_multiplier[float]                        1.0
+
+positions_center[list_float]                       0.5 0.5 0.5

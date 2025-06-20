@@ -239,7 +239,7 @@ class TestSystem:
         (
             RunPars, RefPars, DefPars, InPars,
             CmdPars, mapdict, pairs_mapdict
-        ) = parameter_getter(mapname)
+        ) = parameter_getter(mapname, ["--dont_report_error", "MI__\\;"])
 
         System = GM_SR.System(RunPars)
         System.update_properties()
