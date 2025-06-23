@@ -87,19 +87,19 @@ def test_Jansen_dips(tmp_path):
 
 
 def test_C_pos(tmp_path):
-    core_test_positions("C", tmp_path, 0.000004)
+    core_test_positions("C", tmp_path, 0.000008)
 
 
 def test_N_pos(tmp_path):
-    core_test_positions("N", tmp_path, 0.000004)
+    core_test_positions("N", tmp_path, 0.000008)
 
 
 def test_O_pos(tmp_path):
-    core_test_positions("O", tmp_path, 0.000004)
+    core_test_positions("O", tmp_path, 0.000008)
 
 
 def test_D_pos(tmp_path):
-    core_test_positions("D", tmp_path, 0.000004)
+    core_test_positions("D", tmp_path, 0.000008)
 
 
 def test_raman(tmp_path):

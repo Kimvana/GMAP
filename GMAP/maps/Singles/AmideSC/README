@@ -83,10 +83,12 @@ AmideSC.legacy_mode
 
     Whether to recreate the results as produced by the precursors of this package. All options create results of the same format and magnitude, making all of them valid for use with software like NISE.
 
-    There are some small differences between the different programs. For this map, the differences are very small: in the case this parameter is set to AIM, the positions are slightly different. Imagine the MD calculations returning a cubic box with all sides of length 100. When GMAP returns the positions, all components will lie between -50 and 50. However, when AIM returns the positions, all components will fall between 0 and 100.
+    There are some small differences between the different programs. For this map, the differences are very small: in the case this parameter is set to AIM, the positions are slightly different. Imagine the MD calculations returning a cubic box with all sides of length 100. When GMAP returns the positions, all components will lie between -50 and +50 of the provided mid point using the 'treat_box' parameter. However, when AIM returns the positions, all components will fall between 0 and 100.
 
     Which should you use? If you just want to compute spectra, stick with 'none'. It gives the most recent, detailed version, with any known bugs fixed. The main reason for changing to a legacy mode is for re-creating results from previous versions, so comparison between different results or packages can be made.
 
+    Warning!
+    When using the legacy_mode set to AIM, the treat_box parameter is ignored by this map!
 
 
 warnings that can be raised by this map
