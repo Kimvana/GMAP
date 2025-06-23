@@ -242,7 +242,7 @@ class TestSystem:
         ) = parameter_getter(mapname, ["--dont_report_error", "MI__\\;"])
 
         System = GM_SR.System(RunPars)
-        System.update_properties()
+        System.update_properties(RunPars)
 
         assert len(System.oscillators) == 1
 

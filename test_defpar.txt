@@ -47,6 +47,7 @@ estatics_method                         perres
 
 neutral_charge_threshold                   0.0001
 guess_bonds                                False
+treat_box                       auto
 
 estatic_range                               20  # this is in angstrom
 estatic_smooth_range                        5  # this is in angstrom
