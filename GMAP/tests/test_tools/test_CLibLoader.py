@@ -26,7 +26,7 @@ import GMAP.src.tools.Exceptions as GM_Ex
 
 
 class TestVClib:
-    def test_calcVEG_perres_mm(self):
+    def test_calcVEG_perres_mm_triclin(self):
         cmdline = ["-md", "maps\\;"]
         (
             RunPars, RefPars, DefPars, InPars,
@@ -41,7 +41,7 @@ class TestVClib:
         oscillator = get_oscillator_1()
         VEGlib.calc_CoM_box(System)
 
-        VEGlib.calcVEG_perres_mm(System, RunPars, oscillator)
+        VEGlib.calcVEG_perres_mm_triclin(System, RunPars, oscillator)
 
         # Do not remove!!! These are the calculations to get to the correct
         # answer!
@@ -172,6 +172,70 @@ class TestVClib:
         assert np.all(oscillator.VEGout[:, 4:].round(9) == ans)
         # assert False
 
+    def test_calcVEG_perres_mm_rhombic(self):
+        cmdline = ["-md", "maps\\;"]
+        (
+            RunPars, RefPars, DefPars, InPars,
+            CmdPars, mapdict, pairs_mapdict
+        ) = parameter_getter("AmideSC", cmdline, load_clib=False)
+
+        VEGlib = GM_CL.VEG_CLib(RunPars)
+        RunPars.estatic_range = np.float32(60)
+        RunPars.estatic_smooth_range = np.float32(5)
+
+        System = get_System_1()
+        oscillator = get_oscillator_1()
+        VEGlib.calc_CoM_box(System)
+        VEGlib.CoM_frombox(System)
+
+        VEGlib.calcVEG_perres_mm_rhombic(System, RunPars, oscillator)
+
+        # All results are the same ones as from the triclinic method.
+        # see the test for the triclinic for the calculation of these
+        # values.
+
+        # potentials
+        ans = np.array([
+            [0.01666666666667, 0.01817581095026],
+            [-0.002557953278597537, -0.0027717718596666],
+            [0, 0],
+            [-0.015139585119952648, -0.013882521453]
+        ], dtype="float32").sum(0).round(7)
+
+        print(oscillator.VEGout)
+        print(ans)
+        assert np.all(oscillator.VEGout[:, 0].round(7) == ans)
+
+        # fields
+        ans = np.array([
+            [-0.00026373028008539759035468, -0.00024092927695267593],
+            [-0.00024418964909623079469788, -0.000268496579170856763],
+            [-0.00034421994730017355881788, -0.000345621800206041948]
+        ], dtype="float32").round(8)
+        print(ans)
+        assert np.all(oscillator.VEGout[:, 1:4].round(8) == ans.T)
+
+        # gradients
+        ans = np.array([[
+            # atom 1
+            [0.000003086419, -0.000000377947, 0.000001784485],  # Gxx
+            [-0.000001543209, 0.000000188973, -0.000003568969],  # Gyy
+            [-0.000001543209, 0.000000188973, 0.000001784485],  # Gzz
+            [-0.000003086419, 0.000000424762, 0.000003117891],  # Gxy
+            [-0.000003086419, 0.000000424762, 0.000006786000],  # Gxz
+            [-0.000006172839, 0.000000794120, 0.000003117891]   # Gyz
+        ], [
+            # atom 2
+            [0.000004284722, -0.000000513291, 0.000001285420],  # Gxx
+            [-0.000002142361, 0.000000256645, -0.000002570840],  # Gyy
+            [-0.000002142361, 0.000000256645, 0.000001285420],  # Gzz
+            [-0.000003743181, 0.000000513291, 0.000002570840],  # Gxy
+            [-0.000003743181, 0.000000513291, 0.000005141681],  # Gxz
+            [-0.000008146924, 0.000001026582, 0.000002570840]   # Gyz
+        ]], dtype="float32").sum(2).round(9)
+        print(ans)
+        assert np.all(oscillator.VEGout[:, 4:].round(9) == ans)
+
     def test_calcVEG_perres_mm_influencers(self):
         cmdline = ["-md", "maps\\;"]
         (
@@ -192,7 +256,7 @@ class TestVClib:
         oscillator = get_oscillator_1()
         VEGlib.calc_CoM_box(System)
 
-        VEGlib.calcVEG_perres_mm(System, RunPars, oscillator)
+        VEGlib.calcVEG_perres_mm_triclin(System, RunPars, oscillator)
 
         # Do not remove!!! These are the calculations to get to the correct
         # answer!
@@ -235,7 +299,7 @@ class TestVClib:
         ], dtype="float32").sum(0).round(6)
         assert np.all(oscillator.VEGout[:, 0].round(6) == ans)
 
-    def test_calcVEG_perres_mm_nocut(self):
+    def test_calcVEG_perres_mm_triclin_nocut(self):
         cmdline = ["-md", "maps\\;"]
         (
             RunPars, RefPars, DefPars, InPars,
@@ -248,8 +312,9 @@ class TestVClib:
 
         System = get_System_1()
         oscillator = get_oscillator_1()
+        VEGlib.calc_CoM_box(System)
 
-        VEGlib.calcVEG_perres_mm_nocut(System, RunPars, oscillator)
+        VEGlib.calcVEG_perres_mm_triclin_nocut(System, RunPars, oscillator)
 
         # Do not remove!!! These are the calculations to get to the correct
         # answer!
@@ -401,6 +466,93 @@ class TestVClib:
         ]], dtype="float32").sum(2).round(10)
         assert np.all(oscillator.VEGout[:, 4:].round(10) == ans)
 
+    def test_calcVEG_perres_mm_rhombic_nocut(self):
+        cmdline = ["-md", "maps\\;"]
+        (
+            RunPars, RefPars, DefPars, InPars,
+            CmdPars, mapdict, pairs_mapdict
+        ) = parameter_getter("AmideSC", cmdline, load_clib=False)
+
+        VEGlib = GM_CL.VEG_CLib(RunPars)
+        RunPars.estatic_range = np.float32(60)
+        RunPars.estatic_smooth_range = np.float32(5)
+
+        System = get_System_1()
+        oscillator = get_oscillator_1()
+        VEGlib.calc_CoM_box(System)
+        VEGlib.CoM_frombox(System)
+
+        VEGlib.calcVEG_perres_mm_rhombic_nocut(System, RunPars, oscillator)
+
+        # same system, so same answers as for the triclinic version of this
+        # function. See that one for explanation for all these values.
+
+        # potentials
+        ans = np.array([
+            [0.01666666666667, 0.0181758109502614],
+            [-0.0153809753478, -0.01666666666667],
+            [0.01666666666667, 0.0153809753478],
+            [-0.0181758109502614, -0.01666666666667]
+        ], dtype="float32").sum(0).round(7)
+
+        print(oscillator.VEGout)
+        print(ans)
+        assert np.all(oscillator.VEGout[:, 0].round(7) == ans)
+
+        # fields
+        ans = np.array([
+            [-0.0000458850943835756231262, -0.0000382041226600295058342],
+            [-0.0000382041226600295058342, -0.0000458850943835756231262],
+            [-0.0000657027858745066498382, -0.0000657027858745066498382]
+        ], dtype="float32").round(8)
+        assert np.all(oscillator.VEGout[:, 1:4].round(8) == ans.T)
+        print(ans)
+
+        # gradients
+        ans = np.array([[
+            # atom 1
+            [
+                0.000003086419, -0.000002272601,
+                -0.000001543209, 0.000002142361],  # Gxx
+            [
+                -0.000001543209, 0.000001136300,
+                0.000003086419, -0.000004284722],  # Gyy
+            [
+                -0.000001543209, 0.000001136300,
+                -0.000001543209, 0.000002142361],  # Gzz
+            [
+                -0.000003086419, 0.000002554094,
+                -0.000003086419, 0.000003743181],  # Gxy
+            [
+                -0.000003086419, 0.000002554094,
+                -0.000006172839, 0.000008146924],  # Gxz
+            [
+                -0.000006172839, 0.000004775045,
+                -0.000003086419, 0.000003743181]   # Gyz
+        ], [
+            # atom 2
+            [
+                0.000004284722, -0.000003086419,
+                -0.000001136300, 0.000001543209],  # Gxx
+            [
+                -0.000002142361, 0.000001543209,
+                0.000002272601, -0.000003086419],  # Gyy
+            [
+                -0.000002142361, 0.000001543209,
+                -0.000001136300, 0.000001543209],  # Gzz
+            [
+                -0.000003743181, 0.000003086419,
+                -0.000002554094, 0.000003086419],  # Gxy
+            [
+                -0.000003743181, 0.0000030864191,
+                -0.000004775045, 0.000006172839],  # Gxz
+            [
+                -0.000008146924, 0.000006172839,
+                -0.000002554094, 0.000003086419]   # Gyz
+        ]], dtype="float32").sum(2).round(10)
+        print(ans)
+        assert np.all(oscillator.VEGout[:, 4:].round(10) == ans)
+
     def test_CL_VG_1(self):
         """This test will fail if the singletons are not cleared!!!!
         """
@@ -429,14 +581,14 @@ class TestVClib:
 
 
 def get_System_1():
-    # positions = np.array([
-    #     [8, 28, 68],
-    #     [11, 31, 71],
-    #     [28, 68, 8],
-    #     [31, 71, 11],
-    #     [68, 8, 28],
-    #     [71, 11, 31]
-    # ], dtype="float32")
+    positions = np.array([
+        [8, 28, 68],
+        [11, 31, 71],
+        [28, 68, 8],
+        [31, 71, 11],
+        [68, 8, 28],
+        [71, 11, 31]
+    ], dtype="float32")
     positions_box = np.array([
         [0.08, 0.28, 0.68],
         [0.11, 0.31, 0.71],
@@ -469,12 +621,14 @@ def get_System_1():
     halfbox = np.array([50, 50, 50], dtype="float32")
 
     return GM_CT.CustomClass(**{
+        "positions_c": np.ctypeslib.as_ctypes(np.ravel(positions)),
         "positions_box_c": np.ctypeslib.as_ctypes(np.ravel(positions_box)),
         "masses_c": np.ctypeslib.as_ctypes(masses),
         "charges_c": np.ctypeslib.as_ctypes(charges),
         "influencers_atix_c": np.ctypeslib.as_ctypes(influencers),
         "n_influencers": n_influencers,
         "residues": GM_CT.CustomClass(**{
+            "CoM_box_c": np.ctypeslib.as_ctypes(np.ravel(residues_CoM)),
             "CoM_c": np.ctypeslib.as_ctypes(np.ravel(residues_CoM)),
             "first_ix_c": np.ctypeslib.as_ctypes(res_first_ix),
             "last_ix_c": np.ctypeslib.as_ctypes(res_last_ix)
