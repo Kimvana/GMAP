@@ -601,7 +601,7 @@ ham_first
 *********
 
 | *optional parameter*
-| *(options: true, false)
+| *(options: true, false)*
 
 .. tip::
     This keyword only makes a difference when you have custom code in the main.py file. To be even more precise: if any custom code in the main.py file makes active changes to the ``map_`` or ``oscillator`` objects during either ``GM_calculate_frequency`` or ``GM_calculate_dipole``.
