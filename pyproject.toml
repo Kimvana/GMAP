@@ -37,7 +37,7 @@ testing = [
 
 
 [tool.setuptools.package-data]
-GMAP = ["sourcefiles/*", "maps/*", "logo.txt"]
+GMAP = ["sourcefiles/**", "maps/**", "logo.txt"]
 
 
 [project.scripts]

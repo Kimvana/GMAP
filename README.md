@@ -21,7 +21,7 @@ While the instructions work without one, it is definitely good practice to use o
 3. Activate the environment by running
 * (Unix)  ```source env_GMAP/bin/activate```
 * (Windows) ```env_GMAP\Scripts\activate.bat``` (doesn't work in powershell)
-4. Install GEMAIM:
+4. Install GMAP:
 * (general users) run ```python3 -m pip install .```
 * (developers) run ```python3 -m pip install -e ".[testing]"```
 5. now, from anywhere, typing ```GMAP``` will start the program. If not, something has gone wrong. However, we're not done yet.

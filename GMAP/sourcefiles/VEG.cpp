@@ -14,7 +14,7 @@ of points.
 #ifdef _WIN32
     extern "C" {
         // Currently not used by GEM - but like to keep it for now as reference
-        __declspec(dllexport) void calcVEG_perres_mm(
+        __declspec(dllexport) void calcVEG_perres_mm_rhombic(
             int *tocalc, int n_osc_ats, float *spherepos, int calc_choice,
             float *positions, float *charges, int *influencer_atoms,
             int n_influencers, float *COMs, int *res_first_ix,
@@ -23,7 +23,7 @@ of points.
             float r_smooth, float *halfbox, float *boxdims, float *out
         );
         // Currently not used by GEM - but like to keep it for now as reference
-        __declspec(dllexport) void calcVEG_perres_mm_nocut(
+        __declspec(dllexport) void calcVEG_perres_mm_rhombic_nocut(
             int *tocalc, int n_osc_ats, float *spherepos, int calc_choice,
             float *positions, float *charges, int *influencer_atoms,
             int n_influencers, float *COMs, int *res_first_ix,
@@ -31,7 +31,7 @@ of points.
             int n_res, int *local_atoms, int n_locals, float r_sphere,
             float *halfbox, float *boxdims, float *out
         );
-        __declspec(dllexport) void calcVEG_perres_mm_rhombic(
+        __declspec(dllexport) void calcVEG_perres_mm_triclin(
             int *tocalc, int n_osc_ats, float *spherepos, int calc_choice,
             float *positions_box, float *charges, int *influencer_atoms,
             int n_influencers, float *COMs_box, int *res_first_ix,
@@ -39,7 +39,7 @@ of points.
             float r_sphere, float r_smooth, float *boxvects,
             float *boxvects_inv, float *out
         );
-        __declspec(dllexport) void calcVEG_perres_mm_rhombic_nocut(
+        __declspec(dllexport) void calcVEG_perres_mm_triclin_nocut(
             int *tocalc, int n_osc_ats, float *spherepos, int calc_choice,
             float *positions_box, float *charges, int *influencer_atoms,
             int n_influencers, float *COMs_box, int *res_first_ix,
@@ -282,7 +282,7 @@ extern "C" {
     }
 
 
-    void calcVEG_perres_mm_rhombic(
+    void calcVEG_perres_mm_triclin(
         // single-osc parameters
         int *tocalc,  // the sys-ix of the atoms whose properties are requested
         int n_osc_ats,  // amount of atoms in the oscillator
@@ -432,7 +432,7 @@ extern "C" {
     }
 
 
-    void calcVEG_perres_mm_rhombic_nocut(
+    void calcVEG_perres_mm_triclin_nocut(
         // single-osc parameters
         int *tocalc,  // the sys-ix of the atoms whose properties are requested
         int n_osc_ats,  // amount of atoms in the oscillator
@@ -564,7 +564,7 @@ extern "C" {
     !! local_atoms MUST be sorted for this function to work (fast)!
     */
 
-    void calcVEG_perres_mm(
+    void calcVEG_perres_mm_rhombic(
         // single-osc parameters
         int *tocalc,  // the sys-ix of the atoms whose properties are requested
         int n_osc_ats,  // amount of atoms in the oscillator
@@ -769,7 +769,7 @@ extern "C" {
         free(refpos);  // free(diff)
     }
 
-    void calcVEG_perres_mm_nocut(
+    void calcVEG_perres_mm_rhombic_nocut(
         // single-osc parameters
         int *tocalc,  // the sys-ix of the atoms whose properties are requested
         int n_osc_ats,  // amount of atoms in the oscillator

@@ -48,7 +48,7 @@ def calc_data(Printer, RunPars, System):
     RunPars.manage_dtypes()
     Printer.add_time(3, "Starting on calculation", "ms")
 
-    System.update_properties()
+    System.update_properties(RunPars)
     Printer.add_time(4, "done system updates. next: osc updates", "ms")
 
     # only consider a single oscillator
