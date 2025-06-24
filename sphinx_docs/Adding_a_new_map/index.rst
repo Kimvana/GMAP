@@ -34,7 +34,7 @@ object.
         :link: tutorials/index
         :link-type: doc
 
-        **tutorials**
+        **Tutorials**
         ^^^^^^^^^^^^^^
         Examples on how more complicated maps are designed.
 
