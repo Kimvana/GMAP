@@ -36,6 +36,15 @@ Here you will find some examples on how to create more complicated maps.
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         How to use the default versions of functions for your own map, but allowing combining with your own code. Showcases the Water map.
 
+    .. grid-item-card::
+        :margin: 0 3 0 0
+        :link: customparameters
+        :link-type: doc
+
+        **Defining custom map parameters**
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        How to define custom parameters for your own map, allowing users to influence program flow. Showcases the AmideBB map.
+
 
 
 .. toctree::
@@ -44,5 +53,6 @@ Here you will find some examples on how to create more complicated maps.
     propertyedit
     addoscillators
     useDMF
+    customparameters
 
 
