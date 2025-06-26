@@ -1,0 +1,32 @@
+# core file for the TRP_UV map in GMAP
+
+functional_group_file    functional_group.txt
+
+used_atoms All 			# TRP molecules for the electrostatic interactions
+
+electrostatic_atoms 3-18
+electrostatic_choice V   	# the potential
+
+local_atoms 2-18           # Backbone CONH are included in potential
+
+frequency_gas_phase 38900 	#  
+frequency_data_file_linear difference_charges.txt
+
+# Conversion factor for e^2/4 pi epsilon 1161409.733
+multiply_freq GM_con.e2i4pieps_angcm
+
+dipole_gas_phase  2.07  # Debye from ACSCent. Sci. 2023, 9,352−361
+
+# Following ACS Omega 2024,9,29848−29856 SI S4 the transition dipole goes from 
+# NE1 to CE3
+r_vec 8 - 11    # Y-axis in direction of CD1 from midtpoint of CH2 and CZ3
+r_pos 7 * 0.5 + 10 * 0.5        		# The position between CD2 and CE2
+
+position 7 * 0.5 + 10 * 0.5 			# write positions to file. The position of the molecule is set at the mg atom position, used for coupling on the fly in NISE
+
+doublepos_0 8			# NE1
+doublepos_1 11			# CH3
+
+VEG_reference position 7 * 0.5 + 10 * 0.5  	# The position between CD2 and CE2
+
+can_output pos dip ene ham dbp
