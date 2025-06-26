@@ -16,7 +16,7 @@ Here you will find some examples on how to create more complicated maps.
 
         **Changing properties**
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        How change properties whose values are normally assigned by GMAP. Showcases the bacteriochlorophyll-c (BChl-c) map.
+        How to change properties whose values are normally assigned by GMAP. Showcases the bacteriochlorophyll-c (BChl-c) map.
 
     .. grid-item-card::
         :margin: 0 3 0 0
@@ -25,7 +25,16 @@ Here you will find some examples on how to create more complicated maps.
 
         **Adding oscillators (and some custom couping)**
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        How to add more oscillators than GMAP finds by default. Also shows off how to do other ways of coupling.
+        How to add more oscillators than GMAP finds by default. Also shows off how to do other ways of coupling, and showcases the Water map.
+
+    .. grid-item-card::
+        :margin: 0 3 0 0
+        :link: useDMF
+        :link-type: doc
+
+        **Using default map functions**
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        How to use the default versions of functions for your own map, but allowing combining with your own code. Showcases the Water map.
 
 
 
@@ -34,5 +43,6 @@ Here you will find some examples on how to create more complicated maps.
     
     propertyedit
     addoscillators
+    useDMF
 
 
