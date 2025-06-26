@@ -16,6 +16,8 @@ The map merges the minor charges on HB1 and HB2 into CB to allow treatment of un
 Available parameters
 --------------------
 At this point the frequency map has no options or parameters.
+The file for all atom charges is included in the repository, but not used.
+This may allow adding a parameter for this in the future.
 
 Warnings that can be raised by this map
 ---------------------------------------
