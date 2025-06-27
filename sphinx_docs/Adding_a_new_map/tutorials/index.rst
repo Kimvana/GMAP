@@ -25,7 +25,7 @@ Here you will find some examples on how to create more complicated maps.
 
         **Adding oscillators (and some custom couping)**
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        How to add more oscillators than GMAP finds by default. Also shows off how to do other ways of coupling, and showcases the Water map.
+        How to add more oscillators than GMAP finds by default. Also shows how to do other ways of coupling, and showcases the Water map.
 
     .. grid-item-card::
         :margin: 0 3 0 0
@@ -45,6 +45,15 @@ Here you will find some examples on how to create more complicated maps.
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         How to define custom parameters for your own map, allowing users to influence program flow. Showcases the AmideBB map.
 
+    .. grid-item-card::
+        :margin: 0 3 0 0
+        :link: readOMinfo
+        :link-type: doc
+
+        **Reading other map's information (and raising errors)**
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        How to take a look at other maps to compare to your own map. Also shows how to raise GMAP errors. Showcases the AmideBB map.
+
 
 
 .. toctree::
@@ -54,5 +63,6 @@ Here you will find some examples on how to create more complicated maps.
     addoscillators
     useDMF
     customparameters
+    readOMinfo
 
 
