@@ -87,6 +87,12 @@ AmideSC.legacy_mode
 
     Which should you use? If you just want to compute spectra, stick with 'none'. It gives the most recent, detailed version, with any known bugs fixed. The main reason for changing to a legacy mode is for re-creating results from previous versions, so comparison between different results or packages can be made.
 
+    AmideBB.Torii_dipole_angle
+    no shorthand
+    options: any float (default = 10)
+
+    When using the Torii dipole method, the angle at which the dipole is placed can be varied by changing this parameter. The value is assumed in degrees angle to the C=O bond.
+
 
 
 warnings that can be raised by this map

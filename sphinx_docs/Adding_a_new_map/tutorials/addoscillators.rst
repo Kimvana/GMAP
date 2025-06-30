@@ -1,11 +1,11 @@
 
 ###############################################################################
-Adding oscillators (and some custom couping)
+Adding oscillators/chromophores (and some custom couping)
 ###############################################################################
 
-Here, we will look at the water map. The water map wants to use more oscillators/chromophores than GMAP normally finds, so we'll learn how to define multiple. To do this, we will make use of existing functionality within GMAP.
+Here, we will look at the water map. For the water map we want to use more chromophores than GMAP normally finds, so we'll learn how to define multiple chromophores. To do this, we will make use of existing functionality within GMAP.
 
-If you want, you can view the entire map in the maps directory. Do note, however, that this map had to do multiple things in order to run, so not all code in the map main.py will be discussed here.
+If you want, you can view the entire map in the maps directory (in the location GMAP/maps/Singles/Water/). Do note, however, this map has to perform multiple tasks in order to run, so not all code in the map main.py will be discussed here.
 
 
 
@@ -13,7 +13,7 @@ If you want, you can view the entire map in the maps directory. Do note, however
 The problem
 ****************************************
 
-When GMAP looks for a molecule specified by a map, it will find it once. However, to get an accurate simulation of the water (a)symmetric stretch, the model we want to apply required a separate calculation for the two OH bonds in water, which are then coupled in a special way. Adding the same molecule (but in reverse) as an extra newstruct to the funcgroup file does not work.
+When GMAP looks for a molecule specified by a map, it will find it once. However, to get an accurate simulation of the water (a)symmetric stretch, the model we want to apply requires a separate calculation for the two OH bonds in water, which are then coupled in a special way. Adding the same molecule (but in reverse) as an extra newstruct to the funcgroup file does not work.
 
 
 
@@ -21,7 +21,7 @@ When GMAP looks for a molecule specified by a map, it will find it once. However
 The solution
 ****************************************
 
-Conveniently enough, GMAP already gives the option to confirm the oscillators it found. We can use the ``GM_adjust_oscillators`` function to add some more oscillators:
+Conveniently enough, GMAP already gives the option to confirm the chromophores (named oscillators in the code) it found. We can use the ``GM_adjust_oscillators`` function to add some more chromophores:
 
 .. code-block:: python
 
@@ -42,7 +42,7 @@ Conveniently enough, GMAP already gives the option to confirm the oscillators it
 
 That's a lot to take in, lets take it step by step.
 
-This function is designed to pass us a list of oscillators, and expects us to return the 'correct' one based on the one we were given. What happens here is that we create a new list to store oscillators. Then, for every oscillator we encounter in the list provided, we add both it, and a second one for this molecule to the new list. After we've done this for all oscillators in the provided list, we return our new one.
+This function is designed to pass us a list of :class:`~GMAP.src.tools.SystemReader.Oscillator` objects, and expects us to return the 'correct' one based on the one we were given. What happens here is that we create a new list to store oscillators. Then, for every oscillator we encounter in the list provided, we add both it, and a second one for this molecule to the new list. After we've done this for all oscillators in the provided list, we return our new one.
 
 But, how do we add that second oscillator? What's happening with that ``GM_SR.Oscillator`` call? Well, we're making smart use of the original definition of the Oscillator objects. The oscillators in the provided oscillator list were also created with a call to that same function. If you were to go to the source code and look at the docstring of the oscillator object constructor (or look it up in the documentation of :class:`~GMAP.src.tools.SystemReader.Oscillator`), you find the following information::
 
@@ -73,7 +73,7 @@ This bonus will be brief, as this will not be a general introduction in creating
 
 For starters, the water coupling map actually consists of two separate coupling maps. We have Water_Intra for intermolecular couplings, and WaterCoupling for 'sorting' our water couplings. The idea is that, when a user wants to couple the water molecules, they tell GMAP they want to use the WaterCoupling map. The WaterCoupling map is then responsible for assigning any intermolecular couplings to the dipole-dipole map, and the intramolecular ones to the Water_Intra map.
 
-The WaterCoupling map has, therefore, used the core.txt file to add some protections::
+In the WaterCoupling map we therefore added the corresponding protections to the core.txt file::
 
     require_pairs         DipDip Water_Intra
     singles_whitelist     Water

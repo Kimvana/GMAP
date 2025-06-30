@@ -31,7 +31,7 @@ You are a busy person and want to quickly get started with GMAP. Here you can fi
     
     .. grid-item-card::
         :margin: 0 3 0 0
-        :link: tutorials/index
+        :link: Tutorials/index
         :link-type: doc
 
         **Tutorials**
@@ -65,4 +65,4 @@ Running GEM
     
     installation
     forAIMusers
-    tutorials/index
+    Tutorials/index

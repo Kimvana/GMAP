@@ -17,7 +17,7 @@ Before this tutorial, make sure you have/did the following:
 Defining the filetree
 *******************************************************************************
 
-This tutorial will be pointing to file locations quite a bit, so lets establish first what our filetree looks like:
+This tutorial will be pointing to file locations quite a bit, so lets establish first what our filetree looks like. Note that this example uses GROMACS-style MD files, and windows-style file paths. This matters little, however, just use your own MD package with the corresponding output files, and replace the windows-style paths with those of your OS.
 
 .. code-block:: text
     
@@ -33,8 +33,6 @@ This tutorial will be pointing to file locations quite a bit, so lets establish 
 In this case, we are working on a system called 'my_protein'. A special directory for calculating spectra has been established, containing a directory for each software package used. This structure is not the only way of doing this, but we'll use it here. Of course, you should pick a name more indicative of your actual system, make sure to keep replacing 'my_protein' with the same term of your choice throughout this tutorial.
 
 This main directory (my_protein_spectra) will contain the scripts, parameter files and perhaps slurm files (when running on a slurm-style cluster). There might be an additional folder with protein data bank files, or maybe you placed these in the MD_files directory. The MD_files directory might contain other files generated while computing the trajectory.
-
-This example uses GROMACS-style MD files, and windows-style file paths. This matters little, however, just use your own MD package with the corresponding output files, and replace the windows-style paths with those of your OS.
 
 
 
@@ -58,11 +56,11 @@ The contents of the file should (for now) look like this:
 
 .. code-block:: text
     
-    topology_file        D:\spectra\my_protein_spectra\MD_files\my_protein.tpr
-    trajectory_file      D:\spectra\my_protein_spectra\MD_files\my_protein.xtc
+    topology_file        MD_files\my_protein.tpr
+    trajectory_file      MD_files\my_protein.xtc
 
-    output_directory     D:\spectra\my_protein_spectra\GEM_files
-    log_directory        D:\spectra\my_protein_spectra\GEM_files
+    output_directory     GEM_files
+    log_directory        GEM_files
 
     maps_to_use          AmideBB AmideSC
     couplings_to_use     ProteinAmide   :All
@@ -73,7 +71,7 @@ Note that a file like this is great to get an initial feel for the program, but 
 
 So, to explain what's happening:
 
-The first two parameters/lines are to tell GEM what input files it should read from. In the example, the files have been specified using absolute paths (this is also how GMAP returns paths when printing/logging), but they can also be specified relative to the input parameter files. More information on these parameters can be found at :ref:`topology_file <UserGuide_page_parameter_overview_topfile>` and :ref:`trajectory_file <UserGuide_page_parameter_overview_trjfile>`.
+The first two parameters/lines are to tell GEM what input files it should read from. In the example, the files have been specified using relative paths (this is not how GMAP returns paths when printing/logging - those are absolute), which is preferred to make calculations more easily reproducible. More information on these parameters can be found at :ref:`topology_file <UserGuide_page_parameter_overview_topfile>` and :ref:`trajectory_file <UserGuide_page_parameter_overview_trjfile>`.
 
 The second pair of parameters/lines instruct GEM where it should place its output. Using a different directory for this helps keep our main directory clean and organized. More information on these parameters can be foud at :ref:`output_directory <UserGuide_page_parameter_overview_outdir>` and :ref:`log_directory <UserGuide_page_parameter_overview_logdir>`.
 
@@ -98,7 +96,7 @@ To use the input file, open a command prompt (windows) or terminal (unix). Navig
 
 This should start the program. If not, check out the troubleshooting section at the bottom of this page. If everything went well, GMAP will show you all steps of the way, and end with the sentence "That was all for today, folks. Thank you, and good night!". This will be the first part of the program output:
 
-.. image:: images/amide-out1.jpg
+.. image:: Figures/amide-out1.jpg
     :alt: The first bit of output of the program.
 
 There are a few things to pay attention to here. First, the command listed under 'Running the following job', does it make sense? Most likely, it will not be exactly the same as what you typed in, as you see the full path to the GMAP installation here. Was this the one you requested?
@@ -224,7 +222,9 @@ The AmideBB and AmideSC maps also allow to choose a dipole model using 'AmideBB.
 
 Next, using 'ProteinAmide.coupling_choice' and 'ProteinAmide.NN_coupling_choice', you can select which coupling methods you would prefer for the general coupling, and the nearest-neighbour coupling.
 
-Finally, if you're computing on a cluster, you can tell GMAP how much time you have available for the calculation using the parameter 'time_limit'. If the program can't finish before then, it will safely stop. To guess how long the program will need, you can try extrapolate from how long the 1-frame calculation took, but that gives only a rough estimate. Longer trial-calculations can give better estimates. 
+Finally, if you're computing on a cluster, you can tell GMAP how much time you have available for the calculation using the parameter 'time_limit'. If the program can't finish before then, it will safely stop. To guess how long the program will need, you can try extrapolate from how long the 1-frame calculation took, but that gives only a rough estimate. Longer trial-calculations can give better estimates.
+
+When the program quits because of this time limit, it does so safely, and will report what frame it did last. This allows one to do only the remaining frames in a subsequent calculation. GMAP does not yet offer a tool to stitch the outputs of the two runs together, though.
 
 
 .. code-block:: text

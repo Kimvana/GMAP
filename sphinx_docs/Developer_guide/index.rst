@@ -14,7 +14,7 @@ These pages will contain information specifically for developers of the program.
 
     .. grid-item-card::
         :margin: 0 3 0 0
-        :link: Useful_resources
+        :link: useful_resources
         :link-type: doc
 
         **useful resources**
@@ -23,7 +23,7 @@ These pages will contain information specifically for developers of the program.
 
     .. grid-item-card::
         :margin: 0 3 0 0
-        :link: program_flow/index
+        :link: Program_flow/index
         :link-type: doc
 
         **Program flow**
@@ -32,7 +32,7 @@ These pages will contain information specifically for developers of the program.
     
     .. grid-item-card::
         :margin: 0 3 0 0
-        :link: Code_Style
+        :link: code_style
         :link-type: doc
 
         **Code Style**
@@ -61,8 +61,8 @@ These pages will contain information specifically for developers of the program.
 .. toctree::
     :hidden:
     
-    Useful_resources
-    program_flow/index
-    Code_Style
+    useful_resources
+    Program_flow/index
+    code_Style
     print_colors
     VScode_setup

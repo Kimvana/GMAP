@@ -15,7 +15,7 @@ The problem
 
 There are some choices/assumptions that need to be made for the AmideBB map to run. One example is the model: there are multiple maps/models for the Amide-I stretch in proteins (Tokmakoff, Skinner, Jansen, Cho, Hirst), and only one can be used at a time. This map needs the user to make a choice which it will apply.
 
-Another (out of currently 11) example is the Torii dipole angle. This is the example we will solve below, as it is a simpler case than the others. This will let us focus on the 'how' of parameters, instead of intricacies of the map. The point of this parameter is to allow the dipole moment to be at a different angle to the molecule than the original paper suggested.
+Another example is the Torii dipole angle. This is the example we will solve below, as it is a simpler case than the others. This will let us focus on the 'how' of parameters, instead of intricacies of the map. The point of this parameter is to allow the dipole moment to be at a different angle to the molecule than the original paper suggested.
 
 
 ****************************************
@@ -28,7 +28,7 @@ GMAP has infrastructure available to make it as easy as possible to define param
 
     Torii_dipole_angle[float]      10  # in degrees
 
-This line basically tells GMAP this: "This map (AmideBB) should have a parameter named 'Torii_dipole_angle'. When a user uses this parameter, make sure their choice is (or can be converted to) a single float. If a user doesn't specify the parameter, assume the value is 10.". The comment ('# in degrees') is not used, and is useful for coders/(map)developers looking in this file.
+This line basically tells GMAP this: "This map (AmideBB) should have a parameter named 'Torii_dipole_angle'. When a user uses this parameter, make sure their choice is (or can be converted to) a single float. If a user doesn't specify the parameter, assume the value is 10.". The comment ('# in degrees') is not used, and is useful for coders/(map)developers looking in this file, as well as for advanced users as clarification.
 
 Then, GMAP does its work. There is a default value given here in this map's parameter reference file, but the user can use a default parameter file, an input file, and define parameters on the command line. GMAP looks through all these sources, interprets them, finds out what choice to use. Then it checks whether the choice is indeed a float, and turns it into one. Then, it is made available to our map for use in further code.
 

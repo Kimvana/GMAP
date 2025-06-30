@@ -31,7 +31,7 @@ object.
 
     .. grid-item-card::
         :margin: 0 3 0 0
-        :link: tutorials/index
+        :link: Tutorials/index
         :link-type: doc
 
         **Tutorials**
@@ -53,5 +53,5 @@ object.
     
     units
     File_structure/index
-    tutorials/index
+    Tutorials/index
     checklist

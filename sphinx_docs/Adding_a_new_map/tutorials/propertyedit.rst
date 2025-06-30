@@ -25,7 +25,7 @@ in the core.txt file, we add the following line:
     VEG_reference       position 26      # position of Mg
 
 This line says 'when calculating the electrostatics felt by a chromophore of this name/type, the distance to any influencing atoms/groups/molecules should be calculated from the position of the atom numbered 26 (being magnesium)'.
-The atom numbered 26 is the magnesium atom, because that's what on that position in the funcgroup file.
+The atom numbered 26 is the magnesium atom, because that's what on that position in the used_atoms list.
 
 Now, we just need a way to define what point of the influencing Bchl-c molecules we should calculate the distance to. This should be done using the main.py file, to which we add the following function:
 

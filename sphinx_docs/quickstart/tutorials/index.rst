@@ -31,7 +31,7 @@ Some people learn better through detailed explanation, but others prefer some ex
 
     .. grid-item-card::
         :margin: 0 3 0 0
-        :link: ../../Adding_a_new_map/tutorials/index
+        :link: ../../Adding_a_new_map/Tutorials/index
         :link-type: doc
 
         **Creating maps**
