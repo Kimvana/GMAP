@@ -113,6 +113,13 @@ AmideBB.allow_map_mismatch
 
     When using this map in conjunction with the AmideSC map (developed for protein sidechain amides), it makes most physical sense to use the same frequency and dipole methods for both maps. By default, this map forces users to use the same methods for both maps (in order to avoid user error). If it is truly intended to have different methods active, this parameter can be used to have the map allow that.
 
+AmideBB.Torii_dipole_angle
+    no shorthand
+    options: any float (default = 10)
+
+    When using the Torii dipole method, the angle at which the dipole is placed can be varied by changing this parameter. The value is assumed in degrees angle to the C=O bond.
+
+
 
 warnings that can be raised by this map
 ---------------------------------------

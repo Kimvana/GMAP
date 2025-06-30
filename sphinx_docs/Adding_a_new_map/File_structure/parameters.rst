@@ -1,4 +1,4 @@
-.. _UserGuide_page_map_parameters:
+.. _AddMap_page_map_parameters:
 
 ##############
 parameters.ref
@@ -31,7 +31,7 @@ shorthand is the (optional!) shorthand that can be used when specifying a choice
 Notice that the shorthand does not influence the map name itself. This means that multiple maps can safely share the same shorthand. They can consist of multiple characters, but may also consist of a single letter.
 The shorthand is fully optional. If you don't want to specify one, leave it out, and don't add the parentheses. 
 
-.. _UserGuide_page_map_parameters_types:
+.. _AddMap_page_map_parameters_types:
 
 parameter_type denotes what the python datatype of the parameter choice should be. Currently, the options are 'path' (for pathlib.Path type - file names), 'str' (for strings), 'bool' (for booleans), 'int' (for integers), and 'float'.
 If a parameter should be allowed (but still not required) to take more than one argument, the type should be prepended with 'list\_'. So, if the desired type is multiple strings, the type should be 'list_str'.

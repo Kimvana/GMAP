@@ -28,12 +28,12 @@ class RefPars:
     Each map (see :ref:`adding a new map<UserGuide_page_adding_map>`)
     can also have it's own selection of parameters, stored in its own
     parameter file. See
-    :ref:`parameters.ref<UserGuide_page_map_parameters>` for an
+    :ref:`parameters.ref<AddMap_page_map_parameters>` for an
     explanation of the expected format.
 
     .. note ::
         Users of the program are probably looking for the
-        :ref:`parameters.ref<UserGuide_page_map_parameters>` page.
+        :ref:`parameters.ref<AddMap_page_map_parameters>` page.
 
     Parameters
     ----------
@@ -608,7 +608,7 @@ class RefPars:
             providing a choice for this parameter
         key_dtype : list of str
             The datatype expected for this parameter. See
-            :ref:`parameters.ref<UserGuide_page_map_parameters>` for
+            :ref:`parameters.ref<AddMap_page_map_parameters>` for
             more explanation on datatypes.
         """
 

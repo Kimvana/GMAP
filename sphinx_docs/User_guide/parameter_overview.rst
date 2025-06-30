@@ -369,7 +369,7 @@ The following have been tested/confirmed usable with GMAP:
 - Amber: .top
 
 
-The following have been tested/confirmed **un**usable with GMAP:
+The following have been tested/confirmed **not** usable with GMAP:
 
 - GROMACS: .gro (lacks charge information)
 
@@ -394,7 +394,7 @@ The following have been tested/confirmed usable with GMAP:
 \* Note that there appear to be different types of amber .mdcrd files. Some do contain information on the dimensions of the simulation box, others do not. GMAP needs one that does.
 
 
-The following have been tested/confirmed **un**usable with GMAP:
+The following have been tested/confirmed **not** usable with GMAP:
 
 - CHARMM/NAMD: .crd (lacks PBC box dimensions), .cor (MDAnalysis does not support this file type)
 
