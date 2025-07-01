@@ -26,7 +26,7 @@ VEG_reference  position 0  # Mg atom
 
 dipole_gas_phase  4.61 # 4.49 for Chla, 4.61 for Chlb # doi:10.1021/jp106323e
 frequency_gas_phase 15455 # doi:10.1021/jp106323e
-frequency_data_file_linear diff_charges_HF-CIS.txt  # Could also use B3LYP: diff_charges_B3LYP.txt
+frequency_data_file_linear diff_charges_B3LYP.txt  # diff_charges_HF-CIS.txt  # Could also use HF-CIS: diff_charges_HF-CIS.txt 
 multiply_freq GM_con.e2i4pieps_angcm  # 116140.9733/2
 
 # position and double position should maybe correspond to Mg (needed to have pos and dbp)
