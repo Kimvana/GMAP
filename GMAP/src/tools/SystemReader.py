@@ -158,13 +158,12 @@ class System:
         """
 
         self.rightangled = check_box_rightangled(self.universe)
-        if not self.rightangled:
-            GM_PT.Printer.warning(
-                "\nSubmitted MD system is not of cubic, tetragonal or "
-                "orthorhombic symmetry. In the current state, this program "
-                "only supports right-angled systems.",
-                "MD_SU_2", True, GMAPerrclass=GM_Ex.GmapNotImplementedError
-            )
+        if self.rightangled:
+            if RunPars.treat_box == "auto":
+                RunPars.treat_box = "orthorhombic"
+        else:
+            if RunPars.treat_box == "auto":
+                RunPars.treat_box = "triclinic"
 
         self.neutral = check_box_charge(RunPars, self.charges)
 
@@ -932,7 +931,7 @@ class System:
             coupmap = RunPars.requested_pairmapdict[coupmapname]
             coupmap.check_singles_2(RunPars, oscillators)
 
-    def update_properties(self):
+    def update_properties(self, RunPars):
         """Reloads the frame-dependent properties of the system.
 
         This function is supposed to be called at the beginning of every
@@ -952,10 +951,16 @@ class System:
         clib = GM_CL.VEG_CLib()
         clib.positions_to_box(self)
 
-        self.residues.CoM_c = np.zeros((self.nres, 3), dtype="float32")
-        self.residues.CoM_c = np.ctypeslib.as_ctypes(
-            np.ravel(self.residues.CoM_c))
+        self.residues.CoM_box_c = np.zeros((self.nres, 3), dtype="float32")
+        self.residues.CoM_box_c = np.ctypeslib.as_ctypes(
+            np.ravel(self.residues.CoM_box_c))
         clib.calc_CoM_box(self)  # fill CoM_c. Results are calculated in box c.
+
+        if RunPars.treat_box == "orthorhombic":
+            self.residues.CoM_c = np.zeros((self.nres, 3), dtype="float32")
+            self.residues.CoM_c = np.ctypeslib.as_ctypes(
+                np.ravel(self.residues.CoM_c))
+            clib.CoM_frombox(self)
 
     def print_system(self, RunPars):
         """Reports what the MD system looks like - what oscillators were

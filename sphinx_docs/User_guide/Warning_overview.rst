@@ -24,31 +24,31 @@ The file structure for reference parameter files is different than that of defau
 SU_FP_3
 -------
 The type of a parameter in the reference parameter file has been specified slightly wrong. The format is recognized, but the contents are probably misspelled. 
-If you are developing the file that triggered the error, :ref:`here <UserGuide_page_map_parameters_types>` you can find more info on the different types, or look at the file 'reference_parameters.ref' that lives in the sourcefiles directory for examples.
+If you are developing the file that triggered the error, :ref:`here <AddMap_page_map_parameters_types>` you can find more info on the different types, or look at the file 'reference_parameters.ref' that lives in the sourcefiles directory for examples.
 If you have not touched the file that created this error, please get in touch with the person that created the file.
 
 SU_FP_4
 -------
 An unexpected error was encountered while parsing the types of parameters in the reference parameter file. It might be that there is a mistake in the (type or amount of) brackets used, whitespaces between the brackets, and many more.
-If you are developing the file that triggered the error, :ref:`here <UserGuide_page_map_parameters_types>` you can find more info on the different types, or look at the file 'reference_parameters.ref' that lives in the sourcefiles directory for examples.
+If you are developing the file that triggered the error, :ref:`here <AddMap_page_map_parameters_types>` you can find more info on the different types, or look at the file 'reference_parameters.ref' that lives in the sourcefiles directory for examples.
 If you have not touched the file that created this error, please get in touch with the person that created the file.
 
 SU_FP_5
 -------
 While parsing the choice of a parameter in the reference parameter file, there was a wrong type. Either the parameter has an unexpected python type, or a bool was specified with an choice of the wrong type (it couldn't be converted to a True or False). 
-If you are developing the file that triggered the error, :ref:`here <UserGuide_page_map_parameters_types>` you can find more info on the different types, or look at the file 'reference_parameters.ref' that lives in the sourcefiles directory for examples.
+If you are developing the file that triggered the error, :ref:`here <AddMap_page_map_parameters_types>` you can find more info on the different types, or look at the file 'reference_parameters.ref' that lives in the sourcefiles directory for examples.
 If you have not touched the file that created this error, please get in touch with the person that created the file.
 
 SU_FP_6
 -------
 While parsing the choice of a parameter in the reference parameter file, an unexpected amount of choices was encountered. If the type of the parameter does not contain 'list\_', only one choice can be given.
-If you are developing the file that triggered the error, :ref:`here <UserGuide_page_map_parameters_types>` you can find more info on the different types, or look at the file 'reference_parameters.ref' that lives in the sourcefiles directory for examples.
+If you are developing the file that triggered the error, :ref:`here <AddMap_page_map_parameters_types>` you can find more info on the different types, or look at the file 'reference_parameters.ref' that lives in the sourcefiles directory for examples.
 If you have not touched the file that created this error, please get in touch with the person that created the file.
 
 SU_FP_7
 -------
 While parsing the choice of a parameter in the reference parameter file, a different error occurred.
-If you are developing the file that triggered the error, :ref:`here <UserGuide_page_map_parameters_types>` you can find more info on the different types, or look at the file 'reference_parameters.ref' that lives in the sourcefiles directory for examples.
+If you are developing the file that triggered the error, :ref:`here <AddMap_page_map_parameters_types>` you can find more info on the different types, or look at the file 'reference_parameters.ref' that lives in the sourcefiles directory for examples.
 If you have not touched the file that created this error, please get in touch with the person that created the file.
 
 SU_FP_8
@@ -343,6 +343,10 @@ There was an issue with the specification for the keyword 'valid_combinations' f
 MI_MC_12
 --------
 The mentioned parameter can only take a limited amount of options, and one of those used is not one of them. [Cite relevant manual page!!]
+
+MI_MC_13
+--------
+The mentioned parameter can take either the form of a decimal number, or of something python can interpret. Any constants in the numpy library (e.g. np.pi) are available, as well as all constants in the GMAP constants module.  [Cite relevant manual page!!]
 
 
 MI_MM

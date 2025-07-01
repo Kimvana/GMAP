@@ -1,0 +1,11 @@
+
+# topology_file        D:\spectra\my_protein_spectra\MD_files\my_protein.tpr
+# trajectory_file      D:\spectra\my_protein_spectra\MD_files\my_protein.xtc
+
+# output_directory     D:\spectra\my_protein_spectra\GEM_files
+# log_directory        D:\spectra\my_protein_spectra\GEM_files
+
+maps_to_use          AmideBB AmideSC
+couplings_to_use     ProteinAmide   :All
+
+number_frames        1

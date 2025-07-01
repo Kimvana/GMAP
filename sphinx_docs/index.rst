@@ -10,7 +10,7 @@ GMAP documentation
 
     .. grid-item-card::
         :margin: 0 3 0 0
-        :link: quickstart/index
+        :link: Quickstart/index
         :link-type: doc
 
         **Quickstart guide**
@@ -69,7 +69,7 @@ GMAP documentation
     :maxdepth: 4
     :hidden:
 
-    quickstart/index
+    Quickstart/index
     User_guide/index
     Theory/index
     Adding_a_new_map/index

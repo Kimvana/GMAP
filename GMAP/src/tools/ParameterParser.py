@@ -7,7 +7,7 @@ import numpy as np
 
 # local imports
 import GMAP.src.tools.StringClasses as GM_SC
-import GMAP.src.tools.constants as GM_Con
+import GMAP.src.tools.constants as GM_con
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.FileHandler as GM_FH
 import GMAP.src.tools.MapReader as GM_MR
@@ -28,12 +28,12 @@ class RefPars:
     Each map (see :ref:`adding a new map<UserGuide_page_adding_map>`)
     can also have it's own selection of parameters, stored in its own
     parameter file. See
-    :ref:`parameters.ref<UserGuide_page_map_parameters>` for an
+    :ref:`parameters.ref<AddMap_page_map_parameters>` for an
     explanation of the expected format.
 
     .. note ::
         Users of the program are probably looking for the
-        :ref:`parameters.ref<UserGuide_page_map_parameters>` page.
+        :ref:`parameters.ref<AddMap_page_map_parameters>` page.
 
     Parameters
     ----------
@@ -547,22 +547,22 @@ class RefPars:
         if self.choices["hamiltonian_units"][0] == "cm-1":
             self.choices["hamiltonian_multiplier"] = [1.0]
         else:  # eV
-            self.choices["hamiltonian_multiplier"] = [GM_Con.cm2eV]
+            self.choices["hamiltonian_multiplier"] = [GM_con.cm2eV]
 
         if self.choices["energies_units"][0] == "cm-1":
             self.choices["energies_multiplier"] = [1.0]
         else:  # eV
-            self.choices["energies_multiplier"] = [GM_Con.cm2eV]
+            self.choices["energies_multiplier"] = [GM_con.cm2eV]
 
         if self.choices["dipoles_units"][0] == "Debye":
             self.choices["dipoles_multiplier"] = [1.0]
         else:  # ea0
-            self.choices["dipoles_multiplier"] = [GM_Con.Debye2ea0]
+            self.choices["dipoles_multiplier"] = [GM_con.Debye2ea0]
 
         if self.choices["raman_units"][0] == "Ang3":
             self.choices["raman_multiplier"] = [1.0]
         else:  # bohr3
-            self.choices["raman_multiplier"] = [GM_Con.ang2bohr ** 3]
+            self.choices["raman_multiplier"] = [GM_con.ang2bohr ** 3]
         # else:
         # There is only one unit option for raman at the moment, as the
         # units used in raman are a bit (very) confusing. If we ever want
@@ -572,7 +572,7 @@ class RefPars:
             case "Ang":
                 self.choices["positions_multiplier"] = [1.0]
             case "Bohr":
-                self.choices["positions_multiplier"] = [GM_Con.ang2bohr]
+                self.choices["positions_multiplier"] = [GM_con.ang2bohr]
             case "nm":
                 self.choices["positions_multiplier"] = [0.1]
 
@@ -580,7 +580,7 @@ class RefPars:
             case "Ang":
                 self.choices["doublepos_multiplier"] = [1.0]
             case "Bohr":
-                self.choices["doublepos_multiplier"] = [GM_Con.ang2bohr]
+                self.choices["doublepos_multiplier"] = [GM_con.ang2bohr]
             case "nm":
                 self.choices["doublepos_multiplier"] = [0.1]
 
@@ -608,7 +608,7 @@ class RefPars:
             providing a choice for this parameter
         key_dtype : list of str
             The datatype expected for this parameter. See
-            :ref:`parameters.ref<UserGuide_page_map_parameters>` for
+            :ref:`parameters.ref<AddMap_page_map_parameters>` for
             more explanation on datatypes.
         """
 
@@ -1503,7 +1503,7 @@ class RawPars:
                 if self.choices["hamiltonian_units"][0] == "cm-1":
                     self.choices["hamiltonian_multiplier"] = [1.0]
                 else:  # eV
-                    self.choices["hamiltonian_multiplier"] = [GM_Con.cm2eV]
+                    self.choices["hamiltonian_multiplier"] = [GM_con.cm2eV]
 
         if "energies_units" in self.choices:
             if self.is_default:  # for default, use multiplier
@@ -1520,7 +1520,7 @@ class RawPars:
                 if self.choices["energies_units"][0] == "cm-1":
                     self.choices["energies_multiplier"] = [1.0]
                 else:  # eV
-                    self.choices["energies_multiplier"] = [GM_Con.cm2eV]
+                    self.choices["energies_multiplier"] = [GM_con.cm2eV]
 
         if "dipoles_units" in self.choices:
             if self.is_default:  # for default, use multiplier
@@ -1537,7 +1537,7 @@ class RawPars:
                 if self.choices["dipoles_units"][0] == "Debye":
                     self.choices["dipoles_multiplier"] = [1.0]
                 else:  # eV
-                    self.choices["dipoles_multiplier"] = [GM_Con.Debye2ea0]
+                    self.choices["dipoles_multiplier"] = [GM_con.Debye2ea0]
 
         if "raman_units" in self.choices:
             if self.is_default:  # for default, use multiplier
@@ -1554,7 +1554,7 @@ class RawPars:
                 if self.choices["raman_units"][0] == "Ang3":
                     self.choices["raman_multiplier"] = [1.0]
                 else:  # bohr3
-                    self.choices["raman_multiplier"] = [GM_Con.ang2bohr ** 3]
+                    self.choices["raman_multiplier"] = [GM_con.ang2bohr ** 3]
 
         if "positions_units" in self.choices:
             if self.is_default:  # for default, use multiplier
@@ -1573,7 +1573,7 @@ class RawPars:
                         self.choices["positions_multiplier"] = [1.0]
                     case "Bohr":
                         self.choices["positions_multiplier"] = [
-                            GM_Con.ang2bohr]
+                            GM_con.ang2bohr]
                     case "nm":
                         self.choices["positions_multiplier"] = [0.1]
 
@@ -1594,7 +1594,7 @@ class RawPars:
                         self.choices["doublepos_multiplier"] = [1.0]
                     case "Bohr":
                         self.choices["doublepos_multiplier"] = [
-                            GM_Con.ang2bohr]
+                            GM_con.ang2bohr]
                     case "nm":
                         self.choices["doublepos_multiplier"] = [0.1]
 

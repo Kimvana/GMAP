@@ -315,7 +315,7 @@ def trj_loop(RunPars, System):
             break
 
         # rebuild the frame-specific data (positions, box, etc)
-        System.update_properties()
+        System.update_properties(RunPars)
         GM_PT.Printer.add_time(
             4, "done system updates. next: osc updates", "OscUpdate", "ms")
         for oscillator in System.oscillators:
@@ -719,13 +719,11 @@ def GEM(callcommand):
     # calculate all (requested) frames
     trj_loop(RunPars, System)
 
-    dpr("creating stats")
     # finalize profiler
     if RunPars.profiler:
         profile.create_stats()
         profile.dump_stats(RunPars.log_profiling_filename)
 
-    dpr("running gprof")
     if RunPars.profiler_graph:
         strcommand = [
             "gprof2dot", "-f", "pstats",

@@ -28,7 +28,7 @@ These pages will contain information relevant for common use of the program.
 
     .. grid-item-card::
         :margin: 0 3 0 0
-        :link: Warning_overview
+        :link: warning_overview
         :link-type: doc
 
         **warning overview**
@@ -46,10 +46,10 @@ These pages will contain information relevant for common use of the program.
 
     .. grid-item-card::
         :margin: 0 3 0 0
-        :link: Setup
+        :link: setup
         :link-type: doc
 
-        **setup**
+        **Setup**
         ^^^^^^^^^^^^^^^^
         Setup is a little tool that copies the sourcefiles and maps directories from the installation.
 
@@ -68,9 +68,9 @@ These pages will contain information relevant for common use of the program.
     :maxdepth: 4
     :hidden:
     
-    Warning_overview
+    warning_overview
     specifying_parameters
     parameter_overview
     influencer_specification
     helpers
-    Setup
+    setup

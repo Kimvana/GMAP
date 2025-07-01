@@ -25,7 +25,7 @@ import pytest
 
 # local imports
 from GMAP.src.programs.GEM import alljobs
-import GMAP.src.tools.constants as GM_Con
+import GMAP.src.tools.constants as GM_con
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.FileHandler as GM_FH
 import GMAP.src.tools.MapReader as GM_MR
@@ -48,6 +48,7 @@ class TestRefPars:
             "output_format": ["bin", "txt"],
             "output_data": ["ham", "dip", "ene", "pos", "dbp", "ram"],
             "estatics_method": ["perres", "perres_nocut"],
+            "treat_box": ["auto", "orthorhombic", "triclinic"],
             "hamiltonian_units": ["cm-1", "eV"],
             "energies_units": ["cm-1", "eV"],
             "dipoles_units": ["Debye", "eBohr"],
@@ -116,6 +117,7 @@ class TestRefPars:
             "estatics_method": ["perres"],
             "neutral_charge_threshold": [0.0001],
             "guess_bonds": [False],
+            "treat_box": ["auto"],
             "estatic_range": [20.0],
             "estatic_smooth_range": [5.0],
             "start_frame": [0],
@@ -351,6 +353,7 @@ class TestRefPars:
             "output_format",
             "output_data",
             "estatics_method",
+            "treat_box",
             "hamiltonian_units",
             "energies_units",
             "dipoles_units",
@@ -578,6 +581,7 @@ class TestRawPars:
             "estatics_method": ["perres"],
             "neutral_charge_threshold": [0.0001],
             "guess_bonds": [False],
+            "treat_box": ["auto"],
             "estatic_range": [20.0],
             "estatic_smooth_range": [5.0],
             "start_frame": [0],
@@ -667,17 +671,17 @@ class TestRawPars:
         assert InPars.choices == {
             "verbose": [4],
             "hamiltonian_units": ["eV"],
-            "hamiltonian_multiplier": [GM_Con.cm2eV],
+            "hamiltonian_multiplier": [GM_con.cm2eV],
             "energies_units": ["eV"],
-            "energies_multiplier": [GM_Con.cm2eV],
+            "energies_multiplier": [GM_con.cm2eV],
             "dipoles_units": ["eBohr"],
-            "dipoles_multiplier": [GM_Con.Debye2ea0],
+            "dipoles_multiplier": [GM_con.Debye2ea0],
             "raman_units": ["Bohr3"],
-            "raman_multiplier": [GM_Con.ang2bohr**3],
+            "raman_multiplier": [GM_con.ang2bohr**3],
             "positions_units": ["Bohr"],
-            "positions_multiplier": [GM_Con.ang2bohr],
+            "positions_multiplier": [GM_con.ang2bohr],
             "doublepos_units": ["Bohr"],
-            "doublepos_multiplier": [GM_Con.ang2bohr],
+            "doublepos_multiplier": [GM_con.ang2bohr],
             "bool_test1": [False],
             "bool_test2": [True],
             "int_test_free_list": [88, 44],
@@ -2317,7 +2321,7 @@ def test_get_parameters():
     # has already been tested separately.
     assert InPars.fname.name == "test_inpar.txt"
     assert DefPars == RefPars
-    assert len(mapdict) == 5
+    assert len(mapdict) == 6
     assert CmdPars.choices == {}
 
     (

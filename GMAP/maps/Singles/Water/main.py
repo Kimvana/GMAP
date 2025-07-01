@@ -17,7 +17,7 @@ how about adding these?
 """
 
 # GMAP imports
-import GMAP.src.tools.constants as GM_Con
+import GMAP.src.tools.constants as GM_con
 
 # Import System Reader for additional functionality
 import GMAP.src.tools.SystemReader as GM_SR
@@ -118,9 +118,10 @@ def GM_get_dipole_mag(Map, Syst, osc):
 
     # The fields in the core of GEM are using Ångström, we need bohr for the
     # map
-    E = osc.VEGout[0, 1] * GM_Con.bohr2ang ** 2
+    E = osc.VEGout[0, 1] * GM_con.bohr2ang ** 2
     return (
         (0.7112 + 75.59 * E) * mug  # mu_i
         * (0.1934 - 0.175e-5 * freq)  # x_i
-        * (1.611 + 5.893e-4 * freq)  # p_i
+        / GM_con.Debye2ea0
+        # / 0.393456 # convert from Bohr e to Debye
     )

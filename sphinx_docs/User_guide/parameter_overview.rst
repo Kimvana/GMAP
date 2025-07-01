@@ -369,7 +369,7 @@ The following have been tested/confirmed usable with GMAP:
 - Amber: .top
 
 
-The following have been tested/confirmed **un**usable with GMAP:
+The following have been tested/confirmed **not** usable with GMAP:
 
 - GROMACS: .gro (lacks charge information)
 
@@ -394,7 +394,7 @@ The following have been tested/confirmed usable with GMAP:
 \* Note that there appear to be different types of amber .mdcrd files. Some do contain information on the dimensions of the simulation box, others do not. GMAP needs one that does.
 
 
-The following have been tested/confirmed **un**usable with GMAP:
+The following have been tested/confirmed **not** usable with GMAP:
 
 - CHARMM/NAMD: .crd (lacks PBC box dimensions), .cor (MDAnalysis does not support this file type)
 
@@ -450,10 +450,10 @@ In what format the output files should be created. Bin for binary format, txt fo
 output_data
 ===========
 | (no shorthand available)
-| (options: ham, dip, ene, pos, dbp)
+| (options: ham, dip, ene, ram, pos, dbp)
 | (used by: GEM)
 
-What kind of data the program should generate. Multiple choices can be provided. 'ham' lets the program output a Hamiltonian for each frame, 'dip' makes it output dipoles. 'ene' is used to output the energies file (the diagonal of the hamiltonian). 'pos' outputs the positions file (a single position per oscillator), 'dbp' outputs the doublepos file (two positions per oscillator).
+What kind of data the program should generate. Multiple choices can be provided. 'ham' lets the program output a Hamiltonian for each frame, 'dip' makes it output dipoles. 'ene' is used to output the energies file (the diagonal of the hamiltonian). 'ram' outputs the raman tensor, 'pos' outputs the positions file (a single position per oscillator), 'dbp' outputs the doublepos file (two positions per oscillator).
 
 hamiltonian_units
 =================
@@ -761,6 +761,18 @@ guess_bonds
 | (used by: GEM, DEPICT)
 
 Whether the program should guess bonds for the supplied universe. This should only be used if bond information if absolutely necessary, and there really is no topology file with bond information available. Bonds are guessed by `MDAnalysis <https://userguide.mdanalysis.org/stable/formats/guessing.html#types>`__.
+
+
+treat_box
+=========
+| (no shorthand available)
+| (options: auto, orthorhombic, triclinic)
+| (used by: GEM, DEPICT)
+
+As what kind of box the system should be treated. 'orthorhombic' is intended for any system where all box vectors are on 90 degree angles, 'triclinic' is intended for the others. When choosing either of these options, that mode is forced on your system, regardless of whether it's angles match. When set to 'auto', GMAP will look at your system, use 'orthorhombic' whenever possible (as it is much faster), and 'triclinic' for the other cases.
+
+.. tip::
+    How much faster is orthorhombic exactly? This will depend on multiple factors. But we've seen runs take 25% - 50% less time so far.
 
 
 .. _UserGuide_page_parameter_overview_estatrange:

@@ -4,7 +4,7 @@
 import numpy as np
 
 # gmap imports
-import GMAP.src.tools.constants as GM_Con
+import GMAP.src.tools.constants as GM_con
 import GMAP.src.tools.MathFunctions as GM_MF
 import GMAP.src.tools.PrintTools as GM_PT
 # from GMAP.src.tools.PrintTools import devprint as dpr
@@ -88,7 +88,7 @@ class NeighborMap:
             Found through int((angle + 180) // self.space)
         """
 
-        angle *= GM_Con.rad2deg
+        angle *= GM_con.rad2deg
         angle_N = int((angle + 180) // self.space)
         if angle_N == (self.dim - 1):
             angle_N = self.dim - 2
@@ -165,7 +165,7 @@ def GM_calc_coupling(map_, system, hamiltonian):
     """
 
     for pair in map_.allpairs:
-        J = map_.map_per_pair[pair].get_coupling(
+        J = map_.map_per_pair[tuple(pair)].get_coupling(
             system.oscillators[pair[0]],
             system.oscillators[pair[1]], system)
         hamiltonian[pair[0], pair[1]] = J
@@ -187,8 +187,8 @@ def GM_pre_run(map_, system):
 
     map_.map_per_pair = {}
     for pair in map_.allpairs:
-        map_.map_per_pair[pair] = map_.neighbormaps["GLDP" + determine_map(
-            pair, map_, system)]
+        map_.map_per_pair[tuple(pair)] = map_.neighbormaps[
+            "GLDP" + determine_map(pair, map_, system)]
 
 
 def determine_map(pair, map_, system):

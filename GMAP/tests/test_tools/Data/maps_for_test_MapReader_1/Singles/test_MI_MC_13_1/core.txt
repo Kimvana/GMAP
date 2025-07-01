@@ -14,6 +14,6 @@ VEG_reference CoM 2 3
 frequency_gas_phase 1500
 dipole_gas_phase 0.3
 
-multiply_freq   2A
+multiply_freq   2A  # This is invalid python, so syntax error -> exec() fails
 
 
