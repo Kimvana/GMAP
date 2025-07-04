@@ -245,6 +245,9 @@ class System:
 
         prevresnum = -1
         writeresnum = -1
+        prevsegid = -1  # definitely different from the segid strings
+        # MDA format overview states 'segids' is always available
+        segids = self.universe.atoms.segids
         for ix, atomnum in enumerate(self.atnums):
             if atomnum != ix:
                 # yes, we could just force atomnum to match ix. But if this
@@ -257,10 +260,12 @@ class System:
                     "MD_SU_4", True, GMAPerrclass=GM_Ex.GmapMDFileError
                 )
             resnum = self.resnums[atomnum]
-            if resnum != prevresnum:
+            segid = segids[atomnum]
+            if resnum != prevresnum or segid != prevsegid:
                 writeresnum += 1
             self.resnums[atomnum] = writeresnum
             prevresnum = resnum
+            prevsegid = segid
 
     def determine_box(self):
         """Find out what the simulation box looks like."""

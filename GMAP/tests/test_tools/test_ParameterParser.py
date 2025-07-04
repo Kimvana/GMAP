@@ -2321,7 +2321,7 @@ def test_get_parameters():
     # has already been tested separately.
     assert InPars.fname.name == "test_inpar.txt"
     assert DefPars == RefPars
-    assert len(mapdict) == 6
+    assert len(mapdict) == 7
     assert CmdPars.choices == {}
 
     (
