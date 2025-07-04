@@ -51,6 +51,9 @@ AmideBB.dipole_map_choice
 
 AmideBB.include_protein_residues
     no shorthand
+    default: ARN ASH GLH HID HIE HIP HSD LYN LYSH
+
+    To turn this off, use 'None' (without the quotation marks) as the only choice.
 
     Which residue names exist in the simulation that are a part of the protein, but not cannonical amino acids. Any residues mentioned here are expected to contain the amide-backbone of N, CA, and C atoms. If a middle-chain residue, it also must have an 'O' atom (the double-bounded one to C), and H/HN (depending on software, HN for CHARMM, H for GROMACS/amber) atom on the nitrogen. A chain-ending residue needs only one of these two.
 

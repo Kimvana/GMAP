@@ -303,7 +303,7 @@ def DLcheck(osc1, osc2, map_, system):
     # checks whether the amino acid between two oscillators is in L or D
     # configuration
 
-    if osc2.resnames[0] in ("GLY", "FOR", "ETA", "GL2"):
+    if osc2.resnames[0] in ("GLY", "FOR", "ETA", "GL2", "ACE", "NME"):
         return 0
 
     atomCA = osc2.positions_box[2]

@@ -2,11 +2,20 @@
 can_output  ham ene dip ram pos dbp
 
 # does not cover prepros
-functional_group [anyprot] N CA C(1) O [anyprot] N(1) H,HN CA C
+functional_group [anyprot] CA C(1) O [anyprot] N(1) H,HN CA
 # in   H,HN    H is for GROMACS/amber, HN is for CHARMM
 
 # pre-prolines!
-functional_group [anyprot] N CA C(1) O [PRO] N(1) CD CA C
+functional_group [anyprot] CA C(1) O [PRO] N(1) CD CA
+
+# special chain starters
+functional_group [FOR] H C(1) O [anyprot] N(1) H,HN CA
+functional_group [ACE] CH3 C(1) O [anyprot] N(1) H,HN CA
+
+# special chain ends
+functional_group [anyprot] CA C(1) O [ETA] N(1) H,HN C2
+functional_group [anyprot] CA C(1) O [GL2] N(1) H1 H2
+functional_group [anyprot] CA C(1) O [NME] N(1) H,HN CH3
 
 
 add_corefile       proteincore.txt
@@ -15,7 +24,7 @@ add_corefile       proteincore.txt
 assume_length_units    Bohr
 
 #   C O CA N H CA
-used_atoms               2 3 1 4 5 6
+used_atoms               1 2 0 3 4 5
 electrostatic_atoms      0 3
 electrostatic_choice     E
 
