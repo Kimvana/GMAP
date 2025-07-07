@@ -3238,8 +3238,11 @@ def parse_influencerfile_line(line, groupdict, fname):
     letters = "abcdefghijklmnopqrstuvwxyz"
     numbers = "1234567890"
     namechars = letters + letters.upper() + numbers + "_"
-    specialchars = "-&|^()"
-    allowed_chars = " :" + namechars + specialchars
+    specialchars = "+-!@#$%^&*/?<>,."
+    opchars = "-&|^"
+    parentheses = "()"
+    setchars = opchars + parentheses
+    allowed_chars = " :" + namechars + setchars + specialchars
 
     problem_chars = [char for char in line if char not in allowed_chars]
 
@@ -3261,12 +3264,15 @@ def parse_influencerfile_line(line, groupdict, fname):
     for char in line:
         if char == ":":
             fromdict = True
-        elif char in namechars:
+        elif char in namechars + specialchars + opchars:
             is_name = True
             curname += char
-        elif char in (specialchars + " "):
+        elif char in (parentheses + " "):
             if is_name:
-                if fromdict:
+                # if we found an operator
+                if len(curname) == 1 and curname in opchars:
+                    final_choice += curname
+                elif fromdict:
                     final_choice += "groupdict['" + curname + "']"
                     fromdict = False
                 else:
@@ -3276,7 +3282,9 @@ def parse_influencerfile_line(line, groupdict, fname):
             final_choice += char
     else:  # after we're done, flush out the last bit.
         if is_name:
-            if fromdict:
+            if len(curname) == 1 and curname in opchars:
+                final_choice += curname
+            elif fromdict:
                 final_choice += "groupdict['" + curname + "']"
                 fromdict = False
             else:

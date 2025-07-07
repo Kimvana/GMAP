@@ -1,10 +1,7 @@
 Water             SOL | TIP3 | WAT
-# K                 K | K+  # leave it out because '+'
-K                 K
-# Na                NA | NA+ | Na+  # leave it out because '+'
-Na                NA | Na
-# Cl                CL | CL- | CLA  # leave it out because '-'
-Cl                CL | CLA
+K                 K | K+
+Na                NA | NA+ | Na+
+Cl                CL | CLA | Cl-
 
 Ions          :K | :Na | :Cl
 Solvent       :Water | :Ions
