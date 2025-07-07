@@ -2381,6 +2381,15 @@ class RunPars:
                     "SU_NP_8", True, GMAPerrclass=GM_Ex.GmapValueError
                 )
 
+            if float(coupline[1]) != 1.0 and self.dielectric_constant != 1:
+                GM_PT.Printer.warning(
+                    "\nBoth the parameters couplings_scale and "
+                    "dielectric_constant have a non-1 value, which leads to "
+                    "possibly unexpected behaviour. Please verify that you "
+                    "actually want to actively use both!",
+                    "SU_NP_7", False, GMAPerrclass=GM_Ex.GmapParameterError
+                )
+
             self.all_coupling_scale_factors.append(coupline)
 
     def resolve_estatics(self):
@@ -2410,6 +2419,14 @@ class RunPars:
                 "of calculating electrostatics is, however, not compatible "
                 "with smoothing.",
                 "SU_NP_7", True, GMAPerrclass=GM_Ex.GmapParameterError
+            )
+
+        if self.dielectric_constant <= 0:
+            GM_PT.Printer.warning(
+                "\nThe parameter 'dielectric constant' has been assigned "
+                "a value of 0 or smaller, but this is not physical. "
+                "Please change the value to something positive.",
+                "SU_NP_8", True, GMAPerrclass=GM_Ex.GmapValueError
             )
 
     def resolve_singles_BWlist(self):

@@ -1257,6 +1257,18 @@ class Oscillator:
         # and back to other representation
         self.VEGout[:, 4:] = temp[:, [0, 1, 2, 0, 0, 1], [0, 1, 2, 1, 2, 2]]
 
+    def apply_dielectric_constant(self, constant):
+        """Divide the VEG array by the dielectric constant.
+
+        Parameters
+        ----------
+        constant : float
+            The dielectric constant to apply. The VEG array will be
+            divided by it.
+        """
+
+        self.VEGout /= constant
+
     def frame_update(self, Syst):
         """Update the frame-specific attributes of the instance.
 
