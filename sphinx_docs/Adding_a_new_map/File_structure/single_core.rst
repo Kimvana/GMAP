@@ -602,6 +602,9 @@ multiply_freq
 
 | *optional parameter*
 
+.. warning::
+    This parameter should only be used for unit conversions, not for other additional factors, like the dielectric constant. When a system contains a dielectric constant different from 1, users running the calculation should use the parameter 'dielectric_constant' in the input parameters file instead of a map implementing it itself.
+
 There might be some unit conversions that can't be covered by the keyword 'assume_length_units'. In some of those cases, this parameter could help:
 
 The value supplied here (a whole or decimal number) will be multiplied with all the values in the files specified using 'frequency_data_file_linear'  and 'frequency_data_file_quadratic'. This could be useful for a factor like 1/(4 pi epsilon).

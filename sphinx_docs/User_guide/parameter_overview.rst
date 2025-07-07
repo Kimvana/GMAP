@@ -654,6 +654,8 @@ The value for the dielectric constant to assume. The constant is applied in two 
 - All electrostatic values (potential, electric field and gradient) are divided by the value chosen for the dielectric constant.
 - All couplings are divided by the value chosen for the dielectric constant. Even those that also have a multplication for the parameter couplings_scale!
 
+Note for map makers: Some mappings in literature use a specified scaling or dielectric constant. The GMAP mapping assumes you to apply such scalings either through the dielectric_constant or through the couplings_scale. It should not be a part of a mapping.
+
 
 .. _UserGuide_page_parameter_overview_singWL:
 

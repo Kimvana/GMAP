@@ -7,6 +7,9 @@ Here, we will look at the AmideBB map. The challenge? It should display differen
 
 If you want, you can view the entire map in the maps directory. Do note, however, that this map had to do multiple things in order to run, so not all code in the map main.py and extra code files will be discussed here.
 
+.. warning::
+    Map-specific parameters are very powerful, so their use is very much encouraged. However, do make sure there is a need for the parameter: if a GMAP parameter can do the same, then don't add it!
+
 
 
 ****************************************

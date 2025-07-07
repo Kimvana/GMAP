@@ -2424,8 +2424,8 @@ class RunPars:
         if self.dielectric_constant <= 0:
             GM_PT.Printer.warning(
                 "\nThe parameter 'dielectric constant' has been assigned "
-                "a value of 0 or smaller, but this is not physically "
-                "possible. Please change the value to something positive.",
+                "a value of 0 or smaller, but this is not physical. "
+                "Please change the value to something positive.",
                 "SU_NP_8", True, GMAPerrclass=GM_Ex.GmapValueError
             )
 
