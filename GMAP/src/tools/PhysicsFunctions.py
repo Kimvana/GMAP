@@ -158,6 +158,9 @@ def calc_frame(RunPars, System, outputs):
             if oscillator.Map.Core.electrostatic_choice in ("E", "G"):
                 oscillator.rotate_VEG()
 
+            # scale VEG with dielectric_constant
+            oscillator.apply_dielectric_constant(RunPars.dielectric_constant)
+
         printer.add_time(5, "", "VEGuse")
 
         if "ene" in RunPars.output_data and oscillator.Map.Core.ham_first:
@@ -400,7 +403,8 @@ def calc_coupling(RunPars, System, outputs):
         # scale all couplings with the parameter from the input parameters
         arr = coupmap.allpairs
         outputs["hamiltonian"][arr[:, 0], arr[:, 1]] *= (
-            RunPars.coupling_scale_factors_dict[coupmapname])
+            RunPars.coupling_scale_factors_dict[coupmapname]
+            / RunPars.dielectric_constant)
 
 
 def generate_output_structures(RunPars, System):

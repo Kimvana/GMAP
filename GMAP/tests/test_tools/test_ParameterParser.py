@@ -95,6 +95,7 @@ class TestRefPars:
             "maps_to_use": ["AmideSC"],
             "couplings_to_use": [["DipDip", ":All"]],
             "couplings_scale": [[":All", "1"]],
+            "dielectric_constant": [1.0],
             "singles_whitelist": [[":All", ":All"]],
             "singles_blacklist": [[":All", ":None"]],
             "influencers_whitelist": [":All"],
@@ -312,6 +313,7 @@ class TestRefPars:
             "int_test_nodef"
         ]
         assert RefPars.floatpars == [
+            "dielectric_constant",
             "neutral_charge_threshold",
             "estatic_range",
             "estatic_smooth_range",
@@ -561,6 +563,7 @@ class TestRawPars:
             "maps_to_use": ["AmideSC"],
             "couplings_to_use": [["DipDip", ":All"]],
             "couplings_scale": [[":All", "1"]],
+            "dielectric_constant": [1],
             "singles_whitelist": [[":All", ":All"]],
             "singles_blacklist": [[":All", ":None"]],
             "influencers_whitelist": [":All"],
