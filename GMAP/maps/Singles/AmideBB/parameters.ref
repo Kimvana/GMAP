@@ -11,4 +11,4 @@ Torii_dipole_angle[float]                10   # in degrees
 
 allow_map_mismatch[bool]                 False
 
-include_protein_residues[list_str]       None
+include_protein_residues[list_str]       ARN ASH GLH HID HIE HIP HSD LYN LYSH

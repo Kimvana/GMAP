@@ -388,7 +388,7 @@ A trajectory file contains all information that could change during the simulati
 The following have been tested/confirmed usable with GMAP:
 
 - GROMACS: .xtc (recommended), .gro
-- CHARMM/NAMD: .psf
+- CHARMM/NAMD: .dcd
 - Amber: .mdcrd*, .nc
 
 \* Note that there appear to be different types of amber .mdcrd files. Some do contain information on the dimensions of the simulation box, others do not. GMAP needs one that does.

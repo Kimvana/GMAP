@@ -169,6 +169,15 @@ However, if you have a larger gap, that means a residue wasn't found. Compare th
 
 The residue CYS5 is now fully missing. We skip from ARG4 in the right column to GLU6 in the left column. If you have a similar gap of 2 (or more) residues, so that one (or more) is missing, this is a good indication that the residue in that position was not correctly identified, as it is most likely a non-cannonical amino acid. If this is the case, the output (or log file) should, under 'Influencers' give an odd residue names. These are always supported by the program: ``ALA, ARG, ASN, ASP, CYS, GLN, GLU, GLY, HIS, ILE, LEU, LYS, MET, PHE, PRO, SER, THR, TRP, TYR, VAL``. Note down the names of any that should be in the protein, but are not among the 20 listed above.
 
+.. hint::
+    Now, the AmideBB map also supports the following residues:
+
+    ARN ASH GLH HID HIE HIP HSD LYN LYSH
+
+    If any of these are present in your system, but shouldn't be interpreted as aminoacids, you can overwrite the choice as shown below. If you want to fully disable these special residues, you can use the following line in your input.txt file:
+
+    ``AmideBB.include_protein_residues  None``
+
 If you have one not in the list, there are two options. It either has a cannonical-like backbone section, or it doesn't. If it does, it has atoms named C, O, CA, N and H (or HN if you're using CHARMM). These cases are explained to GEM using a parameter of the AmideBB map. You want to add a single line to your input file, so it looks like this:
 
 .. code-block:: text
@@ -187,7 +196,14 @@ If you have one not in the list, there are two options. It either has a cannonic
 
 In this case, the HIE and HSD residues have been added, as these are quite common for Amber/CHARM systems. But any residue will do. This is where you use the names you noted down earlier. Then, run the calculation again, and do all checks again to see whether it's running correctly now.
 
-If you have residue that doesn't have a cannonical backbone, it is most likely not in the map yet. If you didn't download the map/program recently (more than a week ago), check the repo to see if it has been added since. If not, you can either try to change the map yourself (at your own risk!), or submit a feature request to the GMAP repository, as the AmideBB map is created by the GMAP team. Over time, more and more should be added, so this issue should occur less and less often.
+.. hint::
+    As of now, the AmideBB map supports the following non-cannonical N- and C-termini:
+
+    FOR, ACE, ETA, GL2, NME
+
+
+If you have residue that doesn't have a cannonical backbone, it is most likely not in the map yet. If you didn't download the map/program recently (more than a week ago), check the repo to see if it has been added since. If not, you can either try to change the map yourself using the existing termini as examples (at your own risk!), or submit a feature request to the GMAP repository, as the AmideBB map is created by the GMAP team. Over time, more and more should be added, so this issue should occur less and less often.
+
 
 output files
 ============
