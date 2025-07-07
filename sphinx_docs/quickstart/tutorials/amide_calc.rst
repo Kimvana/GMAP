@@ -196,7 +196,13 @@ If you have one not in the list, there are two options. It either has a cannonic
 
 In this case, the HIE and HSD residues have been added, as these are quite common for Amber/CHARM systems. But any residue will do. This is where you use the names you noted down earlier. Then, run the calculation again, and do all checks again to see whether it's running correctly now.
 
-If you have residue that doesn't have a cannonical backbone, it is most likely not in the map yet. If you didn't download the map/program recently (more than a week ago), check the repo to see if it has been added since. If not, you can either try to change the map yourself (at your own risk!), or submit a feature request to the GMAP repository, as the AmideBB map is created by the GMAP team. Over time, more and more should be added, so this issue should occur less and less often.
+.. hint::
+    As of now, the AmideBB map supports the following non-cannonical N- and C-termini:
+
+    FOR, ACE, ETA, GL2, NME
+
+
+If you have residue that doesn't have a cannonical backbone, it is most likely not in the map yet. If you didn't download the map/program recently (more than a week ago), check the repo to see if it has been added since. If not, you can either try to change the map yourself using the existing termini as examples (at your own risk!), or submit a feature request to the GMAP repository, as the AmideBB map is created by the GMAP team. Over time, more and more should be added, so this issue should occur less and less often.
 
 
 output files

@@ -8,14 +8,14 @@ functional_group [anyprot] CA C(1) O [anyprot] N(1) H,HN CA
 # pre-prolines!
 functional_group [anyprot] CA C(1) O [PRO] N(1) CD CA
 
-# special chain starters
-functional_group [FOR] H C(1) O [anyprot] N(1) H,HN CA
-functional_group [ACE] CH3 C(1) O [anyprot] N(1) H,HN CA
+# special N-termini
+functional_group [FOR] H C(1) O [anyprot] N(1) H,HN CA     # H-C(=O)~ cap
+functional_group [ACE] CH3 C(1) O [anyprot] N(1) H,HN CA   # CH3-C(=O)~ cap
 
-# special chain ends
-functional_group [anyprot] CA C(1) O [ETA] N(1) H,HN C2
-functional_group [anyprot] CA C(1) O [GL2] N(1) H1 H2
-functional_group [anyprot] CA C(1) O [NME] N(1) H,HN CH3
+# special C-termini
+functional_group [anyprot] CA C(1) O [ETA] N(1) H,HN C2    # ~NH-CH2-CH2-OH2 cap
+functional_group [anyprot] CA C(1) O [GL2] N(1) H1 H2      # ~NH2 cap
+functional_group [anyprot] CA C(1) O [NME] N(1) H,HN CH3   # ~NH-CH3 cap
 
 
 add_corefile       proteincore.txt
