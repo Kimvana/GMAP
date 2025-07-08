@@ -3238,7 +3238,7 @@ def parse_influencerfile_line(line, groupdict, fname):
     letters = "abcdefghijklmnopqrstuvwxyz"
     numbers = "1234567890"
     namechars = letters + letters.upper() + numbers + "_"
-    specialchars = "+-!@#$%^&*/?<>,."
+    specialchars = "+-!@$%^&*/?<>,."
     opchars = "-&|^"
     parentheses = "()"
     setchars = opchars + parentheses
