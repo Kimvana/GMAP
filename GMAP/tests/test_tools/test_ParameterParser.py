@@ -2335,7 +2335,7 @@ def test_get_parameters():
 
     assert InPars.choices == {}
 
-    argslist = ["-dpf", "../test_defpar.txt"]
+    argslist = ["-dpf", "tests/test_tools/Data/default_parameters.txt"]
 
     (
         RunPars, mapdict, pairs_mapdict, CmdPars, InPars, DefPars, RefPars
@@ -2343,7 +2343,7 @@ def test_get_parameters():
         in_parfile, argslist
     )
 
-    assert DefPars.fname.name == "test_defpar.txt"
+    assert DefPars.fname.name == "default_parameters.txt"
 
 
 def test_parse_commandline():
