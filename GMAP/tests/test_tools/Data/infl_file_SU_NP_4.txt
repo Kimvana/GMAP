@@ -2,6 +2,6 @@
 
 # to test: union (|), intersect (&), difference (-), symdif (^)
 
-vowels    A* | E | I | O | U
+vowels    A[]* | E | I | O | U
 
 choice   :vowels | K
