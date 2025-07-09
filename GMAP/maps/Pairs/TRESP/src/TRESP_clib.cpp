@@ -14,7 +14,8 @@
 
 #ifdef _WIN32
     extern "C" {
-        __declspec(dllexport) void calc_coupling(int npairs, int *allpairs, int *noscats, int *oscstart, float *diff_charges, int *osc_used_ats, float *positions_box, float *boxvects, int totosc, float *hamiltonian);
+        __declspec(dllexport) void calc_coupling(int npairs, int *allpairs, int *noscats, int *oscstart, float *diff_charges, int *osc_used_ats, float *positions_box, float *boxvects, int totosc,float fpieps,
+        float *hamiltonian);
     }
 #endif
 
@@ -24,7 +25,7 @@ extern "C" {
     void calc_coupling(
         int npairs, int *allpairs, int *noscats, int *oscstart,
         float *diff_charges, int *osc_used_ats, float *positions_box,
-        float *boxvects, int totosc, float *hamiltonian
+        float *boxvects, int totosc, float fpieps, float *hamiltonian
     ) {
         /*
         Tresp multiplies the found J by 116141.70590152.
