@@ -1,0 +1,34 @@
+can_output     ham   ene    dip    pos    dbp
+
+functional_group_file    funcgroup_ua-PO.txt
+
+used_atoms All  # Ring including C1, leaving out tail
+
+electrostatic_atoms All
+
+electrostatic_choice V   # V, E, or G?
+
+local_atoms All
+
+# This is the position where the transition dipole is placed
+position       0  # Position of the Mg
+# These are the positions of NB and ND atoms
+doublepos_0            16
+doublepos_1            33
+
+r_vec     33-16  # NB to ND
+r_pos     0  # At the Mg
+
+# What should be the midpoint of the sphere defining the charges that can
+# influence VEG.
+
+VEG_reference  position 0  # Mg atom
+
+dipole_gas_phase  4.61 # 4.49 for Chla, 4.61 for Chlb # doi:10.1021/jp106323e
+frequency_gas_phase 15455 # doi:10.1021/jp106323e
+frequency_data_file_linear diff_charges_B3LYP-PO.txt # could also can use this charge calculated with different DFT method diff_charges_HF-CIS_Ang_per_inv_cm.txt
+multiply_freq  58070.48665 #This is the unit conversion of the frequency prefactor, 1161409.733,  with a further factor 0.5 from the reference (1)
+
+# position and double position should maybe correspond to Mg (needed to have pos and dbp)
+
+TRESP.charges_filename TRESP_chlb.txt

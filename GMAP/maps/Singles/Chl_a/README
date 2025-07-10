@@ -1,0 +1,28 @@
+sections:
+- Intended use
+- How to use
+- Available parameters
+- Warnings that can be raised by this map
+- Important notes for singles-map developers
+
+Intended use
+------------
+
+This diagram is intended to show what Chla looks like, and here we use TRESP coupling as an example. Of course, other coupling schemes can also be used.
+
+How to use
+----------
+The method of running is very simple. You only need to clone this branch and quickly get the corresponding map through GMAP. It should be noted that this requires the corresponding dynamic structure
+
+Available parameters
+--------------------
+When using this map, the following parameters become available in any input parameter source file (default file, input file, command line):
+
+
+Warnings that can be raised by this map
+---------------------------------------
+
+At this point none?
+
+Important notes for singles-map developers
+The calculated Chla map uses all atoms; it is better to use the keyword "ALL" rather than listing the number of atoms.
