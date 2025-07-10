@@ -71,16 +71,21 @@ def GM_calc_coupling(map_, system, hamiltonian):
         column and a row for each oscillator.
     """
 
+    # We'll use this value a lot. It is the same as GM_con.e2i4pieps_angcm,
+    # but now in units of cm^-1 * ang^3 Deb^-2
+    i4pieps = np.float32(
+        GM_con.i4pieps * GM_con.Debye**2 * GM_con.J2cm / GM_con.angstrom**3)
     for pair in map_.allpairs:
         J = calc_coupling(
-            *pair, map_.dipole_pos_arr, map_.dipole_vec_arr, system.boxvects)
+            *pair, map_.dipole_pos_arr, map_.dipole_vec_arr, system.boxvects,
+            i4pieps)
         hamiltonian[pair[0], pair[1]] = J
         hamiltonian[pair[1], pair[0]] = J
 
 
 @njit
 # same as DipDip map, as this is just DipDip map with Torii dipoles
-def calc_coupling(oscix1, oscix2, pos_arr, vec_arr, boxvects):
+def calc_coupling(oscix1, oscix2, pos_arr, vec_arr, boxvects, i4pieps):
     """Calculates the coupling value for the spcific provided pair.
 
     njit'ted for extra speed.
@@ -119,7 +124,7 @@ def calc_coupling(oscix1, oscix2, pos_arr, vec_arr, boxvects):
     # 4piEinv = 1/(4 * pi * eps_0) Jm/C^2
     # Gives 5034.11656 cm^-1 * ang^3 Deb^-2
 
-    fourPiEps_inv = np.float32(5034.11656)
+    # fourPiEps_inv = np.float32(5034.11656)
     # the positions array is in box-coordinates -> easy subtraction, then
     # move back into cartesian
     d = GM_MF.PBC_back2box(pos_arr[oscix1, :] - pos_arr[oscix2, :], boxvects)
@@ -128,7 +133,7 @@ def calc_coupling(oscix1, oscix2, pos_arr, vec_arr, boxvects):
     ir3 = ir*ir2
     ir5 = ir3*ir2
 
-    return fourPiEps_inv * (
+    return i4pieps * (
         GM_MF.dotprod(vec_arr[oscix1], vec_arr[oscix2]) * ir3
         - 3.0 * GM_MF.dotprod(vec_arr[oscix1], d)
         * GM_MF.dotprod(vec_arr[oscix2], d) * ir5)

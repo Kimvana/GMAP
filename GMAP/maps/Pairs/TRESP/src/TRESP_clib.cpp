@@ -88,7 +88,7 @@ extern "C" {
                 }
                 TRix1++;
             }
-            J *= 116141.70590152;
+            J *= fpieps;
             hamiltonian[oscix1 * totosc + oscix2] = J;
             hamiltonian[oscix2 * totosc + oscix1] = J;
         }
