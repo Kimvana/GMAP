@@ -95,6 +95,7 @@ class TestRefPars:
             "maps_to_use": ["AmideSC"],
             "couplings_to_use": [["DipDip", ":All"]],
             "couplings_scale": [[":All", "1"]],
+            "dielectric_constant": [1.0],
             "singles_whitelist": [[":All", ":All"]],
             "singles_blacklist": [[":All", ":None"]],
             "influencers_whitelist": [":All"],
@@ -312,6 +313,7 @@ class TestRefPars:
             "int_test_nodef"
         ]
         assert RefPars.floatpars == [
+            "dielectric_constant",
             "neutral_charge_threshold",
             "estatic_range",
             "estatic_smooth_range",
@@ -561,6 +563,7 @@ class TestRawPars:
             "maps_to_use": ["AmideSC"],
             "couplings_to_use": [["DipDip", ":All"]],
             "couplings_scale": [[":All", "1"]],
+            "dielectric_constant": [1],
             "singles_whitelist": [[":All", ":All"]],
             "singles_blacklist": [[":All", ":None"]],
             "influencers_whitelist": [":All"],
@@ -2321,7 +2324,7 @@ def test_get_parameters():
     # has already been tested separately.
     assert InPars.fname.name == "test_inpar.txt"
     assert DefPars == RefPars
-    assert len(mapdict) == 6
+    assert len(mapdict) == 7
     assert CmdPars.choices == {}
 
     (
@@ -2411,7 +2414,6 @@ def test_parse_influencerfile():
         "All": set("ABC")
     }
     groupdict = GM_PP.parse_influencerfile(file, groupdict)
-
     assert groupdict == {
         "All": set("ABC"),
         "choice": set("ABC")
@@ -2422,7 +2424,6 @@ def test_parse_influencerfile():
         "All": set("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     }
     groupdict = GM_PP.parse_influencerfile(otherfile, groupdict)
-
     assert groupdict == {
         "All": set("ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
         "vowels": set("AEIOU"),
@@ -2433,6 +2434,32 @@ def test_parse_influencerfile():
         "straight_only_vowels": set("AEI"),
         "curved_or_vowel": set("ACEIJQS"),
         "choice": set("ACEIJKQS")
+    }
+
+    physfile = Path("tests/test_tools/Data/test_inflfile.txt")
+    groupdict = {
+        "All": set([
+            "SOL", "TIP3", "WAT", "K", "K+", "NA", "NA+", "Na+", "CL", "CLA",
+            "Cl-", "DMPC", "POP", "LYSH", "HSD", "HIE"])
+    }
+    groupdict = GM_PP.parse_influencerfile(physfile, groupdict)
+    assert groupdict == {
+        "All": set([
+            "SOL", "TIP3", "WAT", "K", "K+", "NA", "NA+", "Na+", "CL", "CLA",
+            "Cl-", "DMPC", "POP", "LYSH", "HSD", "HIE"]),
+        "Water": set(["SOL", "TIP3", "WAT"]),
+        "K": set(["K", "K+"]),
+        "Na": set(["NA", "NA+", "Na+"]),
+        "Cl": set(["CL", "CLA", "Cl-"]),
+        "Ions": set(["K", "K+", "NA", "NA+", "Na+", "CL", "CLA", "Cl-"]),
+        "Solvent": set([
+            "SOL", "TIP3", "WAT", "K", "K+", "NA", "NA+", "Na+", "CL", "CLA",
+            "Cl-"]),
+        "Lipid": set(["DMPC", "POP"]),
+        "Protein_ext": set(["LYSH", "HSD", "HIE"]),
+        "choice": set([
+            "SOL", "TIP3", "WAT", "K", "K+", "NA", "NA+", "Na+", "CL", "CLA",
+            "Cl-"])
     }
 
 

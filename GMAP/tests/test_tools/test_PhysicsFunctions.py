@@ -135,6 +135,7 @@ def test_calc_CoM():
     assert np.all(GM_PF.calc_CoM(System, atlist).round(4) == ans)
 
 
+# numba 0.61.2 errors on WIN11, but only when running ALL tests.
 def test_system_CoM():
     positions = np.array([
         [8, 28, 68],
