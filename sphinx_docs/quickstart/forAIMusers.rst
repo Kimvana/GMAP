@@ -160,8 +160,12 @@ coupling_choice
     - You want to indicate what kind of coupling map to use between two singles/oscillators. In that case, you should now use :ref:`couplings_to_use <UserGuide_page_parameter_overview_usecoup>`, this also allows to specify custom coupling maps.
     - You want to indicate the exact method of coupling between AmideBB/AmideSC groups. In this case, you should choose the ``ProteinAmide`` coupling map using the parameter ``couplings_to_use``, and then tell the ProteinAmide map your specific choice using ``ProteinAmide.coupling_choice``.
 
+    Please note that the TDCKrimm map from AIM and AmideImaps has been renamed to TDCKnoester in GMAP to more closely reflect the map's source.
+
 NN_coupling_choice
     This one is similar to the previous: you should choose the ``ProteinAmide`` coupling map using the parameter ``couplings_to_use``, and then tell the ProteinAmide map your specific choice using ``ProteinAmide.NN_coupling_choice``.
+    
+    Please note that the TDCKrimm map from AIM and AmideImaps has been renamed to TDCKnoester in GMAP to more closely reflect the map's source.
 
 AtomPos_choice
     This is no longer covered by GMAP. Instead, you need to tell the AmideBB and AmideSC maps your choice for this one - they have this parameter now. See the readme of those maps for more information; parameters to be used are:

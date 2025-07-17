@@ -38,8 +38,8 @@ def test_TDCTasumi_coups(tmp_path):
     core_test_frequencies("TDCTasumi", tmp_path, 0.0004)
 
 
-def test_TDCKrimm_coups(tmp_path):
-    core_test_frequencies("TDCKrimm", tmp_path, 0.0001)
+def test_TDCKnoester_coups(tmp_path):
+    core_test_frequencies("TDCKnoester", tmp_path, 0.0001)
 
 
 def test_TCC_coups(tmp_path):
@@ -79,10 +79,15 @@ def core_test_frequencies(mapname, tmp_path, limit, nameadd=""):
     if mapname == "TCC":
         nr = 3
 
+    if mapname == "TDCKnoester":
+        fmapname = "TDCKrimm"
+    else:
+        fmapname = mapname
+
     # now, we must test these newly generated results against the
     # AIM-calculated frequencies to see if the map is indeed correct.
     hamnew = makeham((tmp_path / "hamiltonian.txt").resolve(), 145)
-    fname = f"data/{mapname}{nameadd}_AIM_V1-0-{nr}_Hamiltonian.txt"
+    fname = f"data/{fmapname}{nameadd}_AIM_V1-0-{nr}_Hamiltonian.txt"
     hamold = makeham((curdir / fname).resolve(), 145)
 
     # this way, if the two do not match, we automatically get printed where/why

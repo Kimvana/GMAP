@@ -29,15 +29,19 @@ When using this map, the following parameters become available to use in any inp
 
 ProteinAmide.coupling_choice
     no shorthand
-    options: None, DipDip, TDCTasumi, TDCKrimm, TCC (default = TDCTasumi)
+    options: None, DipDip, TDCTasumi, TDCKnoester, TCC (default = TDCTasumi)
 
     What coupling method should be applied to couple two groups that are not direct neighbours. If one or both of them is a sidechain amide, it will automatically be assigned this choice.
 
+    Note: in earlier versions (AIM, AmideImaps), TDCKnoester was named TDCKrimm.
+
 ProteinAmide.NN_coupling_choice
     no shorthand
-    options: None, DipDip, TDCTasumi, TDCKrimm, TCC, Tasumi, GLDP (default = GLDP)
+    options: None, DipDip, TDCTasumi, TDCKnoester, TCC, Tasumi, GLDP (default = GLDP)
 
     What coupling method should be applied to couple two groups that are direct neighbours. If one or both of the groups is a sidechain amide, this option will never be used, but assigned the choice for coupling_choice instead. 
+    
+    Note: in earlier versions (AIM, AmideImaps), TDCKnoester was named TDCKrimm.
 
 ProteinAmide.legacy_mode
     no shorthand
