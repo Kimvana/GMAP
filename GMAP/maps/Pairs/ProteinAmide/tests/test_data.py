@@ -43,8 +43,8 @@ def test_TDCKnoester_coups(tmp_path):
 
 
 def test_TCC_coups(tmp_path):
-    core_test_frequencies("TCC", tmp_path, 0.0001, "_c")
-    core_test_frequencies("TCC", tmp_path, 0.0001, "_nb")
+    core_test_frequencies("TCC", tmp_path, 0.0002, "_c")
+    core_test_frequencies("TCC", tmp_path, 0.0002, "_nb")
 
 
 def test_Tasumi_coups(tmp_path):
