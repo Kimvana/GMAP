@@ -2,7 +2,7 @@
 functional_group_file   bcha_funcgroup.txt
 
 # all specified
-used_atoms All
+used_atoms 0-48
 
 # probably at least the magnesium atom, which is 26, zero based
 electrostatic_atoms All
