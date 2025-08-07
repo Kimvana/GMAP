@@ -369,7 +369,7 @@ The following have been tested/confirmed usable with GMAP:
 - Amber: .top
 
 
-The following have been tested/confirmed **un**usable with GMAP:
+The following have been tested/confirmed **not** usable with GMAP:
 
 - GROMACS: .gro (lacks charge information)
 
@@ -388,13 +388,13 @@ A trajectory file contains all information that could change during the simulati
 The following have been tested/confirmed usable with GMAP:
 
 - GROMACS: .xtc (recommended), .gro
-- CHARMM/NAMD: .psf
+- CHARMM/NAMD: .dcd
 - Amber: .mdcrd*, .nc
 
 \* Note that there appear to be different types of amber .mdcrd files. Some do contain information on the dimensions of the simulation box, others do not. GMAP needs one that does.
 
 
-The following have been tested/confirmed **un**usable with GMAP:
+The following have been tested/confirmed **not** usable with GMAP:
 
 - CHARMM/NAMD: .crd (lacks PBC box dimensions), .cor (MDAnalysis does not support this file type)
 
@@ -629,6 +629,9 @@ couplings_scale
 | (no shorthand available)
 | (used by: GEM)
 
+.. warning::
+    This parameter is similar to the parameter 'dielectric_constant', and GMAP allows the two to be used together. Read very careful which of the two you need, and be **even more careful** if you decide to use both.
+
 .. note::
     This parameter differs from the others in that it may be used multiple times within a single file.
 
@@ -644,6 +647,23 @@ couplings_scale
 The value by which to multiply all couplings of the given type. This parameter expects two parts on each line. Just as with the parameter couplings_to_use, the first one is the name of the coupling map. This may be any map, including those only assigned through other coupling maps. The second part is the value by which the couplings should be multiplied.
 
 If the requested coupling map shows up in the 'couplingvis' pdf, those values will be multiplied by the value provided on this line.
+
+If this parameter is used together with the parameter 'dielectric_constant', both will be applied multiplicatively.
+
+
+dielectric_constant
+===================
+| (no shorthand available)
+| (used by: GEM)
+
+.. warning::
+    This parameter is similar to the parameter 'couplings_scale', and GMAP allows the two to be used together. Read very careful which of the two you need, and be **even more careful** if you decide to use both.
+
+The value for the dielectric constant to assume. The constant is applied in two places:
+- All electrostatic values (potential, electric field and gradient) are divided by the value chosen for the dielectric constant.
+- All couplings are divided by the value chosen for the dielectric constant. Even those that also have a multplication for the parameter couplings_scale!
+
+Note for map makers: Some mappings in literature use a specified scaling or dielectric constant. The GMAP mapping assumes you to apply such scalings either through the dielectric_constant or through the couplings_scale. It should not be a part of a mapping.
 
 
 .. _UserGuide_page_parameter_overview_singWL:

@@ -69,6 +69,17 @@ pages for singles maps
         **references**
         ^^^^^^^^^^^^^^^^^^^^^^^^^
         How to make a references file for your map.
+    
+    
+    .. grid-item-card::
+        :margin: 0 3 0 0
+        :link: GMAPconstants
+        :link-type: doc
+
+        **GMAP constants file**
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+        All the constants available for use while creating your map.
+
 
 
 ***************************************
@@ -113,6 +124,18 @@ pages for pairs maps
         ^^^^^^^^^^^^^^^^^^^^^^^^^
         How to make a references file for your map.
 
+    
+    .. grid-item-card::
+        :margin: 0 3 0 0
+        :link: GMAPconstants
+        :link-type: doc
+
+        **GMAP constants file**
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+        All the constants available for use while creating your map.
+
+
+
 
 .. toctree::
     :hidden:
@@ -121,6 +144,7 @@ pages for pairs maps
     parameters
     single_main_py
     references_bib
+    GMAPconstants
 
 .. toctree::
     :hidden:
@@ -129,4 +153,5 @@ pages for pairs maps
     parameters
     pair_main_py
     references_bib
+    GMAPconstants
 

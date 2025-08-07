@@ -22,15 +22,21 @@ The README is present and useful
 ****************************************
 
 The strength of maps is that they can be shared with other users, and combined with other maps. For this purpose (and for your own administration) it is very important to have a clear explanation of your map. Ideally, it has the following chapters/topics/points addressed (see AmideBB map for an example):
+
 - **intended use**: This section should explain when this map can be used. These questions could guide your writing:
+
   - (singles map) For what use is the map developed? What kind of oscillator/chromophore is described by the map?
   - (singles map) What kind of systems can it be used for? Are there any requirements for neighbouring molecules/assemblies? Is there any requirement for the solvent?
   - (pairs map) What kind of singles can be coupled? Is the map designed for a very specific (set of) single(s), or can it work with all? Is their a certain prerequisite a single must meet before it can be treated?
+
 - **how to use**: This section should explain how the map can be applied properly. What settings can be used, what combinations, etc.
+
   - (both singles and pairs) What are requirements for using the map? Can it be used together with any map, or are there certain maps that must(n't) be used with it? Why?
   - (both singles and pairs) What should the calculation chain look like? Is the map intended to be used with a certain MD package or forcefield? Will results still make sense with another force field? What kind of outputs can the map give, and for what subsequent steps is the map intended? (NISE spectral calculations)
   - (both singles and pairs) Are there any GMAP settings that must be used when using this map? For example, can both different methods of calculating electrostatics be used?
+
 - **available parameters**: Any information on parameters for this map. Does this map have its own custom parameters available? Maybe to set certain values, or make a certain choice of model? If there are parameters, explain them! What do they do, what options are available? If you accept a number, is their a certain lower or upper bound to this number beyond which it doesn't make any sense? If you use any physical values, what are the expected units?
+
 - **warnings that can be raised by the map**: If users of your map commonly trigger a specific GMAP error, read on. Or if your map makes use of custom code (main.py), there is a chance you've also implemented specific errors to help things run smoothly. Whatever the case, this is the place to mention the error code of the error, along with some explanation what triggers it, how/why, and how to resolve the error.
 
 

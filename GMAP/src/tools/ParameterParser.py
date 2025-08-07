@@ -28,12 +28,12 @@ class RefPars:
     Each map (see :ref:`adding a new map<UserGuide_page_adding_map>`)
     can also have it's own selection of parameters, stored in its own
     parameter file. See
-    :ref:`parameters.ref<UserGuide_page_map_parameters>` for an
+    :ref:`parameters.ref<AddMap_page_map_parameters>` for an
     explanation of the expected format.
 
     .. note ::
         Users of the program are probably looking for the
-        :ref:`parameters.ref<UserGuide_page_map_parameters>` page.
+        :ref:`parameters.ref<AddMap_page_map_parameters>` page.
 
     Parameters
     ----------
@@ -618,7 +618,7 @@ class RefPars:
             providing a choice for this parameter
         key_dtype : list of str
             The datatype expected for this parameter. See
-            :ref:`parameters.ref<UserGuide_page_map_parameters>` for
+            :ref:`parameters.ref<AddMap_page_map_parameters>` for
             more explanation on datatypes.
         """
 
@@ -2401,6 +2401,15 @@ class RunPars:
                     "SU_NP_8", True, GMAPerrclass=GM_Ex.GmapValueError
                 )
 
+            if float(coupline[1]) != 1.0 and self.dielectric_constant != 1:
+                GM_PT.Printer.warning(
+                    "\nBoth the parameters couplings_scale and "
+                    "dielectric_constant have a non-1 value, which leads to "
+                    "possibly unexpected behaviour. Please verify that you "
+                    "actually want to actively use both!",
+                    "SU_NP_7", False, GMAPerrclass=GM_Ex.GmapParameterError
+                )
+
             self.all_coupling_scale_factors.append(coupline)
 
     def resolve_estatics(self):
@@ -2430,6 +2439,14 @@ class RunPars:
                 "of calculating electrostatics is, however, not compatible "
                 "with smoothing.",
                 "SU_NP_7", True, GMAPerrclass=GM_Ex.GmapParameterError
+            )
+
+        if self.dielectric_constant <= 0:
+            GM_PT.Printer.warning(
+                "\nThe parameter 'dielectric constant' has been assigned "
+                "a value of 0 or smaller, but this is not physical. "
+                "Please change the value to something positive.",
+                "SU_NP_8", True, GMAPerrclass=GM_Ex.GmapValueError
             )
 
     def resolve_singles_BWlist(self):
@@ -3241,8 +3258,11 @@ def parse_influencerfile_line(line, groupdict, fname):
     letters = "abcdefghijklmnopqrstuvwxyz"
     numbers = "1234567890"
     namechars = letters + letters.upper() + numbers + "_"
-    specialchars = "-&|^()"
-    allowed_chars = " :" + namechars + specialchars
+    specialchars = "+-!@$%^&*/?<>,."
+    opchars = "-&|^"
+    parentheses = "()"
+    setchars = opchars + parentheses
+    allowed_chars = " :" + namechars + setchars + specialchars
 
     problem_chars = [char for char in line if char not in allowed_chars]
 
@@ -3264,12 +3284,15 @@ def parse_influencerfile_line(line, groupdict, fname):
     for char in line:
         if char == ":":
             fromdict = True
-        elif char in namechars:
+        elif char in namechars + specialchars + opchars:
             is_name = True
             curname += char
-        elif char in (specialchars + " "):
+        elif char in (parentheses + " "):
             if is_name:
-                if fromdict:
+                # if we found an operator
+                if len(curname) == 1 and curname in opchars:
+                    final_choice += curname
+                elif fromdict:
                     final_choice += "groupdict['" + curname + "']"
                     fromdict = False
                 else:
@@ -3279,7 +3302,9 @@ def parse_influencerfile_line(line, groupdict, fname):
             final_choice += char
     else:  # after we're done, flush out the last bit.
         if is_name:
-            if fromdict:
+            if len(curname) == 1 and curname in opchars:
+                final_choice += curname
+            elif fromdict:
                 final_choice += "groupdict['" + curname + "']"
                 fromdict = False
             else:

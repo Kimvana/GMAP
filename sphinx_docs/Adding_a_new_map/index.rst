@@ -28,7 +28,16 @@ object.
         **File structure**
         ^^^^^^^^^^^^^^
         An overview of all different files a map can contain, and instructions on how to create them!
-    
+
+    .. grid-item-card::
+        :margin: 0 3 0 0
+        :link: Tutorials/index
+        :link-type: doc
+
+        **Tutorials**
+        ^^^^^^^^^^^^^^
+        Examples on how more complicated maps are designed.
+
     .. grid-item-card::
         :margin: 0 3 0 0
         :link: checklist
@@ -44,4 +53,5 @@ object.
     
     units
     File_structure/index
+    Tutorials/index
     checklist

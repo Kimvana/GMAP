@@ -91,6 +91,14 @@ AmideSC.legacy_mode
     When using the legacy_mode set to AIM, the treat_box parameter is ignored by this map!
 
 
+AmideBB.Torii_dipole_angle
+    no shorthand
+    options: any float (default = 10)
+
+    When using the Torii dipole method, the angle at which the dipole is placed can be varied by changing this parameter. The value is assumed in degrees angle to the C=O bond.
+
+
+
 warnings that can be raised by this map
 ---------------------------------------
 

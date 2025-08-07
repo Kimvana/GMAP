@@ -106,6 +106,31 @@ def test_raman(tmp_path):
     core_test_raman("", tmp_path, 0.00005)
 
 
+def test_special_groups(tmp_path):
+    # This runs GMAP to create the results
+    curdir = Path(__file__).resolve().parent
+    cmdpars = [
+        "GMAP", "GEM", "run",
+        str((curdir / "data/basic_parameters.txt").resolve()),
+        "--topology_file", str((curdir / "data/md_gA.tpr").resolve()),
+        "--trajectory_file", str((curdir / "data/md_gA.xtc").resolve()),
+        "--output_data", "ham\\;",
+        "--output_directory", str(tmp_path.resolve()),
+        "--log_directory", str(tmp_path.resolve())
+    ]
+    GM_CI.cmd_interface(cmdpars)
+    with open(tmp_path / "legend.txt") as fhand:
+        legendcontents = fhand.readlines()
+
+    line0 = "at index 0: Oscillator of type AmideBB binding the residues FOR0 "
+    line0 += "and VAL1\n"
+    assert legendcontents[0] == line0
+
+    line15 = "at index 15: Oscillator of type AmideBB binding the residues "
+    line15 += "TRP15 and ETA16\n"
+    assert legendcontents[15] == line15
+
+
 def core_test_frequencies(mapname, NNtreat, tmp_path, limit):
     # This runs GMAP to create the results
     curdir = Path(__file__).resolve().parent

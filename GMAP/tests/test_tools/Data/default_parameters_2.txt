@@ -26,6 +26,7 @@ map_directory                   ../../../maps
 maps_to_use                     AmideSC
 couplings_to_use                DipDip :All
 couplings_scale                 :All  1
+dielectric_constant             1
 singles_whitelist               :All :All
 singles_blacklist               :All :None
 influencers_whitelist           :All

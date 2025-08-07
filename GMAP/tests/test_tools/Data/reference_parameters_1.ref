@@ -29,6 +29,7 @@ map_directory(md)[list_path_sep]               ../../../maps
 maps_to_use(um)[list_str]                         AmideSC
 couplings_to_use[list_str]                        DipDip :All
 couplings_scale[list_str]                         :All  1
+dielectric_constant[float]                        1
 singles_whitelist[list_str]                       :All :All
 singles_blacklist[list_str]                       :All :None
 influencers_whitelist[list_str]                   :All
