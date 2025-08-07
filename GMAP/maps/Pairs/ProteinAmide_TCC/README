@@ -41,6 +41,8 @@ This map is not designed and intended for stand-alone use, and should never be r
 
 Furthermore, this map is specifically designed for coupling AmideI singles map. It has been tested to work with the AmideBB and AmideSC singles maps, so we recommend to only couple those types of oscillators with this map. Any MD-system requirements for those maps automatically apply here as well.
 
+This map should never be applied to calculate the coupling between two groups that share a common (set of) atom(s). This would result in a distance of 0, which means infinite coupling. If the code detects a distance smaller than 0.01 angstrom, a distance of 1 angstrom will be assumed instead. This assumption is not physically meaningful, however! Therefore, these zero-valued distances should always be avoided. This is done by not choosing this method for the nearest-neighbour couplings.
+
 
 Available parameters
 --------------------
