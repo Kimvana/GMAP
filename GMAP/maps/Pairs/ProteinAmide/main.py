@@ -3,7 +3,7 @@ def GM_change_coup_type(map_, system, oscix1, osc1, oscix2, osc2):
     mapnames = {
         "None": None,
         "DipDip": "DipDip",
-        "TDCKrimm": "ProteinAmide_TDCKrimm",
+        "TDCKnoester": "ProteinAmide_TDCKnoester",
         "TDCTasumi": "ProteinAmide_TDCTasumi",
         "TCC": "ProteinAmide_TCC",
         "Tasumi": "ProteinAmide_Tasumi",
@@ -15,7 +15,7 @@ def GM_change_coup_type(map_, system, oscix1, osc1, oscix2, osc2):
     # If any of the two is a sidechain, they cannot be nearest neighbours
     if osc1.Map.name == "AmideSC" or osc2.Map.name == "AmideSC":
         # original code forced the double-sidechain couplings to be
-        # coupled by a TDC method (TDCTasumi by default, but if TDCKrimm is
+        # coupled by a TDC method (TDCTasumi by default, but if TDCKnoester is
         # already active, use that)
         # IMPORTANT! The old version did not have DipDip or none, so this
         # if check is not designed to make those run smoothly.

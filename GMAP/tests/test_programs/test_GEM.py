@@ -4,8 +4,15 @@ from GMAP.src.tools import CmdInterface as GM_CI
 
 
 # Now, we also test whether the program can actually run.
-def test_if_runs():
-    GM_CI.cmd_interface(["GMAP", "GEM", "run", "../test_inpar.txt"])
+def test_if_runs(tmp_path):
+    with open(tmp_path / "input_parameters.txt", "w") as fhand:
+        fhand.write("output_directory  out\n")
+        fhand.write("log_directory   out\n")
+    (tmp_path / "out").mkdir()
+
+    GM_CI.cmd_interface([
+        "GMAP", "GEM", "run",
+        str((tmp_path / "input_parameters.txt").resolve())])
 
 
 def test_early_quit(tmp_path):

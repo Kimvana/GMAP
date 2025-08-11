@@ -56,11 +56,12 @@ class TRESP_Clib(metaclass=GM_CT.Singleton):
             ct.POINTER(ct.c_float),  # positions_box
             ct.POINTER(ct.c_float),  # boxvects
             ct.c_int,  # totosc
+            ct.c_float,  # fpieps
             ct.POINTER(ct.c_float)  # hamiltonian
         ]
         self.clib.calc_coupling.restype = None
 
-    def calc_coupling(self, map_, system, hamiltonian_c):
+    def calc_coupling(self, map_, system, fpieps, hamiltonian_c):
         """Calculate all couplings for this map, this frame.
 
         This is done by calling the respective c function. It loops over
@@ -75,6 +76,8 @@ class TRESP_Clib(metaclass=GM_CT.Singleton):
             The object that stores everything the program currently
             knows about the system being treated (names, numbers, types,
             masses, charges of all atoms, for example)
+        fpieps : `np.float32`
+            The value for 4 pi epsilon, as a float32.
         hamiltonian_c : `c_float_array_XX`
             The c-pointer to the hamiltonian. 'XX' in the type is
             variable, as it depends on the amount of singles in the
@@ -91,6 +94,7 @@ class TRESP_Clib(metaclass=GM_CT.Singleton):
             system.positions_box_c,  # positions_box
             system.boxvects_c,  # boxvects
             system.nosc,  # totosc
+            fpieps,
             hamiltonian_c  # hamiltonian
         )
 

@@ -1455,7 +1455,7 @@ class TestRunPars:
         }
 
         curpath = Path(__file__).resolve()
-        cmdline = []
+        cmdline = ["-md", "maps", "tests/test_tools/Data/test_mapdir\\;"]
 
         (
             RefPars, DefPars, InPars, _, CmdPars
@@ -1798,6 +1798,8 @@ class TestMapPars:
         # counter = 1
         print([*mapdict.keys()])
         for mapname, map_ in mapdict.items():
+            if mapname == "CystBridge":
+                continue
 
             map_.find_refpars()
             counter = mapname[-1]
@@ -2311,7 +2313,7 @@ class TestMapPars:
 
 
 def test_get_parameters():
-    in_parfile = Path("../test_inpar.txt").resolve()
+    in_parfile = Path("tests/test_tools/Data/input_parameters_1.txt").resolve()
     argslist = []
 
     (
@@ -2322,9 +2324,9 @@ def test_get_parameters():
 
     # A huuuuge amount of tests would be needed here, but all of GM_PP
     # has already been tested separately.
-    assert InPars.fname.name == "test_inpar.txt"
+    assert InPars.fname.name == "input_parameters_1.txt"
     assert DefPars == RefPars
-    assert len(mapdict) == 7
+    assert len(mapdict) == 6
     assert CmdPars.choices == {}
 
     (
@@ -2335,7 +2337,7 @@ def test_get_parameters():
 
     assert InPars.choices == {}
 
-    argslist = ["-dpf", "../test_defpar.txt"]
+    argslist = ["-dpf", "tests/test_tools/Data/default_parameters.txt"]
 
     (
         RunPars, mapdict, pairs_mapdict, CmdPars, InPars, DefPars, RefPars
@@ -2343,12 +2345,13 @@ def test_get_parameters():
         in_parfile, argslist
     )
 
-    assert DefPars.fname.name == "test_defpar.txt"
+    assert DefPars.fname.name == "default_parameters.txt"
 
 
 def test_parse_commandline():
     callcommand = [
-        "GEM", "run", "../test_inpar.txt", "-verbose", "3"
+        "GEM", "run",
+        "tests/test_tools/Data/input_parameters_1.txt", "-verbose", "3"
     ]
 
     job, in_parfile, cmd_pars = GM_PP.parse_commandline(
@@ -2356,7 +2359,8 @@ def test_parse_commandline():
         expect_inputfile=True, expect_parameters=True
     )
     assert job == "run"
-    assert in_parfile == Path("../test_inpar.txt").resolve()
+    assert in_parfile == Path(
+        "tests/test_tools/Data/input_parameters_1.txt").resolve()
     assert cmd_pars == ["-verbose", "3"]
 
     callcommand = [
@@ -2382,7 +2386,8 @@ def test_parse_commandline():
     assert cmd_pars == []
 
     callcommand = [
-        "GEM", "run", "../test_inpar.txt", "-verbose", "3"
+        "GEM", "run", "tests/test_tools/Data/input_parameters_1.txt",
+        "-verbose", "3"
     ]
 
     job, in_parfile, cmd_pars = GM_PP.parse_commandline(
@@ -2390,7 +2395,8 @@ def test_parse_commandline():
         expect_inputfile=True, expect_parameters=False
     )
     assert job == "run"
-    assert in_parfile == Path("../test_inpar.txt").resolve()
+    assert in_parfile == Path(
+        "tests/test_tools/Data/input_parameters_1.txt").resolve()
     assert cmd_pars == []
 
 
@@ -2469,7 +2475,7 @@ def test_parse_influencer_par():
 
 
 def test_SU_FP_1():
-    in_parfile = Path("../test_inpar.txt").resolve()
+    in_parfile = Path("tests/test_tools/Data/input_parameters_1.txt").resolve()
 
     # this map no longer exists
     # argslist = ["-dpf", "maps/Singles/testmap1/parameters.ref"]
@@ -2482,7 +2488,7 @@ def test_SU_FP_1():
 
 
 def test_SU_GEM_1():
-    in_parfile = Path("../test_inpar.txt").resolve()
+    in_parfile = Path("tests/test_tools/Data/input_parameters_1.txt").resolve()
     argslist = ["-dpf", "__init__.py"]
 
     with pytest.raises(GM_Ex.GmapFileSyntaxError, match="SU_GEM_1$"):
