@@ -73,8 +73,9 @@ def GM_pre_run(map_, system):
 
 
 def GM_calc_coupling(map_, system, hamiltonian):
+    fpieps = np.float32(GM_con.e2i4pieps_angcm)
     hamiltonian_c = np.ctypeslib.as_ctypes(np.ravel(hamiltonian))
-    map_.clib.calc_coupling(map_, system, hamiltonian_c)
+    map_.clib.calc_coupling(map_, system, fpieps, hamiltonian_c)
 
 
 def get_charges(map_, oscmap):

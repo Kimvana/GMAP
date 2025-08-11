@@ -27,9 +27,9 @@ Available parameters
 
 When using this map, the following parameters become available to use in any input parameter source (default file, input file, command line):
 
-ProteinAmide_TDCKrimm.displace
+ProteinAmide_TDCKnoester.displace
     How far along the C=O bond the dipole position should lie. 0 means on top of the carbon atom, 1 means on top of the oxygen atom, 0.5 is halfway in between. Default value is 0.868
-ProteinAmide_TDCKrimm.tanangle
+ProteinAmide_TDCKnoester.tanangle
     How much the dipole moment should be rotated compared to the direction of the C=O bond. In radians. Default value is -0.36397023426.
 
 

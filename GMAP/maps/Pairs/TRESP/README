@@ -40,6 +40,8 @@ This map can (and must) be directly requested in the input file using 'couplings
 
 If that keyword is present, the coupling can just be requested. If not, that singles map should be coupled by a map different from this one.
 
+This map should never be applied to calculate the coupling between two groups that share a common (set of) atom(s). This would result in a distance of 0, which means infinite coupling. If the code detects a distance smaller than 0.01 angstrom, a distance of 1 angstrom will be assumed instead. This assumption is not physically meaningful, however! Therefore, these zero-valued distances should always be avoided.
+
 
 Available parameters
 --------------------

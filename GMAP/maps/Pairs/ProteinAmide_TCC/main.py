@@ -4,6 +4,7 @@
 import numpy as np
 
 # GMAP imports
+import GMAP.src.tools.constants as GM_con
 from GMAP.src.tools import MathFunctions as GM_MF
 
 # own module imports
@@ -215,7 +216,8 @@ def GM_post_init(map_, system):
     # read in all parameters from the constants file
     with open(map_.directory / "constants.txt") as fhand:
         # get_next_line just gets the next not-empty line from the file
-        map_.fourPiEps = np.float32(get_next_line(fhand).split()[0])  # scalar
+        _ = get_next_line(fhand)  # still need to skip this line in the file.
+        map_.fourPiEps = np.float32(GM_con.e2i4pieps_angcm)
         map_.alpha_gen = np.float32(get_next_line(fhand).split()[0])  # scalar
         map_.alpha_pro = np.float32(get_next_line(fhand).split()[0])  # scalar
 

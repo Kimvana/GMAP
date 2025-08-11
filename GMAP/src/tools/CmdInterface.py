@@ -178,10 +178,16 @@ def print_logo():
         "kind of feedback, go to github.com/Kimvana/GMAP\n"
     )
 
+    # print current moment
+    Printer.print(
+        1,
+        f"\nCurrent date/time: {GM_FH.FileLocations.now_str}\n"
+    )
+
     # if the program was invoked directly, we only need this one
     Printer.print(
         1,
-        f"\nRunning the following job:\n{GM_FH.FileLocations.instruction}\n"
+        f"Running the following job:\n{GM_FH.FileLocations.instruction}\n"
     )
 
     # but if a different command was used for starting something python,

@@ -12,6 +12,9 @@ sphinx_docs/_build/**
 **#
 build/**
 
+inpar_development.txt
+ZZ_for_reference/**
+
 GMAP/.coverage**
 GMAP/crash*.log
 GMAP/couplingvisualization.pdf
