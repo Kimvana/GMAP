@@ -5,6 +5,7 @@ import numpy as np
 # GMAP imports
 import GMAP.src.tools.constants as GM_con
 import GMAP.src.tools.DefaultMapFunctions as GM_DMF
+import GMAP.src.tools.Exceptions as GM_ex
 import GMAP.src.tools.PrintTools as GM_PT
 # from GMAP.src.tools.PrintTools import devprint as dpr
 
@@ -51,6 +52,7 @@ def GM_adjust_map_core_raw(map_):
     if len(extended) > 0:
         extended = list(extended)
         all_amino_acid_codes += extended
+    map_.amino_acid_codes = set(all_amino_acid_codes)
 
     amino_acids_joined = ",".join(all_amino_acid_codes)
 
@@ -289,6 +291,74 @@ def GM_post_init(map_, system):
             "map_AmideBB_0", True
         )
 
+    map_.citerefs_mapkey = set()
+    for parname in ("base", "label"):
+        choice = getattr(map_.RunPars, "shift_" + parname)
+        if choice in ("C12", "C12_O16", "natural"):
+            setattr(map_.RunPars, "shift_" + parname, 0)
+        elif choice in ("C13", "C13_O16"):
+            setattr(map_.RunPars, "shift_" + parname, -45)
+            map_.citerefs_mapkey.add("C13labelshift")
+        elif choice in ("C13_O18"):
+            setattr(map_.RunPars, "shift_" + parname, -59.6)
+            map_.citerefs_mapkey.add("C13O18labelshift")
+        else:
+            try:
+                setattr(map_.RunPars, "shift_" + parname, float(choice))
+            except Exception as ex:
+                GM_PT.warning(
+                    "\nDid not recognise choice for the parameter "
+                    f"AmideBB.shift_{parname}. Please make sure you either "
+                    "chose a valid name, or you gave a valid decimal number.",
+                    "map_AmideBB_5",
+                    True, ex, GM_ex.GmapValueError
+                )
+    map_.citerefs_mapkey = list(map_.citerefs_mapkey)
+
+    choice = map_.RunPars.labels
+    if choice[0] == "None":
+        map_.RunPars.labels = set()
+    elif len(choice) < 2:
+        GM_PT.warning(
+            "\nInvalid amount of arguments provided for the parameter "
+            "AmideBB.labels. Please make sure you both provide a mode of "
+            "selecting, and a choice for that mode."
+            "map_AmideBB_6", True
+        )
+    elif choice[0] == "resnums":
+        amideoscs = [
+            osc.resnums[0] for osc in system.oscillators_ordered[map_.name]]
+        map_.RunPars.labels = set(map_.Core.allow_ranges(
+            choice[1:], max(amideoscs)))
+        if len(map_.RunPars.labels - set(amideoscs)) > 0:
+            GM_PT.warning(
+                "\nInvalid residues chosen using the parameter "
+                "AmideBB.labels. Please make sure all residue numbers provided"
+                " are in fact backbone amide groups.",
+                "map_AmideBB_6", True
+            )
+    elif choice[0] == "resnames":
+        choiceset = set(choice[1:])
+        if len(choiceset - map_.amino_acid_codes) > 0:
+            GM_PT.warning(
+                "\nInvalid residues chosen using the parameter "
+                "AmideBB.labels. Please make sure all residue names provided "
+                "are valid 3-letter amino acid codes.",
+                "map_AmideBB_6", True
+            )
+        map_.RunPars.labels = set([
+            osc.resnums[0]
+            for osc in system.oscillators_ordered[map_.name]
+            if osc.resnames[0] in choiceset
+        ])
+    else:
+        GM_PT.warning(
+            "\nInvalid choice of mode made for the parameter AmideBB.labels. "
+            "The choice can either be 'None', or a mode listed in the README "
+            "along with a specific choice for that mode.",
+            "map_AmideBB_6", True
+        )
+
 
 def GM_pre_frame(map_, system):
     """Do the things that need to happen in preparation for the next
@@ -401,6 +471,11 @@ def GM_calculate_frequency(map_, system, osc):
     # paper says D2O = 0.791 * H2O + 340 -> inverting this gives the below.
     if map_.RunPars.solvent == "H2O":
         freq = (freq - 340) / 0.791
+    
+    if osc.resnums[0] in map_.RunPars.labels:
+        freq += map_.RunPars.shift_label
+    else:
+        freq += map_.RunPars.shift_base
 
     return freq
 
@@ -541,6 +616,7 @@ def GM_report_references(map_, system):
     # This map has a whole bunch of references stored, but not (nearly) all
     # are actually used in a single calculation... Find those that are.
     report_these.append("RamanAmide")
+    report_these.extend(map_.citerefs_mapkey)
 
     # Report the paper used for converting from D2O to H2O
     if map_.RunPars.solvent == "H2O":
