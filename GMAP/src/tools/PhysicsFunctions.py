@@ -6,6 +6,7 @@ import numpy as np
 # local imports
 import GMAP.src.tools.CLibLoader as GM_CL
 import GMAP.src.tools.PrintTools as GM_PT
+# from GMAP.src.tools.PrintTools import devprint as dpr
 
 
 def calc_CoM(System, atomlist):

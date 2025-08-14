@@ -100,6 +100,16 @@ def GM_adjust_oscillators(map_, system, oscillator_list):
         All oscillators belonging to a single struct of this map.
     """
 
+    for oscillator in oscillator_list:
+        oscillator.resnames = (
+            system.resnames[oscillator.used_atoms[0]],
+            system.resnames[oscillator.used_atoms[3]]
+        )
+        oscillator.resnums = (
+            system.resnums[oscillator.used_atoms[0]],
+            system.resnums[oscillator.used_atoms[3]]
+        )
+
     if map_.RunPars.residue_order == "resname":
         return oscillator_list
 
@@ -173,9 +183,9 @@ def GM_post_init(map_, system):
     for parname in ("base", "label"):
         choice = getattr(map_.RunPars, "shift_" + parname)
         if choice in ("C12", "C12_O16", "natural"):
-            setattr(map_.RunPars, "shift_" + parname, 0)
+            setattr(map_.RunPars, "shift_" + parname, 0.0)
         elif choice in ("C13", "C13_O16"):
-            setattr(map_.RunPars, "shift_" + parname, -45)
+            setattr(map_.RunPars, "shift_" + parname, -45.0)
             map_.citerefs_mapkey.add("C13labelshift")
         elif choice in ("C13_O18"):
             setattr(map_.RunPars, "shift_" + parname, -59.6)
@@ -184,7 +194,7 @@ def GM_post_init(map_, system):
             try:
                 setattr(map_.RunPars, "shift_" + parname, float(choice))
             except Exception as ex:
-                GM_PT.warning(
+                GM_PT.Printer.warning(
                     "\nDid not recognise choice for the parameter "
                     f"AmideSC.shift_{parname}. Please make sure you either "
                     "chose a valid name, or you gave a valid decimal number.",
@@ -198,7 +208,7 @@ def GM_post_init(map_, system):
     if choice[0] == "None":
         map_.RunPars.labels = set()
     elif len(choice) < 2:
-        GM_PT.warning(
+        GM_PT.Printer.warning(
             "\nInvalid amount of arguments provided for the parameter "
             "AmideSC.labels. Please make sure you both provide a mode of "
             "selecting, and a choice for that mode."
@@ -210,7 +220,7 @@ def GM_post_init(map_, system):
         map_.RunPars.labels = set(map_.Core.allow_ranges(
             choice[1:], max(amideoscs)))
         if len(map_.RunPars.labels - set(amideoscs)) > 0:
-            GM_PT.warning(
+            GM_PT.Printer.warning(
                 "\nInvalid residues chosen using the parameter "
                 "AmideSC.labels. Please make sure all residue numbers provided"
                 " are in fact backbone amide groups.",
@@ -221,7 +231,7 @@ def GM_post_init(map_, system):
         amideoscs = [
             osc.resnames[0] for osc in system.oscillators_ordered[map_.name]]
         if len(choiceset - set(amideoscs)) > 0:
-            GM_PT.warning(
+            GM_PT.Printer.warning(
                 "\nInvalid residues chosen using the parameter "
                 "AmideSC.labels. Please make sure all residue names provided "
                 "appear as a sidechain group in your simulation.",
@@ -233,7 +243,7 @@ def GM_post_init(map_, system):
             if osc.resnames[0] in choiceset
         ])
     else:
-        GM_PT.warning(
+        GM_PT.Printer.warning(
             "\nInvalid choice of mode made for the parameter AmideSC.labels. "
             "The choice can either be 'None', or a mode listed in the README "
             "along with a specific choice for that mode.",
