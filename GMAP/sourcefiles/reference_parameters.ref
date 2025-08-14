@@ -56,6 +56,7 @@ influencers_select_atoms[list_str]                segid *
 
 couplings_to_use[list_str]                        DipDip :All
 couplings_scale[list_str]                         :All  1
+dielectric_constant[float]                        1
 output_data[list_str]                             [ham] [dip] ene [pos] dbp ram
 estatics_method[str]                              [perres] perres_nocut
 neutral_charge_threshold[float]                   0.0001
