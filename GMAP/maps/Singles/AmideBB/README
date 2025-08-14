@@ -188,3 +188,9 @@ map_AmideBB_3
 
 map_AmideBB_4
     While determining the chirality of residues between two amide oscillators, a residue was found that is not a GLY residue, but neither has a CB atom. Therefore, this cannot be a cannonical aminoacid, or you are using an unexpected nomenclature. If you are sure you are applying the right map to the right system, please get in touch with the map developers to solve this issue.
+
+map_AmideBB_5
+    There is only a few valid options for this parameter, listed higher up in this file. Make sure you match the name, capital letters included, apostrophes excluded. Otherwise, when specifying a decimal number, make sure you only use numbers and a period ('.') to provide this.
+
+map_AmideBB_6
+    Some issue was encountered when parsing the choice for the parameter AmideBB.labels. Unless your choice is 'None' (mind the capitalization!), your choice should specify both a mode (resnums or resnames currently) and a selection using that mode. If there are multiple parts to your selection, they should be separated using spaces just as in the examples.

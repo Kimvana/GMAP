@@ -291,6 +291,7 @@ def GM_post_init(map_, system):
             "map_AmideBB_0", True
         )
 
+    # Interpret user choice for shift_base and shift_label
     map_.citerefs_mapkey = set()
     for parname in ("base", "label"):
         choice = getattr(map_.RunPars, "shift_" + parname)
@@ -315,6 +316,7 @@ def GM_post_init(map_, system):
                 )
     map_.citerefs_mapkey = list(map_.citerefs_mapkey)
 
+    # Interpret user choice for labels
     choice = map_.RunPars.labels
     if choice[0] == "None":
         map_.RunPars.labels = set()
