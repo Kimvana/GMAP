@@ -19,7 +19,9 @@ VEG_reference  position 12 # Central atom C10 (index 12) #CoM  10 11 12 13 14
 
 dipole_gas_phase 11.4 # in Debeye from Didraga et al. doi.10.1021/jp048288s
 frequency_gas_phase 19498 # in cm-1 From Bondarenko et al. doi.10.1039/D0SC03110K
-frequency_data_file_linear TDDFT_CHELP_difference_charges.txt # From Bondarenko et al. doi.10.1039/D0SC03110K
+frequency_data_file_linear TDDFT_CHELP_difference_charges_48.txt # Charge differences on core atoms from Bondarenko et al. doi.10.1039/D0SC03110K
+# The charge difference on the central C10 was adjusted by -0.003355 for charge neutrality 
+# Note all charges from the paper are available in the file TDDFT_CHELP_difference_charges.txt
 multiply_freq GM_con.e2i4pieps_angcm
 
 position       12  # Central atom C10 (index 12)
