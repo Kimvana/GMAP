@@ -10,6 +10,9 @@ electrostatic_choice V   # V, E, or G?
 
 local_atoms 0-46
 
+# to allow protein-specific influencer groups with this map.
+add_corefile proteincore.txt
+
 # This is the position where the transition dipole is placed
 position       0  # Position of the Mg
 # These are the positions of NB and ND atoms
