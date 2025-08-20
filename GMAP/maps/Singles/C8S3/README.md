@@ -23,7 +23,7 @@ Available parameters
 --------------------
 At this point the frequency map has no options or parameters. 
 It is possible to use a different gas phase excitation energy by manually chaning the value of the *frequency_gas_phase* in the *core.txt* map file.
-If the value is changed then it is the responsability of the user that made the change to adeqautely cite the source of the new value they use.
+If the value is changed then it is the responsibility of the user that made the change to adequately cite the source of the new value they use.
 
 
 Warnings that can be raised by this map
