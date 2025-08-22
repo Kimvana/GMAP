@@ -524,7 +524,7 @@ def print_treated_avail_frames(RunPars, System):
     msg = "Frames available:   " + " " * 12
     pr.print(3, f"{msg}{0}-{len(System.universe.trajectory)}")
     msg = "Duration of frame:  " + " " * 12
-    pr.print(1, f"{msg}{round(System.dt, 4)} ps")
+    pr.print(1, f"{msg}{round(System.dt, 6) * 1000} fs")
     if round(System.dt, 4) == 1.0:
         pr.print(
             1, 
