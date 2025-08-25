@@ -1,5 +1,5 @@
 # first attempt at the core.txt file for the bchlc map in GMAP
-functional_group_file   bcha_funcgroup.txt
+functional_group_file   cha_funcgroup.txt
 
 # all specified
 used_atoms 0-45
