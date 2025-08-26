@@ -1449,7 +1449,7 @@ class SingleCore:
         error_code : tup of int
             More information on whether and why the structure was read
             unsuccessfully. See
-            :ref:`Warning overview<UserGuide_page_warning_overview>`
+            :ref:`warning overview<UserGuide_page_warning_overview>`
             for more information - look for code MI_MC_4.
         """
 
