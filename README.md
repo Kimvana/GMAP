@@ -63,6 +63,17 @@ Assuming generating from scratch, and inside a venv (see above, always a good ha
   * (optional if familiar with output) ```make``` - this will show all supported document types to generate docs. We'll be using basic html here, but note the fact you can also generate a pdf, man file, and many more!
   * Build the documentation of your choice. In case of html, the command will be ```make html```
 
+The final step will report on how the documentation building went, and report any errors/issues. The following issues are known and proven harmless:
+
+- any issues about formatting specifically in docstrings in the .py files. Mostly unexpected indentations.
+- html_static_path entry '_static' does not exist.
+
+Any other issues/errors should be reported. Examples include (_but are not limited to!_):
+
+- Any warnings including the text 'unknown document' or 'nonexistent document'.
+- Any warnings saying 'document isn't included in any TOCtree'.
+- Any warnings reporting issues with 'target's.
+
 The ouput files will be inside the sphinx folder, in _build/html. Open _build/html/index.html to get to the home page of your 'website'.
 
 In case you build html documents, the interlinking is relative: you can move (and rename) the 'html' folder to your liking. It can be shared and everything, and it should even be compatible with github pages (if I understand things correctly).
