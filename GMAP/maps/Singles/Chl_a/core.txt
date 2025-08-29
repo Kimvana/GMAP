@@ -2,10 +2,10 @@
 functional_group_file   cha_funcgroup.txt
 
 # all specified
-used_atoms 0-45
+used_atoms 0-48
 
 # probably at least the magnesium atom, which is 0, zero based
-electrostatic_atoms All
+electrostatic_atoms 0-45
 electrostatic_choice V   # V E or G?
 
 local_atoms All
