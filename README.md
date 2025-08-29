@@ -68,7 +68,7 @@ The final step will report on how the documentation building went, and report an
 - any issues about formatting specifically in docstrings in the .py files. Mostly unexpected indentations.
 - html_static_path entry '_static' does not exist.
 
-Any other issues/errors should be reported. Examples include (_but are not limited to!_):
+Any other issues/errors should be reported (or fixed if you introduced it). Examples include (_but are not limited to!_):
 
 - Any warnings including the text 'unknown document' or 'nonexistent document'.
 - Any warnings saying 'document isn't included in any TOCtree'.
