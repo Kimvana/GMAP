@@ -101,3 +101,13 @@ def adjust_mcr_freqchoice(map_):
             map_.rawcore["electrostatic_choice"] = ["V"]
             map_.rawcore["frequency_gas_phase"] = ["1747"]
             map_.rawcore[parname] = ["frequency_maps/Hirst.txt"]
+        case "Reppert_4PN-4":
+            map_.rawcore["electrostatic_atoms"] = ["0", "1", "3", "4"]
+            map_.rawcore["electrostatic_choice"] = ["V"]
+            map_.rawcore["frequency_gas_phase"] = ["1746.6"]
+            map_.rawcore[parname] = ["frequency_maps/Reppert_4PN-4.txt"]
+        case "Reppert_4PN-150":
+            map_.rawcore["electrostatic_atoms"] = ["0", "1", "3", "4"]
+            map_.rawcore["electrostatic_choice"] = ["V"]
+            map_.rawcore["frequency_gas_phase"] = ["1776.4"]
+            map_.rawcore[parname] = ["frequency_maps/Reppert_4PN-150.txt"]
