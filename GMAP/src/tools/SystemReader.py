@@ -940,15 +940,15 @@ class System:
         clib = GM_CL.VEG_CLib()
         clib.positions_to_box(self)
 
-        self.residues.CoM_box_c = np.zeros((self.nres, 3), dtype="float32")
+        self.residues.CoM_box = np.zeros((self.nres, 3), dtype="float32")
         self.residues.CoM_box_c = np.ctypeslib.as_ctypes(
-            np.ravel(self.residues.CoM_box_c))
+            np.ravel(self.residues.CoM_box))
         clib.calc_CoM_box(self)  # fill CoM_c. Results are calculated in box c.
 
         if RunPars.treat_box == "orthorhombic":
-            self.residues.CoM_c = np.zeros((self.nres, 3), dtype="float32")
+            self.residues.CoM = np.zeros((self.nres, 3), dtype="float32")
             self.residues.CoM_c = np.ctypeslib.as_ctypes(
-                np.ravel(self.residues.CoM_c))
+                np.ravel(self.residues.CoM))
             clib.CoM_frombox(self)
 
     def print_system(self, RunPars):
