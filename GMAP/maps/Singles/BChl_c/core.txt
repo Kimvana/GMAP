@@ -10,7 +10,9 @@ electrostatic_choice V   	# the potential
 local_atoms All
 
 frequency_gas_phase 15390 	# Qy from Eric et al. 2023, page 1100 
-frequency_data_file_linear freq_fluct_file_BChlc_units_angstrom_per_cm.txt
+# frequency_data_file_linear freq_fluct_file_BChlc_units_angstrom_per_cm.txt
+frequency_data_file_linear freq_fluct_file_BChlc_units_elem_charge.txt
+multiply_freq 116140.9733 # now in units of Angstrom per cm
 
 dipole_gas_phase  5.48
 
