@@ -11,6 +11,7 @@ This map is intended to use with Bacteriochlorophyll c (bChl-c) molecules. It pr
 How to use
 ----------
 This map has no specific requirements beyond the availability of the bChl-c electrostatic environment
+There exists a file "main_MG_position.py" which can be renamed to "main.py" in order to use the positions of the Magnesium atoms when making the electrostatic cut-off, rather than the centre of mass positions. This MG reference position was used to determine the chlorosome spectrum in the published work.
 
 Available parameters
 --------------------
