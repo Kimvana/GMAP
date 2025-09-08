@@ -19,6 +19,11 @@ This map has no specific requirements beyond a trajectroy and topology file.
 This map was tested on a GROMACS All Atom simulation (cubic box with 8 nm sides) of a dimer system solvated in water with 1:1 ratio of counterions to solute. 
 
 
+Important Note
+--------------
+The charge difference on the central C10 was adjusted by -0.003355 for charge neutrality of the electrostatic atoms as compared to the paper doi.10.1039/D0SC03110K.
+
+
 Available parameters
 --------------------
 At this point the frequency map has no options or parameters. 
