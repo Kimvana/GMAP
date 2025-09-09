@@ -2,13 +2,13 @@ can_output     ham   ene    dip    pos    dbp
 
 functional_group_file    funcgroup_ua.txt
 
-used_atoms 0-46  # Ring including C1, leaving out tail
+used_atoms 0-50  # Ring including C1, leaving out tail
 
 electrostatic_atoms 0-46
 
 electrostatic_choice V   # V, E, or G?
 
-local_atoms 0-46
+local_atoms 0-50
 
 # to allow protein-specific influencer groups with this map.
 add_corefile proteincore.txt
