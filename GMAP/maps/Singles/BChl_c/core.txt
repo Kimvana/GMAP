@@ -1,0 +1,29 @@
+# core file for the bchlc map in GMAP
+
+functional_group_file    bchlc_functional_group.txt
+
+used_atoms All 			# use all atoms in the BChl-c molecules for the electrostatic interactions
+
+electrostatic_atoms All
+electrostatic_choice V   	# the potential
+
+local_atoms All
+
+frequency_gas_phase 15390 	# Qy from Eric et al. 2023, page 1100 
+# frequency_data_file_linear freq_fluct_file_BChlc_units_angstrom_per_cm.txt
+frequency_data_file_linear freq_fluct_file_BChlc_units_elem_charge.txt
+multiply_freq 116140.9733 # now in units of Angstrom per cm
+
+dipole_gas_phase  5.48
+
+r_vec 16 - 2    		# the position of the third N atom minus the first N atom
+r_pos 26        		# The position of the Magnesium atom
+
+position 26 			# write positions to file. The position of the molecule is set at the mg atom position, used for coupling on the fly in NISE
+
+doublepos_0 16 			# Nitrogen atoms A and C
+doublepos_1 2			# In case the extended dipole is required
+
+VEG_reference position 26  	# position of Mg
+
+can_output pos dip ene ham dbp
