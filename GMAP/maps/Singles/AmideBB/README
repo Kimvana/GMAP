@@ -37,11 +37,13 @@ When using this map, the following parameters become available to use in any inp
 
 AmideBB.frequency_map_choice
     shorthand: AmideBB.fmc
-    options: Tokmakoff, Skinner, Jansen, Cho, Hirst (default = Skinner)
+    options: Tokmakoff, Skinner, Jansen, Cho, Hirst, Reppert_4PN-4, Reppert_4PN-150 (default = Skinner)
 
     Indicate the program which frequency map should be used. Skinner is the default as it gives the best result for 2-dimensional IR absorption spectra, while being fairly cheap. It is also the only map which has a separately-developed map for sidechains, instead of using the backbone maps with a fixed shift.  (https://doi.org/10.1021/acs.jctc.6b00420)
 
-    Tokmakoff, Cho and Hirst maps are cheaper than Skinner, but still provide decent results. Jansen is more expensive than Skinner, but gives results closer to experiment when predicting linear IR spectra. (same reference)
+    Tokmakoff, Cho, Hirst and Reppert maps are cheaper than Skinner, but still provide decent results. Jansen is more expensive than Skinner, but gives results closer to experiment when predicting linear IR spectra. (same reference)
+
+    Similar to how Skinner is the only map with a special sidechain map, the Jansen map is the only map with a special variant for amide groups with a proline residue on the C-terminal side (called a 'prepro(line)' in GMAP). All other mappings use a fixed shift on the 'general' amide map to account for the prepro shift. (https://doi.org/10.1063/1.3665417)
 
 AmideBB.dipole_map_choice
     shorthand: AmideBB.dmc
