@@ -16,6 +16,7 @@ from pathlib import Path
 
 # 3rd party imports
 import numpy as np
+import pytest
 
 # local imports
 from .test_SystemReader import parameter_getter
@@ -172,8 +173,18 @@ def test_system_CoM():
     ).round(4) == ans)
 
 
-def test_get_positions():
-    cmdline = ["--verbose", "4"]
+@pytest.mark.parametrize("center,pos,dbp", [
+    ([0, 0, 0], [28, -32, 8], [[31, -29, 11], [11, 31, -29]]),
+    ([0.5, 0.5, 0.5], [28, 68, 8], [[31, 71, 11], [11, 31, 71]]),
+    ([0.2, 0.2, 0.2], [28, 68, 8], [[31, -29, 11], [11, 31, -29]])])
+def test_get_positions(center, pos, dbp):
+    # position = [28, 68, 8]
+    # dbp = [31, 71, 11], [11, 31, 71]
+    # boxsize = [100, 100, 100]
+
+    psstring = " ".join([str(item) for item in center])
+    cmdline = [
+        "--verbose", "4", "--positions_center", f"{psstring}\\;"]
     (
         RunPars, RefPars, DefPars, InPars,
         CmdPars, mapdict, pairs_mapdict
@@ -193,10 +204,10 @@ def test_get_positions():
             oscillator.Map, System, oscillator))
 
     pos = GM_PF.get_positions(System, oscillator)
-    assert np.all(pos.round(4) == np.array([28, -32, 8], dtype="float32"))
+    assert np.all(pos.round(4) == np.array(pos, dtype="float32").round(4))
     dbp = GM_PF.get_doublepos(System, oscillator)
     assert np.all(np.array(dbp).round(4) == np.array(
-        [[31, -29, 11], [11, 31, -29]], dtype="float32"))
+        dbp, dtype="float32").round(4))
 
     # positions = np.array([
     #     [8, 28, 68],

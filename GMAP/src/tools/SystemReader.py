@@ -11,7 +11,7 @@ import GMAP.src.tools.DefaultMapFunctions as GM_DMF
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.ParameterParser as GM_PP
 import GMAP.src.tools.PrintTools as GM_PT
-#from GMAP.src.tools.PrintTools import devprint as dpr
+# from GMAP.src.tools.PrintTools import devprint as dpr
 
 
 class System:
@@ -201,6 +201,7 @@ class System:
         self.segids = self.universe.atoms.segids
 
         self.natoms = np.int32(self.resnums.shape[0])
+        self.dt = self.universe.trajectory.dt
 
         # make sure resums always follow AIM-convention (regardless of MD input
         # used)
@@ -956,15 +957,15 @@ class System:
         clib = GM_CL.VEG_CLib()
         clib.positions_to_box(self)
 
-        self.residues.CoM_box_c = np.zeros((self.nres, 3), dtype="float32")
+        self.residues.CoM_box = np.zeros((self.nres, 3), dtype="float32")
         self.residues.CoM_box_c = np.ctypeslib.as_ctypes(
-            np.ravel(self.residues.CoM_box_c))
+            np.ravel(self.residues.CoM_box))
         clib.calc_CoM_box(self)  # fill CoM_c. Results are calculated in box c.
 
         if RunPars.treat_box == "orthorhombic":
-            self.residues.CoM_c = np.zeros((self.nres, 3), dtype="float32")
+            self.residues.CoM = np.zeros((self.nres, 3), dtype="float32")
             self.residues.CoM_c = np.ctypeslib.as_ctypes(
-                np.ravel(self.residues.CoM_c))
+                np.ravel(self.residues.CoM))
             clib.CoM_frombox(self)
 
     def print_system(self, RunPars):
@@ -1384,8 +1385,10 @@ def gen_universe(RunPars):
 
     try:
         universe = MDA.Universe(
-            RunPars.topology_file, RunPars.trajectory_file,
+            RunPars.topology_file.resolve(), RunPars.trajectory_file.resolve(),
             guess_bonds=RunPars.guess_bonds
+            # RunPars.topology_file, RunPars.trajectory_file,
+            # guess_bonds=RunPars.guess_bonds
         )
     except FileNotFoundError as ex:
         GM_PT.Printer.warning(

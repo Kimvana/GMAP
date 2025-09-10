@@ -349,7 +349,7 @@ def VEG_from_com(local_atoms):
     return GM_get_VEG_ref
 
 
-def interpret_position(map_, details, parname):
+def interpret_position(map_, details, parname, center=None):
     """Creates a function that finds a requested position.
 
     This position could be the definition of the VEG-sphere-centre
@@ -374,13 +374,21 @@ def interpret_position(map_, details, parname):
         position for this oscillator.
     """
 
+    if center is None:
+        center = [0, 0, 0]
+
+    centerstring = [str(item) for item in center]
+    centerstring = ", ".join(centerstring)
+    centerstring = f"np.array([{centerstring}], dtype='float32')"
+
     codestring = "\ndef GM_get_position"
     codestring += "(Map, Syst, osc):\n"
 
     codestring += "    CoM = " + envelop_int(
         " ".join(details), "osc.positions_box[", "]"
     ) + "\n"
-    codestring += "    CoM = (CoM - np.floor(CoM + 0.5)) @ Syst.boxvects\n"
+    codestring += f"    CoM = (CoM - np.floor(CoM - {centerstring}"
+    codestring += "+ 0.5)) @ Syst.boxvects\n"
     codestring += "    return CoM"
 
     try:
@@ -673,7 +681,9 @@ def get_get_position(map_):
     """
 
     instructions = map_.rawcore["position"]
-    GM_get_positions = interpret_position(map_, instructions, "position")
+    position_center_choice = map_.RunPars.MainRunPars.positions_center
+    GM_get_positions = interpret_position(
+        map_, instructions, "position", center=position_center_choice)
     return GM_get_positions
 
 
