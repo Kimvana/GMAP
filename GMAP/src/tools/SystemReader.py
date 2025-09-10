@@ -201,6 +201,7 @@ class System:
         self.segids = self.universe.atoms.segids
 
         self.natoms = np.int32(self.resnums.shape[0])
+        self.dt = self.universe.trajectory.dt
 
         # make sure resums always follow AIM-convention (regardless of MD input
         # used)
@@ -454,8 +455,23 @@ class System:
 
         # feed the found oscillators to the maps, let them have a look
         # at them / edit.
+
+        nosc = sum([len(oscillators) for oscillators in allgroups])
+        # GM_PT.Printer.print(2, f"found {self.nosc} oscillators.")
+        if nosc == 0:
+            GM_PT.Printer.warning(
+                "\nNone of the requested oscillators could be found in the "
+                "supplied MD system. Either change the choice for the "
+                "parameter maps_to_use, or for the parameters topology_file "
+                "and/or trajectory_file. Quitting!"
+                "MD_SU_7", True,
+                GMAPerrclass=GM_Ex.GmapValueError
+            )
+
         checked_oscillators = []
         for oscillators in allgroups:
+            if len(oscillators) == 0:
+                continue
             map_ = oscillators[0].Map
             checked = map_.code.GM_adjust_oscillators(
                 map_, self, oscillators
@@ -465,6 +481,8 @@ class System:
 
         filtered_oscillators = []
         for oscillators in checked_oscillators:
+            if len(oscillators) == 0:
+                continue
             map_ = oscillators[0].Map
             filtered = map_.code.GM_filter_oscillators(
                 map_, self, oscillators
@@ -939,15 +957,15 @@ class System:
         clib = GM_CL.VEG_CLib()
         clib.positions_to_box(self)
 
-        self.residues.CoM_box_c = np.zeros((self.nres, 3), dtype="float32")
+        self.residues.CoM_box = np.zeros((self.nres, 3), dtype="float32")
         self.residues.CoM_box_c = np.ctypeslib.as_ctypes(
-            np.ravel(self.residues.CoM_box_c))
+            np.ravel(self.residues.CoM_box))
         clib.calc_CoM_box(self)  # fill CoM_c. Results are calculated in box c.
 
         if RunPars.treat_box == "orthorhombic":
-            self.residues.CoM_c = np.zeros((self.nres, 3), dtype="float32")
+            self.residues.CoM = np.zeros((self.nres, 3), dtype="float32")
             self.residues.CoM_c = np.ctypeslib.as_ctypes(
-                np.ravel(self.residues.CoM_c))
+                np.ravel(self.residues.CoM))
             clib.CoM_frombox(self)
 
     def print_system(self, RunPars):
@@ -1367,8 +1385,10 @@ def gen_universe(RunPars):
 
     try:
         universe = MDA.Universe(
-            RunPars.topology_file, RunPars.trajectory_file,
+            RunPars.topology_file.resolve(), RunPars.trajectory_file.resolve(),
             guess_bonds=RunPars.guess_bonds
+            # RunPars.topology_file, RunPars.trajectory_file,
+            # guess_bonds=RunPars.guess_bonds
         )
     except FileNotFoundError as ex:
         GM_PT.Printer.warning(

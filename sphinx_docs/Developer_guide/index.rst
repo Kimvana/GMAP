@@ -63,6 +63,6 @@ These pages will contain information specifically for developers of the program.
     
     useful_resources
     Program_flow/index
-    code_Style
+    code_style
     print_colors
     VScode_setup

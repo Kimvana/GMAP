@@ -523,6 +523,15 @@ def print_treated_avail_frames(RunPars, System):
     pr.print(2, f"{msg}{RunPars.start_frame}-{RunPars.stop_frame}")
     msg = "Frames available:   " + " " * 12
     pr.print(3, f"{msg}{0}-{len(System.universe.trajectory)}")
+    msg = "Duration of frame:  " + " " * 12
+    pr.print(1, f"{msg}{round(System.dt, 6) * 1000} fs")
+    if round(System.dt, 6) == 1.0:
+        pr.print(
+            1, 
+            "Important: a timestep of 1.0 ps is the MDAnalyse default if this "
+            "information is not present in the MD files. Please check "
+            "manually yourself if needed as the actual timestep is likely "
+            "different.")
 
 
 def print_in_output_filenames(RunPars):
