@@ -107,10 +107,13 @@ AmideBB.legacy_mode
     
     These are the differences:
 
-    - All positions lie between 0 and the box size for AIM, while None and AmideImaps have them lie between -0.5 and 0.5 times the box size.
+    - All positions lie between 0 and the box size for AIM, while None and AmideImaps have them lie in the range set using the GMAP parameter treat_box. By default, this is now also between 0 and the box size.
     - When there are two prolines back to back, what map is used changes a little bit between modes. AmideImaps assigned a Gly-Pro map for those cases, while AIM and None assign a Pro-Gly map.
 
     Which should you use? If you just want to compute spectra, stick with 'none'. It gives the most recent, detailed version, with any known bugs fixed. The main reason for changing to a legacy mode is for re-creating results from previous versions, so comparison between different results or packages can be made.
+
+    Warning!
+    When using the legacy_mode set to AIM, the treat_box parameter is ignored by this map!
 
 AmideBB.allow_map_mismatch
     no shorthand

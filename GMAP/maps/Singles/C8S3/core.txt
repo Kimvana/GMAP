@@ -1,0 +1,29 @@
+
+can_output         ham dip ene pos dbp # ram 
+
+functional_group_file      funcgroup_C8S3.txt
+
+used_atoms               0-47
+electrostatic_atoms      0-47
+electrostatic_choice     V 
+
+local_atoms   all
+
+# x_uvec 14-10    # C12 (index 14) to C8 (index 10) vector long axis of chromophore (dipole direction)
+# y_uvec 9-3    # N1 (index 9) − C2 (index 3) vector defining the rough width of π-system
+
+r_vec 14-10  # the dipole vector is along the polymethine bridge from C8 (index 10) to C12 (index 14)
+r_pos 12    # Central atom C10 (index 12)
+
+VEG_reference  position 12 # Central atom C10 (index 12) #CoM  10 11 12 13 14
+
+dipole_gas_phase 11.4 # in Debeye from Didraga et al. doi.10.1021/jp048288s
+frequency_gas_phase 19498 # in cm-1 From Bondarenko et al. doi.10.1039/D0SC03110K
+frequency_data_file_linear TDDFT_CHELP_difference_charges_48.txt # Charge differences on core atoms from Bondarenko et al. doi.10.1039/D0SC03110K
+# The charge difference on the central C10 was adjusted by -0.003355 for charge neutrality 
+# Note all charges from the paper are available in the file TDDFT_CHELP_difference_charges.txt
+multiply_freq GM_con.e2i4pieps_angcm
+
+position       12  # Central atom C10 (index 12)
+doublepos_0    10  # Starting positon of dipole at atom C8 (index 10)
+doublepos_1    14  # Ending positon of dipole at atom C12 (index 14)
