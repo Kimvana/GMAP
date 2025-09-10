@@ -119,6 +119,20 @@ def adjust_mcr_freqchoice(map_):
             map_.rawcore["frequency_gas_phase_prepro"] = ["1690"]
             map_.rawcore[parname] = ["frequency_maps/Hirst.txt"]
             map_.rawcore[secpar] = ["frequency_maps/Hirst.txt"]
+        case "Reppert_4PN-4":
+            map_.rawcore["electrostatic_atoms"] = ["0", "1", "3", "4"]
+            map_.rawcore["electrostatic_choice"] = ["V"]
+            map_.rawcore["frequency_gas_phase"] = ["1716.6"]
+            map_.rawcore["frequency_gas_phase_prepro"] = ["1689.6"]
+            map_.rawcore[parname] = ["frequency_maps/Reppert_4PN-4.txt"]
+            map_.rawcore[secpar] = ["frequency_maps/Reppert_4PN-4.txt"]
+        case "Reppert_4PN-150":
+            map_.rawcore["electrostatic_atoms"] = ["0", "1", "3", "4"]
+            map_.rawcore["electrostatic_choice"] = ["V"]
+            map_.rawcore["frequency_gas_phase"] = ["1746.4"]
+            map_.rawcore["frequency_gas_phase_prepro"] = ["1719.4"]
+            map_.rawcore[parname] = ["frequency_maps/Reppert_4PN-150.txt"]
+            map_.rawcore[secpar] = ["frequency_maps/Reppert_4PN-150.txt"]
 
 
 def oscillator_sorter(map_, system, oscillator_list):
