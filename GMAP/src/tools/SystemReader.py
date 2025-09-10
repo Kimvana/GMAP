@@ -11,7 +11,7 @@ import GMAP.src.tools.DefaultMapFunctions as GM_DMF
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.ParameterParser as GM_PP
 import GMAP.src.tools.PrintTools as GM_PT
-from GMAP.src.tools.PrintTools import devprint as dpr
+# from GMAP.src.tools.PrintTools import devprint as dpr
 
 
 class System:
@@ -455,8 +455,23 @@ class System:
 
         # feed the found oscillators to the maps, let them have a look
         # at them / edit.
+
+        nosc = sum([len(oscillators) for oscillators in allgroups])
+        # GM_PT.Printer.print(2, f"found {self.nosc} oscillators.")
+        if nosc == 0:
+            GM_PT.Printer.warning(
+                "\nNone of the requested oscillators could be found in the "
+                "supplied MD system. Either change the choice for the "
+                "parameter maps_to_use, or for the parameters topology_file "
+                "and/or trajectory_file. Quitting!"
+                "MD_SU_7", True,
+                GMAPerrclass=GM_Ex.GmapValueError
+            )
+
         checked_oscillators = []
         for oscillators in allgroups:
+            if len(oscillators) == 0:
+                continue
             map_ = oscillators[0].Map
             checked = map_.code.GM_adjust_oscillators(
                 map_, self, oscillators
@@ -466,6 +481,8 @@ class System:
 
         filtered_oscillators = []
         for oscillators in checked_oscillators:
+            if len(oscillators) == 0:
+                continue
             map_ = oscillators[0].Map
             filtered = map_.code.GM_filter_oscillators(
                 map_, self, oscillators

@@ -38,7 +38,6 @@ def GM_post_init(map_, system):
             map_.charges[osc.oscix] = map_charges[osc.Map.name]
         else:
             map_charges[osc.Map.name] = get_charges(map_, osc.Map)
-            map_.charges[osc.oscix] = map_charges[osc.Map.name]
 
     MC_TC.init_map_for_clib(map_, system)
 
