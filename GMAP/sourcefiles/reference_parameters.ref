@@ -69,7 +69,7 @@ treat_box[str]                                    [auto] orthorhombic triclinic
 # (estatic_range + (estatic_smooth_range/2)), where no charges are considered
 # anymore.
 estatic_range[float]                              20  # this is in angstrom
-estatic_smooth_range[float]                       5  # this is in angstrom
+estatic_smooth_range[float]                       0  # this is in angstrom
 
 # in order to allow start+number=stop, stop is exclusive.
 start_frame[int]                                  0
