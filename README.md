@@ -19,13 +19,15 @@ While the instructions work without one, it is definitely good practice to use o
 1. Clone this github repo, and navigate to the directory this file is located in.
 2. Using ```python -m venv env_GMAP```, create a virtual environment.
 3. Activate the environment by running
-* (Unix)  ```source env_GMAP/bin/activate```
-* (Windows) ```env_GMAP\Scripts\activate.bat``` (doesn't work in powershell)
-4. Install GMAP:
-* (general users) run ```python3 -m pip install .```
-* (developers) run ```python3 -m pip install -e ".[testing]"```
-5. now, from anywhere, typing ```GMAP``` will start the program. If not, something has gone wrong. However, we're not done yet.
-6. Don't forget to compile the GMAP C library! There are also some maps that might need to have their C libraries installed, they will mention this in their README. Compilation instructions are system dependent, and given lower down in this file. After this installation, the program is ready for use.
+   * (Unix)  ```source env_GMAP/bin/activate```
+   * (Windows) ```env_GMAP\Scripts\activate.bat``` (doesn't work in powershell)
+4. (optional) Don't forget to compile the GMAP C library! There are also some maps that might need to have their C libraries installed, they will mention this in their README. Compilation instructions are system dependent, and given lower down in this file. After this installation, the program is ready for use. 
+
+   This step is optional, because compiled versions of all files come with the program. If you'd rather compile yourself than using ours, this is the time to do so!
+5. Install GMAP:
+   * (general users) run ```python3 -m pip install .```
+   * (developers) run ```python3 -m pip install -e ".[testing]"```
+6. now, from anywhere, typing ```GMAP``` will start the program. If not, something has gone wrong. However, we're not done yet.
 7. Once you're done using the program, you can deactivate the environment again by typing 'deactivate' (without the quotation marks in the terminal/command line).
 
 ### Installation for developers
@@ -86,11 +88,17 @@ When you've made some choices to the code, and would like to rebuild the docs, n
 - compiled versions of the (VEG) c library are included in the respository. However, these are system dependent and you may need to recompile it for your own system.
 - If you need to compile any files, be it for GMAP itself or for one of the maps used by it, make sure to navigate to the directory containing the .cpp file before following further compilation instructions.
 
+### files that need compiling
+
+* (always) GMAP/sourcefiles/VEG.cpp (see instructions below)
+* (optional) GMAP/maps/Pairs/ProteinAmide_TCC/src/TCC_clib.cpp (modified command, see TCC map README)
+* (optional) GMAP/maps/Pairs/TRESP/src/TRESP_clib.cpp (modified command, see TRESP map README)
+
 ### windows
 
 For GMAP to automatically recognize the compiled versions of scripts, the intended OS has to be added to the name. For windows (depending on your OS and python version), this means that the name should end in ```_Win32bit``` or ```_Win64bit```. If you do not do that, you can still manually supply your compiled file to GMAP, but the autodetection will not work.
 
-- make sure to install microsoft visual studio (detailed instructions are a must - AIM repo has them in the manual, page 12).
+- make sure to install microsoft visual studio (detailed instructions are a must - [AIM repository](github.com/kimvana/AIM) has them in the manual, page 12).
 - through windows start menu, scroll trough list of programs, select visual studio folder, in there, the desired command prompt. x64 Native Tools for 64 bit windows, x86 Native Tools for 32 bit. __Make sure to open the command prompt in admin mode__.
 - run one of the following commands: 
   ```cl.exe /LD /Fe: VEG_Win64bit scriptname.cpp``` (64 bit windows / python installation)
