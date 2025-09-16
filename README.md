@@ -25,7 +25,9 @@ While the instructions work without one, it is definitely good practice to use o
 
    This step is optional, because compiled versions of all files come with the program. If you'd rather compile yourself than using ours, this is the time to do so!
 5. Install GMAP:
-   * (general users) run ```python3 -m pip install .```
+   * (general users, use wheel, windows) run ```python3 -m pip install dist\gmap-0.0.1-py3-none-any.whl```
+   * (general users, use wheel, unix) run ```python3 -m pip install dist/gmap-0.0.1-py3-none-any.whl```
+   * (general users, rebuild wheel) run ```python3 -m pip install .```
    * (developers) run ```python3 -m pip install -e ".[testing]"```
 6. now, from anywhere, typing ```GMAP``` will start the program. If not, something has gone wrong. However, we're not done yet.
 7. Once you're done using the program, you can deactivate the environment again by typing 'deactivate' (without the quotation marks in the terminal/command line).
