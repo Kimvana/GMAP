@@ -225,7 +225,7 @@ SU_GM
 
 SU_GM_1
 -------
-When calling the program, 'GMAP' is followed by the program you'd like to use. Currently, AIM and GEM are available. The program couldn't recognize 'AIM' or 'GEM' from your command.
+When calling the program, 'GMAP' is followed by the program you'd like to use. Currently, GEM, Setup and DEPICT are available. The program couldn't recognize 'GEM', 'Setup' or 'DEPICT' from your command.
 
 
 **********************

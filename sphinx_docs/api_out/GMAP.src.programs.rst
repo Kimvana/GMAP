@@ -7,7 +7,6 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   GMAP.src.programs.AIM
    GMAP.src.programs.DEPICT
    GMAP.src.programs.GEM
    GMAP.src.programs.Setup

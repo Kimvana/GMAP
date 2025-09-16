@@ -9,10 +9,6 @@ GMAP help
 GMAP help [program]
     prints the help for the requested program
 
-GMAP AIM
-    This program will create the required files for calculating infrared
-    spectra.
-
 GMAP GEM
     This program will create the required files for calculating
     electronic spectra.
@@ -22,14 +18,12 @@ GMAP Setup
 """
 
 
-from .src.programs import AIM
 from .src.programs import DEPICT
 from .src.programs import GEM
 from .src.programs import Setup
 
 
 alltools = {
-    "AIM": AIM,
     "GEM": GEM,
     "Setup": Setup,
     "DEPICT": DEPICT
