@@ -61,9 +61,10 @@ Assuming generating from scratch, and inside a venv (see above, always a good ha
   * right below the glob line, add an empty line, followed by the line ```api_out/**.rst```. Again, make sure to mind indentation!
 8. Within the sphinx output directory, run the following commands:
   * (optional if familiar with output) ```make``` - this will show all supported document types to generate docs. We'll be using basic html here, but note the fact you can also generate a pdf, man file, and many more!
+  * (developers only) don't forget to do a build with the line defining 'suppress_warnings' in conf.py disabled to check what's being suppressed!
   * Build the documentation of your choice. In case of html, the command will be ```make html```
 
-The final step will report on how the documentation building went, and report any errors/issues. The following issues are known and proven harmless:
+The final step will report on how the documentation building went, and report any errors/issues. The documentation should build without errors. If not - the following issues are known and proven harmless:
 
 - any issues about formatting specifically in docstrings in the .py files. Mostly unexpected indentations.
 - html_static_path entry '_static' does not exist.
