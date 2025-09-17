@@ -49,7 +49,6 @@ import GMAP.src.tools.ReferenceHandler as GM_RH
 import GMAP.src.tools.SystemReader as GM_SR
 
 
-# TO DO inside!
 def manage_frame(frame, RunPars):
     """Performs all the checks involved with starting a new frame.
 
@@ -231,8 +230,7 @@ def early_stop(framenum, RunPars):
         return True
 
 
-# TO DO inside!
-def trj_loop(RunPars, System):
+def trj_loop(RunPars, system):
     """Performs the main per-frame loop for GEM.
 
     Does the last bit of initialization that needs to happen, and then
@@ -243,7 +241,7 @@ def trj_loop(RunPars, System):
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
-    System : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.SystemReader.System`
         The class containing all the information on the system of the
         MD trajectory.
     """
@@ -255,8 +253,8 @@ def trj_loop(RunPars, System):
     # create empty structures, initialize whats needed
 
     # compare runpar endframe to mda nframes - adjust endframe
-    if RunPars.stop_frame >= len(System.universe.trajectory):
-        RunPars.stop_frame = len(System.universe.trajectory)
+    if RunPars.stop_frame >= len(system.universe.trajectory):
+        RunPars.stop_frame = len(system.universe.trajectory)
 
     # Confirm start_frame is still smaller than stop, after the change
     if RunPars.start_frame > RunPars.stop_frame:
@@ -270,23 +268,23 @@ def trj_loop(RunPars, System):
         )
 
     # let maps prepare for the calculation
-    for mapname in System.oscillators_ordered.keys():  # singles
+    for mapname in system.oscillators_ordered.keys():  # singles
         map_ = RunPars.requested_mapdict[mapname]
-        map_.code.GM_pre_run(map_, System)
+        map_.code.GM_pre_run(map_, system)
 
     # pair maps only need to prepare if couplings are to be calculated.
     if "ham" in RunPars.output_data:
-        for mapname in System.oscillators_ordered_coup.keys():  # pairs
+        for mapname in system.oscillators_ordered_coup.keys():  # pairs
             map_ = RunPars.requested_pairmapdict[mapname]
-            map_.code.GM_pre_run(map_, System)
+            map_.code.GM_pre_run(map_, system)
 
     # And in case maps did anything weird...
     RunPars.manage_dtypes()
 
     # Report on the system we're going to treat.
-    GM_FH.write_legend(RunPars, System)
+    GM_FH.write_legend(RunPars, system)
 
-    trj = System.universe.trajectory
+    trj = system.universe.trajectory
     GM_FH.clear_output(RunPars)
 
     # In case MDA needs a long time to start the loop.
@@ -315,11 +313,11 @@ def trj_loop(RunPars, System):
             break
 
         # rebuild the frame-specific data (positions, box, etc)
-        System.update_properties(RunPars)
+        system.update_properties(RunPars)
         GM_PT.Printer.add_time(
             4, "done system updates. next: osc updates", "OscUpdate", "ms")
-        for oscillator in System.oscillators:
-            oscillator.frame_update(System)
+        for oscillator in system.oscillators:
+            oscillator.frame_update(system)
 
         GM_PT.Printer.add_time(
             4, "updates done. next: initialize", "StructInit", "ms")
@@ -327,41 +325,41 @@ def trj_loop(RunPars, System):
         # (only if needed) recalc COM
 
         # initialize output structures (like Ham)
-        outputs = GM_PF.generate_output_structures(RunPars, System)
+        outputs = GM_PF.generate_output_structures(RunPars, system)
 
         GM_PT.Printer.add_time(
             4, "initialize done. next: map init", "MapFInit", "ms")
 
         # call pre-frame funcs of maps
-        for mapname in System.oscillators_ordered.keys():  # singles
+        for mapname in system.oscillators_ordered.keys():  # singles
             map_ = RunPars.requested_mapdict[mapname]
-            map_.code.GM_pre_frame(map_, System)
+            map_.code.GM_pre_frame(map_, system)
 
         # pair maps only need to be called if couplings are to be calculated.
         if "ham" in RunPars.output_data:
-            for mapname in System.oscillators_ordered_coup.keys():  # pairs
+            for mapname in system.oscillators_ordered_coup.keys():  # pairs
                 map_ = RunPars.requested_pairmapdict[mapname]
-                map_.code.GM_pre_frame(map_, System)
+                map_.code.GM_pre_frame(map_, system)
 
         GM_PT.Printer.add_time(
             4, "map init done. next: calculation", "Calc", "ms")
 
         # perform the actual calculations
-        outputs = GM_PF.calc_frame(RunPars, System, outputs)
+        outputs = GM_PF.calc_frame(RunPars, system, outputs)
 
         GM_PT.Printer.add_time(
             4, "calculation done. next: map final", "MapFPost", "ms")
 
         # call post-frame functions of maps
-        for mapname in System.oscillators_ordered.keys():  # singles
+        for mapname in system.oscillators_ordered.keys():  # singles
             map_ = RunPars.requested_mapdict[mapname]
-            map_.code.GM_post_frame(map_, System)
+            map_.code.GM_post_frame(map_, system)
 
         # pair maps only need to be called if couplings are to be calculated.
         if "ham" in RunPars.output_data:
-            for mapname in System.oscillators_ordered_coup.keys():  # pairs
+            for mapname in system.oscillators_ordered_coup.keys():  # pairs
                 map_ = RunPars.requested_pairmapdict[mapname]
-                map_.code.GM_post_frame(map_, System)
+                map_.code.GM_post_frame(map_, system)
 
         GM_PT.Printer.add_time(
             4, "map final done. next: write output", "FrameWrite", "ms")
@@ -381,21 +379,21 @@ def trj_loop(RunPars, System):
         3, "Frames Completed. Finishing up.", "MapPost", "ms")
 
     # lastly, do postcalc:
-    for mapname in System.oscillators_ordered.keys():  # singles
+    for mapname in system.oscillators_ordered.keys():  # singles
         map_ = RunPars.requested_mapdict[mapname]
-        map_.code.GM_post_run(map_, System)
+        map_.code.GM_post_run(map_, system)
 
     # pair maps only need to do postcalc if couplings are to be calculated.
     if "ham" in RunPars.output_data:
-        for mapname in System.oscillators_ordered_coup.keys():  # pairs
+        for mapname in system.oscillators_ordered_coup.keys():  # pairs
             map_ = RunPars.requested_pairmapdict[mapname]
-            map_.code.GM_post_run(map_, System)
+            map_.code.GM_post_run(map_, system)
 
     # print all that the user does not yet know
     # (profiler?)
 
 
-def print_calculation_summary(RunPars, System):
+def print_calculation_summary(RunPars, system):
     """Reports how the calculation went, and some details users might
     want to know.
 
@@ -404,7 +402,7 @@ def print_calculation_summary(RunPars, System):
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
-    System : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.SystemReader.System`
         The class containing all the information on the system of the
         MD trajectory.
     """
@@ -419,11 +417,11 @@ def print_calculation_summary(RunPars, System):
 
     print_time_splits(RunPars)
 
-    print_treated_avail_frames(RunPars, System)
+    print_treated_avail_frames(RunPars, system)
 
     print_in_output_filenames(RunPars)
 
-    print_relevant_references(RunPars, System)
+    print_relevant_references(RunPars, system)
 
     end = " ██▓▓▒▒░░"
     start = end[::-1]
@@ -493,7 +491,7 @@ def print_time_splits(RunPars):
     pr.print(2, f"  Calculation finalization:   {sum_(*post_labels): >12}")
 
 
-def print_treated_avail_frames(RunPars, System):
+def print_treated_avail_frames(RunPars, system):
     """Report what frames from MD are available, which were requested,
     and which actually calculated.
 
@@ -506,7 +504,7 @@ def print_treated_avail_frames(RunPars, System):
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
-    System : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.SystemReader.System`
         The class containing all the information on the system of the
         MD trajectory.
     """
@@ -522,10 +520,10 @@ def print_treated_avail_frames(RunPars, System):
     msg = "Frames requested:   " + " " * 12
     pr.print(2, f"{msg}{RunPars.start_frame}-{RunPars.stop_frame}")
     msg = "Frames available:   " + " " * 12
-    pr.print(3, f"{msg}{0}-{len(System.universe.trajectory)}")
+    pr.print(3, f"{msg}{0}-{len(system.universe.trajectory)}")
     msg = "Duration of frame:  " + " " * 12
-    pr.print(1, f"{msg}{round(System.dt, 6) * 1000} fs")
-    if round(System.dt, 6) == 1.0:
+    pr.print(1, f"{msg}{round(system.dt, 6) * 1000} fs")
+    if round(system.dt, 6) == 1.0:
         pr.print(
             1, 
             "Important: a timestep of 1.0 ps is the MDAnalyse default if this "
@@ -690,43 +688,43 @@ def GEM(callcommand):
     )
 
     # Looking at MD system - finding oscillators.
-    System = GM_SR.System(RunPars)
+    system = GM_SR.System(RunPars)
 
     GM_PT.Printer.add_time(
         3, "Initialized MD system, start initializing maps", "MapInit", "ms")
 
     # GEM is now done - let maps initialize as well
-    for mapname in System.oscillators_ordered.keys():  # singles
+    for mapname in system.oscillators_ordered.keys():  # singles
         map_ = RunPars.requested_mapdict[mapname]
-        map_.code.GM_post_init(map_, System)
+        map_.code.GM_post_init(map_, system)
 
     # Report on what the system looks like (needs singles mapinit)
-    System.print_system(RunPars)
+    system.print_system(RunPars)
 
     GM_PT.Printer.add_time(
         3, "Initialization complete, start considering pairs", "MDinit", "ms")
 
     if "ham" in RunPars.output_data:
         # prepare all pair lookup tables.
-        System.order_oscillators_pairs(RunPars)
+        system.order_oscillators_pairs(RunPars)
 
         # let all coupling maps initialize
-        for mapname in System.oscillators_ordered_coup.keys():  # pairs
+        for mapname in system.oscillators_ordered_coup.keys():  # pairs
             map_ = RunPars.requested_pairmapdict[mapname]
-            map_.code.GM_post_init(map_, System)
+            map_.code.GM_post_init(map_, system)
 
         # obtain all multiply factors of all coupling maps
         RunPars.final_resolve_coupling_scale()
 
         # Save overview of found coupling maps to file.
-        GM_Pl.plot_coupling_choices(RunPars, System)
+        GM_Pl.plot_coupling_choices(RunPars, system)
 
     # Write output parameter file
     GM_FH.write_parameter_file(
-        RefPars, RunPars, System, CmdPars, InPars, DefPars)
+        RefPars, RunPars, system, CmdPars, InPars, DefPars)
 
     # calculate all (requested) frames
-    trj_loop(RunPars, System)
+    trj_loop(RunPars, system)
 
     # finalize profiler
     if RunPars.profiler:
@@ -749,7 +747,7 @@ def GEM(callcommand):
         # remove the tempfile again
         RunPars.log_profiling_tempfile.unlink()
 
-    print_calculation_summary(RunPars, System)
+    print_calculation_summary(RunPars, system)
 
 
 # The jobs that GEM can currently execute.

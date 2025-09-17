@@ -16,7 +16,7 @@ import GMAP.src.tools.MathFunctions as GM_MF
 
 # ========== Functions for users ==========
 
-def plot_coupling_choices(RunPars, System):
+def plot_coupling_choices(RunPars, system):
     """Creates the plot showing what coupling method is picked for each
     entry.
 
@@ -29,7 +29,7 @@ def plot_coupling_choices(RunPars, System):
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
-    System : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.SystemReader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -44,7 +44,7 @@ def plot_coupling_choices(RunPars, System):
         normal run, this output is just for testing purposes.
     """
 
-    nosc = System.nosc  # amount of oscillators
+    nosc = system.nosc  # amount of oscillators
 
     # Obtain colors for plotting
     presentcoupmaps = [

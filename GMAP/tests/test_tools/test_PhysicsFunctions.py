@@ -27,7 +27,7 @@ import GMAP.src.tools.PhysicsFunctions as GM_PF
 
 
 def test_calc_CoM():
-    System = GM_CT.CustomClass(**{
+    system = GM_CT.CustomClass(**{
         "positions": np.array([
             [40, 10, 30],
             [42, 8, 29],
@@ -43,8 +43,8 @@ def test_calc_CoM():
     })
 
     setattr(
-        System, "boxvects_inv",
-        np.linalg.inv(System.boxvects).astype("float32")
+        system, "boxvects_inv",
+        np.linalg.inv(system.boxvects).astype("float32")
     )
 
     atlist = [0, 1, 2, 3]
@@ -52,11 +52,11 @@ def test_calc_CoM():
     ans = np.array(
         [38.5789473, 11.1578947, 28.3947368], dtype="float32").round(4)
 
-    assert np.all(GM_PF.calc_CoM(System, atlist).round(4) == ans)
+    assert np.all(GM_PF.calc_CoM(system, atlist).round(4) == ans)
 
     # ------------------------------------------------------------------
 
-    System = GM_CT.CustomClass(**{
+    system = GM_CT.CustomClass(**{
         "positions": np.array([
             [80, 92, 76],
             [12, 16, 4],
@@ -72,8 +72,8 @@ def test_calc_CoM():
     })
 
     setattr(
-        System, "boxvects_inv",
-        np.linalg.inv(System.boxvects).astype("float32")
+        system, "boxvects_inv",
+        np.linalg.inv(system.boxvects).astype("float32")
     )
 
     atlist = [0, 1, 2, 3]
@@ -81,11 +81,11 @@ def test_calc_CoM():
     ans = np.array(
         [2, 6, -2], dtype="float32").round(4)
 
-    assert np.all(GM_PF.calc_CoM(System, atlist).round(4) == ans)
+    assert np.all(GM_PF.calc_CoM(system, atlist).round(4) == ans)
 
     # ------------------------------------------------------------------
 
-    System = GM_CT.CustomClass(**{
+    system = GM_CT.CustomClass(**{
         # before moving all into (1, 1, 1) box
         # 55, 110, 95 (close to Y edge on 'top' (max Z) surface)
         # 55, 110, 105 (still within in Y dir, outside in Z dir)
@@ -124,8 +124,8 @@ def test_calc_CoM():
     })
 
     setattr(
-        System, "boxvects_inv",
-        np.linalg.inv(System.boxvects).astype("float32")
+        system, "boxvects_inv",
+        np.linalg.inv(system.boxvects).astype("float32")
     )
 
     atlist = [0, 1, 2, 3]
@@ -133,7 +133,7 @@ def test_calc_CoM():
     ans = np.array(
         [8, 50, 1], dtype="float32").round(4)
 
-    assert np.all(GM_PF.calc_CoM(System, atlist).round(4) == ans)
+    assert np.all(GM_PF.calc_CoM(system, atlist).round(4) == ans)
 
 
 # numba 0.61.2 errors on WIN11, but only when running ALL tests.
@@ -191,21 +191,21 @@ def test_get_positions(center, pos, dbp):
     ) = parameter_getter("test_calc_dipoles_xyz", cmdline)
     # position - 2,  db0 - 3, db1 - 1
 
-    System = get_System_1()
+    system = get_System_1()
     oscillator = get_oscillator_1()
     setattr(oscillator, "Map", mapdict["test_calc_dipoles_xyz"])
     setattr(
         oscillator, "positions_box",
-        System.positions[0:4] @ System.boxvects_inv)
+        system.positions[0:4] @ system.boxvects_inv)
 
     setattr(
         oscillator, "rotation_matrix",
         oscillator.Map.code.GM_get_rotation_matrix(
-            oscillator.Map, System, oscillator))
+            oscillator.Map, system, oscillator))
 
-    pos = GM_PF.get_positions(System, oscillator)
+    pos = GM_PF.get_positions(system, oscillator)
     assert np.all(pos.round(4) == np.array(pos, dtype="float32").round(4))
-    dbp = GM_PF.get_doublepos(System, oscillator)
+    dbp = GM_PF.get_doublepos(system, oscillator)
     assert np.all(np.array(dbp).round(4) == np.array(
         dbp, dtype="float32").round(4))
 
@@ -226,19 +226,19 @@ def test_calc_dipole_xyz():
         CmdPars, mapdict, pairs_mapdict
     ) = parameter_getter("test_calc_dipoles_xyz", cmdline)
 
-    System = get_System_1()
+    system = get_System_1()
     oscillator = get_oscillator_1()
     setattr(oscillator, "Map", mapdict["test_calc_dipoles_xyz"])
     setattr(
         oscillator, "positions_box",
-        System.positions[[0, 1]] @ System.boxvects_inv)
+        system.positions[[0, 1]] @ system.boxvects_inv)
 
     setattr(
         oscillator, "rotation_matrix",
         oscillator.Map.code.GM_get_rotation_matrix(
-            oscillator.Map, System, oscillator))
+            oscillator.Map, system, oscillator))
 
-    r_vec, r_pos = GM_PF.calc_dipole(System, oscillator)
+    r_vec, r_pos = GM_PF.calc_dipole(system, oscillator)
 
     # r_vec base = 0.3, 0.2, 0.1
     # r_vec add: 0.06+0.16+0.3, 0.08+0.2+0.36, 0.1+0.24+0.42
@@ -261,19 +261,19 @@ def test_calc_dipole_magnitude():
         CmdPars, mapdict, pairs_mapdict
     ) = parameter_getter("test_calc_dipoles_magnitude", cmdline)
 
-    System = get_System_1()
+    system = get_System_1()
     oscillator = get_oscillator_1()
     setattr(oscillator, "Map", mapdict["test_calc_dipoles_magnitude"])
     setattr(
         oscillator, "positions_box",
-        System.positions[[0, 1]] @ System.boxvects_inv)
+        system.positions[[0, 1]] @ system.boxvects_inv)
 
     setattr(
         oscillator, "rotation_matrix",
         oscillator.Map.code.GM_get_rotation_matrix(
-            oscillator.Map, System, oscillator))
+            oscillator.Map, system, oscillator))
 
-    r_vec, r_pos = GM_PF.calc_dipole(System, oscillator)
+    r_vec, r_pos = GM_PF.calc_dipole(system, oscillator)
 
     # r_vec base = 0.3
     # r_vec add: 0.06+0.16+0.3
@@ -297,19 +297,19 @@ def test_calc_frequency():
         CmdPars, mapdict, pairs_mapdict
     ) = parameter_getter("test_calc_dipoles_magnitude", cmdline)
 
-    System = get_System_1()
+    system = get_System_1()
     oscillator = get_oscillator_1()
     setattr(oscillator, "Map", mapdict["test_calc_dipoles_magnitude"])
     setattr(
         oscillator, "positions_box",
-        System.positions[[0, 1]] @ System.boxvects_inv)
+        system.positions[[0, 1]] @ system.boxvects_inv)
 
     setattr(
         oscillator, "rotation_matrix",
         oscillator.Map.code.GM_get_rotation_matrix(
-            oscillator.Map, System, oscillator))
+            oscillator.Map, system, oscillator))
 
-    freq = GM_PF.calc_frequency(System, oscillator)
+    freq = GM_PF.calc_frequency(system, oscillator)
 
     # freq_gas = 1200
     # VEGout = 0, 0.01, 0.02 ... 0.09, for each atom
@@ -328,19 +328,19 @@ def test_calc_frequency():
         CmdPars, mapdict, pairs_mapdict
     ) = parameter_getter("test_calc_freq_quad", cmdline)
 
-    System = get_System_1()
+    system = get_System_1()
     oscillator = get_oscillator_1()
     setattr(oscillator, "Map", mapdict["test_calc_freq_quad"])
     setattr(
         oscillator, "positions_box",
-        System.positions[[0, 1]] @ System.boxvects_inv)
+        system.positions[[0, 1]] @ system.boxvects_inv)
 
     setattr(
         oscillator, "rotation_matrix",
         oscillator.Map.code.GM_get_rotation_matrix(
-            oscillator.Map, System, oscillator))
+            oscillator.Map, system, oscillator))
 
-    freq = GM_PF.calc_frequency(System, oscillator)
+    freq = GM_PF.calc_frequency(system, oscillator)
 
     # freq_gas = 1200
     # VEGout = 0, 0.01, 0.02 ... 0.09, for each atom
@@ -363,19 +363,19 @@ def test_calc_frequency():
         CmdPars, mapdict, pairs_mapdict
     ) = parameter_getter("test_calc_freq_linquad", cmdline)
 
-    System = get_System_1()
+    system = get_System_1()
     oscillator = get_oscillator_1()
     setattr(oscillator, "Map", mapdict["test_calc_freq_linquad"])
     setattr(
         oscillator, "positions_box",
-        System.positions[[0, 1]] @ System.boxvects_inv)
+        system.positions[[0, 1]] @ system.boxvects_inv)
 
     setattr(
         oscillator, "rotation_matrix",
         oscillator.Map.code.GM_get_rotation_matrix(
-            oscillator.Map, System, oscillator))
+            oscillator.Map, system, oscillator))
 
-    freq = GM_PF.calc_frequency(System, oscillator)
+    freq = GM_PF.calc_frequency(system, oscillator)
     # freq += 0*0 + 0.01*1 + 0.02*2 + 0.03*3 + 0*4 + 0.01*5 + 0.02*6 + 0.03*7
     #       = 1200 + 0 + 0.01 + 0.04 + 0.09 + 0 + 0.05 + 0.12 + 0.21
     #       = 1200 + 0.14 + 0.38  = 1200.52
@@ -398,8 +398,8 @@ def test_calc_frequency():
 
 
 def test_prep_coupling():
-    RunPars, System, coupmap = prep_coupling_tests()
-    GM_PF.prep_coupling(RunPars, System)
+    RunPars, system, coupmap = prep_coupling_tests()
+    GM_PF.prep_coupling(RunPars, system)
 
     # the prepared r_vec should be the same as the one calculated by
     # (test)_calc_dipole(_magnitude)
@@ -417,14 +417,14 @@ def test_prep_coupling():
 
 
 def test_calc_coupling():
-    RunPars, System, coupmap = prep_coupling_tests()
-    GM_PF.prep_coupling(RunPars, System)
+    RunPars, system, coupmap = prep_coupling_tests()
+    GM_PF.prep_coupling(RunPars, system)
 
-    # osclist = System.oscillators_ordered_coup["DipDip"]
-    oscixlist = System.oscillators_ordered_coup_ix["DipDip"]
+    # osclist = system.oscillators_ordered_coup["DipDip"]
+    oscixlist = system.oscillators_ordered_coup_ix["DipDip"]
     coupmap.allpairs = np.array([(oscixlist[0], oscixlist[1])], dtype="int32")
     outputs = {"hamiltonian": np.zeros((2, 2), dtype="float32")}
-    GM_PF.calc_coupling(RunPars, System, outputs)
+    GM_PF.calc_coupling(RunPars, system, outputs)
     J = outputs["hamiltonian"][1, 0]
 
     # d = r(1) - r(2) = (8,28,68) - (28,68,8) = (-20, -40, -40) (PBC!)
@@ -591,30 +591,30 @@ def prep_coupling_tests():
     GM_MR.manage_maps_pairs(RunPars, pairs_mapdict)
     RunPars.final_resolve_coupling_scale()
 
-    System = get_System_1()
+    system = get_System_1()
 
     for oscillator in oscillators:
         # assign the positions to the oscillator
         setattr(
             oscillator, "positions_box",
-            System.positions[
-                oscillator.electrostatic_atoms] @ System.boxvects_inv)
+            system.positions[
+                oscillator.electrostatic_atoms] @ system.boxvects_inv)
 
         # assign the correct rotation matrix to the oscillator
         setattr(
             oscillator, "rotation_matrix",
             oscillator.Map.code.GM_get_rotation_matrix(
-                oscillator.Map, System, oscillator))
+                oscillator.Map, system, oscillator))
 
-        GM_PF.calc_dipole(System, oscillator)
+        GM_PF.calc_dipole(system, oscillator)
 
-    setattr(System, "oscillators_ordered_coup", {
+    setattr(system, "oscillators_ordered_coup", {
         "DipDip": oscillators})
-    setattr(System, "oscillators_ordered_coup_ix", {
+    setattr(system, "oscillators_ordered_coup_ix", {
         "DipDip": [0, 1]})
-    setattr(System, "nosc", len(oscillators))
+    setattr(system, "nosc", len(oscillators))
 
     coupmap = RunPars.requested_pairmapdict["DipDip"]
-    coupmap.code.GM_pre_run(coupmap, System)
+    coupmap.code.GM_pre_run(coupmap, system)
 
-    return RunPars, System, coupmap
+    return RunPars, system, coupmap

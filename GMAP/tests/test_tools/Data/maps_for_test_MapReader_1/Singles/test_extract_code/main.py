@@ -1,22 +1,22 @@
 
 
-def GM_adjust_RunPars(Map):
+def GM_adjust_RunPars(map_):
     """Makes the necessary changes to Map.RunPar.
 
     Is expected to not return anything - return value is not caught.
 
     Parameters
     ----------
-    Map : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
         The object that stores everything the program currently knows
         about this map.
     """
 
-    if Map.RunPars.overwrite_neutral_charge_threshold != 0:
+    if map_.RunPars.overwrite_neutral_charge_threshold != 0:
         setattr(
-            Map.RunPars.MainRunPars,
+            map_.RunPars.MainRunPars,
             "neutral_charge_threshold",
-            Map.RunPars.overwrite_neutral_charge_threshold
+            map_.RunPars.overwrite_neutral_charge_threshold
         )
 
 

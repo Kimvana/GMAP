@@ -483,14 +483,14 @@ def test_write_legend():
         "code": GM_CT.CustomClass(**{"GM_str_osc": get_resnum_text}),
         "name": "mockmap"
     })
-    System = GM_CT.CustomClass(**{"oscillators": [MockOsc(**{
+    system = GM_CT.CustomClass(**{"oscillators": [MockOsc(**{
         "Map": map_,
         "ix": ix
     }) for ix in range(4)]})
 
     outfname = RunPars.output_legend_filename
 
-    GM_FH.write_legend(RunPars, System)
+    GM_FH.write_legend(RunPars, system)
 
     with open(str(outfname)) as fhand:
         contents = fhand.read()

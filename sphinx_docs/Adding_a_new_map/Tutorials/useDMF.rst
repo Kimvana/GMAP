@@ -29,14 +29,14 @@ The solution for this map is to define a new function that is basically a wrappe
 
     import GMAP.src.tools.DefaultMapFunctions as GM_DMF
 
-    def GM_post_init(Map, Syst):
-        def calculate_frequency(Map, Syst, osc):
-            freq = calc_frequency(Map, Syst, osc)
+    def GM_post_init(map_, system):
+        def calculate_frequency(map_, system, osc):
+            freq = calc_frequency(map_, system, osc)
             osc.freq = freq
             return freq
 
-        calc_frequency = GM_DMF.get_calculate_frequency(Map)
-        Map.code.GM_calculate_frequency = calculate_frequency
+        calc_frequency = GM_DMF.get_calculate_frequency(map_)
+        map_.code.GM_calculate_frequency = calculate_frequency
         return
 
 The new function ``calculate_frequency`` defined here should be pretty clear. The two interesting things to explain here are the two lines outside it. Pay attention to not confuse the ``calc_frequency`` and ``calculate_frequency`` objects here, they are (and need to be) different!

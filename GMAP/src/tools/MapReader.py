@@ -1015,7 +1015,7 @@ class SingleCore:
 
     Parameters
     ----------
-    Map : :class:`~GMAP.src.tools.MapReader.SingleMap`
+    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
         The object that stores the map which this core.txt file belongs
         to.
 
@@ -1091,26 +1091,26 @@ class SingleCore:
         result/influence of both will be added.
     """
 
-    def __init__(self, Map):
-        rawcore = Map.rawcore
+    def __init__(self, map_):
+        rawcore = map_.rawcore
         self.success = True
 
         self.can_output = self.parse_can_output(
-            rawcore, Map.RunPars, Map.directory)
+            rawcore, map_.RunPars, map_.directory)
 
-        self.ham_first = self.parse_ham_first(rawcore, Map.directory)
+        self.ham_first = self.parse_ham_first(rawcore, map_.directory)
 
-        self.parse_functional_group(rawcore, Map.directory)
+        self.parse_functional_group(rawcore, map_.directory)
         if not self.success:
             return
 
         self.used_atoms = self.parse_used_atoms(
-            rawcore, Map.directory)
+            rawcore, map_.directory)
         if not self.success:
             return
 
         self.electrostatic_choice = self.parse_estatic_choice(
-                rawcore, Map.directory)
+                rawcore, map_.directory)
         choice_in_C_dict = {None: 0, "V": 1, "E": 2, "G": 3}
         self.electrostatic_choice_c = choice_in_C_dict[
             self.electrostatic_choice]
@@ -1118,28 +1118,28 @@ class SingleCore:
             return
 
         self.electrostatic_atoms = self.parse_estatic_atoms(
-                rawcore, Map.directory)
+                rawcore, map_.directory)
         if not self.success:
             return
 
         self.local_atoms = self.parse_local_atoms(
-            rawcore, Map.directory)
+            rawcore, map_.directory)
         if not self.success:
             return
 
-        self.type = self.parse_type(rawcore, Map.directory)
+        self.type = self.parse_type(rawcore, map_.directory)
         if not self.success:
             return
 
         # If there is no custom function for defining an oscillators VEG
         # reference point, a default is needed. Make sure core.txt is valid.
-        if not hasattr(Map.code, "GM_get_VEG_ref"):
-            self.check_VEG_reference(rawcore, Map.directory)
+        if not hasattr(map_.code, "GM_get_VEG_ref"):
+            self.check_VEG_reference(rawcore, map_.directory)
             if not self.success:
                 return
 
         self.dipole_gas_phase, self.dipole_data_array = self.parse_dipoles(
-            rawcore, Map.directory)
+            rawcore, map_.directory)
         if not self.success:
             return
         if isinstance(self.dipole_gas_phase, list):
@@ -1148,22 +1148,23 @@ class SingleCore:
         (
             self.frequency_gas_phase, self.frequency_data_array_linear,
             self.frequency_data_array_quadratic,
-        ) = self.parse_frequency(rawcore, Map.directory)
+        ) = self.parse_frequency(rawcore, map_.directory)
         if not self.success:
             return
 
         self.length_units = self.parse_length_units(
-            rawcore, Map.directory)
+            rawcore, map_.directory)
         if not self.success:
             return
 
-        self.freq_multiplier = self.parse_multiply_freq(rawcore, Map.directory)
+        self.freq_multiplier = self.parse_multiply_freq(
+            rawcore, map_.directory)
         if not self.success:
             return
 
         self.change_map_units_decision()
 
-        self.parse_positions(rawcore, Map.directory)
+        self.parse_positions(rawcore, map_.directory)
         if not self.success:
             return
 
@@ -2661,7 +2662,7 @@ class PairCore:
 
     Parameters
     ----------
-    Map : :class:`~GMAP.src.tools.MapReader.SingleMap`
+    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
         The object that stores the map which this core.txt file belongs
         to.
 
@@ -2683,8 +2684,8 @@ class PairCore:
         pair that can be coupled using this map.
     """
 
-    def __init__(self, Map):
-        rawcore = Map.rawcore
+    def __init__(self, map_):
+        rawcore = map_.rawcore
         self.success = True
 
         # These can't fail
@@ -2698,10 +2699,10 @@ class PairCore:
                 rawcore, keyword))
 
         self.allowed_singles = self.parse_singles_BWlist(
-            Map.RunPars.MainRunPars, rawcore)
+            map_.RunPars.MainRunPars, rawcore)
 
         self.valid_combinations = self.parse_valid_combinations(
-            rawcore, Map.directory)
+            rawcore, map_.directory)
 
         if not self.success:
             return

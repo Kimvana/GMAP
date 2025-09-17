@@ -40,32 +40,32 @@ class TestSystem:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname)
 
-        System = GM_SR.System.__new__(GM_SR.System)
-        setattr(System, "universe", GM_SR.gen_universe(RunPars))
-        System.set_properties()
+        system = GM_SR.System.__new__(GM_SR.System)
+        setattr(system, "universe", GM_SR.gen_universe(RunPars))
+        system.set_properties()
 
         all_properties = (
-            System.atnums, System.atnames, System.resnums, System.resnames,
-            System.positions, System.masses, System.charges, System.types,
-            System.segids
+            system.atnums, system.atnames, system.resnums, system.resnames,
+            system.positions, system.masses, system.charges, system.types,
+            system.segids
         )
 
         assert all(item.shape[0] == 33876 for item in all_properties)
-        assert System.natoms == 33876
-        assert System.nres == 10773
+        assert system.natoms == 33876
+        assert system.nres == 10773
 
-        assert np.all(System.boxdims == np.array(
+        assert np.all(system.boxdims == np.array(
             [69.5689, 69.5689, 69.5689], dtype=np.float32))
-        assert np.all(System.angles == np.array(
+        assert np.all(system.angles == np.array(
             [90, 90, 90], dtype=np.float32))
 
-        assert np.all(System.atnums == np.arange(System.natoms))
+        assert np.all(system.atnums == np.arange(system.natoms))
         # assert that residue numbers only increase (so they're unique)
-        assert np.all(np.diff(System.resnums) >= 0)
+        assert np.all(np.diff(system.resnums) >= 0)
 
         # first [0] to select 0th axis, second to select first occurence
-        first_sol_at = np.where(System.resnames == "SOL")[0][0]
-        first_sol_res = System.resnums[first_sol_at]
+        first_sol_at = np.where(system.resnames == "SOL")[0][0]
+        first_sol_res = system.resnums[first_sol_at]
 
         for amino_acid in (
             "ARG", "HIS", "LYS", "ASP", "GLU", "SER", "THR", "ASN", "GLN",
@@ -75,11 +75,11 @@ class TestSystem:
             # for each amino acid (of the current 'type'), get the array of
             # names of all its constituent atoms.
             names_perres = [
-                System.atnames[
-                    System.residues.first_ix[resix]:
-                    System.residues.last_ix[resix] + 1
+                system.atnames[
+                    system.residues.first_ix[resix]:
+                    system.residues.last_ix[resix] + 1
                 ] for resix in range(1, first_sol_res-1)
-                if System.residues.resnames[resix] == amino_acid
+                if system.residues.resnames[resix] == amino_acid
             ]
             if names_perres:
                 assert all(
@@ -108,15 +108,15 @@ class TestSystem:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
-        System = GM_SR.System.__new__(GM_SR.System)
-        setattr(System, "universe", GM_SR.gen_universe(RunPars))
-        System.set_properties()
-        System.basic_boxchecks(RunPars)
-        System.find_influencers(RunPars)
+        system = GM_SR.System.__new__(GM_SR.System)
+        setattr(system, "universe", GM_SR.gen_universe(RunPars))
+        system.set_properties()
+        system.basic_boxchecks(RunPars)
+        system.find_influencers(RunPars)
 
-        print(System.influencers_atix[-20:])
+        print(system.influencers_atix[-20:])
         target = np.array([*range(1960)] + [*range(33868, 33876)])
-        assert np.all(System.influencers_atix == target)
+        assert np.all(system.influencers_atix == target)
 
         # ----- influencer choice specified for MDA.select_atoms -------
 
@@ -130,15 +130,15 @@ class TestSystem:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
-        System = GM_SR.System.__new__(GM_SR.System)
-        setattr(System, "universe", GM_SR.gen_universe(RunPars))
-        System.set_properties()
-        System.basic_boxchecks(RunPars)
-        System.find_influencers(RunPars)
+        system = GM_SR.System.__new__(GM_SR.System)
+        setattr(system, "universe", GM_SR.gen_universe(RunPars))
+        system.set_properties()
+        system.basic_boxchecks(RunPars)
+        system.find_influencers(RunPars)
 
-        print(System.influencers_atix[-20:])
+        print(system.influencers_atix[-20:])
         target = np.array([*range(1960)] + [*range(33868, 33876)])
-        assert np.all(System.influencers_atix == target)
+        assert np.all(system.influencers_atix == target)
 
         # ----- influencer choice specified in inflfile ----------------
 
@@ -153,15 +153,15 @@ class TestSystem:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
-        System = GM_SR.System.__new__(GM_SR.System)
-        setattr(System, "universe", GM_SR.gen_universe(RunPars))
-        System.set_properties()
-        System.basic_boxchecks(RunPars)
-        System.find_influencers(RunPars)
+        system = GM_SR.System.__new__(GM_SR.System)
+        setattr(system, "universe", GM_SR.gen_universe(RunPars))
+        system.set_properties()
+        system.basic_boxchecks(RunPars)
+        system.find_influencers(RunPars)
 
-        print(System.influencers_atix[-20:])
+        print(system.influencers_atix[-20:])
         target = np.array([*range(1960, 33876)])
-        assert np.all(System.influencers_atix == target)
+        assert np.all(system.influencers_atix == target)
 
         # ----- influencer choice specified in inflfile ----------------
         # but all in file are used!
@@ -177,15 +177,15 @@ class TestSystem:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
-        System = GM_SR.System.__new__(GM_SR.System)
-        setattr(System, "universe", GM_SR.gen_universe(RunPars))
-        System.set_properties()
-        System.basic_boxchecks(RunPars)
-        System.find_influencers(RunPars)
+        system = GM_SR.System.__new__(GM_SR.System)
+        setattr(system, "universe", GM_SR.gen_universe(RunPars))
+        system.set_properties()
+        system.basic_boxchecks(RunPars)
+        system.find_influencers(RunPars)
 
-        print(System.influencers_atix[-20:])
+        print(system.influencers_atix[-20:])
         target = np.array([*range(0, 33876)])
-        assert np.all(System.influencers_atix == target)
+        assert np.all(system.influencers_atix == target)
 
     def test_find_oscillators(self):
 
@@ -200,9 +200,9 @@ class TestSystem:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
-        System = GM_SR.System(RunPars)
+        system = GM_SR.System(RunPars)
 
-        assert len(System.oscillators) == 17
+        assert len(system.oscillators) == 17
 
         # Both AmideBB and AmideSC
 
@@ -217,9 +217,9 @@ class TestSystem:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
-        System = GM_SR.System(RunPars)
+        system = GM_SR.System(RunPars)
 
-        assert len(System.oscillators) == 145
+        assert len(system.oscillators) == 145
 
     def test_find_osc_singlebonded(self):
         # just AmideSC
@@ -229,9 +229,9 @@ class TestSystem:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname)
 
-        System = GM_SR.System(RunPars)
+        system = GM_SR.System(RunPars)
 
-        assert len(System.oscillators) == 17
+        assert len(system.oscillators) == 17
 
     def test_multiple_res_osc(self):
         # This is a map of a triple ALA subchain - only 1 present in 1AKI
@@ -241,13 +241,13 @@ class TestSystem:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, ["--dont_report_error", "MI__\\;"])
 
-        System = GM_SR.System(RunPars)
-        System.update_properties(RunPars)
+        system = GM_SR.System(RunPars)
+        system.update_properties(RunPars)
 
-        assert len(System.oscillators) == 1
+        assert len(system.oscillators) == 1
 
-        onlyosc = System.oscillators[0]
-        onlyosc.frame_update(System)
+        onlyosc = system.oscillators[0]
+        onlyosc.frame_update(system)
         # triple ALA lies on resnums 8-10, atnums 135-164, select 2nd AmideBB
         assert onlyosc.used_atoms == [153, 154, 147, 155, 156, 157]
 
@@ -257,7 +257,7 @@ class TestSystem:
 
         # box dims   = (69.5689, 69.5689, 69.5689)
         # average in (-0.5, 0.5) boxdims:  (-22.9589, 28.4300, -32.9739)
-        tocheck = np.round(onlyosc.get_VEG_ref(System), 4)
+        tocheck = np.round(onlyosc.get_VEG_ref(system), 4)
         answer = np.round(
             np.array([-22.9589, 28.43, -32.9739], dtype="float32"), 4)
 
@@ -276,13 +276,13 @@ class TestSystem:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
-        System = GM_SR.System.__new__(GM_SR.System)
-        setattr(System, "universe", GM_SR.gen_universe(RunPars))
-        System.set_properties()
-        System.basic_boxchecks(RunPars)
+        system = GM_SR.System.__new__(GM_SR.System)
+        setattr(system, "universe", GM_SR.gen_universe(RunPars))
+        system.set_properties()
+        system.basic_boxchecks(RunPars)
 
         with pytest.raises(GM_Ex.GmapFileSyntaxError, match="SU_NP_5$"):
-            System.find_influencers(RunPars)
+            system.find_influencers(RunPars)
 
     def test_SU_NP_6(self):
         mapname = "AmideSC"
@@ -295,13 +295,13 @@ class TestSystem:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
-        System = GM_SR.System.__new__(GM_SR.System)
-        setattr(System, "universe", GM_SR.gen_universe(RunPars))
-        System.set_properties()
-        System.basic_boxchecks(RunPars)
+        system = GM_SR.System.__new__(GM_SR.System)
+        setattr(system, "universe", GM_SR.gen_universe(RunPars))
+        system.set_properties()
+        system.basic_boxchecks(RunPars)
 
         with pytest.raises(GM_Ex.GMAPexception, match="SU_NP_6$"):
-            System.find_influencers(RunPars)
+            system.find_influencers(RunPars)
 
     def test_MD_SU_6(self):
         mapname = "AmideSC"
@@ -332,8 +332,8 @@ class TestOscillator:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
-        System = GM_SR.System(RunPars)
-        oscstr = str(System.oscillators[0])
+        system = GM_SR.System(RunPars)
+        oscstr = str(system.oscillators[0])
         exp = "Oscillator of type AmideSC living on the residue ASN18"
         assert oscstr == exp
 

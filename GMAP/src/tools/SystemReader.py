@@ -11,7 +11,6 @@ import GMAP.src.tools.DefaultMapFunctions as GM_DMF
 import GMAP.src.tools.Exceptions as GM_Ex
 import GMAP.src.tools.ParameterParser as GM_PP
 import GMAP.src.tools.PrintTools as GM_PT
-# from GMAP.src.tools.PrintTools import devprint as dpr
 
 
 class System:
@@ -1014,7 +1013,7 @@ class Residues:
 
     Parameters
     ----------
-    syst : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.SystemReader.System`
         The class containing all the information on the system of the
         MD trajectory.
 
@@ -1040,10 +1039,10 @@ class Residues:
         each residue, it stores its center of mass.
     """
 
-    def __init__(self, syst):
-        self.find_markers(syst)
+    def __init__(self, system):
+        self.find_markers(system)
 
-    def find_markers(self, syst):
+    def find_markers(self, system):
         """Make lookup tables (len=nres) for basic residue-based
         properties.
 
@@ -1056,7 +1055,7 @@ class Residues:
 
         Parameters
         ----------
-        syst : :class:`System`
+        system : :class:`System`
             This object stores all important information about the MD
             system that will be analyzed.
         """
@@ -1068,7 +1067,7 @@ class Residues:
         last_resnum = -1
         current_resnum = -1
 
-        for atnum, resnum in enumerate(syst.resnums):
+        for atnum, resnum in enumerate(system.resnums):
             last_resnum = current_resnum
             current_resnum = resnum
 
@@ -1079,7 +1078,7 @@ class Residues:
             # now, we know we've just found a new residue
             if last_resnum != -1:
                 self.last_ix.append(atnum - 1)
-            self.resnames.append(syst.resnames[atnum])
+            self.resnames.append(system.resnames[atnum])
             self.first_ix.append(atnum)
         else:
             self.last_ix.append(atnum)
@@ -1118,7 +1117,7 @@ class Oscillator:
 
     Parameters
     ----------
-    System : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.SystemReader.System`
         The class containing all the information on the system of the
         MD trajectory.
     atoms : list of int
@@ -1176,8 +1175,8 @@ class Oscillator:
         The position at which the dipole moment lies.
     """
 
-    def __init__(self, System, atoms, map_):
-        self.system = System
+    def __init__(self, system, atoms, map_):
+        self.system = system
         self.Map = map_
         self.used_atoms = [atoms[index] for index in self.Map.Core.used_atoms]
         self.electrostatic_atoms = [
@@ -1287,7 +1286,7 @@ class Oscillator:
 
         self.VEGout /= constant
 
-    def frame_update(self, Syst):
+    def frame_update(self, system):
         """Update the frame-specific attributes of the instance.
 
         When a new frame starts, the system positions array is updated,
@@ -1296,33 +1295,33 @@ class Oscillator:
 
         Parameters
         ----------
-        Syst : :class:`~GMAP.src.tools.SystemReader.System`
+        system : :class:`~GMAP.src.tools.SystemReader.System`
             The object that stores all information on the MD system
         """
 
-        self.positions = Syst.positions[self.used_atoms]
+        self.positions = system.positions[self.used_atoms]
 
         # to get usable box positions, not only convert to box, but also make
         # sure they are 'centered' around one of the atoms of the molecule.
         # the assumption here is that all atoms of the molecule are reasonably
         # close together (at least much closer than a box length)
-        self.positions_box = Syst.positions_box[self.used_atoms]
+        self.positions_box = system.positions_box[self.used_atoms]
         shift = self.positions_box[0].copy()
         self.positions_box -= shift
         self.positions_box -= np.floor(self.positions_box + 0.5) - shift
 
-        self.VEG_refpos = self.get_VEG_ref(Syst)
+        self.VEG_refpos = self.get_VEG_ref(system)
         self.VEG_refpos_c = np.ctypeslib.as_ctypes(self.VEG_refpos)
         if self.Map.Core.electrostatic_choice in ("E", "G"):
-            self.rotation_matrix = self.get_rotation_matrix(Syst)
+            self.rotation_matrix = self.get_rotation_matrix(system)
 
-    def get_VEG_ref(self, System):
+    def get_VEG_ref(self, system):
         """Obtain the VEG point for the current system. Must be repeated
         every frame.
 
         Parameters
         ----------
-        System : :class:`~GMAP.src.tools.SystemReader.System`
+        system : :class:`~GMAP.src.tools.SystemReader.System`
             The class containing all the information on the system of the
             MD trajectory.
 
@@ -1337,16 +1336,16 @@ class Oscillator:
         """
 
         return self.Map.code.GM_get_VEG_ref(
-            self.Map, System, self
+            self.Map, system, self
         )
 
-    def get_rotation_matrix(self, System):
+    def get_rotation_matrix(self, system):
         """Obtain the rotation matrix for the current system. Must be
         repeated every frame.
 
         Parameters
         ----------
-        System : :class:`~GMAP.src.tools.SystemReader.System`
+        system : :class:`~GMAP.src.tools.SystemReader.System`
             The class containing all the information on the system of
             the MD trajectory.
 
@@ -1364,7 +1363,7 @@ class Oscillator:
         """
 
         return self.Map.code.GM_get_rotation_matrix(
-            self.Map, System, self)
+            self.Map, system, self)
 
 
 def gen_universe(RunPars):

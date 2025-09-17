@@ -245,15 +245,15 @@ def get_calc_coupling():
 
 
 def get_str_osc():
-    def base_str_getter(Map, Syst, osc):
-        return f"living on residue number {Syst.resnums[osc.used_atoms[0]]}"
+    def base_str_getter(map_, system, osc):
+        return f"living on residue number {system.resnums[osc.used_atoms[0]]}"
     return base_str_getter
 
 
 def get_report_system():
-    def base_str_getter(Map, Syst):
-        name = Map.name + ":"
-        amount = len(Syst.oscillators_ordered.get(Map.name, []))
+    def base_str_getter(map_, system):
+        name = map_.name + ":"
+        amount = len(system.oscillators_ordered.get(map_.name, []))
         return f"{name: <21} {amount: >4}"
     return base_str_getter
 
@@ -307,15 +307,15 @@ def VEG_from_residues(local_atoms):
         this oscillator.
     """
 
-    def GM_get_VEG_ref(Map, Syst, osc):
+    def GM_get_VEG_ref(map_, system, osc):
         atnums = []
         for atom in local_atoms:
-            resnum = Syst.resnums[osc.used_atoms[atom]]
+            resnum = system.resnums[osc.used_atoms[atom]]
             atnums.extend([*range(
-                Syst.residues.first_ix[resnum],
-                Syst.residues.last_ix[resnum] + 1
+                system.residues.first_ix[resnum],
+                system.residues.last_ix[resnum] + 1
             )])
-        CoM = GM_PF.calc_CoM(Syst, atnums)
+        CoM = GM_PF.calc_CoM(system, atnums)
         return CoM
 
     local_atoms = [int(num) for num in local_atoms]
@@ -340,9 +340,9 @@ def VEG_from_com(local_atoms):
         this oscillator.
     """
 
-    def GM_get_VEG_ref(Map, Syst, osc):
+    def GM_get_VEG_ref(map_, system, osc):
         atnums = [osc.used_atoms[ix] for ix in local_atoms]
-        CoM = GM_PF.calc_CoM(Syst, atnums)
+        CoM = GM_PF.calc_CoM(system, atnums)
         return CoM
 
     local_atoms = [int(num) for num in local_atoms]
@@ -382,13 +382,13 @@ def interpret_position(map_, details, parname, center=None):
     centerstring = f"np.array([{centerstring}], dtype='float32')"
 
     codestring = "\ndef GM_get_position"
-    codestring += "(Map, Syst, osc):\n"
+    codestring += "(map_, system, osc):\n"
 
     codestring += "    CoM = " + envelop_int(
         " ".join(details), "osc.positions_box[", "]"
     ) + "\n"
     codestring += f"    CoM = (CoM - np.floor(CoM - {centerstring}"
-    codestring += "+ 0.5)) @ Syst.boxvects\n"
+    codestring += "+ 0.5)) @ system.boxvects\n"
     codestring += "    return CoM"
 
     try:
@@ -425,14 +425,14 @@ def get_get_dipole_dir(map_):
     # based on the r_vec and r_pos lines in the map core, build a function.
 
     # find direction of dipole vector
-    codestring = "\ndef GM_get_dipole_dir(Map, Syst, osc):\n"
+    codestring = "\ndef GM_get_dipole_dir(map_, system, osc):\n"
     codestring += "    r_vec = " + envelop_int(
         " ".join(map_.rawcore["r_vec"]),
         "osc.positions_box[", "]"
     ) + "\n"
     # Move vector back into the box, and normalize
     codestring += "    r_vec = (r_vec - np.floor(r_vec + 0.5))\n"
-    codestring += "    r_vec = r_vec @ Syst.boxvects\n"
+    codestring += "    r_vec = r_vec @ system.boxvects\n"
     codestring += "    r_vec /= GM_MF.vec3_len(r_vec)\n"
     codestring += "    r_vec = r_vec.astype('float32')\n\n"
 
@@ -442,7 +442,7 @@ def get_get_dipole_dir(map_):
         "osc.positions_box[", "]"
     ) + "\n"
     codestring += "    r_pos = (r_pos - np.floor(r_pos + 0.5))\n"
-    codestring += "    r_pos = r_pos @ Syst.boxvects\n"
+    codestring += "    r_pos = r_pos @ system.boxvects\n"
     codestring += "    r_pos = r_pos.astype('float32')\n\n"
     codestring += "    return r_vec, r_pos\n"
 
@@ -470,15 +470,15 @@ def get_get_dipole_mag():
         moment.
     """
 
-    def GM_get_dipole_mag(Map, Syst, osc):
-        if Map.Core.dipole_data_array is not None:
+    def GM_get_dipole_mag(map_, system, osc):
+        if map_.Core.dipole_data_array is not None:
             return uses_maps(
-                Map.Core.dipole_gas_phase,
+                map_.Core.dipole_gas_phase,
                 [osc.VEGout],
-                [Map.Core.dipole_data_array]
+                [map_.Core.dipole_data_array]
             )
         else:
-            return Map.Core.dipole_gas_phase
+            return map_.Core.dipole_gas_phase
 
     return GM_get_dipole_mag
 
@@ -503,15 +503,15 @@ def get_get_rotation_matrix(map_):
     given_directions = [key for key in map_.rawcore if key in allparnames]
 
     codestring = "\ndef GM_get_rotation_matrix"
-    codestring += "(Map, Syst, osc):\n"
+    codestring += "(map_, system, osc):\n"
 
     # the first direction should be taken as is
     direc = given_directions[0]
     codestring += f"    {direc} = (" + envelop_int(
         " ".join(map_.rawcore[direc]),
-        # "GM_MF.PBCvect(Syst.positions[osc.used_atoms[", "]])"
+        # "GM_MF.PBCvect(system.positions[osc.used_atoms[", "]])"
         "osc.positions_box[", "]"
-    ) + ") @ Syst.boxvects\n"
+    ) + ") @ system.boxvects\n"
     codestring += f"    {direc} /= GM_MF.vec3_len({direc})\n\n"
 
     # the second direction depends on the type
@@ -521,9 +521,9 @@ def get_get_rotation_matrix(map_):
         codestring += f"    {direc} = GM_MF.project({olddir}, ("
         codestring += envelop_int(
             " ".join(map_.rawcore[direc]),
-            # "GM_MF.PBCvect(Syst.positions[osc.used_atoms[", "]])"
+            # "GM_MF.PBCvect(system.positions[osc.used_atoms[", "]])"
             "osc.positions_box[", "]"
-        ) + ") @ Syst.boxvects)\n"
+        ) + ") @ system.boxvects)\n"
     elif map_.Core.type == "linear":
         # get the next item in the list
         direc = allparnames[(allparnames.index(olddir) + 1) % 3]
@@ -581,23 +581,23 @@ def get_calculate_dipole(map_):
     """
 
     # the version when we are working with magnitude
-    def GM_get_dipole_vmag(Map, Syst, osc):
-        r_vec, r_pos = Map.code.GM_get_dipole_dir(Map, Syst, osc)
-        r_vec *= Map.code.GM_get_dipole_mag(Map, Syst, osc)
+    def GM_get_dipole_vmag(map_, system, osc):
+        r_vec, r_pos = map_.code.GM_get_dipole_dir(map_, system, osc)
+        r_vec *= map_.code.GM_get_dipole_mag(map_, system, osc)
         r_vec = r_vec.astype("float32")
         return r_vec, r_pos
 
     # the version when we are working with a separate x, y, z component
     # (this one ignores the earlier given r_vec)
-    def GM_get_dipole_vxyz(Map, Syst, osc):
-        _, r_pos = Map.code.GM_get_dipole_dir(Map, Syst, osc)
+    def GM_get_dipole_vxyz(map_, system, osc):
+        _, r_pos = map_.code.GM_get_dipole_dir(map_, system, osc)
         # xyz = [
         #     uses_maps(omega, [osc.VEGout], [arr]) for omega, arr in zip(
-        #         Map.Core.dipole_gas_phase, Map.Core.dipole_data_array)
+        #         map_.Core.dipole_gas_phase, map_.Core.dipole_data_array)
         # ]
         # xyz_local = np.array(xyz, dtype="float32")
-        xyz_local = Map.Core.dipole_gas_phase_array + np.sum(
-            np.multiply(osc.VEGout[None, :, :], Map.Core.dipole_data_array),
+        xyz_local = map_.Core.dipole_gas_phase_array + np.sum(
+            np.multiply(osc.VEGout[None, :, :], map_.Core.dipole_data_array),
             axis=(1, 2)
         )
         xyz_cartesian = np.dot(xyz_local, osc.rotation_matrix)
@@ -633,30 +633,30 @@ def get_calculate_frequency(map_):
         frequency
     """
 
-    def GM_calculate_freq_base(Map, Syst, osc):
-        return Map.Core.frequency_gas_phase
+    def GM_calculate_freq_base(map_, system, osc):
+        return map_.Core.frequency_gas_phase
 
-    def GM_calculate_freq_VEG_lin(Map, Syst, osc):
+    def GM_calculate_freq_VEG_lin(map_, system, osc):
         freq = uses_maps(
-            Map.Core.frequency_gas_phase, [osc.VEGout],
-            [Map.Core.frequency_data_array_linear]
+            map_.Core.frequency_gas_phase, [osc.VEGout],
+            [map_.Core.frequency_data_array_linear]
         )
         return freq
 
-    def GM_calculate_freq_VEG_quad(Map, Syst, osc):
+    def GM_calculate_freq_VEG_quad(map_, system, osc):
         freq = uses_maps(
-            Map.Core.frequency_gas_phase, [osc.VEGout**2],
-            [Map.Core.frequency_data_array_quadratic]
+            map_.Core.frequency_gas_phase, [osc.VEGout**2],
+            [map_.Core.frequency_data_array_quadratic]
         )
         return freq
 
-    def GM_calculate_freq_VEG_both(Map, Syst, osc):
+    def GM_calculate_freq_VEG_both(map_, system, osc):
         freq = uses_maps(
-            Map.Core.frequency_gas_phase,
+            map_.Core.frequency_gas_phase,
             [osc.VEGout, osc.VEGout**2],
             [
-                Map.Core.frequency_data_array_linear,
-                Map.Core.frequency_data_array_quadratic]
+                map_.Core.frequency_data_array_linear,
+                map_.Core.frequency_data_array_quadratic]
         )
         return freq
 
@@ -697,9 +697,9 @@ def get_get_doublepos(map_):
     that can be used during runs.
     """
 
-    def GM_get_doublepos(Map, Syst, osc):
-        pos0 = GM_get_doublepos0(Map, Syst, osc)
-        pos1 = GM_get_doublepos1(Map, Syst, osc)
+    def GM_get_doublepos(map_, system, osc):
+        pos0 = GM_get_doublepos0(map_, system, osc)
+        pos1 = GM_get_doublepos1(map_, system, osc)
         return pos0, pos1
 
     instructions = map_.rawcore["doublepos_0"]

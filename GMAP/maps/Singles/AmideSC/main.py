@@ -83,10 +83,10 @@ def GM_adjust_oscillators(map_, system, oscillator_list):
 
     Parameters
     ----------
-    Map : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
         The object that stores everything the program currently knows
         about this map.
-    Syst : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.SystemReader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -183,7 +183,7 @@ def GM_str_osc(map_, system, oscillator):
     )
 
 
-def GM_calculate_raman(Map, Syst, osc):
+def GM_calculate_raman(map_, system, osc):
     """Returns the raman tensor as a length-6 vector: (xx, xy, xz, yy, yz, zz)
 
     This method can easily be adapted by other maps for working with raman

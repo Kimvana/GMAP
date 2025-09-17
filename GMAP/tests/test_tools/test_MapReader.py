@@ -286,7 +286,7 @@ class TestCode:
         map_ = mapdict[mapname]
 
         boxvects = np.array([[10, 0, 0], [0, 10, 0], [0, 0, 10]])
-        Syst = Custom(
+        system = Custom(
             ["boxvects", boxvects],
             ["boxvects_inv", np.linalg.inv(boxvects)]
         )
@@ -298,12 +298,12 @@ class TestCode:
             [6, 0, 0]
         ])
         osc = Custom(
-            ["positions_box", positions @ Syst.boxvects_inv]
+            ["positions_box", positions @ system.boxvects_inv]
         )
 
         map_.code_add_builds()
         r_vec, r_pos = map_.code.GM_get_dipole_dir(
-            map_, Syst, osc
+            map_, system, osc
         )
         r_vec_dir = np.array([-1.5, 1, 0])  # not normalized
         r_vec_dir /= np.linalg.norm(r_vec_dir)
@@ -315,7 +315,7 @@ class TestCode:
         ).all()
 
         rotation_matrix = np.round(map_.code.GM_get_rotation_matrix(
-            map_, Syst, osc
+            map_, system, osc
         ), 4)
 
         xvec = np.array([1.5, 1, 0])
@@ -346,7 +346,7 @@ class TestCode:
 
         boxvects = np.array(
             [[5, 0, 0], [4, 3, 0], [2, 2, 4]], dtype="float32")
-        Syst = Custom(
+        system = Custom(
             ["boxvects", boxvects],
             ["boxvects_inv", np.linalg.inv(boxvects)]
         )
@@ -360,12 +360,12 @@ class TestCode:
             [4, 1, 1]
         ])
         osc = Custom(
-            ["positions_box", positions @ Syst.boxvects_inv]
+            ["positions_box", positions @ system.boxvects_inv]
         )
 
         map_.code_add_builds()
         r_vec, r_pos = map_.code.GM_get_dipole_dir(
-            map_, Syst, osc
+            map_, system, osc
         )
         r_vec_dir = np.array([1.125, 1.25, 0])  # not normalized
         r_vec_dir /= np.linalg.norm(r_vec_dir)
@@ -382,7 +382,7 @@ class TestCode:
         ).all()
 
         rotation_matrix = np.round(map_.code.GM_get_rotation_matrix(
-            map_, Syst, osc
+            map_, system, osc
         ), 4)
 
         zvec = np.array([0, 2, 0], dtype=np.float64)
@@ -413,7 +413,7 @@ class TestCode:
 
         boxvects = np.array(
             [[5, 0, 0], [4, 3, 0], [2, 2, 4]], dtype="float32")
-        Syst = Custom(
+        system = Custom(
             ["boxvects", boxvects],
             ["boxvects_inv", np.linalg.inv(boxvects)]
         )
@@ -424,12 +424,12 @@ class TestCode:
             [2, 2, 2]
         ], dtype="float32")
         osc = Custom(
-            ["positions_box", positions @ Syst.boxvects_inv]
+            ["positions_box", positions @ system.boxvects_inv]
         )
 
         map_.code_add_builds()
         r_vec, r_pos = map_.code.GM_get_dipole_dir(
-            map_, Syst, osc
+            map_, system, osc
         )
 
         # this answer is wrong, as we correct for pbc.
@@ -445,7 +445,7 @@ class TestCode:
         ).all()
 
         rotation_matrix = np.round(map_.code.GM_get_rotation_matrix(
-            map_, Syst, osc
+            map_, system, osc
         ), 4)
 
         zvec = np.array([2, 2, 2], dtype=np.float64)

@@ -50,6 +50,7 @@ def cmd_interface(callcommand):
     gmapcall, extras = next(iter(all_args.items()))
     call = [gmapcall] + extras
 
+    # yes, this looks double - want to take any length to 3, both 1 and 2.
     allhelps = ["help", "h", "-h"]
     if len(call) == 1:
         call.append(allhelps[0])

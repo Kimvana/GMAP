@@ -595,7 +595,7 @@ def clear_single(RunPars, fname):
             pass
 
 
-def write_legend(RunPars, System):
+def write_legend(RunPars, system):
     """Writes the contents of the legend file.
 
     The purpose of the legend file is to specify what the other output
@@ -612,13 +612,13 @@ def write_legend(RunPars, System):
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
-    System : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.SystemReader.System`
         The class containing all the information on the system of the
         MD trajectory.
     """
 
     with open(RunPars.output_legend_filename, "w", encoding='utf-8') as fhand:
-        for oscix, oscillator in enumerate(System.oscillators):
+        for oscix, oscillator in enumerate(system.oscillators):
             fhand.write(f"at index {oscix}: {oscillator}\n")
 
 

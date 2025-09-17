@@ -47,8 +47,8 @@ It is probable that the map wants to save information between functions, too, ju
 - self.allpairs (type numpy array, dtype int32, shape (npairs, 2) ) contains all pairs that should be coupled using this pair map. This array has already taken into account any changes due to the function change_coup_type. Looping over a numpy array isn't fast, so map developers are encouraged to use these arrays wisely.
 
 
-Syst
-====
+system
+======
 An instance of :class:`~GMAP.src.tools.SystemReader.System`. Stores all available information about the MD system used. Think atom-based information on it's name, element, type, the name and number of its residue, molecule, segment. Also charges, positions, masses and such are in here. 
 
 

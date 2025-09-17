@@ -37,11 +37,11 @@ class TestVClib:
         RunPars.estatic_range = np.float32(60)
         RunPars.estatic_smooth_range = np.float32(5)
 
-        System = get_System_1()
+        system = get_System_1()
         oscillator = get_oscillator_1()
-        VEGlib.calc_CoM_box(System)
+        VEGlib.calc_CoM_box(system)
 
-        VEGlib.calcVEG_perres_mm_triclin(System, RunPars, oscillator)
+        VEGlib.calcVEG_perres_mm_triclin(system, RunPars, oscillator)
 
         # Do not remove!!! These are the calculations to get to the correct
         # answer!
@@ -183,12 +183,12 @@ class TestVClib:
         RunPars.estatic_range = np.float32(60)
         RunPars.estatic_smooth_range = np.float32(5)
 
-        System = get_System_1()
+        system = get_System_1()
         oscillator = get_oscillator_1()
-        VEGlib.calc_CoM_box(System)
-        VEGlib.CoM_frombox(System)
+        VEGlib.calc_CoM_box(system)
+        VEGlib.CoM_frombox(system)
 
-        VEGlib.calcVEG_perres_mm_rhombic(System, RunPars, oscillator)
+        VEGlib.calcVEG_perres_mm_rhombic(system, RunPars, oscillator)
 
         # All results are the same ones as from the triclinic method.
         # see the test for the triclinic for the calculation of these
@@ -249,14 +249,14 @@ class TestVClib:
 
         # same system as the previous test, but 1 residue is now not an
         # influencer
-        System = get_System_1()
-        System.influencers_atix_c = np.ctypeslib.as_ctypes(
+        system = get_System_1()
+        system.influencers_atix_c = np.ctypeslib.as_ctypes(
             np.array([0, 1, 2, 3], dtype="int32"))
-        System.n_influencers = np.int32(4)
+        system.n_influencers = np.int32(4)
         oscillator = get_oscillator_1()
-        VEGlib.calc_CoM_box(System)
+        VEGlib.calc_CoM_box(system)
 
-        VEGlib.calcVEG_perres_mm_triclin(System, RunPars, oscillator)
+        VEGlib.calcVEG_perres_mm_triclin(system, RunPars, oscillator)
 
         # Do not remove!!! These are the calculations to get to the correct
         # answer!
@@ -310,11 +310,11 @@ class TestVClib:
         RunPars.estatic_range = np.float32(60)
         RunPars.estatic_smooth_range = np.float32(5)
 
-        System = get_System_1()
+        system = get_System_1()
         oscillator = get_oscillator_1()
-        VEGlib.calc_CoM_box(System)
+        VEGlib.calc_CoM_box(system)
 
-        VEGlib.calcVEG_perres_mm_triclin_nocut(System, RunPars, oscillator)
+        VEGlib.calcVEG_perres_mm_triclin_nocut(system, RunPars, oscillator)
 
         # Do not remove!!! These are the calculations to get to the correct
         # answer!
@@ -477,12 +477,12 @@ class TestVClib:
         RunPars.estatic_range = np.float32(60)
         RunPars.estatic_smooth_range = np.float32(5)
 
-        System = get_System_1()
+        system = get_System_1()
         oscillator = get_oscillator_1()
-        VEGlib.calc_CoM_box(System)
-        VEGlib.CoM_frombox(System)
+        VEGlib.calc_CoM_box(system)
+        VEGlib.CoM_frombox(system)
 
-        VEGlib.calcVEG_perres_mm_rhombic_nocut(System, RunPars, oscillator)
+        VEGlib.calcVEG_perres_mm_rhombic_nocut(system, RunPars, oscillator)
 
         # same system, so same answers as for the triclinic version of this
         # function. See that one for explanation for all these values.

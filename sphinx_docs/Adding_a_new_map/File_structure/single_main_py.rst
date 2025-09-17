@@ -922,10 +922,10 @@ Available attributes of map\_
 
 Parameters
 ----------
-Map : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.MapReader.Map`
     The object that stores everything the program currently knows
     about this map.
-Syst : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.SystemReader.System`
     The object that stores everyting the program currently knows about the MD system.
 osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
     The oscillator for which the rotation matrix should be determined.
@@ -1330,7 +1330,7 @@ In case of the separate x-, y- and z dependencies (in the above method selector 
         _, r_pos = map_.code.GM_get_dipole_dir(map_, system, osc)
         xyz = [
             uses_maps(omega, [osc.VEGout], [arr]) for omega, arr in zip(
-                Map.Core.dipole_gas_phase, Map.Core.dipole_data_array)
+                map_.Core.dipole_gas_phase, map_.Core.dipole_data_array)
         ]
         xyz_local = np.array(xyz, dtype="float32")
         xyz_cartesian = np.dot(xyz_local, osc.rotation_matrix)
@@ -1619,7 +1619,7 @@ default code:
         local_atoms = [int(num) for num in map_.local_atoms]
 
         atnums = [osc.used_atoms[ix] for ix in local_atoms]
-        CoM = GM_PF.calc_CoM(Syst, atnums)
+        CoM = GM_PF.calc_CoM(system, atnums)
         return CoM
 
 

@@ -19,14 +19,14 @@ from GMAP.src.tools import ReferenceHandler as GM_RH
 # parameter (especially if theres multiple that are linked), the way
 # RunPar is built might not be correct. In this function, the user can
 # fix that.
-def GM_adjust_RunPars(Map):
-    """Makes the necessary changes to Map.RunPar.
+def GM_adjust_RunPars(map_):
+    """Makes the necessary changes to map_.RunPar.
 
     Is expected to not return anything - return value is not caught.
 
     Parameters
     ----------
-    Map : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
         The object that stores everything the program currently knows
         about this map.
     """
@@ -38,7 +38,7 @@ def GM_adjust_RunPars(Map):
 # a detected parameter, a different choice is preferred. This function
 # allows to make a different choice, **in the same format as the file**.
 # if more complex behaviour is desired, a separate function is needed.
-def GM_adjust_map_core_raw(Map):
+def GM_adjust_map_core_raw(map_):
     """Makes the necessary changes to the 'raw' input read from core.txt.
 
     Is expected to not return anything - return value is not caught.
@@ -58,7 +58,7 @@ def GM_adjust_map_core_raw(Map):
 
     Parameters
     ----------
-    Map : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.MapReader.Map`
         The object that stores everything the program currently knows
         about this map.
     """
@@ -72,44 +72,40 @@ def GM_adjust_map_core_raw(Map):
 # coupling maps for different circumstances. This function should return
 # the name of the map that should be coupling this pair (instead of itself).
 # IF this function does not exist, the map itself is returned by default.
-def GM_change_coup_type(Map, Syst, oscix1, osc1, oscix2, osc2):
+def GM_change_coup_type(map_, system, oscix1, osc1, oscix2, osc2):
     return "DipDip"
 
 
 # A place to actually do any prepwork. Any preparations should be done here
 # (and not pre-frame, for example), as at the time this function is called,
 # more information about the oscillator is available (dipole, VEG properties)
-def GM_prep_coupling(Map, Syst, oscixlist, osclist):
+def GM_prep_coupling(map_, system, oscixlist, osclist):
     for oscix, osc in zip(oscixlist, osclist):
         # if the map has a function specifically for this map, use it!
         if hasattr(osc.Map.code, "CP_DipDip_calc_dipole"):
-            Map.dipole_vec_arr[oscix], dip_pos = (
-                osc.Map.code.CP_DipDip_calc_dipole(osc.Map, Syst, osc))
+            map_.dipole_vec_arr[oscix], dip_pos = (
+                osc.Map.code.CP_DipDip_calc_dipole(osc.Map, system, osc))
         else:
-            Map.dipole_vec_arr[oscix] = osc.dipole_vec
+            map_.dipole_vec_arr[oscix] = osc.dipole_vec
             dip_pos = osc.dipole_pos
 
         # save positions in box coordinates
-        Map.dipole_pos_arr[oscix] = dip_pos @ Syst.boxvects_inv
+        map_.dipole_pos_arr[oscix] = dip_pos @ system.boxvects_inv
 
 
-def GM_calc_coupling(Map, Syst, hamiltonian):
-    for pair in Map.allpairs:
+# The GM_calc_coupling function is expected to treat all couplings assigned
+# to this map, for a single frame.
+def GM_calc_coupling(map_, system, hamiltonian):
+    for pair in map_.allpairs:
         oscix1, oscix2 = pair
         J = calc_coupling(
-            oscix1, oscix2, Map.dipole_pos_arr, Map.dipole_vec_arr,
-            Syst.boxvects
+            oscix1, oscix2, map_.dipole_pos_arr, map_.dipole_vec_arr,
+            system.boxvects
         )
         hamiltonian[oscix1, oscix2] = J
         hamiltonian[oscix2, oscix1] = J
 
-
-# wrapper as not all these types are njit-friendly.
-def GM_calc_coupling_old(Map, Syst, oscix1, osc1, oscix2, osc2):
-    return calc_coupling(
-        oscix1, oscix2, Map.dipole_pos_arr, Map.dipole_vec_arr, Syst.boxvects)
-
-
+# Own function of DipDip - njitted for speed.
 @njit
 def calc_coupling(oscix1, oscix2, pos_arr, vec_arr, boxvects):
     # Used constants:
@@ -144,7 +140,7 @@ def calc_coupling(oscix1, oscix2, pos_arr, vec_arr, boxvects):
 # (for AmideBB - find neighbours!)
 # (Or, for couplings that MUST get information from an oscillator,
 # check if that specific function exists)
-def GM_post_init(Map, Syst):
+def GM_post_init(map_, system):
     pass
 
 
@@ -152,36 +148,39 @@ def GM_post_init(Map, Syst):
 # to be filled in, for example). GEM itself builds the coupling table at
 # this point in time. Any preparation stuff that only requires constant
 # properties (masses, charges, bonds, for example) should be done here.
-def GM_pre_run(Map, Syst):
-    setattr(Map, "dipole_vec_arr", np.zeros((Syst.nosc, 3), dtype="float32"))
-    setattr(Map, "dipole_pos_arr", np.zeros((Syst.nosc, 3), dtype="float32"))
+def GM_pre_run(map_, system):
+    setattr(
+        map_, "dipole_vec_arr", np.zeros((system.nosc, 3), dtype="float32"))
+    setattr(
+        map_, "dipole_pos_arr", np.zeros((system.nosc, 3), dtype="float32"))
 
     # change dtype of allpair list to suit this map's needs.
-    # setattr(Map, "allpairs", np.array(Map.allpairs, dtype='int32').T)
-    # setattr(Map, "allpairs_c", np.ctypeslib.as_ctypes(
-    #     np.ravel(Map.allpairs)))
+    # setattr(map_, "allpairs", np.array(map_.allpairs, dtype='int32').T)
+    # setattr(map_, "allpairs_c", np.ctypeslib.as_ctypes(
+    #     np.ravel(map_.allpairs)))
 
 
 # A place to do things before the properties for this frame are being
 # calculated. Any preparation stuff that requires frame-dependent
 # data should be done here. AIM calculated the CoMs here, GEM also
 # builds hamiltonian (as its contents change per frame)
-def GM_pre_frame(Map, Syst):
+def GM_pre_frame(map_, system):
     pass
 
 
 # A place to do things with the results from this frame. GEM itself
 # writes information like the hamiltonian to files at this point in time.
-def GM_post_frame(Map, Syst):
+def GM_post_frame(map_, system):
     pass
 
 
 # A place to wrap up the entire calculation. GEM itself reports on
 # calculation time and treated frames at this point in time.
-def GM_post_run(Map, Syst):
+def GM_post_run(map_, system):
     pass
 
 
+# A place to define what references to report under what circumstances.
 def GM_report_references(map_, system):
     """Returns all references that should be reported for this map.
 
@@ -249,8 +248,9 @@ def GM_report_references(map_, system):
     return report_these
 
 
+# A function specific from this map. Adds some specific references from
+# other maps to the dict of references to report for this one.
 def add_reference(reference, report_these, singles_map):
-
     # Now we have a specific reference object. Only if it is meant
     # for dipoles, grab it.
     if "dip" not in reference.reporttext:

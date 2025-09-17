@@ -27,16 +27,16 @@ Conveniently enough, GMAP already gives the option to confirm the chromophores (
 
     import GMAP.src.tools.SystemReader as GM_SR
 
-    def GM_adjust_oscillators(Map, Syst, oscillator_list):
+    def GM_adjust_oscillators(map_, system, oscillator_list):
         oscillator_list_adjusted = []
         for oscillator in oscillator_list:
             # add the one found by GMAP (the first bond of this molecule)
             oscillator_list_adjusted.append(oscillator)
             # add the oscillator representing the other bond of this molecule
             oscillator_list_adjusted.append(GM_SR.Oscillator(
-                Syst,
+                system,
                 [oscillator.used_atoms[0], *oscillator.used_atoms[2:0:-1]],
-                Map))
+                map_))
 
         return oscillator_list_adjusted
 
@@ -50,7 +50,7 @@ But, how do we add that second oscillator? What's happening with that ``GM_SR.Os
 
     Parameters
     ----------
-    System : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.SystemReader.System`
         The class containing all the information on the system of the
         MD trajectory.
     atoms : list of int

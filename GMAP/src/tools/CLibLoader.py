@@ -51,29 +51,21 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
                 "as the VEG c-library. However, the file is invalid. "
             )
             self.clib = ct.CDLL(str(RunPars.VEG_clib_file))
-#        except FileNotFoundError as ex:
-#            GM_PT.Printer.warning(
-#                msg, "CL_VG_1", True, exception=ex,
-#                GMAPerrclass=GM_Ex.GmapFileNotFoundError
-#            )
         except Exception as ex:
-            # OSError for invalid file (VEG.obj)
-            # No others found yet.
-            # On windows no existing file give FileNotFoundError
-            # On linux/mac this will be a OSError
             GM_PT.Printer.warning(
                 msg, "CL_VG_1", True, exception=ex,
                 GMAPerrclass=GM_Ex.GmapOSError
             )
 
+        self.clib.transform_vectors.restype = None
         self.clib.transform_vectors.argtypes = [
             ct.POINTER(ct.c_float),  # vectors_in
             ct.c_int,  # n_vects
             ct.POINTER(ct.c_float),  # tr_matrix
             ct.POINTER(ct.c_float)  # vectors_out
         ]
-        self.clib.transform_vectors.restype = None
 
+        self.clib.calc_CoM_box.restype = None
         self.clib.calc_CoM_box.argtypes = [
             ct.POINTER(ct.c_float),  # positions_box
             ct.POINTER(ct.c_float),  # masses
@@ -82,8 +74,8 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
             ct.c_int,  # nres
             ct.POINTER(ct.c_float),  # CoM_box
         ]
-        self.clib.calc_CoM_box.restype = None
 
+        self.clib.calcVEG_perres_mm_rhombic.restype = None
         self.clib.calcVEG_perres_mm_rhombic.argtypes = [
             ct.POINTER(ct.c_int),  # tocalc
             ct.c_int,  # n_osc_ats
@@ -105,8 +97,8 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
             ct.POINTER(ct.c_float),  # boxdims
             ct.POINTER(ct.c_float)  # out
         ]
-        self.clib.calcVEG_perres_mm_rhombic.restype = None
 
+        self.clib.calcVEG_perres_mm_rhombic_nocut.restype = None
         self.clib.calcVEG_perres_mm_rhombic_nocut.argtypes = [
             ct.POINTER(ct.c_int),  # tocalc
             ct.c_int,  # n_osc_ats
@@ -127,8 +119,8 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
             ct.POINTER(ct.c_float),  # boxdims
             ct.POINTER(ct.c_float)  # out
         ]
-        self.clib.calcVEG_perres_mm_rhombic_nocut.restype = None
 
+        self.clib.calcVEG_perres_mm_triclin.restype = None
         self.clib.calcVEG_perres_mm_triclin.argtypes = [
             ct.POINTER(ct.c_int),  # tocalc
             ct.c_int,  # n_osc_ats
@@ -150,8 +142,8 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
             ct.POINTER(ct.c_float),  # boxvects_inv
             ct.POINTER(ct.c_float)  # out
         ]
-        self.clib.calcVEG_perres_mm_triclin.restype = None
 
+        self.clib.calcVEG_perres_mm_triclin_nocut.restype = None
         self.clib.calcVEG_perres_mm_triclin_nocut.argtypes = [
             ct.POINTER(ct.c_int),  # tocalc
             ct.c_int,  # n_osc_ats
@@ -172,7 +164,6 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
             ct.POINTER(ct.c_float),  # boxvects_inv
             ct.POINTER(ct.c_float)  # out
         ]
-        self.clib.calcVEG_perres_mm_triclin_nocut.restype = None
 
     def positions_to_box(self, system):
         self.clib.transform_vectors(
@@ -200,7 +191,7 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
             system.residues.CoM_c
         )
 
-    def calcVEG_perres_main(self, System, RunPars, oscillator):
+    def calcVEG_perres_main(self, system, RunPars, oscillator):
         # First letter (n/c) is (No)Cut.
         # Second letter (r/t) is Rhombic/Triclinic
         allfuncs = {
@@ -220,9 +211,9 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
         elif RunPars.estatics_method == "perres_nocut":
             key += "n"
 
-        allfuncs[key](System, RunPars, oscillator)
+        allfuncs[key](system, RunPars, oscillator)
 
-    def calcVEG_perres_mm_triclin(self, System, RunPars, oscillator):
+    def calcVEG_perres_mm_triclin(self, system, RunPars, oscillator):
         """Calculate the potential on each of the requested points.
 
         This is basically a wrapper for the c function of the same
@@ -245,7 +236,7 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
 
         Parameters
         ----------
-        System : :class:`~GMAP.src.tools.SystemReader.System`
+        system : :class:`~GMAP.src.tools.SystemReader.System`
             The object that stores everything the program currently knows
             about the system being treated (names, numbers, types, masses,
             charges of all atoms, for example)
@@ -262,24 +253,24 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
             oscillator.n_estatic_atoms,  # n_osc_ats
             oscillator.VEG_refpos_c,  # spherepos
             oscillator.Map.Core.electrostatic_choice_c,  # calc_choice
-            System.positions_box_c,  # positions_box
-            System.charges_c,  # charges
-            System.influencers_atix_c,  # influencer_atoms
-            System.n_influencers,  # n_influencers
-            System.residues.CoM_box_c,  # COMs_box
-            System.residues.first_ix_c,  # res_first_ix
-            System.residues.last_ix_c,  # res_last_ix
-            System.nres,  # n_res
+            system.positions_box_c,  # positions_box
+            system.charges_c,  # charges
+            system.influencers_atix_c,  # influencer_atoms
+            system.n_influencers,  # n_influencers
+            system.residues.CoM_box_c,  # COMs_box
+            system.residues.first_ix_c,  # res_first_ix
+            system.residues.last_ix_c,  # res_last_ix
+            system.nres,  # n_res
             oscillator.local_atoms_c,  # local_atoms
             oscillator.n_local_atoms,  # n_locals
             RunPars.estatic_range,  # r_sphere
             RunPars.estatic_smooth_range,  # r_smooth
-            System.boxvects_c,  # boxvects
-            System.boxvects_inv_c,  # boxvects_inv
+            system.boxvects_c,  # boxvects
+            system.boxvects_inv_c,  # boxvects_inv
             oscillator.VEGout_c  # out
         )
 
-    def calcVEG_perres_mm_triclin_nocut(self, System, RunPars, oscillator):
+    def calcVEG_perres_mm_triclin_nocut(self, system, RunPars, oscillator):
         """Calculate the potential on each of the requested points.
 
         This is basically a wrapper for the c function of the same
@@ -302,7 +293,7 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
 
         Parameters
         ----------
-        System : :class:`~GMAP.src.tools.SystemReader.System`
+        system : :class:`~GMAP.src.tools.SystemReader.System`
             The object that stores everything the program currently knows
             about the system being treated (names, numbers, types, masses,
             charges of all atoms, for example)
@@ -319,23 +310,23 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
             oscillator.n_estatic_atoms,  # n_osc_ats
             oscillator.VEG_refpos_c,  # spherepos
             oscillator.Map.Core.electrostatic_choice_c,  # calc_choice
-            System.positions_box_c,  # positions_box
-            System.charges_c,  # charges
-            System.influencers_atix_c,  # influencer_atoms
-            System.n_influencers,  # n_influencers
-            System.residues.CoM_box_c,  # COMs_box
-            System.residues.first_ix_c,  # res_first_ix
-            System.residues.last_ix_c,  # res_last_ix
-            System.nres,  # n_res
+            system.positions_box_c,  # positions_box
+            system.charges_c,  # charges
+            system.influencers_atix_c,  # influencer_atoms
+            system.n_influencers,  # n_influencers
+            system.residues.CoM_box_c,  # COMs_box
+            system.residues.first_ix_c,  # res_first_ix
+            system.residues.last_ix_c,  # res_last_ix
+            system.nres,  # n_res
             oscillator.local_atoms_c,  # local_atoms
             oscillator.n_local_atoms,  # n_locals
             RunPars.estatic_range,  # r_sphere
-            System.boxvects_c,  # boxvects
-            System.boxvects_inv_c,  # boxvects_inv
+            system.boxvects_c,  # boxvects
+            system.boxvects_inv_c,  # boxvects_inv
             oscillator.VEGout_c  # out
         )
 
-    def calcVEG_perres_mm_rhombic(self, System, RunPars, oscillator):
+    def calcVEG_perres_mm_rhombic(self, system, RunPars, oscillator):
         """Calculate the potential on each of the requested points.
 
         This is basically a wrapper for the c function of the same
@@ -358,7 +349,7 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
 
         Parameters
         ----------
-        System : :class:`~GMAP.src.tools.SystemReader.System`
+        system : :class:`~GMAP.src.tools.SystemReader.System`
             The object that stores everything the program currently knows
             about the system being treated (names, numbers, types, masses,
             charges of all atoms, for example)
@@ -375,24 +366,24 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
             oscillator.n_estatic_atoms,  # n_osc_ats
             oscillator.VEG_refpos_c,  # spherepos
             oscillator.Map.Core.electrostatic_choice_c,  # calc_choice
-            System.positions_c,  # positions
-            System.charges_c,  # charges
-            System.influencers_atix_c,  # influencer_atoms
-            System.n_influencers,  # n_influencers
-            System.residues.CoM_c,  # COMs
-            System.residues.first_ix_c,  # res_first_ix
-            System.residues.last_ix_c,  # res_last_ix
-            System.nres,  # n_res
+            system.positions_c,  # positions
+            system.charges_c,  # charges
+            system.influencers_atix_c,  # influencer_atoms
+            system.n_influencers,  # n_influencers
+            system.residues.CoM_c,  # COMs
+            system.residues.first_ix_c,  # res_first_ix
+            system.residues.last_ix_c,  # res_last_ix
+            system.nres,  # n_res
             oscillator.local_atoms_c,  # local_atoms
             oscillator.n_local_atoms,  # n_locals
             RunPars.estatic_range,  # r_sphere
             RunPars.estatic_smooth_range,  # r_smooth
-            System.halfbox_c,  # halfbox
-            System.boxdims_c,  # boxdims
+            system.halfbox_c,  # halfbox
+            system.boxdims_c,  # boxdims
             oscillator.VEGout_c  # out
         )
 
-    def calcVEG_perres_mm_rhombic_nocut(self, System, RunPars, oscillator):
+    def calcVEG_perres_mm_rhombic_nocut(self, system, RunPars, oscillator):
         """Calculate the potential on each of the requested points.
 
         This is basically a wrapper for the c function of the same
@@ -415,7 +406,7 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
 
         Parameters
         ----------
-        System : :class:`~GMAP.src.tools.SystemReader.System`
+        system : :class:`~GMAP.src.tools.SystemReader.System`
             The object that stores everything the program currently knows
             about the system being treated (names, numbers, types, masses,
             charges of all atoms, for example)
@@ -432,18 +423,18 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
             oscillator.n_estatic_atoms,  # n_osc_ats
             oscillator.VEG_refpos_c,  # spherepos
             oscillator.Map.Core.electrostatic_choice_c,  # calc_choice
-            System.positions_c,  # positions
-            System.charges_c,  # charges
-            System.influencers_atix_c,  # influencer_atoms
-            System.n_influencers,  # n_influencers
-            System.residues.CoM_c,  # COMs
-            System.residues.first_ix_c,  # res_first_ix
-            System.residues.last_ix_c,  # res_last_ix
-            System.nres,  # n_res
+            system.positions_c,  # positions
+            system.charges_c,  # charges
+            system.influencers_atix_c,  # influencer_atoms
+            system.n_influencers,  # n_influencers
+            system.residues.CoM_c,  # COMs
+            system.residues.first_ix_c,  # res_first_ix
+            system.residues.last_ix_c,  # res_last_ix
+            system.nres,  # n_res
             oscillator.local_atoms_c,  # local_atoms
             oscillator.n_local_atoms,  # n_locals
             RunPars.estatic_range,  # r_sphere
-            System.halfbox_c,  # halfbox
-            System.boxdims_c,  # boxdims
+            system.halfbox_c,  # halfbox
+            system.boxdims_c,  # boxdims
             oscillator.VEGout_c  # out
         )

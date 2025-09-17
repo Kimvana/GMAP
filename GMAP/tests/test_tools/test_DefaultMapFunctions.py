@@ -132,17 +132,17 @@ def test_get_str_osc():
     newfunc = GM_DMF.get_str_osc()
     osc1 = GM_CT.CustomClass(**{"used_atoms": [0, 1, 2]})
     osc2 = GM_CT.CustomClass(**{"used_atoms": [3, 4, 5]})
-    Syst = GM_CT.CustomClass(**{"resnums": [0, 0, 0, 1, 1, 1]})
-    assert newfunc(None, Syst, osc1) == "living on residue number 0"
-    assert newfunc(None, Syst, osc2) == "living on residue number 1"
+    system = GM_CT.CustomClass(**{"resnums": [0, 0, 0, 1, 1, 1]})
+    assert newfunc(None, system, osc1) == "living on residue number 0"
+    assert newfunc(None, system, osc2) == "living on residue number 1"
 
 
 def test_report_system():
     newfunc = GM_DMF.get_report_system()
     map_ = GM_CT.CustomClass(**{"name": "A map for testing"})
-    syst = GM_CT.CustomClass(**{"oscillators_ordered": {
+    system = GM_CT.CustomClass(**{"oscillators_ordered": {
         "A map for testing": [3, 5, 1, 8, 9]}})
-    assert newfunc(map_, syst) == "A map for testing:       5"
+    assert newfunc(map_, system) == "A map for testing:       5"
 
 
 def test_report_references():
@@ -186,13 +186,13 @@ def test_VEG_from_residues():
     })
     subfunc = GM_DMF.VEG_from_residues(["0", "2"])
 
-    Syst = get_syst_VEGtests()
+    system = get_system_VEGtests()
     osc = GM_CT.CustomClass(**{
         "used_atoms": [0, 1, 2, 3]
     })
 
     out = np.array([1.5, 10, 20])
-    assert np.all(subfunc(map_, Syst, osc) == out)
+    assert np.all(subfunc(map_, system, osc) == out)
 
 
 def test_VEG_from_com():
@@ -205,13 +205,13 @@ def test_VEG_from_com():
 
     subfunc = GM_DMF.VEG_from_com(["0", "2"])
 
-    Syst = get_syst_VEGtests()
+    system = get_system_VEGtests()
     osc = GM_CT.CustomClass(**{
         "used_atoms": [0, 1, 2, 3]
     })
 
     out = np.array([1, 10, 20])
-    assert np.all(subfunc(map_, Syst, osc) == out)
+    assert np.all(subfunc(map_, system, osc) == out)
 
 
 def test_interpret_position():
@@ -223,15 +223,15 @@ def test_interpret_position():
     })
     subfunc = GM_DMF.interpret_position(map_, VEGref_pos[1:], "VEG_reference")
 
-    Syst = get_syst_VEGtests()
+    system = get_system_VEGtests()
     osc = GM_CT.CustomClass(**{
         "used_atoms": [0, 1, 2, 3]
     })
     osc.positions_box = (
-            Syst.positions[osc.used_atoms] @ Syst.boxvects_inv)
+            system.positions[osc.used_atoms] @ system.boxvects_inv)
 
     out = np.array([1.25, 10, 20])
-    assert np.all(subfunc(map_, Syst, osc) == out)
+    assert np.all(subfunc(map_, system, osc) == out)
 
 
 def test_MI_MC_9(capsys):
@@ -249,15 +249,15 @@ def test_MI_MC_9(capsys):
     captured = capsys.readouterr()
     assert captured.out.endswith("MI_MC_9\n")
 
-    # Syst = get_syst_VEGtests()
+    # system = get_system_VEGtests()
     # osc = GM_CT.CustomClass(**{
     #     "used_atoms": [0, 1, 2, 3]
     # })
     # osc.positions_box = (
-    #         Syst.positions[osc.used_atoms] @ Syst.boxvects_inv)
+    #         system.positions[osc.used_atoms] @ system.boxvects_inv)
 
     # out = np.array([1.25, 10, 20])
-    # assert np.all(subfunc(map_, Syst, osc) == out)
+    # assert np.all(subfunc(map_, system, osc) == out)
 
 
 def test_SU_NP_8(capsys):
@@ -391,8 +391,8 @@ def confirm_funcs_equal(funcA, funcB):
     assert funcA.__code__.co_consts == funcB.__code__.co_consts
 
 
-def get_syst_VEGtests():
-    Syst = GM_CT.CustomClass(**{
+def get_system_VEGtests():
+    system = GM_CT.CustomClass(**{
         "residues": GM_CT.CustomClass(**{
             "first_ix": [0, 2, 4, 6],
             "last_ix": [1, 3, 5, 7]
@@ -412,7 +412,7 @@ def get_syst_VEGtests():
             [2, 30, 30]
         ])
     })
-    return Syst
+    return system
 
 
 # just for coverage....

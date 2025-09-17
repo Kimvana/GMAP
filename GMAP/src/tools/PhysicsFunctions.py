@@ -8,7 +8,7 @@ import GMAP.src.tools.CLibLoader as GM_CL
 import GMAP.src.tools.PrintTools as GM_PT
 
 
-def calc_CoM(System, atomlist):
+def calc_CoM(system, atomlist):
     """Calculate the centre of mass of a given set of atoms.
 
     How to?
@@ -24,7 +24,7 @@ def calc_CoM(System, atomlist):
 
     Parameters
     ----------
-    System : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.SystemReader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -40,7 +40,7 @@ def calc_CoM(System, atomlist):
     """
 
     # converting positions into box coordinates
-    allpos_box = System.positions[atomlist] @ System.boxvects_inv
+    allpos_box = system.positions[atomlist] @ system.boxvects_inv
     # Translating by position of first atom
     shift = allpos_box[0].copy()
     allpos_box -= shift
@@ -49,14 +49,14 @@ def calc_CoM(System, atomlist):
     allpos_box -= np.floor(allpos_box + 0.5) - shift
 
     # do the calculation
-    masses = System.masses[atomlist]
+    masses = system.masses[atomlist]
     CoM_box = np.sum(allpos_box * masses[:, None], axis=0) / np.sum(masses)
 
     # This current CoM_box can be saved/used as is!
     # (as long as in-C implementation does the shift after diff calc)
 
     # convert back to cartesian
-    CoM = (CoM_box - np.floor(CoM_box + 0.5)) @ System.boxvects
+    CoM = (CoM_box - np.floor(CoM_box + 0.5)) @ system.boxvects
     return CoM
 
 
@@ -115,7 +115,7 @@ def system_CoM(
     return CoM_array
 
 
-def calc_frame(RunPars, System, outputs):
+def calc_frame(RunPars, system, outputs):
     """The heart of the per-frame loop. Does the actual calculations.
 
     Currently, for each oscillator, the potential is calculated (if
@@ -127,7 +127,7 @@ def calc_frame(RunPars, System, outputs):
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
-    System : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.SystemReader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -146,13 +146,13 @@ def calc_frame(RunPars, System, outputs):
     printer = GM_PT.Printer
 
     printer.add_time(4, "VEG-related properties:", "VEGprop", "ms")
-    for oscix, oscillator in enumerate(System.oscillators):
+    for oscix, oscillator in enumerate(system.oscillators):
         # Do we need the estatics?
         printer.add_time(5, "", "VEGcalc")
         if any(data in RunPars.output_data for data in ("ham", "dip", "ene")):
             if oscillator.Map.Core.electrostatic_choice in ("V", "E", "G"):
                 # calculate VEG
-                VEGlib.calcVEG_perres_main(System, RunPars, oscillator)
+                VEGlib.calcVEG_perres_main(system, RunPars, oscillator)
 
             # ROTATE VEG
             if oscillator.Map.Core.electrostatic_choice in ("E", "G"):
@@ -165,53 +165,53 @@ def calc_frame(RunPars, System, outputs):
 
         if "ene" in RunPars.output_data and oscillator.Map.Core.ham_first:
             outputs["energies"][oscix] = calc_frequency(
-                System, oscillator)
+                system, oscillator)
 
         if "ham" in RunPars.output_data and oscillator.Map.Core.ham_first:
             outputs["hamiltonian"][oscix, oscix] = calc_frequency(
-                System, oscillator)
+                system, oscillator)
 
         # do we need dipoles?
         # we also need dipoles for the (full) hamiiltonian.
         if any(data in RunPars.output_data for data in ("ham", "dip")):
-            r_vec, r_pos = calc_dipole(System, oscillator)
+            r_vec, r_pos = calc_dipole(system, oscillator)
             outputs["dipoles"][oscix] = r_vec  # needed for both ham and dip
 
             if any(data in RunPars.output_data for data in ("ham")):
                 outputs["dipole_pos"][oscix] = r_pos  # only ham!
 
         if "ram" in RunPars.output_data:
-            outputs["raman"][oscix] = calc_raman(System, oscillator)
+            outputs["raman"][oscix] = calc_raman(system, oscillator)
 
         if "ene" in RunPars.output_data and not oscillator.Map.Core.ham_first:
             outputs["energies"][oscix] = calc_frequency(
-                System, oscillator)
+                system, oscillator)
 
         if "ham" in RunPars.output_data and not oscillator.Map.Core.ham_first:
             outputs["hamiltonian"][oscix, oscix] = calc_frequency(
-                System, oscillator)
+                system, oscillator)
 
         if "pos" in RunPars.output_data:
-            outputs["positions"][oscix] = get_positions(System, oscillator)
+            outputs["positions"][oscix] = get_positions(system, oscillator)
 
         if "dbp" in RunPars.output_data:
             # very similar to positions, but doublepos returns two positions
             # simultaneously, so we catch both into the doublepos array.
             outputs["doublepos"][oscix*2:(oscix+1)*2] = get_doublepos(
-                System, oscillator)
+                system, oscillator)
 
     # calculate the couplings for the hamiltonian
     if "ham" in RunPars.output_data:
         printer.add_time(4, "Preparing coupling:", "PrepCoup", "ms")
-        prep_coupling(RunPars, System)
+        prep_coupling(RunPars, system)
 
         printer.add_time(4, "Calculating coupling:", "CalcCoup", "ms")
-        calc_coupling(RunPars, System, outputs)
+        calc_coupling(RunPars, system, outputs)
 
     return outputs
 
 
-def calc_dipole(System, oscillator):
+def calc_dipole(system, oscillator):
     """Calculate the dipole moment for a given oscillator
 
     The oscillator 'knows' how this should be done - invoke that method.
@@ -220,7 +220,7 @@ def calc_dipole(System, oscillator):
 
     Parameters
     ----------
-    System : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.SystemReader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -241,20 +241,20 @@ def calc_dipole(System, oscillator):
     # every map should have a calc dipole function
     map_ = oscillator.Map
     r_vec, r_pos = map_.code.GM_calculate_dipole(
-        map_, System, oscillator)
+        map_, system, oscillator)
     setattr(oscillator, "dipole_vec", r_vec)
     setattr(oscillator, "dipole_pos", r_pos)
     return r_vec, r_pos
 
 
-def calc_frequency(System, oscillator):
+def calc_frequency(system, oscillator):
     """Calculate the frequency for a given oscillator
 
     The oscillator 'knows' how this should be done - invoke that method.
 
     Parameters
     ----------
-    System : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.SystemReader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -268,17 +268,17 @@ def calc_frequency(System, oscillator):
     """
 
     map_ = oscillator.Map
-    return map_.code.GM_calculate_frequency(map_, System, oscillator)
+    return map_.code.GM_calculate_frequency(map_, system, oscillator)
 
 
-def calc_raman(System, oscillator):
+def calc_raman(system, oscillator):
     """Calculate the raman tensor for a given oscillator
 
     The oscillator 'knows' how this should be done - invoke that method.
 
     Parameters
     ----------
-    System : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.SystemReader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -294,17 +294,17 @@ def calc_raman(System, oscillator):
     """
 
     map_ = oscillator.Map
-    return map_.code.GM_calculate_raman(map_, System, oscillator)
+    return map_.code.GM_calculate_raman(map_, system, oscillator)
 
 
-def get_positions(System, oscillator):
+def get_positions(system, oscillator):
     """Determine the position for a given oscillator.
 
     The oscillator 'knows' how this should be done - invoke that method.
 
     Parameters
     ----------
-    System : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.SystemReader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -319,17 +319,17 @@ def get_positions(System, oscillator):
     """
 
     map_ = oscillator.Map
-    return map_.code.GM_get_position(map_, System, oscillator)
+    return map_.code.GM_get_position(map_, system, oscillator)
 
 
-def get_doublepos(System, oscillator):
+def get_doublepos(system, oscillator):
     """Determine the positions for a given oscillator.
 
     The oscillator 'knows' how this should be done - invoke that method.
 
     Parameters
     ----------
-    System : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.SystemReader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -344,10 +344,10 @@ def get_doublepos(System, oscillator):
     """
 
     map_ = oscillator.Map
-    return map_.code.GM_get_doublepos(map_, System, oscillator)
+    return map_.code.GM_get_doublepos(map_, system, oscillator)
 
 
-def prep_coupling(RunPars, System):
+def prep_coupling(RunPars, system):
     """Calculate some oscillator-dependent properties for couplings
 
     Although the actual coupling value depends on the precise
@@ -362,20 +362,20 @@ def prep_coupling(RunPars, System):
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
-    System : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.SystemReader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
     """
 
-    for coupmapname, osclist in System.oscillators_ordered_coup.items():
-        oscixlist = System.oscillators_ordered_coup_ix[coupmapname]
+    for coupmapname, osclist in system.oscillators_ordered_coup.items():
+        oscixlist = system.oscillators_ordered_coup_ix[coupmapname]
         coupmap = RunPars.requested_pairmapdict[coupmapname]
         coupmap.code.GM_prep_coupling(
-            coupmap, System, oscixlist, osclist)
+            coupmap, system, oscixlist, osclist)
 
 
-def calc_coupling(RunPars, System, outputs):
+def calc_coupling(RunPars, system, outputs):
     """Calculate the couplings of the system.
 
     This function loops through the requested maps, and lets each
@@ -386,7 +386,7 @@ def calc_coupling(RunPars, System, outputs):
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
-    System : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.SystemReader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -395,10 +395,10 @@ def calc_coupling(RunPars, System, outputs):
         contains hamiltonian and dipole arrays.
     """
 
-    for coupmapname in System.oscillators_ordered_coup.keys():
+    for coupmapname in system.oscillators_ordered_coup.keys():
         coupmap = RunPars.requested_pairmapdict[coupmapname]
         coupmap.code.GM_calc_coupling(
-            coupmap, System, outputs["hamiltonian"])
+            coupmap, system, outputs["hamiltonian"])
 
         # scale all couplings with the parameter from the input parameters
         arr = coupmap.allpairs
@@ -407,7 +407,7 @@ def calc_coupling(RunPars, System, outputs):
             / RunPars.dielectric_constant)
 
 
-def generate_output_structures(RunPars, System):
+def generate_output_structures(RunPars, system):
     """The heart of the per-frame loop. Does the actual calculations.
 
     Currently, for each oscillator, the potential is calculated (if
@@ -419,7 +419,7 @@ def generate_output_structures(RunPars, System):
     RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
-    System : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.SystemReader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -432,7 +432,7 @@ def generate_output_structures(RunPars, System):
     """
 
     outputs = {}
-    nosc = System.nosc
+    nosc = system.nosc
     if any(data in RunPars.output_data for data in ("ham",)):
         outputs["hamiltonian"] = np.zeros((nosc, nosc), dtype="float32")
         outputs["dipole_pos"] = np.zeros((nosc, 3), dtype="float32")
