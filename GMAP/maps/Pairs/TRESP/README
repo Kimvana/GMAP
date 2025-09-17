@@ -33,7 +33,7 @@ This map needs some installation before it can be used:
       g++ -fPIC -shared -o TRESP_clib_Linux.so -I/your/GMAP/location/sourcefiles TRESP_clib.cpp
   - MacOS:
    - You are already in the correct directory (TRESP/src) to run the install command. Run the following command, making sure to point to the path of the sourcefiles directory of your installation (that we looked up earlier):
-      g++ -fPIC -shared -o TRESP_clib_MacOS.so -I/your/GMAP/location/sourcefiles TRESP_clib.cpp
+      g++ -fPIC -shared -o TRESP_clib_MacOS.dylib -I/your/GMAP/location/sourcefiles TRESP_clib.cpp
 
 
 how to use
