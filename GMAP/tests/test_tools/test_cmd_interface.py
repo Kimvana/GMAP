@@ -22,49 +22,49 @@ import subprocess
 
 # Local imports
 import GMAP
-from GMAP.src.tools.Exceptions import GmapAttributeError, GmapKeyError
-import GMAP.src.tools.CmdInterface as GM_CI
-import GMAP.src.tools.PrintTools as GM_PT
+from GMAP.src.tools.exceptions import GmapAttributeError, GmapKeyError
+import GMAP.src.tools.cmd_interface as GM_ci
+import GMAP.src.tools.print_tools as GM_pt
 
 
 def test_cmd_interface(capsys):
     callcommand = ["GMAP", "nothing", "nothing"]
     with pytest.raises(GmapAttributeError, match="SU_GM_1"):
-        GM_CI.cmd_interface(callcommand)
+        GM_ci.cmd_interface(callcommand)
 
     callcommand = ["GMAP"]  # == GMAP help help
-    GM_CI.cmd_interface(callcommand)
+    GM_ci.cmd_interface(callcommand)
     captured = capsys.readouterr()
-    assert captured.out.endswith(GM_PT.word_wrap(GMAP.__doc__) + "\n")
+    assert captured.out.endswith(GM_pt.word_wrap(GMAP.__doc__) + "\n")
 
     callcommand = ["GMAP", "HeLp"]  # == GMAP help help
-    GM_CI.cmd_interface(callcommand)
+    GM_ci.cmd_interface(callcommand)
     captured = capsys.readouterr()
-    assert captured.out.endswith(GM_PT.word_wrap(GMAP.__doc__) + "\n")
+    assert captured.out.endswith(GM_pt.word_wrap(GMAP.__doc__) + "\n")
 
     callcommand = ["GMAP", "GEM"]  # == GMAP GEM help
-    GM_CI.cmd_interface(callcommand)
+    GM_ci.cmd_interface(callcommand)
     captured = capsys.readouterr()
-    assert captured.out.endswith(GM_PT.word_wrap(GMAP.GEM.__doc__) + "\n")
+    assert captured.out.endswith(GM_pt.word_wrap(GMAP.GEM.__doc__) + "\n")
 
     callcommand = ["GMAP", "help", "GEM"]
-    GM_CI.cmd_interface(callcommand)
+    GM_ci.cmd_interface(callcommand)
     captured = capsys.readouterr()
-    assert captured.out.endswith(GM_PT.word_wrap(GMAP.GEM.__doc__) + "\n")
+    assert captured.out.endswith(GM_pt.word_wrap(GMAP.GEM.__doc__) + "\n")
 
     callcommand = ["GMAP", "help", "nothing"]
     with pytest.raises(GmapAttributeError, match="SU_GM_1$"):
-        GM_CI.cmd_interface(callcommand)
+        GM_ci.cmd_interface(callcommand)
 
     # test program invokke
     callcommand = ["GMAP", "GEM", "doesntexist"]
     with pytest.raises(GmapKeyError, match="SU_PP_1"):
-        GM_CI.cmd_interface(callcommand)
+        GM_ci.cmd_interface(callcommand)
 
 
 def test_calldict():
     callcommand = ["GMAP", "GEM", "run", "inpfile", "--safe_mode", "-v", "4"]
-    all_args = GM_CI.calldict(callcommand)
+    all_args = GM_ci.calldict(callcommand)
     assert all_args == {
         "GMAP": ["GEM", "run", "inpfile"],
         "--safe_mode": [],
@@ -74,21 +74,21 @@ def test_calldict():
 
 def test_get_safe_dark():
     callcommand = ["GMAP", "GEM", "run", "inpfile", "--safe_mode", "-v", "4"]
-    all_args = GM_CI.calldict(callcommand)
-    safe, dark = GM_CI.get_safe_dark(all_args)
+    all_args = GM_ci.calldict(callcommand)
+    safe, dark = GM_ci.get_safe_dark(all_args)
     assert (safe, dark) == (True, True)
 
     callcommand = [
         "GMAP", "GEM", "run", "inpfile", "--safe_mode", "-v", "4", "-nodm"]
-    all_args = GM_CI.calldict(callcommand)
-    safe, dark = GM_CI.get_safe_dark(all_args)
+    all_args = GM_ci.calldict(callcommand)
+    safe, dark = GM_ci.get_safe_dark(all_args)
     assert (safe, dark) == (True, False)
 
     callcommand = [
         "GMAP", "GEM", "run", "inpfile", "--safe_mode", "false", "-v", "4",
         "-dm"]
-    all_args = GM_CI.calldict(callcommand)
-    safe, dark = GM_CI.get_safe_dark(all_args)
+    all_args = GM_ci.calldict(callcommand)
+    safe, dark = GM_ci.get_safe_dark(all_args)
     assert (safe, dark) == (False, True)
 
 
@@ -102,10 +102,10 @@ def test_main():
     callcommand = ["GMAP"]  # == GMAP help help
     captured = subprocess.run(callcommand, capture_output=True)
     # On windows
-    outbytes = (GM_PT.word_wrap(GMAP.__doc__) + "\n").replace(
+    outbytes = (GM_pt.word_wrap(GMAP.__doc__) + "\n").replace(
         "\n", "\r\n").encode('utf-8')
     # On linux/mac
-    outbyteslinux = (GM_PT.word_wrap(GMAP.__doc__) + "\n").encode('utf-8')
+    outbyteslinux = (GM_pt.word_wrap(GMAP.__doc__) + "\n").encode('utf-8')
     assert (
         captured.stdout.endswith(outbytes)
         or captured.stdout.endswith(outbyteslinux))

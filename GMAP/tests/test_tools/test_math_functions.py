@@ -12,7 +12,7 @@ import pytest
 
 # local imports
 import GMAP.src.tools.constants as GM_con
-import GMAP.src.tools.MathFunctions as GM_MF
+import GMAP.src.tools.math_functions as GM_mf
 
 
 def test_PBC_back2box():
@@ -20,9 +20,9 @@ def test_PBC_back2box():
     movevect = np.array([0.8, 0.4, 0.26], dtype="float32")
     ans = np.array([-2, 4, 2.6], dtype="float32")
 
-    assert np.all(GM_MF.PBC_back2box(movevect, boxvects).round(6) == ans)
+    assert np.all(GM_mf.PBC_back2box(movevect, boxvects).round(6) == ans)
     assert np.all(
-        GM_MF.PBC_back2box.py_func(movevect, boxvects).round(6) == ans)
+        GM_mf.PBC_back2box.py_func(movevect, boxvects).round(6) == ans)
 
 
 @pytest.mark.parametrize(("vect", "expt", "boxvects"), [
@@ -39,9 +39,9 @@ def test_PBC_triclinic(vect, expt, boxvects):
     expt = np.array(expt, dtype="float32")
     boxvects = np.array(boxvects, dtype="float32")
     boxvects_inv = np.linalg.inv(boxvects)
-    translated_point = GM_MF.PBC_triclinic(vect, boxvects, boxvects_inv)
+    translated_point = GM_mf.PBC_triclinic(vect, boxvects, boxvects_inv)
     assert np.all(np.round(translated_point, 3) == expt)
-    translated_point = GM_MF.PBC_triclinic.py_func(
+    translated_point = GM_mf.PBC_triclinic.py_func(
         vect, boxvects, boxvects_inv)
     assert np.all(np.round(translated_point, 3) == expt)
 
@@ -62,9 +62,9 @@ def test_PBC_boxdiff_triclin(boxvect1, boxvect2, boxvects, expt):
     boxvect2 = np.array(boxvect2, dtype="float32")
     boxvects = np.array(boxvects, dtype="float32")
     expt = np.array(expt, dtype="float32")
-    newdiff = GM_MF.PBC_boxdiff_triclin(boxvect1, boxvect2, boxvects)
+    newdiff = GM_mf.PBC_boxdiff_triclin(boxvect1, boxvect2, boxvects)
     assert np.all(np.round(newdiff, 3) == expt)
-    newdiff = GM_MF.PBC_boxdiff_triclin.py_func(boxvect1, boxvect2, boxvects)
+    newdiff = GM_mf.PBC_boxdiff_triclin.py_func(boxvect1, boxvect2, boxvects)
     assert np.all(np.round(newdiff, 3) == expt)
 
 
@@ -81,10 +81,10 @@ def test_crossprod(vector1, vector2):
     vector1 = np.array(vector1, dtype='float32')
     vector2 = np.array(vector2, dtype='float32')
     assert np.all(
-        GM_MF.crossprod(vector1, vector2) == np.cross(vector1, vector2)
+        GM_mf.crossprod(vector1, vector2) == np.cross(vector1, vector2)
     )
     assert np.all(
-        GM_MF.crossprod.py_func(vector1, vector2) == np.cross(vector1, vector2)
+        GM_mf.crossprod.py_func(vector1, vector2) == np.cross(vector1, vector2)
     )
 
 
@@ -100,9 +100,9 @@ def test_dotprod(vector1, vector2):
     """
     vector1 = np.array(vector1, dtype='float32')
     vector2 = np.array(vector2, dtype='float32')
-    assert np.all(GM_MF.dotprod(vector1, vector2) == np.dot(vector1, vector2))
+    assert np.all(GM_mf.dotprod(vector1, vector2) == np.dot(vector1, vector2))
     assert np.all(
-        GM_MF.dotprod.py_func(vector1, vector2) == np.dot(vector1, vector2)
+        GM_mf.dotprod.py_func(vector1, vector2) == np.dot(vector1, vector2)
     )
 
 
@@ -117,8 +117,8 @@ def test_vec3len(vector):
     results as the numpy one.
     """
     inpvec = np.array(vector)
-    assert GM_MF.vec3_len(inpvec) == np.linalg.norm(inpvec)
-    assert GM_MF.vec3_len.py_func(inpvec) == np.linalg.norm(inpvec)
+    assert GM_mf.vec3_len(inpvec) == np.linalg.norm(inpvec)
+    assert GM_mf.vec3_len.py_func(inpvec) == np.linalg.norm(inpvec)
 
 
 @pytest.mark.parametrize(("vector1", "vector2"), [
@@ -137,13 +137,13 @@ def test_project(vector1, vector2):
     """
     vector1 = np.array(vector1, dtype='float32')
     vector2 = np.array(vector2, dtype='float32')
-    prj = GM_MF.project(vector1, vector2)
+    prj = GM_mf.project(vector1, vector2)
     assert all((
         abs(np.dot(vector1, prj)) <= 1e-5,
         abs(np.dot(vector1, np.cross(vector2, prj))) <= 1e-5
     ))
 
-    prj = GM_MF.project.py_func(vector1, vector2)
+    prj = GM_mf.project.py_func(vector1, vector2)
     assert all((
         abs(np.dot(vector1, prj)) <= 1e-5,
         abs(np.dot(vector1, np.cross(vector2, prj))) <= 1e-5
@@ -173,9 +173,9 @@ def test_dihedral_base(b0, b1, b2, expt):
     b0 = np.array(b0, dtype='float32')
     b1 = np.array(b1, dtype='float32')
     b2 = np.array(b2, dtype='float32')
-    assert round(GM_MF.dihedral_base(b0, b1, b2) * GM_con.rad2deg, 4) == expt
+    assert round(GM_mf.dihedral_base(b0, b1, b2) * GM_con.rad2deg, 4) == expt
     assert round(
-        GM_MF.dihedral_base.py_func(b0, b1, b2) * GM_con.rad2deg, 4) == expt
+        GM_mf.dihedral_base.py_func(b0, b1, b2) * GM_con.rad2deg, 4) == expt
 
 
 @pytest.mark.parametrize(("p0", "p1", "p2", "p3", "boxvects", "expt"), [
@@ -215,9 +215,9 @@ def test_dihedral(p0, p1, p2, p3, boxvects, expt):
     p3 = np.array(p3, dtype='float32')
     boxvects = np.array(boxvects, dtype='float32')
     boxvects_inv = np.linalg.inv(boxvects)
-    assert round(GM_MF.dihedral(
+    assert round(GM_mf.dihedral(
         p0, p1, p2, p3, boxvects, boxvects_inv) * GM_con.rad2deg, 4) == expt
-    assert round(GM_MF.dihedral.py_func(
+    assert round(GM_mf.dihedral.py_func(
         p0, p1, p2, p3, boxvects, boxvects_inv) * GM_con.rad2deg, 4) == expt
 
 
@@ -257,7 +257,7 @@ def test_dihedral_boxcoords(p0, p1, p2, p3, boxvects, expt):
     p2 = np.array(p2, dtype='float32')
     p3 = np.array(p3, dtype='float32')
     boxvects = np.array(boxvects, dtype='float32')
-    assert round(GM_MF.dihedral_boxcoords(
+    assert round(GM_mf.dihedral_boxcoords(
         p0, p1, p2, p3, boxvects) * GM_con.rad2deg, 4) == expt
-    assert round(GM_MF.dihedral_boxcoords.py_func(
+    assert round(GM_mf.dihedral_boxcoords.py_func(
         p0, p1, p2, p3, boxvects) * GM_con.rad2deg, 4) == expt

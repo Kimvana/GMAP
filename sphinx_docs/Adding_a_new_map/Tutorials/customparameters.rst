@@ -49,15 +49,15 @@ So, lets use this parameter in a function! As the code for AmideBB is rather com
 
 
         dri = 0.665*COvec + 0.258*CNvec
-        dridri = GM_MF.dotprod(dri, dri)
-        COvecdri = GM_MF.dotprod(COvec, dri)
+        dridri = GM_mf.dotprod(dri, dri)
+        COvecdri = GM_mf.dotprod(COvec, dri)
         # direction of the dipole moment
         itheta = np.float32(
             1 / np.tan(GM_con.deg2rad * map_.RunPars.Torii_dipole_angle))
         r_vec = dri - (COvecdri + np.sqrt(dridri - COvecdri*COvecdri)*itheta)*COvec
 
         # giving the dipole moment the correct magnitude
-        r_vec /= GM_MF.vec3_len(r_vec)
+        r_vec /= GM_mf.vec3_len(r_vec)
         r_vec *= map_.Core.dipole_gas_phase
 
         return r_vec, r_pos

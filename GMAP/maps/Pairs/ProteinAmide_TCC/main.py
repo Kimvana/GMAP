@@ -5,10 +5,10 @@ import numpy as np
 
 # GMAP imports
 import GMAP.src.tools.constants as GM_con
-from GMAP.src.tools import MathFunctions as GM_MF
+import GMAP.src.tools.math_functions as GM_mf
 
 # own module imports
-import ProteinAmide_TCC_code.TCCclib as MC_TC
+import ProteinAmide_TCC_code.TCCclib as MC_tc
 
 
 def GM_prep_coupling(map_, system, oscixlist, osclist):
@@ -42,16 +42,16 @@ def GM_prep_coupling(map_, system, oscixlist, osclist):
 # for reference.
 def prep_coupling(oscixlist, osclist, system, map_):
     for oscix, osc in zip(oscixlist, osclist):
-        COvec = GM_MF.PBC_boxdiff_triclin(
+        COvec = GM_mf.PBC_boxdiff_triclin(
             osc.positions_box[1], osc.positions_box[0], system.boxvects)
-        COvec /= GM_MF.vec3_len(COvec)
+        COvec /= GM_mf.vec3_len(COvec)
 
-        CNvec = GM_MF.PBC_boxdiff_triclin(
+        CNvec = GM_mf.PBC_boxdiff_triclin(
             osc.positions_box[3], osc.positions_box[0], system.boxvects)
-        CNvec = GM_MF.project(COvec, CNvec)
-        CNvec /= GM_MF.vec3_len(CNvec)
-        z = GM_MF.crossprod(COvec, CNvec)
-        z /= GM_MF.vec3_len(z)
+        CNvec = GM_mf.project(COvec, CNvec)
+        CNvec /= GM_mf.vec3_len(CNvec)
+        z = GM_mf.crossprod(COvec, CNvec)
+        z /= GM_mf.vec3_len(z)
 
         if osc.Map.name == "AmideSC" or osc.resnames[1] != "PRO":
             alpha = map_.alpha_gen
@@ -250,7 +250,7 @@ def GM_post_init(map_, system):
     map_.v_gen_c = np.ctypeslib.as_ctypes(np.ravel(map_.v_gen))  # length 18
     map_.v_pro_c = np.ctypeslib.as_ctypes(np.ravel(map_.v_pro))  # length 18
     map_.noscats = np.int32(6)
-    MC_TC.init_map_for_clib(map_, system)
+    MC_tc.init_map_for_clib(map_, system)
 
 
 def get_next_line(fhand):

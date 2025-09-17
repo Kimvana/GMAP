@@ -4,8 +4,8 @@ from numba import njit
 import numpy as np
 
 # local imports
-import GMAP.src.tools.CLibLoader as GM_CL
-import GMAP.src.tools.PrintTools as GM_PT
+import GMAP.src.tools.clib_loader as GM_cl
+import GMAP.src.tools.print_tools as GM_pt
 
 
 def calc_CoM(system, atomlist):
@@ -142,8 +142,8 @@ def calc_frame(RunPars, system, outputs):
         contains hamiltonian and dipole arrays.
     """
 
-    VEGlib = GM_CL.VEG_CLib()
-    printer = GM_PT.Printer
+    VEGlib = GM_cl.VEG_CLib()
+    printer = GM_pt.Printer
 
     printer.add_time(4, "VEG-related properties:", "VEGprop", "ms")
     for oscix, oscillator in enumerate(system.oscillators):

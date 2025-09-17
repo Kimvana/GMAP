@@ -8,14 +8,13 @@ import time
 from traceback import TracebackException as TbEx
 
 # local imports
-import GMAP.src.tools.CodingTools as GM_CT
-import GMAP.src.tools.ColorSchemes as GM_CS
-import GMAP.src.tools.Exceptions as GM_Ex
-# import GMAP.src.tools.Plotter as GM_Pl
-import GMAP.src.tools.StringClasses as GM_SC
+import GMAP.src.tools.coding_tools as GM_ct
+import GMAP.src.tools.color_schemes as GM_cs
+import GMAP.src.tools.exceptions as GM_ex
+import GMAP.src.tools.string_classes as GM_sc
 
 
-class Printer(metaclass=GM_CT.Singleton):
+class Printer(metaclass=GM_ct.Singleton):
     """Manages prints and logs during runtime.
 
     During runtime, the program can communicate many things, but the user
@@ -94,8 +93,8 @@ class Printer(metaclass=GM_CT.Singleton):
         # 'running' for when running normally
         cls.program_state = "startup"
         cls.color_mode = "24bit"  # safe mode will overwrite this!
-        cls.colors = GM_CS.StandInColors  # should be used by callers
-        cls._colors = GM_CS.DarkModeColors  # default colors for early prints
+        cls.colors = GM_cs.StandInColors  # should be used by callers
+        cls._colors = GM_cs.DarkModeColors  # default colors for early prints
         cls.line_length = 79
 
         # error codes which shouldn't be printed by warning.
@@ -255,13 +254,13 @@ class Printer(metaclass=GM_CT.Singleton):
 
         # Figure out (the length of) printpreline, and change its color to
         # the desired color (so they can be returned directly).
-        printpreline = GM_SC.ColStr("").join(
+        printpreline = GM_sc.ColStr("").join(
             [item[1] for item in cls.preline if verbose in item[0]])
         printpreline = printpreline.change_color(color_mode)
         prelinelen = len(printpreline)
 
         # wordwrap the message to be printed (adjusted length for preline)
-        message = GM_SC.ColStr(message).wrap(
+        message = GM_sc.ColStr(message).wrap(
             line_length - prelinelen, wrap_preline)
         # change the message color (so color_repeater knows what to expect)
         # make sure color markers/codes are repeated after a line break
@@ -334,14 +333,14 @@ class Printer(metaclass=GM_CT.Singleton):
         # the exceptions module is imported. This way, the import order does
         # not matter.
         if GMAPerrclass is None:
-            GMAPerrclass = GM_Ex.GMAPexception
+            GMAPerrclass = GM_ex.GMAPexception
 
         if not message.startswith("\n"):
             message = "\n" + message
 
         # might seem backwards, but we should report if the error wasn't
         # silenced.
-        if GM_SC.ErrCode(error_code) not in cls.dont_report_error:
+        if GM_sc.ErrCode(error_code) not in cls.dont_report_error:
             if exitbool:
                 printinstruct = "f"
             else:
@@ -410,9 +409,9 @@ class Printer(metaclass=GM_CT.Singleton):
             # in case some terminal cannot handle other colors
             cls.color_mode = "white"
         if cls.dark_mode:
-            cls._colors = GM_CS.DarkModeColors
+            cls._colors = GM_cs.DarkModeColors
         else:
-            cls._colors = GM_CS.LightModeColors
+            cls._colors = GM_cs.LightModeColors
 
     @classmethod
     def set_state(
@@ -663,7 +662,7 @@ def color_test():  # run this one with word_wrap to 150 (8 colors per row)
             string = f"{g:>4}   "
             # manual: either do (0, 127, 16), or (128, 255, 16)
             for b in range_:
-                shortstr = GM_SC.ColStr(f"\033[38;2;{r};{g};{b}m███\033[0m")
+                shortstr = GM_sc.ColStr(f"\033[38;2;{r};{g};{b}m███\033[0m")
                 string += shortstr
                 string += shortstr.change_color("4bit")
                 string += " "
@@ -693,7 +692,7 @@ def word_wrap(string, deslen=79, wrap_preline=""):
     """
 
     intype = type(string)
-    colstr = GM_SC.ColStr(string)
+    colstr = GM_sc.ColStr(string)
     startlst = colstr.split("\n")
     endlst = []
 
@@ -847,7 +846,7 @@ def header(
     match preset:
         case "nohead" | "custom":
             if preset == "custom":
-                title = GM_SC.Header(title, **kwargs).s
+                title = GM_sc.Header(title, **kwargs).s
             head += title
             Printer.print(verbose, head, **kwargs)
             if preline is not None:
@@ -857,7 +856,7 @@ def header(
                 special = {"u": {"replace": {"╦": [[1]]}}}
             else:
                 special = None
-            head += GM_SC.Header(
+            head += GM_sc.Header(
                 title, linemode="oulrc", padding=1, overline_char="═",
                 underline_char="═", left_char="║", right_char="║",
                 corner_char="╔╗╚╝", special=special
@@ -941,7 +940,7 @@ def footer(
     match preset:
         case "nohead" | "custom":
             if preset == "custom":
-                title = GM_SC.Header(title, **kwargs).s
+                title = GM_sc.Header(title, **kwargs).s
             else:
                 title = ""
             if preline is not None:

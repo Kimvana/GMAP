@@ -36,17 +36,17 @@ import sys
 # import numpy as np
 
 # local imports
-import GMAP.src.tools.CLibLoader as GM_CL
-import GMAP.src.tools.Exceptions as GM_Ex
-import GMAP.src.tools.FileHandler as GM_FH
-import GMAP.src.tools.MapReader as GM_MR
-import GMAP.src.tools.ParameterParser as GM_PP
-import GMAP.src.tools.PhysicsFunctions as GM_PF
-import GMAP.src.tools.Plotter as GM_Pl
-import GMAP.src.tools.PrintTools as GM_PT
-from GMAP.src.tools.PrintTools import devprint as dpr
-import GMAP.src.tools.ReferenceHandler as GM_RH
-import GMAP.src.tools.SystemReader as GM_SR
+import GMAP.src.tools.clib_loader as GM_cl
+import GMAP.src.tools.exceptions as GM_ex
+import GMAP.src.tools.file_handler as GM_fh
+import GMAP.src.tools.map_reader as GM_mr
+import GMAP.src.tools.parameter_parser as GM_pp
+import GMAP.src.tools.physics_functions as GM_pf
+import GMAP.src.tools.plotter as GM_Pl
+import GMAP.src.tools.print_tools as GM_pt
+from GMAP.src.tools.print_tools import devprint as dpr
+import GMAP.src.tools.reference_handler as GM_rh
+import GMAP.src.tools.system_reader as GM_sr
 
 
 def manage_frame(frame, RunPars):
@@ -82,14 +82,14 @@ def manage_frame(frame, RunPars):
         # if framenum has form 10^n with n=int
         if str(relframenum)[0] == "1":
             if relframenum != 1:
-                GM_PT.Printer.print(2, "")
+                GM_pt.Printer.print(2, "")
             verbose_level = 1
         else:
             verbose_level = 2
     else:  # lvl4 prints ETA for each frame.
         verbose_level = 4
 
-    GM_PT.Printer.print(
+    GM_pt.Printer.print(
         4,
         "Current time   | current frame | time elapsed | time to go   | "
         "end time  (est.)"
@@ -154,7 +154,7 @@ def print_frame_ETA(verbose, framenum, startframe, endframe):
         the parameter end_frame.
     """
 
-    timer = GM_PT.Printer.Timer
+    timer = GM_pt.Printer.Timer
     toprint = []
 
     # first, add current time (e.g. Fri 13 HH:MM)
@@ -169,7 +169,7 @@ def print_frame_ETA(verbose, framenum, startframe, endframe):
 
     # Next: time elapsed
     now_ns = timer.get_time("FrameUpdate")
-    now_str = GM_PT.time_to_str(now_ns, "s")
+    now_str = GM_pt.time_to_str(now_ns, "s")
     toprint.append(f"{now_str: >12}")  # To fit a max of 999 days.
 
     if not framenum == startframe:  # if not very first frame of calculation
@@ -177,7 +177,7 @@ def print_frame_ETA(verbose, framenum, startframe, endframe):
         start_heavy_ns = timer.get_time("StartLoop")
         ns_per_frame = int((now_ns - start_heavy_ns) / (framenum - startframe))
         ns_to_go = ns_per_frame * (endframe - framenum)
-        to_go_str = GM_PT.time_to_str(ns_to_go, "s")
+        to_go_str = GM_pt.time_to_str(ns_to_go, "s")
         toprint.append(f"{to_go_str: >12}")  # To fit a max of 999 days.
 
         # end time
@@ -188,7 +188,7 @@ def print_frame_ETA(verbose, framenum, startframe, endframe):
         # language needs it... (can't find overview of supported languages)
         toprint.append(f"{datestr: <14}")
 
-    GM_PT.Printer.print(verbose, " | ".join(toprint))
+    GM_pt.Printer.print(verbose, " | ".join(toprint))
 
 
 def early_stop(framenum, RunPars):
@@ -214,7 +214,7 @@ def early_stop(framenum, RunPars):
         return False
 
     # now, actually check whether the next batch will fit.
-    timer = GM_PT.Printer.Timer
+    timer = GM_pt.Printer.Timer
     now_ns = timer.get_time("FrameUpdate")
     start_heavy_ns = timer.get_time("StartLoop")
     ns_per_frame = int((now_ns - start_heavy_ns) / (relframenum))
@@ -247,7 +247,7 @@ def trj_loop(RunPars, system):
     """
 
     # first, do precalc
-    GM_PT.Printer.add_time(
+    GM_pt.Printer.add_time(
         3, "Preparing loop over frames", "PrepLoop", "ms")
 
     # create empty structures, initialize whats needed
@@ -258,13 +258,13 @@ def trj_loop(RunPars, system):
 
     # Confirm start_frame is still smaller than stop, after the change
     if RunPars.start_frame > RunPars.stop_frame:
-        GM_PT.Printer.warning(
+        GM_pt.Printer.warning(
             "Encountered an issue with the parameter start_frame. The frame "
             "doesn't exist, as the provided trajectory is too short. In the "
             "current way, there is nothing to do. Please either change the "
             "parameter start_frame to a smaller value, or use a different "
             "trajectory.",
-            "SU_WP_17", True, GMAPerrclass=GM_Ex.GmapParameterError
+            "SU_WP_17", True, GMAPerrclass=GM_ex.GmapParameterError
         )
 
     # let maps prepare for the calculation
@@ -282,31 +282,31 @@ def trj_loop(RunPars, system):
     RunPars.manage_dtypes()
 
     # Report on the system we're going to treat.
-    GM_FH.write_legend(RunPars, system)
+    GM_fh.write_legend(RunPars, system)
 
     trj = system.universe.trajectory
-    GM_FH.clear_output(RunPars)
+    GM_fh.clear_output(RunPars)
 
     # In case MDA needs a long time to start the loop.
-    GM_PT.Printer.add_time(
+    GM_pt.Printer.add_time(
         3, "Starting loop over frames", "StartLoop", "ms")
 
-    cb = GM_PT.Printer.colors.green_lc
-    ct = GM_PT.Printer.colors.clear
+    cb = GM_pt.Printer.colors.green_lc
+    ct = GM_pt.Printer.colors.clear
     line = f"{cb}════{ct}"
-    GM_PT.Printer.print(
+    GM_pt.Printer.print(
         1, f"\n{line} Processing frames {line}", detailed_instructions=[1])
-    GM_PT.header(2, "Processing frames", "doublebox_bare")
+    GM_pt.header(2, "Processing frames", "doublebox_bare")
 
     # print header for the ETA table (print lvl 4 has header per frame)
-    GM_PT.Printer.print(
+    GM_pt.Printer.print(
         1,
         "\nCurrent time   | current frame | time elapsed | time to go   | "
         "end time  (est.)", detailed_instructions=[1, 2, 3]
     )
 
     for frame in trj[RunPars.start_frame:]:
-        GM_PT.Printer.add_time(
+        GM_pt.Printer.add_time(
             4, "Starting on frame - starting updates", "FrameUpdate", "ms")
         # manage frame number (if not in range, skip, prints, ETA, etc)
         if manage_frame(frame, RunPars):
@@ -314,20 +314,20 @@ def trj_loop(RunPars, system):
 
         # rebuild the frame-specific data (positions, box, etc)
         system.update_properties(RunPars)
-        GM_PT.Printer.add_time(
+        GM_pt.Printer.add_time(
             4, "done system updates. next: osc updates", "OscUpdate", "ms")
         for oscillator in system.oscillators:
             oscillator.frame_update(system)
 
-        GM_PT.Printer.add_time(
+        GM_pt.Printer.add_time(
             4, "updates done. next: initialize", "StructInit", "ms")
 
         # (only if needed) recalc COM
 
         # initialize output structures (like Ham)
-        outputs = GM_PF.generate_output_structures(RunPars, system)
+        outputs = GM_pf.generate_output_structures(RunPars, system)
 
-        GM_PT.Printer.add_time(
+        GM_pt.Printer.add_time(
             4, "initialize done. next: map init", "MapFInit", "ms")
 
         # call pre-frame funcs of maps
@@ -341,13 +341,13 @@ def trj_loop(RunPars, system):
                 map_ = RunPars.requested_pairmapdict[mapname]
                 map_.code.GM_pre_frame(map_, system)
 
-        GM_PT.Printer.add_time(
+        GM_pt.Printer.add_time(
             4, "map init done. next: calculation", "Calc", "ms")
 
         # perform the actual calculations
-        outputs = GM_PF.calc_frame(RunPars, system, outputs)
+        outputs = GM_pf.calc_frame(RunPars, system, outputs)
 
-        GM_PT.Printer.add_time(
+        GM_pt.Printer.add_time(
             4, "calculation done. next: map final", "MapFPost", "ms")
 
         # call post-frame functions of maps
@@ -361,21 +361,21 @@ def trj_loop(RunPars, system):
                 map_ = RunPars.requested_pairmapdict[mapname]
                 map_.code.GM_post_frame(map_, system)
 
-        GM_PT.Printer.add_time(
+        GM_pt.Printer.add_time(
             4, "map final done. next: write output", "FrameWrite", "ms")
 
         # write calculated data to files
-        GM_FH.write_output(RunPars, frame.frame, outputs)
+        GM_fh.write_output(RunPars, frame.frame, outputs)
 
-        GM_PT.Printer.add_time(
+        GM_pt.Printer.add_time(
             4, "Frame completed. Loading next frame\n", "LoadFrame", "ms")
 
-    cb = GM_PT.Printer.colors.green_lc
-    ct = GM_PT.Printer.colors.clear
-    GM_PT.Printer.print(
+    cb = GM_pt.Printer.colors.green_lc
+    ct = GM_pt.Printer.colors.clear
+    GM_pt.Printer.print(
         2, f"\n{cb}====={ct} End of processing frames {cb}====={ct}\n")
 
-    GM_PT.Printer.add_time(
+    GM_pt.Printer.add_time(
         3, "Frames Completed. Finishing up.", "MapPost", "ms")
 
     # lastly, do postcalc:
@@ -408,12 +408,12 @@ def print_calculation_summary(RunPars, system):
     """
 
     # making sure the last 'split' is saved in timer.totals()
-    pr = GM_PT.Printer
-    GM_PT.Printer.add_time(5, "", "end")
+    pr = GM_pt.Printer
+    GM_pt.Printer.add_time(5, "", "end")
 
-    GM_PT.header(
+    GM_pt.header(
         1, "Calculation\nsummary", "doublebox_bare", detailed_instructions=[1])
-    GM_PT.header(2, "\n  Calculation  \nsummary\n", "doublebox_bare")
+    GM_pt.header(2, "\n  Calculation  \nsummary\n", "doublebox_bare")
 
     print_time_splits(RunPars)
 
@@ -442,15 +442,15 @@ def print_time_splits(RunPars):
     def sumavg(*args):
         total_time = pr.Timer.get_total_ns(*args)
         avg_time = total_time // nframes
-        tot_str = GM_PT.time_to_str(total_time)
-        avg_str = GM_PT.time_to_str(avg_time, "ms")
+        tot_str = GM_pt.time_to_str(total_time)
+        avg_str = GM_pt.time_to_str(avg_time, "ms")
         return f"{tot_str: >12}  --> {avg_str[-12:]} / frame"
 
-    pr = GM_PT.Printer
+    pr = GM_pt.Printer
     sum_ = pr.Timer.get_total_format
     nframes = RunPars.stop_frame - RunPars.start_frame
 
-    GM_PT.header(2, "Time spent", "doublebox_bare", newlines=(1, 1))
+    GM_pt.header(2, "Time spent", "doublebox_bare", newlines=(1, 1))
     init_labels = [
         "ParParse", "AddMaps", "MDinit", "MapInit", "ClibLoad", "PrepLoop"]
     f_load = ["StartLoop", "LoadFrame"]
@@ -509,9 +509,9 @@ def print_treated_avail_frames(RunPars, system):
         MD trajectory.
     """
 
-    pr = GM_PT.Printer
+    pr = GM_pt.Printer
 
-    GM_PT.header(2, "MD frames", "doublebox_bare")
+    GM_pt.header(2, "MD frames", "doublebox_bare")
     msg = "Frames treated:     " + " " * 12
 
     # if the calculation was stopped early, the attribute end_frame exists.
@@ -557,16 +557,16 @@ def print_in_output_filenames(RunPars):
     def wrapprint(verbose, message, wrap_preline):
         pr.print(verbose, message, wrap_preline=wrap_preline)
 
-    pr = GM_PT.Printer
+    pr = GM_pt.Printer
 
-    GM_PT.header(2, "Files used", "doublebox_bare")
-    cb = GM_PT.Printer.colors.green_lc
-    ct = GM_PT.Printer.colors.clear
+    GM_pt.header(2, "Files used", "doublebox_bare")
+    cb = GM_pt.Printer.colors.green_lc
+    ct = GM_pt.Printer.colors.clear
     line = f"{cb}════{ct}"
-    GM_PT.Printer.print(
+    GM_pt.Printer.print(
         1, f"\n{line} Files used {line}", detailed_instructions=[1])
     line = f"{cb}========{ct}"
-    files = GM_FH.FileLocations
+    files = GM_fh.FileLocations
     ps = "  "  # The string to print as pre-wrap
     pr.print(3, f"{line}  Program files and information {line}")
     wrapprint(3, f"Python installation used:   {sys.executable}", ps)
@@ -618,11 +618,11 @@ def print_relevant_references(RunPars, system):
         MD trajectory.
     """
 
-    GM_PT.header(2, "References to cite", "doublebox_bare")
-    cb = GM_PT.Printer.colors.green_lc
-    ct = GM_PT.Printer.colors.clear
+    GM_pt.header(2, "References to cite", "doublebox_bare")
+    cb = GM_pt.Printer.colors.green_lc
+    ct = GM_pt.Printer.colors.clear
     line = f"{cb}════{ct}"
-    GM_PT.Printer.print(
+    GM_pt.Printer.print(
         1, f"\n{line} References to cite {line}", detailed_instructions=[1])
 
     all_references = []
@@ -637,7 +637,7 @@ def print_relevant_references(RunPars, system):
             all_references.append(
                 pairs_map.code.GM_report_references(pairs_map, system))
 
-    GM_RH.report_references(RunPars, all_references)
+    GM_rh.report_references(RunPars, all_references)
 
 
 # still a placeholder - this function still has to grow. Should in the
@@ -645,7 +645,7 @@ def print_relevant_references(RunPars, system):
 # This means, a big decision tree: match job, case x: call func_x,
 # case y: call func_y, etc. Now, we're basically only doing 1 kind of job.
 def GEM(callcommand):
-    GM_PT.Printer.add_time(
+    GM_pt.Printer.add_time(
         3, "Start Parsing GMAP parameters", "ParParse", "ms")
     # step 1 (is GEM in demo mode? to become: What job do we need to do?)
     if callcommand[1] in ("demo"):
@@ -653,7 +653,7 @@ def GEM(callcommand):
     else:
         exp_inpfile = True
     # step 2 (very basic cmd line parse)
-    job, in_parfile, argslist = GM_PP.parse_commandline(
+    job, in_parfile, argslist = GM_pp.parse_commandline(
         callcommand, alljobs, "GMAP GEM", exp_inpfile, True
     )
 
@@ -661,36 +661,36 @@ def GEM(callcommand):
     (
         RunPars, singles_mapdict, pairs_mapdict, CmdPars, InPars, DefPars,
         RefPars
-    ) = GM_PP.get_parameters(in_parfile, argslist)
+    ) = GM_pp.get_parameters(in_parfile, argslist)
 
     # If requested, profile the run.
     if RunPars.profiler:
         profile = cProfile.Profile()
         profile.enable()
 
-    GM_PT.Printer.add_time(
+    GM_pt.Printer.add_time(
         3, "Finished GMAP parameters, start adding maps", "AddMaps", "ms")
 
     # --- end of SU errors ---
 
     # Map initialization
-    GM_MR.manage_maps_singles(RunPars, singles_mapdict)
-    GM_MR.manage_maps_pairs(RunPars, pairs_mapdict)
-    GM_PT.Printer.add_time(
+    GM_mr.manage_maps_singles(RunPars, singles_mapdict)
+    GM_mr.manage_maps_pairs(RunPars, pairs_mapdict)
+    GM_pt.Printer.add_time(
         2, "Added all maps, start loading C libraries", "ClibLoad", "ms")
 
     # initialize C library
-    GM_CL.VEG_CLib(RunPars)
+    GM_cl.VEG_CLib(RunPars)
 
-    GM_PT.Printer.add_time(
+    GM_pt.Printer.add_time(
         3, "Libraries loaded, start initializing MD system", "MDinit",
         "ms"
     )
 
     # Looking at MD system - finding oscillators.
-    system = GM_SR.System(RunPars)
+    system = GM_sr.System(RunPars)
 
-    GM_PT.Printer.add_time(
+    GM_pt.Printer.add_time(
         3, "Initialized MD system, start initializing maps", "MapInit", "ms")
 
     # GEM is now done - let maps initialize as well
@@ -701,7 +701,7 @@ def GEM(callcommand):
     # Report on what the system looks like (needs singles mapinit)
     system.print_system(RunPars)
 
-    GM_PT.Printer.add_time(
+    GM_pt.Printer.add_time(
         3, "Initialization complete, start considering pairs", "MDinit", "ms")
 
     if "ham" in RunPars.output_data:
@@ -720,7 +720,7 @@ def GEM(callcommand):
         GM_Pl.plot_coupling_choices(RunPars, system)
 
     # Write output parameter file
-    GM_FH.write_parameter_file(
+    GM_fh.write_parameter_file(
         RefPars, RunPars, system, CmdPars, InPars, DefPars)
 
     # calculate all (requested) frames
@@ -768,7 +768,7 @@ def main(callcommand):
     if len(callcommand) == 1:
         print(__doc__)
     else:
-        GM_FH.FileLocations()
+        GM_fh.FileLocations()
         GEM(callcommand)
 
 

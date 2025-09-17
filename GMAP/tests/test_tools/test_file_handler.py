@@ -24,18 +24,18 @@ import numpy as np
 import pytest
 
 # local imports
-import GMAP.src.tools.CmdInterface as GM_CI
-import GMAP.src.tools.CodingTools as GM_CT
+import GMAP.src.tools.cmd_interface as GM_ci
+import GMAP.src.tools.coding_tools as GM_ct
 import GMAP.src.tools.constants as GM_con
-import GMAP.src.tools.Exceptions as GM_Ex
-import GMAP.src.tools.FileHandler as GM_FH
+import GMAP.src.tools.exceptions as GM_ex
+import GMAP.src.tools.file_handler as GM_fh
 
 
 class TestFileLocations:
     @pytest.mark.nofiles
     def test_sinprops(self):
         now = datetime.datetime.now()
-        files = GM_FH.FileLocations(now=now)
+        files = GM_fh.FileLocations(now=now)
         cmd = tuple(sys.argv)
         cmd = (Path(cmd[0]).name,) + cmd[1:]
         assert files.callcommand == " ".join(cmd)
@@ -54,14 +54,14 @@ def test_get_bare_file():
     }
     files_hc = [Path("default.hc")]
     floc_hc = Path(".")
-    flocs = GM_FH.get_bare_file(
+    flocs = GM_fh.get_bare_file(
         "logofile", files_hc, floc_hc, cmd_pardict)
     assert flocs == [(floc_hc / "logo.txt").resolve()]
 
 
 def test_write_output():
     cwd = Path(".").resolve()
-    RunPars = GM_CT.CustomClass(**{
+    RunPars = GM_ct.CustomClass(**{
         "output_hamiltonian_filename": cwd / "hamiltonian",
         "output_dipole_filename": cwd / "dipoles",
         "output_energies_filename": cwd / "energies",
@@ -131,7 +131,7 @@ def test_write_output():
         with open(fname.parent / f"{fname.name}.txt", "w"):
             pass
 
-    GM_FH.write_output(RunPars, framenum, outputs)
+    GM_fh.write_output(RunPars, framenum, outputs)
 
     # -----  test contents hamiltonian  -----
 
@@ -230,7 +230,7 @@ def test_write_output():
 
 def test_write_output_multiplied():
     cwd = Path(".").resolve()
-    RunPars = GM_CT.CustomClass(**{
+    RunPars = GM_ct.CustomClass(**{
         "output_hamiltonian_filename": cwd / "hamiltonian",
         "output_dipole_filename": cwd / "dipoles",
         "output_energies_filename": cwd / "energies",
@@ -300,7 +300,7 @@ def test_write_output_multiplied():
         with open(fname.parent / f"{fname.name}.txt", "w"):
             pass
 
-    GM_FH.write_output(RunPars, framenum, outputs)
+    GM_fh.write_output(RunPars, framenum, outputs)
 
     # -----  test contents hamiltonian  -----
 
@@ -437,7 +437,7 @@ def test_clear_output_multiple(tmp_path):
         with open(fname, "rb") as fhand:
             assert len(fhand.read()) == 3
 
-    runpars = GM_CT.CustomClass(**{
+    runpars = GM_ct.CustomClass(**{
         "output_data": ["ham", "ene", "dip", "ram", "pos", "dbp"],
         "output_hamiltonian_filename": ohf,
         "output_energies_filename": oef,
@@ -448,7 +448,7 @@ def test_clear_output_multiple(tmp_path):
         "output_format": ["bin", "txt"]
     })
 
-    GM_FH.clear_output(runpars)
+    GM_fh.clear_output(runpars)
 
     for fname in txtfiles:
         print(fname)
@@ -476,21 +476,21 @@ def test_write_legend():
             )
 
     cwd = Path(".").resolve()
-    RunPars = GM_CT.CustomClass(**{
+    RunPars = GM_ct.CustomClass(**{
         "output_legend_filename": cwd / "legend.txt"
     })
-    map_ = GM_CT.CustomClass(**{
-        "code": GM_CT.CustomClass(**{"GM_str_osc": get_resnum_text}),
+    map_ = GM_ct.CustomClass(**{
+        "code": GM_ct.CustomClass(**{"GM_str_osc": get_resnum_text}),
         "name": "mockmap"
     })
-    system = GM_CT.CustomClass(**{"oscillators": [MockOsc(**{
+    system = GM_ct.CustomClass(**{"oscillators": [MockOsc(**{
         "Map": map_,
         "ix": ix
     }) for ix in range(4)]})
 
     outfname = RunPars.output_legend_filename
 
-    GM_FH.write_legend(RunPars, system)
+    GM_fh.write_legend(RunPars, system)
 
     with open(str(outfname)) as fhand:
         contents = fhand.read()
@@ -511,7 +511,7 @@ def test_write_parameter_file(tmp_path):
     with open(tmp_path / "input_parameters.txt", "w") as fhand:
         fhand.write("")
     (tmp_path / "run1").mkdir()
-    GM_CI.cmd_interface([
+    GM_ci.cmd_interface([
         "GMAP", "GEM", "run",
         str((tmp_path / "input_parameters.txt").resolve()),
         "--number_frames", "2",
@@ -545,7 +545,7 @@ def test_write_parameter_file(tmp_path):
     # perform second run
     (tmp_path / "run1").mkdir()
 
-    GM_CI.cmd_interface([
+    GM_ci.cmd_interface([
         "GMAP", "GEM", "run",
         str((tmp_path / "run2/parameters.txt").resolve()),
         "--number_frames", "2",
@@ -575,7 +575,7 @@ def test_write_parameter_file(tmp_path):
 def test_SU_FH_1():
     cwd = Path(".")
 
-    with pytest.raises(GM_Ex.GmapFileNotFoundError, match="SU_FH_1$"):
-        _ = GM_FH.get_def_parfile({
+    with pytest.raises(GM_ex.GmapFileNotFoundError, match="SU_FH_1$"):
+        _ = GM_fh.get_def_parfile({
             "default_parameter_filename": [cwd/"doesntexist.dfa"]
         })

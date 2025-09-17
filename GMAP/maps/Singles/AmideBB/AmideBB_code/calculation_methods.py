@@ -4,8 +4,8 @@ from numba import njit
 import numpy as np
 
 # gmap imports
-import GMAP.src.tools.MathFunctions as GM_MF
-import GMAP.src.tools.PrintTools as GM_PT
+import GMAP.src.tools.math_functions as GM_mf
+import GMAP.src.tools.print_tools as GM_pt
 
 
 def calc_dipole_Torii(map_, system, osc):
@@ -34,10 +34,10 @@ def calc_dipole_Torii(map_, system, osc):
     pos_C_box = osc.positions_box[0]
     pos_O_box = osc.positions_box[1]
     pos_N_box = osc.positions_box[3]
-    COvec = GM_MF.PBC_boxdiff_triclin(pos_O_box, pos_C_box, system.boxvects)
-    COvec /= GM_MF.vec3_len(COvec)
-    CNvec = GM_MF.PBC_boxdiff_triclin(pos_N_box, pos_C_box, system.boxvects)
-    CNvec /= GM_MF.vec3_len(CNvec)
+    COvec = GM_mf.PBC_boxdiff_triclin(pos_O_box, pos_C_box, system.boxvects)
+    COvec /= GM_mf.vec3_len(COvec)
+    CNvec = GM_mf.PBC_boxdiff_triclin(pos_N_box, pos_C_box, system.boxvects)
+    CNvec /= GM_mf.vec3_len(CNvec)
 
     # position of dipole vector
     r_pos = osc.positions[0] + 0.665*COvec + 0.258*CNvec
@@ -77,11 +77,11 @@ def dipole_Torii(COvec, CNvec, itheta, magnitude):
 
     dri = 0.665*COvec + 0.258*CNvec
 
-    dridri = GM_MF.dotprod(dri, dri)
-    COvecdri = GM_MF.dotprod(COvec, dri)
+    dridri = GM_mf.dotprod(dri, dri)
+    COvecdri = GM_mf.dotprod(COvec, dri)
     mi = dri - (COvecdri + np.sqrt(dridri - COvecdri*COvecdri)*itheta)*COvec
 
-    mi /= GM_MF.vec3_len(mi)
+    mi /= GM_mf.vec3_len(mi)
     mi *= magnitude
 
     return mi
@@ -242,8 +242,8 @@ def determine_map(osc1, osc2, map_, system):
     # a pro-pro map should be made!
 
     boxpos = osc1.positions_box
-    COvec = GM_MF.PBC_boxdiff_triclin(boxpos[1], boxpos[0], system.boxvects)
-    NHvec = GM_MF.PBC_boxdiff_triclin(boxpos[4], boxpos[3], system.boxvects)
+    COvec = GM_mf.PBC_boxdiff_triclin(boxpos[1], boxpos[0], system.boxvects)
+    NHvec = GM_mf.PBC_boxdiff_triclin(boxpos[4], boxpos[3], system.boxvects)
 
     # (both pro-pro(should for now be treated as pro-gly) and pro-gly)
     if osc1.resnames[1] == "PRO":
@@ -259,13 +259,13 @@ def determine_map(osc1, osc2, map_, system):
         bondtype = "GP"
 
     if bondtype == "GP":
-        if GM_MF.dotprod(COvec, NHvec) < 0:
+        if GM_mf.dotprod(COvec, NHvec) < 0:
             return "_transGly_transPro"
         else:
             return "_cisGly_transPro"
 
     LorD = DLcheck(osc1, osc2, map_, system)  # -1 for D, 1 for L, 0 for nodir
-    if GM_MF.dotprod(COvec, NHvec) < 0:
+    if GM_mf.dotprod(COvec, NHvec) < 0:
         if LorD < 0:
             return "_transDPro_transGly"
         else:
@@ -320,7 +320,7 @@ def DLcheck(osc1, osc2, map_, system):
             atomCBix = atix
             break
     else:
-        GM_PT.Printer.warning(
+        GM_pt.Printer.warning(
             "Warning! The residue between the following two oscillators "
             "does not have a CB atom, and thus its chirality cannot be "
             f"determined:\n{osc1}\n{osc2}\nPlease make sure you're applying "
@@ -336,12 +336,12 @@ def DLcheck(osc1, osc2, map_, system):
 
     # used ats order:    res0{C O CA} res1{N H CA} ({N CD CA} for prepro)
     # osc1 is first, osc2 is last
-    CACvec = GM_MF.PBC_boxdiff_triclin(atomC, atomCA, system.boxvects)
-    CANvec = GM_MF.PBC_boxdiff_triclin(atomN, atomCA, system.boxvects)
-    CACBvec = GM_MF.PBC_boxdiff_triclin(atomCB, atomCA, system.boxvects)
+    CACvec = GM_mf.PBC_boxdiff_triclin(atomC, atomCA, system.boxvects)
+    CANvec = GM_mf.PBC_boxdiff_triclin(atomN, atomCA, system.boxvects)
+    CACBvec = GM_mf.PBC_boxdiff_triclin(atomCB, atomCA, system.boxvects)
 
-    CxN = GM_MF.crossprod(CACvec, CANvec)
-    if GM_MF.dotprod(CxN, CACBvec) > 0:
+    CxN = GM_mf.crossprod(CACvec, CANvec)
+    if GM_mf.dotprod(CxN, CACBvec) > 0:
         return -1
     else:
         return 1

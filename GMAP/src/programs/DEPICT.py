@@ -31,11 +31,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # local imports
-import GMAP.src.tools.CLibLoader as GM_CL
-import GMAP.src.tools.MapReader as GM_MR
-import GMAP.src.tools.ParameterParser as GM_PP
-import GMAP.src.tools.PrintTools as GM_PT
-import GMAP.src.tools.SystemReader as GM_SR
+import GMAP.src.tools.clib_loader as GM_cl
+import GMAP.src.tools.map_reader as GM_mr
+import GMAP.src.tools.parameter_parser as GM_pp
+import GMAP.src.tools.print_tools as GM_pt
+import GMAP.src.tools.system_reader as GM_sr
 
 
 def calc_data(Printer, RunPars, system):
@@ -59,7 +59,7 @@ def calc_data(Printer, RunPars, system):
 
     Printer.add_time(4, "updates done. next: initialize", "ms")
 
-    VEGlib = GM_CL.VEG_CLib()
+    VEGlib = GM_cl.VEG_CLib()
     # call pre-frame funcs of maps
     for mapname in system.oscillators_ordered.keys():
         map_ = RunPars.requested_mapdict[mapname]
@@ -89,18 +89,18 @@ def show_data(Printer, RunPars):
 
 
 def DEPICT(callcommand):
-    Printer = GM_PT.Printer
+    Printer = GM_pt.Printer
     alljobs = [
         "calculate",
         "show",
         "calcshow"
     ]
 
-    job, in_parfile, argslist = GM_PP.parse_commandline(
+    job, in_parfile, argslist = GM_pp.parse_commandline(
         callcommand, alljobs, "GMAP DEPICT", True, True
     )
 
-    RunPars, mapdict, _, _, _, _ = GM_PP.get_parameters(
+    RunPars, mapdict, _, _, _, _ = GM_pp.get_parameters(
         in_parfile, argslist
     )
     Printer.add_time(3, "Parsed GMAP parameters", "ms")
@@ -109,11 +109,11 @@ def DEPICT(callcommand):
 
     if job in ("calculate", "calcshow"):
         # do the thing
-        GM_MR.manage_maps_singles(RunPars, mapdict)
+        GM_mr.manage_maps_singles(RunPars, mapdict)
         Printer.add_time(3, "Added all maps", "ms")
 
         # next - MD system!
-        system = GM_SR.System(RunPars)
+        system = GM_sr.System(RunPars)
         Printer.add_time(3, "Initialized MD system", "ms")
 
         # GEM is now done - let maps initialize as well
@@ -123,7 +123,7 @@ def DEPICT(callcommand):
         Printer.add_time(2, "Initialization complete", "ms")
 
         # initialize C library
-        GM_CL.VEG_CLib(RunPars)
+        GM_cl.VEG_CLib(RunPars)
         calc_data(Printer, RunPars, system)
 
     if job in ("show", "calcshow"):

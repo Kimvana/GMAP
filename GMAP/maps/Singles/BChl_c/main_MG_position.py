@@ -1,5 +1,5 @@
 import numpy as np
-import GMAP.src.tools.MathFunctions as GM_MF
+import GMAP.src.tools.math_functions as GM_mf
 
 
 def GM_pre_frame(map_, system):

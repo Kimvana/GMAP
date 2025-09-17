@@ -20,8 +20,8 @@ how about adding these?
 import GMAP.src.tools.constants as GM_con
 
 # Import System Reader for additional functionality
-import GMAP.src.tools.SystemReader as GM_SR
-import GMAP.src.tools.DefaultMapFunctions as GM_DMF
+import GMAP.src.tools.system_reader as GM_sr
+import GMAP.src.tools.default_map_functions as GM_dmf
 
 
 # A function to adjust the oscillators found for this map. Gets a list
@@ -78,7 +78,7 @@ def GM_adjust_oscillators(map_, system, oscillator_list):
     for oscillator in oscillator_list:
         oscillator_list_adjusted.append(oscillator)
         # TLC Double check this line
-        oscillator_list_adjusted.append(GM_SR.Oscillator(
+        oscillator_list_adjusted.append(GM_sr.Oscillator(
             system,
             [oscillator.used_atoms[0], *oscillator.used_atoms[2:0:-1]],
             map_))
@@ -98,7 +98,7 @@ def GM_post_init(map_, system):
         osc.freq = freq
         return freq
 
-    calc_frequency = GM_DMF.get_calculate_frequency(map_)
+    calc_frequency = GM_dmf.get_calculate_frequency(map_)
     map_.code.GM_calculate_frequency = calculate_frequency
     return
 

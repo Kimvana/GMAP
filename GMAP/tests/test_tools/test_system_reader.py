@@ -22,11 +22,11 @@ import numpy as np
 import pytest
 
 # local imports
-from .test_MapReader import basic_setup
-import GMAP.src.tools.CLibLoader as GM_CL
-import GMAP.src.tools.Exceptions as GM_Ex
-import GMAP.src.tools.MapReader as GM_MR
-import GMAP.src.tools.SystemReader as GM_SR
+from .test_map_reader import basic_setup
+import GMAP.src.tools.clib_loader as GM_cl
+import GMAP.src.tools.exceptions as GM_ex
+import GMAP.src.tools.map_reader as GM_mr
+import GMAP.src.tools.system_reader as GM_sr
 
 # curpath = Path(__file__).resolve()
 # test_tools_dir = curpath.parent
@@ -40,8 +40,8 @@ class TestSystem:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname)
 
-        system = GM_SR.System.__new__(GM_SR.System)
-        setattr(system, "universe", GM_SR.gen_universe(RunPars))
+        system = GM_sr.System.__new__(GM_sr.System)
+        setattr(system, "universe", GM_sr.gen_universe(RunPars))
         system.set_properties()
 
         all_properties = (
@@ -108,8 +108,8 @@ class TestSystem:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
-        system = GM_SR.System.__new__(GM_SR.System)
-        setattr(system, "universe", GM_SR.gen_universe(RunPars))
+        system = GM_sr.System.__new__(GM_sr.System)
+        setattr(system, "universe", GM_sr.gen_universe(RunPars))
         system.set_properties()
         system.basic_boxchecks(RunPars)
         system.find_influencers(RunPars)
@@ -130,8 +130,8 @@ class TestSystem:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
-        system = GM_SR.System.__new__(GM_SR.System)
-        setattr(system, "universe", GM_SR.gen_universe(RunPars))
+        system = GM_sr.System.__new__(GM_sr.System)
+        setattr(system, "universe", GM_sr.gen_universe(RunPars))
         system.set_properties()
         system.basic_boxchecks(RunPars)
         system.find_influencers(RunPars)
@@ -153,8 +153,8 @@ class TestSystem:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
-        system = GM_SR.System.__new__(GM_SR.System)
-        setattr(system, "universe", GM_SR.gen_universe(RunPars))
+        system = GM_sr.System.__new__(GM_sr.System)
+        setattr(system, "universe", GM_sr.gen_universe(RunPars))
         system.set_properties()
         system.basic_boxchecks(RunPars)
         system.find_influencers(RunPars)
@@ -177,8 +177,8 @@ class TestSystem:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
-        system = GM_SR.System.__new__(GM_SR.System)
-        setattr(system, "universe", GM_SR.gen_universe(RunPars))
+        system = GM_sr.System.__new__(GM_sr.System)
+        setattr(system, "universe", GM_sr.gen_universe(RunPars))
         system.set_properties()
         system.basic_boxchecks(RunPars)
         system.find_influencers(RunPars)
@@ -200,7 +200,7 @@ class TestSystem:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
-        system = GM_SR.System(RunPars)
+        system = GM_sr.System(RunPars)
 
         assert len(system.oscillators) == 17
 
@@ -217,7 +217,7 @@ class TestSystem:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
-        system = GM_SR.System(RunPars)
+        system = GM_sr.System(RunPars)
 
         assert len(system.oscillators) == 145
 
@@ -229,7 +229,7 @@ class TestSystem:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname)
 
-        system = GM_SR.System(RunPars)
+        system = GM_sr.System(RunPars)
 
         assert len(system.oscillators) == 17
 
@@ -241,7 +241,7 @@ class TestSystem:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, ["--dont_report_error", "MI__\\;"])
 
-        system = GM_SR.System(RunPars)
+        system = GM_sr.System(RunPars)
         system.update_properties(RunPars)
 
         assert len(system.oscillators) == 1
@@ -276,12 +276,12 @@ class TestSystem:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
-        system = GM_SR.System.__new__(GM_SR.System)
-        setattr(system, "universe", GM_SR.gen_universe(RunPars))
+        system = GM_sr.System.__new__(GM_sr.System)
+        setattr(system, "universe", GM_sr.gen_universe(RunPars))
         system.set_properties()
         system.basic_boxchecks(RunPars)
 
-        with pytest.raises(GM_Ex.GmapFileSyntaxError, match="SU_NP_5$"):
+        with pytest.raises(GM_ex.GmapFileSyntaxError, match="SU_NP_5$"):
             system.find_influencers(RunPars)
 
     def test_SU_NP_6(self):
@@ -295,12 +295,12 @@ class TestSystem:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
-        system = GM_SR.System.__new__(GM_SR.System)
-        setattr(system, "universe", GM_SR.gen_universe(RunPars))
+        system = GM_sr.System.__new__(GM_sr.System)
+        setattr(system, "universe", GM_sr.gen_universe(RunPars))
         system.set_properties()
         system.basic_boxchecks(RunPars)
 
-        with pytest.raises(GM_Ex.GMAPexception, match="SU_NP_6$"):
+        with pytest.raises(GM_ex.GMAPexception, match="SU_NP_6$"):
             system.find_influencers(RunPars)
 
     def test_MD_SU_6(self):
@@ -314,9 +314,9 @@ class TestSystem:
             RunPars, RefPars, DefPars, InPars,
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
-        system = GM_SR.System(RunPars)
+        system = GM_sr.System(RunPars)
 
-        with pytest.raises(GM_Ex.GmapParameterError, match="MD_SU_6$"):
+        with pytest.raises(GM_ex.GmapParameterError, match="MD_SU_6$"):
             system.order_oscillators_pairs(RunPars)
 
 
@@ -332,13 +332,13 @@ class TestOscillator:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
-        system = GM_SR.System(RunPars)
+        system = GM_sr.System(RunPars)
         oscstr = str(system.oscillators[0])
         exp = "Oscillator of type AmideSC living on the residue ASN18"
         assert oscstr == exp
 
     def test_rotate_VEG(self):
-        oscillator = GM_SR.Oscillator.__new__(GM_SR.Oscillator)
+        oscillator = GM_sr.Oscillator.__new__(GM_sr.Oscillator)
         oscillator.VEGout = np.arange(40).reshape((4, 10))
         oscillator.rotation_matrix = np.array([
             [0, 1, 0], [0, 0, 1], [1, 0, 0]])
@@ -365,7 +365,7 @@ def test_gen_universe():
         CmdPars, mapdict, pairs_mapdict
     ) = parameter_getter(mapname, inpardict=inpardict)
 
-    universe = GM_SR.gen_universe(RunPars)
+    universe = GM_sr.gen_universe(RunPars)
     assert isinstance(universe, MDA.Universe)
     assert len(universe.atoms) == 33876
 
@@ -377,7 +377,7 @@ def test_check_box_rightangled():
         "sourcefiles/pdb_1AKI.tpr",
         "sourcefiles/pdb_1AKI_50frame.xtc"
     )
-    assert GM_SR.check_box_rightangled(universe)
+    assert GM_sr.check_box_rightangled(universe)
 
 
 def test_check_box_charge():
@@ -393,7 +393,7 @@ def test_check_box_charge():
         0.2, 0.4, -0.3, -0.3
     ])
 
-    assert GM_SR.check_box_charge(RunPars, charges)
+    assert GM_sr.check_box_charge(RunPars, charges)
 
 
 # there are 3 of these in gen_universe.
@@ -414,8 +414,8 @@ def test_MD_SU_1():
         CmdPars, mapdict, pairs_mapdict
     ) = parameter_getter(mapname, cmdline, inpardict)
 
-    with pytest.raises(GM_Ex.GmapValueError, match="MD_SU_1$"):
-        _ = GM_SR.gen_universe(RunPars)
+    with pytest.raises(GM_ex.GmapValueError, match="MD_SU_1$"):
+        _ = GM_sr.gen_universe(RunPars)
 
     # ----- Other (AttributeError?) ------------------------------------
 
@@ -430,8 +430,8 @@ def test_MD_SU_1():
         CmdPars, mapdict, pairs_mapdict
     ) = parameter_getter(mapname, inpardict=inpardict)
 
-    with pytest.raises(GM_Ex.GmapMDFileError, match="MD_SU_1$"):
-        _ = GM_SR.gen_universe(RunPars)
+    with pytest.raises(GM_ex.GmapMDFileError, match="MD_SU_1$"):
+        _ = GM_sr.gen_universe(RunPars)
 
 
 def test_MD_SU_3(capsys):
@@ -451,8 +451,8 @@ def test_MD_SU_3(capsys):
         0.2, 0.4, -0.3, -0.3, 0.1
     ])
 
-    with pytest.raises(GM_Ex.GmapParameterError, match="MD_SU_3$"):
-        _ = GM_SR.check_box_charge(RunPars, charges)
+    with pytest.raises(GM_ex.GmapParameterError, match="MD_SU_3$"):
+        _ = GM_sr.check_box_charge(RunPars, charges)
 
     # Then, total charge is larger than threshold, but only because
     # there is a whole number involved. The decimal part still complies.
@@ -462,7 +462,7 @@ def test_MD_SU_3(capsys):
         0.2, 0.4, 0.3, 0.1
     ])
 
-    assert not GM_SR.check_box_charge(RunPars, charges)
+    assert not GM_sr.check_box_charge(RunPars, charges)
 
     captured = capsys.readouterr()
     assert captured.out.endswith("MD_SU_3\n")
@@ -510,11 +510,11 @@ def parameter_getter(mapname, cmdline=None, inpardict=None, load_clib=True):
     # else:
     #     RunPars.detected_requires_bonds = False
 
-    GM_MR.manage_maps_singles(RunPars, mapdict)
-    GM_MR.manage_maps_pairs(RunPars, pairs_mapdict)
+    GM_mr.manage_maps_singles(RunPars, mapdict)
+    GM_mr.manage_maps_pairs(RunPars, pairs_mapdict)
 
     if load_clib:
-        _ = GM_CL.VEG_CLib(RunPars)
+        _ = GM_cl.VEG_CLib(RunPars)
 
     return (
         RunPars, RefPars, DefPars, InPars,

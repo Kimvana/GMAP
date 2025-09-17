@@ -7,7 +7,7 @@ import numpy as np
 
 # GMAP imports
 import GMAP.src.tools.constants as GM_con
-import GMAP.src.tools.PrintTools as GM_PT
+import GMAP.src.tools.print_tools as GM_pt
 
 
 def adjust_map_core_raw(map_):
@@ -55,7 +55,7 @@ def adjust_map_core_raw(map_):
             map_.rawcore["dipole_gas_phase"] = ["0.276"]
         case "Jansen":
             if not map_.RunPars.frequency_map_choice == "Jansen":
-                GM_PT.Printer.warning(  # no exitbool - error is not fatal.
+                GM_pt.Printer.warning(  # no exitbool - error is not fatal.
                     "Error in the map AmideSC: The Jansen dipole map was "
                     "requested without using the Jansen frequency map. Either "
                     "change your frequency map choice to Jansen, or "
@@ -215,7 +215,7 @@ def initialize_prepro_properties(map_):
         pp_gasfreq = np.float32(map_.rawcore["frequency_gas_phase_prepro"][0])
     except Exception as ex:  # no 0th entry, not floatable
         mapdir = map_.directory
-        GM_PT.Printer.warning(
+        GM_pt.Printer.warning(
             "\nCould not interpret the choice for the parameter "
             "'frequency_gas_phase_prepro'"
             f" in the file {mapdir / 'core.txt'}. Please make sure "
@@ -230,7 +230,7 @@ def initialize_prepro_properties(map_):
         map_.rawcore, map_.directory, "frequency_data_file_linear_prepro")
     if pp_freqarr is None:
         mapdir = map_.directory
-        GM_PT.Printer.warning(
+        GM_pt.Printer.warning(
             "\nCould not interpret the choice for the parameter "
             "'frequency_data_file_linear_prepro'"
             f" in the file {mapdir / 'core.txt'}. Please make sure "
@@ -255,7 +255,7 @@ def initialize_prepro_properties(map_):
         fname = (Path(__file__).resolve().parent.parent / fname).resolve()
         fdata = np.genfromtxt(fname, "float32", missing_values=0, ndmin=2)
     except Exception as ex:
-        GM_PT.Printer.warning(
+        GM_pt.Printer.warning(
             "\nNumpy could not interpret the contents of the file "
             f"{fname}. Please make sure the file contains only decimal "
             "numbers in a grid.",

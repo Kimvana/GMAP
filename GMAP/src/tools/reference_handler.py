@@ -1,7 +1,7 @@
 
 # local imports
-import GMAP.src.tools.Exceptions as GM_ex
-import GMAP.src.tools.PrintTools as GM_PT
+import GMAP.src.tools.exceptions as GM_ex
+import GMAP.src.tools.print_tools as GM_pt
 
 
 class Reference:
@@ -506,7 +506,7 @@ def print_references(references):
         values are lists of the reasons for reporting a reference.
     """
 
-    pr = GM_PT.Printer
+    pr = GM_pt.Printer
 
     for refstr, reporttexts in references.items():
         pr.print(2, "The following reference was used for calculating the:")

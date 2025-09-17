@@ -4,9 +4,9 @@ import sys
 # local imports
 import GMAP
 # from GMAP.src import programs
-from GMAP.src.tools.Exceptions import GmapAttributeError
-import GMAP.src.tools.FileHandler as GM_FH
-from GMAP.src.tools.PrintTools import Printer
+from GMAP.src.tools.exceptions import GmapAttributeError
+import GMAP.src.tools.file_handler as GM_fh
+from GMAP.src.tools.print_tools import Printer
 
 
 def _report_unknown_choice():
@@ -35,7 +35,7 @@ def cmd_interface(callcommand):
 
     # The very first initialization the program needs/assumes. Also initializes
     # the printing tool (Printer).
-    GM_FH.FileLocations(instr=callcommand)
+    GM_fh.FileLocations(instr=callcommand)
 
     # Deduce whether we should be running in safe mode / dark mode.
     # These 'special' flags should be caught separately to avoid issues like
@@ -162,7 +162,7 @@ def print_logo():
     """
 
     # Now, load/print logo!
-    with open(GM_FH.FileLocations.script_dir / "logo.txt") as lfile:
+    with open(GM_fh.FileLocations.script_dir / "logo.txt") as lfile:
         logostr = lfile.read()
 
     # convert abbr to actual color markers
@@ -182,23 +182,23 @@ def print_logo():
     # print current moment
     Printer.print(
         1,
-        f"\nCurrent date/time: {GM_FH.FileLocations.now_str}\n"
+        f"\nCurrent date/time: {GM_fh.FileLocations.now_str}\n"
     )
 
     # if the program was invoked directly, we only need this one
     Printer.print(
         1,
-        f"Running the following job:\n{GM_FH.FileLocations.instruction}\n"
+        f"Running the following job:\n{GM_fh.FileLocations.instruction}\n"
     )
 
     # but if a different command was used for starting something python,
     # and this file was imported (and cmd_interface was called directly),
     # the actual executed instruction is not the same as the initial command.
-    if GM_FH.FileLocations.instruction != GM_FH.FileLocations.callcommand:
+    if GM_fh.FileLocations.instruction != GM_fh.FileLocations.callcommand:
         Printer.print(
             1,
             "Issued through the following command:\n"
-            f"{GM_FH.FileLocations.callcommand}\n"
+            f"{GM_fh.FileLocations.callcommand}\n"
         )
 
 

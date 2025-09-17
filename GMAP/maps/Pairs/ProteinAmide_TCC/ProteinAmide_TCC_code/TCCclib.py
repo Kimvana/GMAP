@@ -3,11 +3,11 @@
 import ctypes as ct
 
 # gmap imports
-import GMAP.src.tools.CodingTools as GM_CT
-import GMAP.src.tools.FileHandler as GM_FH
+import GMAP.src.tools.coding_tools as GM_ct
+import GMAP.src.tools.file_handler as GM_fh
 
 
-class TCC_Clib(metaclass=GM_CT.Singleton):
+class TCC_Clib(metaclass=GM_ct.Singleton):
     """Stores and manages all c functions for this map.
 
     Each (external) function in the library has it's own associated
@@ -175,5 +175,5 @@ def init_map_for_clib(map_, system):
     """
 
     map_.clibfile = map_.directory / "src"
-    map_.clibfile /= "TCC_clib" + GM_FH.FileLocations.clib_extension
+    map_.clibfile /= "TCC_clib" + GM_fh.FileLocations.clib_extension
     map_.clib = TCC_Clib(map_)

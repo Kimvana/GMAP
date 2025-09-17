@@ -28,15 +28,15 @@ rainbow.
 
 
 # 3rd party imports
-import matplotlib.colors as mplC
+import matplotlib.colors as mpl_c
 from matplotlib import colormaps
 
 # local imports
-import GMAP.src.tools.CodingTools as GM_CT
-import GMAP.src.tools.StringClasses as GM_SC
+import GMAP.src.tools.coding_tools as GM_ct
+import GMAP.src.tools.string_classes as GM_sc
 
 
-class PrinterColors(GM_CT.CustomClass):
+class PrinterColors(GM_ct.CustomClass):
     """Saves the provided color strings (ANSI sequences).
 
     Parameters
@@ -66,13 +66,13 @@ class PrinterColors(GM_CT.CustomClass):
 
 
 StandInColors = PrinterColors(**{
-    col: GM_SC.ColStr(f"\033<{col}>") for col in (
+    col: GM_sc.ColStr(f"\033<{col}>") for col in (
         "clear", "pink_hc", "green_hc", "blue_hc", "red_hc", "red_todef",
         "green_lc")
 })
 
 DarkModeColors = PrinterColors(**{
-    name: GM_SC.ColStr(code) for name, code in {
+    name: GM_sc.ColStr(code) for name, code in {
         "clear": "\033[0m",  # reset the colors
 
         # High contrast colors (bright on dark background)
@@ -89,7 +89,7 @@ DarkModeColors = PrinterColors(**{
 
 
 LightModeColors = PrinterColors(**{
-    name: GM_SC.ColStr(code) for name, code in {
+    name: GM_sc.ColStr(code) for name, code in {
         "clear": "\033[0m",  # reset the color
 
         # High contrast colors (dark on light background)
@@ -202,7 +202,7 @@ class QualitativeColorScheme:
         self.name = name
 
 
-class ContinuousColorScheme(mplC.ListedColormap):
+class ContinuousColorScheme(mpl_c.ListedColormap):
     """Saves a continous color scheme - can smoothly transition.
 
     These schemes can be used for values that vary continuously over a
@@ -272,7 +272,7 @@ class ContinuousColorScheme(mplC.ListedColormap):
             self.bad_data = colorlist[-1].strip("',")
             colorlist = colorlist[:-1]
         self.color_list = [item.strip("',") for item in colorlist]
-        self.color_rgba_array = mplC.to_rgba_array(self.color_list)
+        self.color_rgba_array = mpl_c.to_rgba_array(self.color_list)
 
         super().__init__(self.color_rgba_array)
 
@@ -385,7 +385,7 @@ class DiscreteRainbowGenerator:
     }
 
     bad_data_hex = "#777777"
-    bad_data_float32 = mplC.to_rgba_array(bad_data_hex)[:, :3]
+    bad_data_float32 = mpl_c.to_rgba_array(bad_data_hex)[:, :3]
 
     def __init__(self):
         pass
@@ -420,9 +420,9 @@ class DiscreteRainbowGenerator:
                 return hexvals
             case "rgbarruint8":
                 return (
-                    mplC.to_rgba_array(hexvals)[:, :3] * 255).astype("uint8")
+                    mpl_c.to_rgba_array(hexvals)[:, :3] * 255).astype("uint8")
             case "rgbarrfloat32":
-                return mplC.to_rgba_array(hexvals)[:, :3]
+                return mpl_c.to_rgba_array(hexvals)[:, :3]
 
     def get_color_list_from_iterable(self, datatoplot, dtype="hex"):
         """Get a matching amount of color based on input iterable size.

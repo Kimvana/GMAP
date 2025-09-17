@@ -31,7 +31,7 @@ from pathlib import Path
 import numpy as np
 
 # GMAP imports
-import GMAP.src.tools.CmdInterface as GM_CI
+import GMAP.src.tools.cmd_interface as GM_ci
 
 
 def test_TDCTasumi_coups(tmp_path):
@@ -62,7 +62,7 @@ def core_test_frequencies(mapname, tmp_path, limit, nameadd=""):
     else:
         base_mapname = mapname
     curdir = Path(__file__).resolve().parent
-    GM_CI.cmd_interface([
+    GM_ci.cmd_interface([
         "GMAP", "GEM", "run",
         str((curdir / "data/basic_parameters.txt").resolve()),
         "--ProteinAmide.coupling_choice", base_mapname,

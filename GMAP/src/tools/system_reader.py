@@ -6,11 +6,11 @@ import MDAnalysis as MDA
 import numpy as np
 
 # local imports
-import GMAP.src.tools.CLibLoader as GM_CL
-import GMAP.src.tools.DefaultMapFunctions as GM_DMF
-import GMAP.src.tools.Exceptions as GM_Ex
-import GMAP.src.tools.ParameterParser as GM_PP
-import GMAP.src.tools.PrintTools as GM_PT
+import GMAP.src.tools.clib_loader as GM_cl
+import GMAP.src.tools.default_map_functions as GM_dmf
+import GMAP.src.tools.exceptions as GM_ex
+import GMAP.src.tools.parameter_parser as GM_pp
+import GMAP.src.tools.print_tools as GM_pt
 
 
 class System:
@@ -173,13 +173,13 @@ class System:
             if not RunPars.detected_requires_bonds:
                 pass
             else:
-                GM_PT.Printer.warning(
+                GM_pt.Printer.warning(
                     "\nSubmitted MD system does not contain any "
                     "information on "
                     "bonds, but the requested maps do require this. Either "
                     "choose a different map, or provide a different input.",
                     "MD_SU_5", True, exception=ex,
-                    GMAPerrclass=GM_Ex.GmapParameterError
+                    GMAPerrclass=GM_ex.GmapParameterError
                 )
 
     # TO DO inside!
@@ -228,7 +228,7 @@ class System:
         self.positions_box_c = np.ctypeslib.as_ctypes(np.ravel(
             self.positions_box))
         # calculate the box position of each atom
-        clib = GM_CL.VEG_CLib()
+        clib = GM_cl.VEG_CLib()
         clib.positions_to_box(self)
 
         # if RunPar.use_c_lib:
@@ -253,11 +253,11 @@ class System:
                 # yes, we could just force atomnum to match ix. But if this
                 # MD software does this differently, it might very well do
                 # other things differently as well, so please, check that!
-                GM_PT.Printer.warning(
+                GM_pt.Printer.warning(
                     f"\nThe atom number of the atom at position {ix} "
                     "does "
                     "not match its position in the list.",
-                    "MD_SU_4", True, GMAPerrclass=GM_Ex.GmapMDFileError
+                    "MD_SU_4", True, GMAPerrclass=GM_ex.GmapMDFileError
                 )
             resnum = self.resnums[atomnum]
             segid = segids[atomnum]
@@ -310,21 +310,21 @@ class System:
             for map_inflgroup in all_map_influencers:
                 name = map_inflgroup[0]
                 group_def = " ".join(map_inflgroup[1:])
-                groupdict[name] = GM_PP.parse_influencerfile_line(
+                groupdict[name] = GM_pp.parse_influencerfile_line(
                     group_def, groupdict, map_.corepath
                 )
 
-        cb = GM_PT.Printer.colors.green_lc
-        ct = GM_PT.Printer.colors.clear
+        cb = GM_pt.Printer.colors.green_lc
+        ct = GM_pt.Printer.colors.clear
         line = f"{cb}════{ct}"
-        GM_PT.Printer.print(
+        GM_pt.Printer.print(
             1, f"\n{line} Influencers {line}", detailed_instructions=[1])
-        GM_PT.header(2, "Influencers", "doublebox")
+        GM_pt.header(2, "Influencers", "doublebox")
 
         # names of residues or residue groups are given to specify infl.
         if isinstance(RunPars.influencers, list):
-            choice = GM_PP.parse_influencer_par(" ".join(RunPars.influencers))
-            choice = GM_PP.parse_influencerfile_line(
+            choice = GM_pp.parse_influencer_par(" ".join(RunPars.influencers))
+            choice = GM_pp.parse_influencerfile_line(
                 choice, groupdict,
                 "parameter file "
             )
@@ -332,7 +332,7 @@ class System:
             influencers_not_included = groupdict["All"] - choice
             if len(influencers_not_included) == 0:
                 influencers_not_included.add("None")
-            GM_PT.Printer.print(
+            GM_pt.Printer.print(
                 1,
                 "Residue names included in influencers:\n  "
                 + ", ".join(choice) +
@@ -346,7 +346,7 @@ class System:
             try:
                 atgroup = self.universe.select_atoms(RunPars.influencers)
             except Exception as ex:
-                GM_PT.Printer.warning(
+                GM_pt.Printer.warning(
                     "\nSome problem occured while selecting atoms for the "
                     "influencers",
                     "SU_NP_6", True, exception=ex
@@ -356,22 +356,22 @@ class System:
         # similar to the first, names of residues or residue groups are given.
         # however, this time, a separate file is used.
         else:  # must be a separate file
-            choice = GM_PP.parse_influencerfile(
+            choice = GM_pp.parse_influencerfile(
                 RunPars.influencers, groupdict)
             if "choice" in choice:
                 choice = choice["choice"]
             else:
-                GM_PT.Printer.warning(
+                GM_pt.Printer.warning(
                     "\nWhen using a file to specify influencers, the final "
                     "choice of influencers must be given using the group "
                     "'choice'.",
-                    "SU_NP_5", True, GMAPerrclass=GM_Ex.GmapFileSyntaxError
+                    "SU_NP_5", True, GMAPerrclass=GM_ex.GmapFileSyntaxError
                 )
             self.influencers_atix = self.residues.manage_influencers(choice)
             influencers_not_included = groupdict["All"] - choice
             if len(influencers_not_included) == 0:
                 influencers_not_included.add("None")
-            GM_PT.Printer.print(
+            GM_pt.Printer.print(
                 1,
                 "Residue names included in influencers:\n  "
                 + ", ".join(choice) +
@@ -384,12 +384,12 @@ class System:
         self.influencers_atix.sort()
 
         # all kinds of influencer parameters
-        atixprint = GM_PT.intlist_to_rangelist(
+        atixprint = GM_pt.intlist_to_rangelist(
             self.influencers_atix, self.natoms
         )
         if len(atixprint[1]) == 0:
             atixprint[1].append("None")
-        GM_PT.Printer.print(
+        GM_pt.Printer.print(
             3,
             "\nAtoms included in influencers:\n  "
             + ", ".join(atixprint[0]) +
@@ -397,7 +397,7 @@ class System:
             + ", ".join(atixprint[1]),
             wrap_preline="  "
         )
-        GM_PT.footer(2, "influencers", "doublebox")
+        GM_pt.footer(2, "influencers", "doublebox")
         self.influencers_atix = np.asarray(
             self.influencers_atix, dtype=np.int32
         )
@@ -458,13 +458,13 @@ class System:
         nosc = sum([len(oscillators) for oscillators in allgroups])
         # GM_PT.Printer.print(2, f"found {self.nosc} oscillators.")
         if nosc == 0:
-            GM_PT.Printer.warning(
+            GM_pt.Printer.warning(
                 "\nNone of the requested oscillators could be found in the "
                 "supplied MD system. Either change the choice for the "
                 "parameter maps_to_use, or for the parameters topology_file "
                 "and/or trajectory_file. Quitting!"
                 "MD_SU_7", True,
-                GMAPerrclass=GM_Ex.GmapValueError
+                GMAPerrclass=GM_ex.GmapValueError
             )
 
         checked_oscillators = []
@@ -499,13 +499,13 @@ class System:
         self.nosc = len(self.oscillators)
         # GM_PT.Printer.print(2, f"found {self.nosc} oscillators.")
         if self.nosc == 0:
-            GM_PT.Printer.warning(
+            GM_pt.Printer.warning(
                 "\nNone of the requested oscillators could be found in the "
                 "supplied MD system. Either change the choice for the "
                 "parameter maps_to_use, or for the parameters topology_file "
                 "and/or trajectory_file. Quitting!"
                 "MD_SU_7", True,
-                GMAPerrclass=GM_Ex.GmapValueError
+                GMAPerrclass=GM_ex.GmapValueError
             )
 
     def find_oscillators_perstruct(self, struct, map_):
@@ -881,7 +881,7 @@ class System:
                     ):
                         all_req_maps.append(req_coupmap)
                         mapseq = ", ".join(all_req_maps)
-                        GM_PT.Printer.warning(
+                        GM_pt.Printer.warning(
                             "\nAn issue occurred when determining which "
                             "coupling method should be used to couple the "
                             "following two oscillators:\n"
@@ -891,7 +891,7 @@ class System:
                             "choice of coupling was unsuitable, or there is "
                             "a misstake in one of these maps.",
                             "MD_SU_6", True,
-                            GMAPerrclass=GM_Ex.GmapParameterError
+                            GMAPerrclass=GM_ex.GmapParameterError
                         )
                     else:
                         all_req_maps.append(req_coupmap)
@@ -944,7 +944,7 @@ class System:
         date.
         """
 
-        printer = GM_PT.Printer
+        printer = GM_pt.Printer
 
         printer.add_time(4, "positions and box:", "PosBox", "ms")
         self.positions = self.universe.atoms.positions.astype('float32')
@@ -953,7 +953,7 @@ class System:
         printer.add_time(4, "Center of Mass:", "COM", "ms")
 
         # calculate the box position of each atom
-        clib = GM_CL.VEG_CLib()
+        clib = GM_cl.VEG_CLib()
         clib.positions_to_box(self)
 
         self.residues.CoM_box = np.zeros((self.nres, 3), dtype="float32")
@@ -978,30 +978,30 @@ class System:
             run-defining parameters.
         """
 
-        cb = GM_PT.Printer.colors.green_lc
-        ct = GM_PT.Printer.colors.clear
+        cb = GM_pt.Printer.colors.green_lc
+        ct = GM_pt.Printer.colors.clear
         line = f"{cb}════{ct}"
-        GM_PT.Printer.print(
+        GM_pt.Printer.print(
             1, f"\n{line} MD system analysis {line}",
             detailed_instructions=[1])
-        GM_PT.header(2, "MD system analysis", "doublebox")
+        GM_pt.header(2, "MD system analysis", "doublebox")
 
         # reporting the amount of oscillators per oscillator type
-        report_osctype = GM_DMF.get_report_system()  # generate function
+        report_osctype = GM_dmf.get_report_system()  # generate function
         toprint = [
             report_osctype(map_, self)
             for map_ in RunPars.requested_mapdict.values()]
 
         # This should be printed if and only if verbose is set to 1.
-        GM_PT.Printer.print(1, "\n".join(toprint), detailed_instructions=[1])
+        GM_pt.Printer.print(1, "\n".join(toprint), detailed_instructions=[1])
 
         # let each map decide how to report their oscillators.
         for mapname in self.oscillators_ordered.keys():
             map_ = RunPars.requested_mapdict[mapname]
             toprint = map_.code.GM_report_system(map_, self)
-            GM_PT.Printer.print(2, toprint)
+            GM_pt.Printer.print(2, toprint)
 
-        GM_PT.footer(2, "MD system analysis", "doublebox")
+        GM_pt.footer(2, "MD system analysis", "doublebox")
 
 
 class Residues:
@@ -1390,26 +1390,26 @@ def gen_universe(RunPars):
             # guess_bonds=RunPars.guess_bonds
         )
     except FileNotFoundError as ex:
-        GM_PT.Printer.warning(
+        GM_pt.Printer.warning(
             "\nCould not find the topology or trajectory file. "
             "Please make sure "
             "the names are correct.",
             "MD_SU_1", True, exeption=ex,
-            GMAPerrclass=GM_Ex.GmapFileNotFoundError
+            GMAPerrclass=GM_ex.GmapFileNotFoundError
         )
     except ValueError as ex:
-        GM_PT.Printer.warning(
+        GM_pt.Printer.warning(
             "\nThe given topology and/or trajectory files are of the "
             "wrong type."
             " Please remember that only certain file types and combinations "
             "thereof are currently supported by the program.",
-            "MD_SU_1", True, exception=ex, GMAPerrclass=GM_Ex.GmapValueError
+            "MD_SU_1", True, exception=ex, GMAPerrclass=GM_ex.GmapValueError
         )
     except Exception as ex:
-        GM_PT.Printer.warning(
+        GM_pt.Printer.warning(
             "\nThe given topology and/or trajectory files could not be "
             "interpreted.",
-            "MD_SU_1", True, exception=ex, GMAPerrclass=GM_Ex.GmapMDFileError
+            "MD_SU_1", True, exception=ex, GMAPerrclass=GM_ex.GmapMDFileError
         )
 
     return universe
@@ -1467,14 +1467,14 @@ def check_box_charge(RunPars, charges):
     if abs(total_charge) > threshold:
         # if charge is not basically integer:
         if abs(round(total_charge) - total_charge) > threshold:
-            GM_PT.Printer.warning(
+            GM_pt.Printer.warning(
                 "\nThe total charge of the MD system deviates too far from an "
                 "integer number. Check whether the files are correct, and "
                 "whether the chosen threshold is relevant for this system.",
-                "MD_SU_3", True, GMAPerrclass=GM_Ex.GmapParameterError
+                "MD_SU_3", True, GMAPerrclass=GM_ex.GmapParameterError
             )
         else:
-            GM_PT.Printer.warning(
+            GM_pt.Printer.warning(
                 "\nThe total charge of the MD system is of integer, but not "
                 "neutral value. Check whether the files are correct - usually "
                 "md systems have a neutral charge. The program will continue, "

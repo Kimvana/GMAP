@@ -25,11 +25,11 @@ import pytest
 import numpy as np
 
 # local imports
-import GMAP.src.tools.DefaultMapFunctions as GM_DMF
-import GMAP.src.tools.Exceptions as GM_Ex
-import GMAP.src.tools.MathFunctions as GM_MF
-import GMAP.src.tools.MapReader as GM_MR
-import GMAP.src.tools.ParameterParser as GM_PP
+import GMAP.src.tools.default_map_functions as GM_dmf
+import GMAP.src.tools.exceptions as GM_ex
+import GMAP.src.tools.math_functions as GM_mf
+import GMAP.src.tools.map_reader as GM_mr
+import GMAP.src.tools.parameter_parser as GM_pp
 
 
 class TestCode:
@@ -106,7 +106,7 @@ class TestCode:
         map_ = mapdict[mapname]
         setattr(map_, "code", map_.extract_code())
         if not map_.code:
-            setattr(map_, "code", GM_DMF.NewModule())
+            setattr(map_, "code", GM_dmf.NewModule())
 
         assert hasattr(map_.code, "GM_adjust_RunPars") is False
         map_.complete_code((
@@ -206,7 +206,7 @@ class TestCode:
         )
         map_ = mapdict[mapname]
 
-        setattr(map_, "Core", GM_MR.SingleCore(map_))
+        setattr(map_, "Core", GM_mr.SingleCore(map_))
 
         assert map_.Core.type == "standard"
         found_residues = [
@@ -231,7 +231,7 @@ class TestCode:
             )
             map_ = mapdict[mapname]
 
-            setattr(map_, "Core", GM_MR.SingleCore(map_))
+            setattr(map_, "Core", GM_mr.SingleCore(map_))
 
             out, _ = capfd.readouterr()
             assert out.endswith("MI_MC_6\n")
@@ -247,7 +247,7 @@ class TestCode:
         )
         map_ = mapdict[mapname]
 
-        setattr(map_, "Core", GM_MR.SingleCore(map_))
+        setattr(map_, "Core", GM_mr.SingleCore(map_))
 
         out, _ = capfd.readouterr()
         assert out.endswith("MI_MC_2\n")
@@ -263,7 +263,7 @@ class TestCode:
         )
         map_ = mapdict[mapname]
 
-        setattr(map_, "Core", GM_MR.SingleCore(map_))
+        setattr(map_, "Core", GM_mr.SingleCore(map_))
 
         assert map_.Core.electrostatic_atoms == []
         assert map_.Core.electrostatic_choice is None
@@ -319,11 +319,11 @@ class TestCode:
         ), 4)
 
         xvec = np.array([1.5, 1, 0])
-        xvec /= GM_MF.vec3_len(xvec)
-        yvec = GM_MF.project(xvec, np.array([-1.5, 1, 0]))
-        yvec /= GM_MF.vec3_len(yvec)
-        zvec = GM_MF.crossprod(xvec, yvec)
-        zvec /= GM_MF.vec3_len(zvec)
+        xvec /= GM_mf.vec3_len(xvec)
+        yvec = GM_mf.project(xvec, np.array([-1.5, 1, 0]))
+        yvec /= GM_mf.vec3_len(yvec)
+        zvec = GM_mf.crossprod(xvec, yvec)
+        zvec /= GM_mf.vec3_len(zvec)
 
         test_matrix = np.round(np.array([xvec, yvec, zvec]), 4)
         assert (rotation_matrix == test_matrix).all()
@@ -386,11 +386,11 @@ class TestCode:
         ), 4)
 
         zvec = np.array([0, 2, 0], dtype=np.float64)
-        zvec /= GM_MF.vec3_len(zvec)
-        yvec = GM_MF.project(zvec, np.array([1.5, -1, 0]))
-        yvec /= GM_MF.vec3_len(yvec)
-        xvec = GM_MF.crossprod(zvec, yvec)
-        xvec /= GM_MF.vec3_len(xvec)
+        zvec /= GM_mf.vec3_len(zvec)
+        yvec = GM_mf.project(zvec, np.array([1.5, -1, 0]))
+        yvec /= GM_mf.vec3_len(yvec)
+        xvec = GM_mf.crossprod(zvec, yvec)
+        xvec /= GM_mf.vec3_len(xvec)
 
         test_matrix = np.round(np.array([xvec, yvec, zvec]), 4)
         assert (rotation_matrix == test_matrix).all()
@@ -449,11 +449,11 @@ class TestCode:
         ), 4)
 
         zvec = np.array([2, 2, 2], dtype=np.float64)
-        zvec /= GM_MF.vec3_len(zvec)
-        xvec = GM_MF.project(zvec, np.array([1, 0, 0]))
-        xvec /= GM_MF.vec3_len(xvec)
-        yvec = GM_MF.crossprod(zvec, xvec)
-        yvec /= GM_MF.vec3_len(yvec)
+        zvec /= GM_mf.vec3_len(zvec)
+        xvec = GM_mf.project(zvec, np.array([1, 0, 0]))
+        xvec /= GM_mf.vec3_len(xvec)
+        yvec = GM_mf.crossprod(zvec, xvec)
+        yvec /= GM_mf.vec3_len(yvec)
 
         test_matrix = np.round(np.array([xvec, yvec, zvec]), 4)
         assert (rotation_matrix == test_matrix).all()
@@ -863,7 +863,7 @@ class TestPairMap:
             if map_.name in RunPars.coupling_v_pair_dict.keys()
         }
         RunPars.requested_pairmapdict = requested_mapdict
-        with pytest.raises(GM_Ex.GmapKeyError, match="MI_MC_2$"):
+        with pytest.raises(GM_ex.GmapKeyError, match="MI_MC_2$"):
             pairs_mapdict["missing_singles"].check_singles(RunPars)
 
     def test_missing_pairs(self, capsys):
@@ -881,7 +881,7 @@ class TestPairMap:
             if map_.name in RunPars.coupling_v_pair_dict.keys()
         }
         RunPars.requested_pairmapdict = requested_mapdict
-        with pytest.raises(GM_Ex.GmapKeyError, match="MI_MC_2$"):
+        with pytest.raises(GM_ex.GmapKeyError, match="MI_MC_2$"):
             pairs_mapdict["missing_pairs"].check_pairs(RunPars)
 
     def test_BWlists(self):
@@ -911,7 +911,7 @@ class TestPairMap:
         ) = basic_setup(
             cmdline, inpardict, finish_before="extract_code", mapname="x"
         )
-        GM_MR.manage_maps_singles(RunPars, mapdict)
+        GM_mr.manage_maps_singles(RunPars, mapdict)
 
         coupmap = pairs_mapdict["test_valid_combinations_all"]
         coupmap.initialize()
@@ -958,16 +958,16 @@ class TestPairMap:
             RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = self.run_basic_pairmap("test_MI_MM_3")
-        with pytest.raises(GM_Ex.GmapKeyError, match="MI_MM_3$"):
-            GM_MR.manage_maps_pairs(RunPars, pairs_mapdict)
+        with pytest.raises(GM_ex.GmapKeyError, match="MI_MM_3$"):
+            GM_mr.manage_maps_pairs(RunPars, pairs_mapdict)
 
     def test_MI_MM_4(self, capsys):
         (
             RunPars, RefPars, DefPars, InPars, CmdPars,
             mapdict, pairs_mapdict
         ) = self.run_basic_pairmap("test_MI_MM_4")
-        with pytest.raises(GM_Ex.GmapKeyError, match="MI_MM_4$"):
-            GM_MR.manage_maps_pairs(RunPars, pairs_mapdict)
+        with pytest.raises(GM_ex.GmapKeyError, match="MI_MM_4$"):
+            GM_mr.manage_maps_pairs(RunPars, pairs_mapdict)
 
     def run_basic_pairmap(self, mapname):
         cmdline = [
@@ -984,7 +984,7 @@ class TestPairMap:
             cmdline, inpardict, finish_before="extract_code", mapname=mapname
         )
 
-        GM_MR.manage_maps_singles(RunPars, mapdict)
+        GM_mr.manage_maps_singles(RunPars, mapdict)
         pairs_mapdict[mapname].initialize()
 
         return (
@@ -1036,7 +1036,7 @@ class TestSingleCore:
 
         map_ = mapdict[mapname]
 
-        Corebase = GM_MR.SingleCore.__new__(GM_MR.SingleCore)
+        Corebase = GM_mr.SingleCore.__new__(GM_mr.SingleCore)
         setattr(Corebase, "success", True)
 
         Corebase.parse_functional_group(map_.rawcore, map_.directory)
@@ -1098,7 +1098,7 @@ class TestSingleCore:
 
         map_ = mapdict[mapname]
 
-        Corebase = GM_MR.SingleCore.__new__(GM_MR.SingleCore)
+        Corebase = GM_mr.SingleCore.__new__(GM_mr.SingleCore)
         setattr(Corebase, "success", True)
 
         Corebase.parse_functional_group(map_.rawcore, map_.directory)
@@ -1137,7 +1137,7 @@ class TestSingleCore:
 
         map_ = mapdict[mapname]
 
-        Corebase = GM_MR.SingleCore.__new__(GM_MR.SingleCore)
+        Corebase = GM_mr.SingleCore.__new__(GM_mr.SingleCore)
         setattr(Corebase, "success", True)
 
         Corebase.parse_functional_group(map_.rawcore, map_.directory)
@@ -1861,8 +1861,8 @@ def test_coup_map_dependence(capfd):
         CmdPars, singles_mapdict, pairs_mapdict
     ) = basic_setup(cmdline, inpardict, finish_before="extract_code")
 
-    GM_MR.manage_maps_singles(RunPars, singles_mapdict)
-    GM_MR.manage_maps_pairs(RunPars, pairs_mapdict)
+    GM_mr.manage_maps_singles(RunPars, singles_mapdict)
+    GM_mr.manage_maps_pairs(RunPars, pairs_mapdict)
 
     assert len(RunPars.requested_mapdict) == 1
     assert len(RunPars.requested_pairmapdict) == 1
@@ -1880,7 +1880,7 @@ def test_manage_maps_singles():
         mapdict, pairs_mapdict
     ) = basic_setup([], inpars, finish_before="extract_code")
 
-    GM_MR.manage_maps_singles(RunPars, mapdict)
+    GM_mr.manage_maps_singles(RunPars, mapdict)
 
     assert all(
         key in RunPars.requested_mapdict.keys()
@@ -1899,7 +1899,7 @@ def test_manage_maps_singles():
         mapdict, pairs_mapdict
     ) = basic_setup([], inpars, finish_before="extract_code")
 
-    GM_MR.manage_maps_singles(RunPars, mapdict)
+    GM_mr.manage_maps_singles(RunPars, mapdict)
 
     assert all(
         key in RunPars.requested_mapdict.keys()
@@ -1918,15 +1918,15 @@ def test_manage_maps_pairs():
         RunPars, RefPars, DefPars, InPars, CmdPars,
         mapdict, pairs_mapdict
     ) = basic_setup([], inpars, finish_before="extract_code")
-    GM_MR.manage_maps_singles(RunPars, mapdict)
-    GM_MR.manage_maps_pairs(RunPars, pairs_mapdict)
+    GM_mr.manage_maps_singles(RunPars, mapdict)
+    GM_mr.manage_maps_pairs(RunPars, pairs_mapdict)
 
 
 def test_scan_mapdirs():
     curpath = Path(__file__).resolve()
     mapdir = curpath.parent / "Data/maps_for_test_pair-single_dependence"
     mapdirs = [mapdir]
-    found_maps = GM_MR.scan_mapdirs(mapdirs, "doesntexist")
+    found_maps = GM_mr.scan_mapdirs(mapdirs, "doesntexist")
     assert len(found_maps) == 0
 
 
@@ -1940,7 +1940,7 @@ def test_map_vac_freq_dip():
         RunPars, RefPars, DefPars, InPars, CmdPars,
         mapdict, pairs_mapdict
     ) = basic_setup([], inpars, finish_before="extract_code")
-    GM_MR.manage_maps_singles(RunPars, mapdict)
+    GM_mr.manage_maps_singles(RunPars, mapdict)
 
     map_ = mapdict["test_vac_dipfreq"]
     # dipole_gas_phase      0.3
@@ -1963,8 +1963,8 @@ def test_MI_MM_1(capsys):
         mapdict, pairs_mapdict
     ) = basic_setup([], inpars, finish_before="extract_code")
 
-    with pytest.raises(GM_Ex.GmapKeyError, match="MI_MM_1$"):
-        GM_MR.manage_maps_singles(RunPars, mapdict)
+    with pytest.raises(GM_ex.GmapKeyError, match="MI_MM_1$"):
+        GM_mr.manage_maps_singles(RunPars, mapdict)
 
     # ------------------------------------------------------------------
 
@@ -1977,10 +1977,10 @@ def test_MI_MM_1(capsys):
         RunPars, RefPars, DefPars, InPars, CmdPars,
         mapdict, pairs_mapdict
     ) = basic_setup([], inpars, finish_before="extract_code")
-    GM_MR.manage_maps_singles(RunPars, mapdict)
+    GM_mr.manage_maps_singles(RunPars, mapdict)
 
-    with pytest.raises(GM_Ex.GmapKeyError, match="MI_MM_1$"):
-        GM_MR.manage_maps_pairs(RunPars, pairs_mapdict)
+    with pytest.raises(GM_ex.GmapKeyError, match="MI_MM_1$"):
+        GM_mr.manage_maps_pairs(RunPars, pairs_mapdict)
 
 
 def test_MI_MM_2(capsys):
@@ -1997,9 +1997,9 @@ def test_MI_MM_2(capsys):
         CmdPars, singles_mapdict, pairs_mapdict
     ) = basic_setup(cmdline, inpardict, finish_before="extract_code")
 
-    GM_MR.manage_maps_singles(RunPars, singles_mapdict)
-    with pytest.raises(GM_Ex.GmapKeyError, match="MI_MM_2$"):
-        GM_MR.manage_maps_pairs(RunPars, pairs_mapdict)
+    GM_mr.manage_maps_singles(RunPars, singles_mapdict)
+    with pytest.raises(GM_ex.GmapKeyError, match="MI_MM_2$"):
+        GM_mr.manage_maps_pairs(RunPars, pairs_mapdict)
 
     # ------------------------------------------------------------------
 
@@ -2015,9 +2015,9 @@ def test_MI_MM_2(capsys):
         CmdPars, singles_mapdict, pairs_mapdict
     ) = basic_setup(cmdline, inpardict, finish_before="extract_code")
 
-    GM_MR.manage_maps_singles(RunPars, singles_mapdict)
-    with pytest.raises(GM_Ex.GmapKeyError, match="MI_MM_2$"):
-        GM_MR.manage_maps_pairs(RunPars, pairs_mapdict)
+    GM_mr.manage_maps_singles(RunPars, singles_mapdict)
+    with pytest.raises(GM_ex.GmapKeyError, match="MI_MM_2$"):
+        GM_mr.manage_maps_pairs(RunPars, pairs_mapdict)
 
 
 def test_MI_MM_5(capsys):
@@ -2033,8 +2033,8 @@ def test_MI_MM_5(capsys):
         mapdict, pairs_mapdict
     ) = basic_setup(cmdline, inpars, finish_before="extract_code")
 
-    with pytest.raises(GM_Ex.GmapKeyError, match="MI_MM_5$"):
-        GM_MR.manage_maps_singles(RunPars, mapdict)
+    with pytest.raises(GM_ex.GmapKeyError, match="MI_MM_5$"):
+        GM_mr.manage_maps_singles(RunPars, mapdict)
 
 
 def basic_setup(
@@ -2053,27 +2053,27 @@ def basic_setup(
     if refparfilename is None:
         refparfilename = Path("sourcefiles/reference_parameters.ref")
 
-    RefPars = GM_PP.RefPars(refparfilename, True)
+    RefPars = GM_pp.RefPars(refparfilename, True)
     if defparfilename:
-        DefPars = GM_PP.RawPars.from_file(
+        DefPars = GM_pp.RawPars.from_file(
             defparfilename, RefPars, True)
     else:
         DefPars = RefPars
 
     curpath = Path(__file__).resolve()
-    InPars = GM_PP.RawPars.from_dict(
+    InPars = GM_pp.RawPars.from_dict(
         curpath, inpardict, RefPars, False
     )
 
-    mapdirs = GM_PP.find_mapdir(cmdline, InPars, DefPars)
-    singles_mapdict = GM_MR.scan_mapdirs(mapdirs, "Singles")
-    pairs_mapdict = GM_MR.scan_mapdirs(mapdirs, "Pairs")
+    mapdirs = GM_pp.find_mapdir(cmdline, InPars, DefPars)
+    singles_mapdict = GM_mr.scan_mapdirs(mapdirs, "Singles")
+    pairs_mapdict = GM_mr.scan_mapdirs(mapdirs, "Pairs")
     mapdict = singles_mapdict | pairs_mapdict
 
     for map_ in mapdict.values():
         map_.find_refpars()
 
-    CmdPars = GM_PP.RawPars.from_cmdline(
+    CmdPars = GM_pp.RawPars.from_cmdline(
         cmdline, RefPars,
         {name: map_.RefPars for name, map_ in mapdict.items()},
         False
@@ -2087,7 +2087,7 @@ def basic_setup(
     if DefPars.fname != RefPars.fname:
         DefPars.finalize_map_pars()
 
-    RunPars = GM_PP.RunPars(
+    RunPars = GM_pp.RunPars(
         CmdPars, InPars, DefPars, RefPars, True
     )
 
@@ -2106,7 +2106,7 @@ def basic_setup(
     map_ = singles_mapdict[mapname]
     setattr(map_, "code", map_.extract_code())
     if not map_.code:
-        setattr(map_, "code", GM_DMF.NewModule())
+        setattr(map_, "code", GM_dmf.NewModule())
 
     map_.complete_code((
         "adjust_RunPars",
@@ -2136,7 +2136,7 @@ def basic_setup(
     if finish_before == "Core":
         return returntuple
 
-    setattr(map_, "Core", GM_MR.SingleCore(map_))
+    setattr(map_, "Core", GM_mr.SingleCore(map_))
 
     if finish_before == "code_add_builds":
         return returntuple
@@ -2147,7 +2147,7 @@ def basic_setup(
 
 
 def basic_setup_core(map_, finish_before=None):
-    CoreBase = GM_MR.SingleCore.__new__(GM_MR.SingleCore)
+    CoreBase = GM_mr.SingleCore.__new__(GM_mr.SingleCore)
     setattr(CoreBase, "success", True)
 
     setattr(CoreBase, "can_output", CoreBase.parse_can_output(

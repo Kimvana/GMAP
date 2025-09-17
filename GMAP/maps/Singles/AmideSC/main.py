@@ -11,16 +11,10 @@ import numpy as np
 
 # GMAP imports
 import GMAP.src.tools.constants as GM_con
-# import GMAP.src.tools.MathFunctions as GM_MF
-# import GMAP.src.tools.PhysicsFunctions as GM_PF
-# import GMAP.src.tools.DefaultMapFunctions as GM_DMF
-# import GMAP.src.tools.PrintTools as GM_PT
 
 # own module imports
-import AmideSC_code.calculation_methods as MC_CM
-import AmideSC_code.parameter_changer as MC_PC
-# from .MapCode import parameter_changer as MC_PC
-# from .MapCode import calculation_methods as MC_CM
+import AmideSC_code.calculation_methods as MC_cm
+import AmideSC_code.parameter_changer as MC_pc
 
 
 # A function to adjust the choices made in core.txt. Perhaps, based on
@@ -57,7 +51,7 @@ def GM_adjust_map_core_raw(map_):
     # still to do:
     # dipoles, doublepos, xyz?? (or fixed across all maps?)
 
-    MC_PC.adjust_map_core_raw(map_)
+    MC_pc.adjust_map_core_raw(map_)
 
 
 def GM_adjust_oscillators(map_, system, oscillator_list):
@@ -143,14 +137,14 @@ def GM_post_init(map_, system):
     """
 
     if map_.RunPars.dipole_map_choice == "Torii":
-        map_.code.GM_calculate_dipole = MC_CM.calc_dipole_Torii
+        map_.code.GM_calculate_dipole = MC_cm.calc_dipole_Torii
         map_.Core.dipole_gas_phase = np.float32(map_.Core.dipole_gas_phase)
         map_.Core.dipole_Torii_angle = np.float32(
             1 / np.tan(GM_con.deg2rad * map_.RunPars.Torii_dipole_angle))
 
     if map_.RunPars.legacy_mode == "AIM":
         map_.code.GM_get_position_DMF = map_.code.GM_get_position
-        map_.code.GM_get_position = MC_CM.get_position
+        map_.code.GM_get_position = MC_cm.get_position
 
 
 def GM_str_osc(map_, system, oscillator):

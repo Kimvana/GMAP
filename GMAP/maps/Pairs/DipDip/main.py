@@ -11,8 +11,8 @@ from numba import njit
 import numpy as np
 
 # gmap imports
-from GMAP.src.tools import MathFunctions as GM_MF
-from GMAP.src.tools import ReferenceHandler as GM_RH
+from GMAP.src.tools import math_functions as GM_mf
+from GMAP.src.tools import reference_handler as GM_rh
 
 
 # A function to adjust the parameters of the map. For some kinds of
@@ -123,16 +123,16 @@ def calc_coupling(oscix1, oscix2, pos_arr, vec_arr, boxvects):
     fourPiEps_inv = np.float32(5034.11656)
     # the positions array is in box-coordinates -> easy subtraction, then
     # move back into cartesian
-    d = GM_MF.PBC_back2box(pos_arr[oscix1, :] - pos_arr[oscix2, :], boxvects)
-    ir2 = 1/GM_MF.dotprod(d, d)
+    d = GM_mf.PBC_back2box(pos_arr[oscix1, :] - pos_arr[oscix2, :], boxvects)
+    ir2 = 1/GM_mf.dotprod(d, d)
     ir = np.sqrt(ir2)
     ir3 = ir*ir2
     ir5 = ir3*ir2
 
     return fourPiEps_inv * (
-        GM_MF.dotprod(vec_arr[oscix1], vec_arr[oscix2]) * ir3
-        - 3.0 * GM_MF.dotprod(vec_arr[oscix1], d)
-        * GM_MF.dotprod(vec_arr[oscix2], d) * ir5)
+        GM_mf.dotprod(vec_arr[oscix1], vec_arr[oscix2]) * ir3
+        - 3.0 * GM_mf.dotprod(vec_arr[oscix1], d)
+        * GM_mf.dotprod(vec_arr[oscix2], d) * ir5)
 
 
 # A place to do further initialization if a map requires it. Think of
@@ -259,7 +259,7 @@ def add_reference(reference, report_these, singles_map):
     # now, this reference has a dipole reason for being mentioned.
     # So, we'd like to take this reference, but we do make a copy,
     # so we can safely edit the reasons for our own goal.
-    new_reference = GM_RH.Reference(reference.input_string)
+    new_reference = GM_rh.Reference(reference.input_string)
     new_reference.reporttext = {
         "ham": [
             "dipole moment for the oscillators of type "

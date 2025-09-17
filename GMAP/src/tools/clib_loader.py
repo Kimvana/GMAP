@@ -3,12 +3,12 @@
 import ctypes as ct
 
 # local imports
-import GMAP.src.tools.CodingTools as GM_CT
-import GMAP.src.tools.Exceptions as GM_Ex
-import GMAP.src.tools.PrintTools as GM_PT
+import GMAP.src.tools.coding_tools as GM_ct
+import GMAP.src.tools.exceptions as GM_ex
+import GMAP.src.tools.print_tools as GM_pt
 
 
-class VEG_CLib(metaclass=GM_CT.Singleton):
+class VEG_CLib(metaclass=GM_ct.Singleton):
     """Stores and manages all c functions regarding electrostatics.
 
     Each (external) function in the library has it's own associated
@@ -52,9 +52,9 @@ class VEG_CLib(metaclass=GM_CT.Singleton):
             )
             self.clib = ct.CDLL(str(RunPars.VEG_clib_file))
         except Exception as ex:
-            GM_PT.Printer.warning(
+            GM_pt.Printer.warning(
                 msg, "CL_VG_1", True, exception=ex,
-                GMAPerrclass=GM_Ex.GmapOSError
+                GMAPerrclass=GM_ex.GmapOSError
             )
 
         self.clib.transform_vectors.restype = None

@@ -3,15 +3,15 @@
 from pathlib import Path
 
 # 3rd party lib imports
-import matplotlib.colors as mplC
+import matplotlib.colors as mpl_c
 from matplotlib.patches import Rectangle
 import matplotlib.pyplot as plt
 import numpy as np
 
 # local imports
-import GMAP.src.tools.ColorSchemes as GM_CS
+import GMAP.src.tools.color_schemes as GM_cs
 import GMAP.src.tools.constants as GM_con
-import GMAP.src.tools.MathFunctions as GM_MF
+import GMAP.src.tools.math_functions as GM_mf
 
 
 # ========== Functions for users ==========
@@ -53,12 +53,12 @@ def plot_coupling_choices(RunPars, system):
     ncoupmaps = len(presentcoupmaps)
     # ncoupmaps = len(RunPars.requested_pairmapdict)
     if ncoupmaps > 28:  # the discrete rainbow can support 28 colors max.
-        colors = GM_CS.DiscreteRainbowGenerator().get_color_list_from_int(
+        colors = GM_cs.DiscreteRainbowGenerator().get_color_list_from_int(
             28, "rgbarrfloat32")
     else:
-        colors = GM_CS.DiscreteRainbowGenerator().get_color_list_from_int(
+        colors = GM_cs.DiscreteRainbowGenerator().get_color_list_from_int(
             ncoupmaps, "rgbarrfloat32")
-    no_data = GM_CS.DiscreteRainbowGenerator.bad_data_float32
+    no_data = GM_cs.DiscreteRainbowGenerator.bad_data_float32
 
     # Build the image
     coupmap_image = np.zeros((nosc, nosc, 3), dtype="float32")
@@ -114,7 +114,7 @@ def val_to_color(val):
         with pandas data frame styles.
     """
 
-    hex = mplC.to_hex([int(num)/255 for num in val])
+    hex = mpl_c.to_hex([int(num)/255 for num in val])
     return (
         f"background-color:{hex};"  # color the background according to value
         "color:#00000000;"  # 0 alpha -> letters won't display
@@ -154,7 +154,7 @@ def plot_color_conv():
                     r, g, b = (rgb["r"], rgb["g"], rgb["b"])
                     row.append((f"{r:0>3}", f"{g:0>3}", f"{b:0>3}"))
                     # then the adjusted-color one
-                    r, g, b = GM_con.printed_colors_r[GM_MF.convert_color_24_4(
+                    r, g, b = GM_con.printed_colors_r[GM_mf.convert_color_24_4(
                         rgb["r"], rgb["g"], rgb["b"]
                     )]
                     row.append((f"{r:0>3}", f"{g:0>3}", f"{b:0>3}"))

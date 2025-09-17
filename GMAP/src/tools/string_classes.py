@@ -1,8 +1,8 @@
 
 # local imports
-import GMAP.src.tools.Exceptions as GM_Ex
-import GMAP.src.tools.MathFunctions as GM_MF
-import GMAP.src.tools.PrintTools as GM_PT
+import GMAP.src.tools.exceptions as GM_ex
+import GMAP.src.tools.math_functions as GM_mf
+import GMAP.src.tools.print_tools as GM_pt
 
 
 class ErrCode(str):
@@ -47,27 +47,27 @@ class ErrCode(str):
         # type checking
         selfsplit = self.split("_")
         if len(selfsplit) != 3:
-            GM_PT.Printer.warning(
+            GM_pt.Printer.warning(
                 f"\n{self} is assumed to be an error code, but does not have "
                 "3 parts separated by underscores. Please make sure to only "
                 "compare valid error codes.",
-                "CT_EC_2",  True, GMAPerrclass=GM_Ex.GmapValueError
+                "CT_EC_2",  True, GMAPerrclass=GM_ex.GmapValueError
             )
 
         if not isinstance(other, str):
-            GM_PT.Printer.warning(
+            GM_pt.Printer.warning(
                 f"\n{other} is assumed to be an error code, but is not a "
                 "string, so this method cannot be used. Please make sure to "
                 "only compare strings or ErrCodes.",
-                "CT_EC_1",  True, GMAPerrclass=GM_Ex.GmapTypeError
+                "CT_EC_1",  True, GMAPerrclass=GM_ex.GmapTypeError
             )
         othersplit = other.split("_")
         if len(othersplit) != 3:
-            GM_PT.Printer.warning(
+            GM_pt.Printer.warning(
                 f"\n{other} is assumed to be an error code, but does not have "
                 "3 parts separated by underscores. Please make sure to only "
                 "compare valid error codes.",
-                "CT_EC_2",  True, GMAPerrclass=GM_Ex.GmapValueError
+                "CT_EC_2",  True, GMAPerrclass=GM_ex.GmapValueError
             )
 
         # check the actual equality
@@ -132,7 +132,7 @@ class ColStr(str):
     def __getitem__(self, key):
         if isinstance(key, int):  # indexing
             if key >= len(self):
-                raise GM_Ex.GmapIndexError
+                raise GM_ex.GmapIndexError
             key = (key, key + 1, 1)
             return ColStr("").join([*self._forwards_generator(key)])
 
@@ -150,7 +150,7 @@ class ColStr(str):
                 # - Omit colors and just revert the 'white' string.
 
                 # key = (key[1], key[0], -1 * key[2])
-                raise GM_Ex.GmapNotImplementedError
+                raise GM_ex.GmapNotImplementedError
 
     def __iter__(self):
         return self._forwards_generator((0, len(self), 1))
@@ -282,7 +282,7 @@ class ColStr(str):
         """
 
         # word wrap retains type
-        return GM_PT.word_wrap(self, deslen=deslen, wrap_preline=wrap_preline)
+        return GM_pt.word_wrap(self, deslen=deslen, wrap_preline=wrap_preline)
 
     def change_color(self, target_mode):
         """Changes its own color, returns a copy with changed color
@@ -333,7 +333,7 @@ class ColStr(str):
             newlist = [">".join(string_list[0])]  # the '>' isn't color-closing
             for item in string_list[1:]:
                 newlist.append(getattr(
-                    GM_PT.Printer._colors, item[0]) + item[1])
+                    GM_pt.Printer._colors, item[0]) + item[1])
             colstr = ColStr("").join(newlist)
 
         # If we want 24bit, we can stay with the current ANSI codes.
@@ -389,9 +389,9 @@ class ColStr(str):
                 case "38":  # foreground - 5 items including this one
                     curr_color = color_split[:5]
                     if len(curr_color) != 5:  # premature end of list
-                        GM_PT.Printer.warning(warning_msg, "PT_CC_1", True)
+                        GM_pt.Printer.warning(warning_msg, "PT_CC_1", True)
 
-                    new_col, bright = GM_MF.convert_color_24_4(*curr_color[2:])
+                    new_col, bright = GM_mf.convert_color_24_4(*curr_color[2:])
                     color_new.append(str(30 + new_col))
                     if bright:
                         color_new.append("1")
@@ -400,15 +400,15 @@ class ColStr(str):
                 case "48":  # background - 5 items including this one
                     curr_color = color_split[:5]
                     if len(curr_color) != 5:  # premature end of list
-                        GM_PT.Printer.warning(warning_msg, "PT_CC_1", True)
+                        GM_pt.Printer.warning(warning_msg, "PT_CC_1", True)
 
-                    new_col = GM_MF.convert_color_24_4(*curr_color[2:])[0]
+                    new_col = GM_mf.convert_color_24_4(*curr_color[2:])[0]
                     color_new.append(str(40 + new_col))
                     # no bright - a bright background is not possible
                     color_split = color_split[5:]
 
                 case _:
-                    GM_PT.Printer.warning(warning_msg, "PT_CC_1", True)
+                    GM_pt.Printer.warning(warning_msg, "PT_CC_1", True)
 
         return ";".join(color_new)
 
@@ -550,7 +550,7 @@ class Header:
         corner_char="+", alignment="centered", maxwidth=79, color_border=None,
         color_text=None, special=None
     ):
-        cols = GM_PT.Printer.colors
+        cols = GM_pt.Printer.colors
         # prepare input
         color_border = cols.green_lc if color_border is None else color_border
         color_text = cols.clear if color_text is None else color_text
@@ -912,6 +912,6 @@ class Header:
                 color_border + rght + "\n")  # right border
 
         # underline
-        header += color_border + self.under + GM_PT.Printer.colors.clear
+        header += color_border + self.under + GM_pt.Printer.colors.clear
 
         return header

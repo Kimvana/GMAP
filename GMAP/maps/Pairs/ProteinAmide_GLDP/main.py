@@ -5,9 +5,8 @@ import numpy as np
 
 # gmap imports
 import GMAP.src.tools.constants as GM_con
-import GMAP.src.tools.MathFunctions as GM_MF
-import GMAP.src.tools.PrintTools as GM_PT
-# from GMAP.src.tools.PrintTools import devprint as dpr
+import GMAP.src.tools.math_functions as GM_mf
+import GMAP.src.tools.print_tools as GM_pt
 
 
 class NeighborMap:
@@ -50,7 +49,7 @@ class NeighborMap:
         try:
             self.data = np.loadtxt(fname)
         except Exception as ex:
-            GM_PT.Printer.warning(
+            GM_pt.Printer.warning(
                 "\nCould not interpret the data "
                 f" in the file {fname}. Please make sure "
                 "the file was not changed since downloading, contains "
@@ -61,7 +60,7 @@ class NeighborMap:
             map_.success = False
             return
         if self.data.shape != (13, 13):
-            GM_PT.Printer.warning(
+            GM_pt.Printer.warning(
                 "\nCould not interpret the data "
                 f" in the file {fname}. Please make sure "
                 "the file was not changed since downloading, and contains "
@@ -118,10 +117,10 @@ class NeighborMap:
         # calculate the ramachandran angles
         Nbpos = Nosc.positions_box
         Cbpos = Cosc.positions_box
-        phi_ang = GM_MF.dihedral_boxcoords(  # around NCA, angle of two Cs
+        phi_ang = GM_mf.dihedral_boxcoords(  # around NCA, angle of two Cs
             Nbpos[0], Nbpos[3], Nbpos[5], Cbpos[0], system.boxvects)
         phi_ang, phi_N = self.process_angle(phi_ang)
-        psi_ang = GM_MF.dihedral_boxcoords(  # around CAC, angle of two Ns
+        psi_ang = GM_mf.dihedral_boxcoords(  # around CAC, angle of two Ns
             Nbpos[3], Nbpos[5], Cbpos[0], Cbpos[3], system.boxvects)
         psi_ang, psi_N = self.process_angle(psi_ang)
 
@@ -138,7 +137,7 @@ class NeighborMap:
             J = (1-u)*(1-t)*y1 + (1-u)*t*y2 + u*t*y3 + u*(1-t)*y4
 
         else:
-            GM_PT.Printer.warning(
+            GM_pt.Printer.warning(
                 "Ill defined ramachandran angles found for residue "
                 f"{Nosc.resnames[1]}{Nosc.resnums[1]}. The nearest "
                 "neighbour shift will be set to zero.",
@@ -228,8 +227,8 @@ def determine_map(pair, map_, system):
     # a pro-pro map should be made!
 
     boxpos = Nosc.positions_box
-    COvec = GM_MF.PBC_boxdiff_triclin(boxpos[1], boxpos[0], system.boxvects)
-    NHvec = GM_MF.PBC_boxdiff_triclin(boxpos[4], boxpos[3], system.boxvects)
+    COvec = GM_mf.PBC_boxdiff_triclin(boxpos[1], boxpos[0], system.boxvects)
+    NHvec = GM_mf.PBC_boxdiff_triclin(boxpos[4], boxpos[3], system.boxvects)
 
     # (both pro-pro(should for now be treated as pro-gly) and pro-gly)
     if Nosc.resnames[1] == "PRO":
@@ -245,13 +244,13 @@ def determine_map(pair, map_, system):
         bondtype = "GP"
 
     if bondtype == "GP":
-        if GM_MF.dotprod(COvec, NHvec) < 0:
+        if GM_mf.dotprod(COvec, NHvec) < 0:
             return "_transGly_transPro"
         else:
             return "_cisGly_transPro"
 
     LorD = DLcheck(Nosc, Cosc, map_, system)  # -1 for D, 1 for L, 0 for nodir
-    if GM_MF.dotprod(COvec, NHvec) < 0:
+    if GM_mf.dotprod(COvec, NHvec) < 0:
         if LorD < 0:
             return "_transDPro_transGly"
         else:
@@ -339,7 +338,7 @@ def DLcheck(osc1, osc2, map_, system):
             atomCBix = atix
             break
     else:
-        GM_PT.Printer.warning(
+        GM_pt.Printer.warning(
             "Warning! The residue between the following two oscillators "
             "does not have a CB atom, and thus its chirality cannot be "
             f"determined:\n{osc1}\n{osc2}\nPlease make sure you're applying "
@@ -355,12 +354,12 @@ def DLcheck(osc1, osc2, map_, system):
 
     # used ats order:    res0{C O CA} res1{N H CA} ({N CD CA} for prepro)
     # osc1 is first, osc2 is last
-    CACvec = GM_MF.PBC_boxdiff_triclin(atomC, atomCA, system.boxvects)
-    CANvec = GM_MF.PBC_boxdiff_triclin(atomN, atomCA, system.boxvects)
-    CACBvec = GM_MF.PBC_boxdiff_triclin(atomCB, atomCA, system.boxvects)
+    CACvec = GM_mf.PBC_boxdiff_triclin(atomC, atomCA, system.boxvects)
+    CANvec = GM_mf.PBC_boxdiff_triclin(atomN, atomCA, system.boxvects)
+    CACBvec = GM_mf.PBC_boxdiff_triclin(atomCB, atomCA, system.boxvects)
 
-    CxN = GM_MF.crossprod(CACvec, CANvec)
-    if GM_MF.dotprod(CxN, CACBvec) > 0:
+    CxN = GM_mf.crossprod(CACvec, CANvec)
+    if GM_mf.dotprod(CxN, CACBvec) > 0:
         return -1
     else:
         return 1

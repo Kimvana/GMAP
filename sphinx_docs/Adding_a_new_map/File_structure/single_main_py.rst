@@ -955,18 +955,18 @@ default code:
 .. code-block:: python
 
     import numpy as np
-    import GMAP.src.tools.MathFunctions as GM_MF
+    import GMAP.src.tools.MathFunctions as GM_mf
 
     def GM_get_rotation_matrix(map_, system, osc):
         x_uvec = (osc.positions_box[3] - osc.positions_box[2]) @ system.boxvects
-        x_uvec /= GM_MF.vec3_len(x_uvec)
+        x_uvec /= GM_mf.vec3_len(x_uvec)
 
-        y_uvec = GM_MF.project(x_uvec,
+        y_uvec = GM_mf.project(x_uvec,
             (osc.positions_box[1] - osc.positions_box[2]) @ system.boxvects)
-        y_uvec /= GM_MF.vec3_len(y_uvec)
+        y_uvec /= GM_mf.vec3_len(y_uvec)
 
-        z_uvec = GM_MF.crossprod(x_uvec, y_uvec)
-        z_uvec /== GM_MF.vec3_len(z_uvec)
+        z_uvec = GM_mf.crossprod(x_uvec, y_uvec)
+        z_uvec /== GM_mf.vec3_len(z_uvec)
 
         return np.array([x_uvec, y_uvec, z_uvec])
 
@@ -985,19 +985,19 @@ default code:
 .. code-block:: python
 
     import numpy as np
-    import GMAP.src.tools.MathFunctions as GM_MF
+    import GMAP.src.tools.MathFunctions as GM_mf
 
     def GM_get_rotation_matrix(map_, system, osc):
         y_uvec = (osc.positions_box[3] - osc.positions_box[2]) @ system.boxvects
-        y_uvec /= GM_MF.vec3_len(y_uvec)
+        y_uvec /= GM_mf.vec3_len(y_uvec)
 
-        z_uvec = GM_MF.project(
+        z_uvec = GM_mf.project(
             y_uvec,
             (osc.positions_box[1] - osc.positions_box[2]) @ system.boxvects)
-        z_uvec /= GM_MF.vec3_len(z_uvec)
+        z_uvec /= GM_mf.vec3_len(z_uvec)
 
-        x_uvec = GM_MF.crossprod(y_uvec, z_uvec)
-        x_uvec /== GM_MF.vec3_len(x_uvec)
+        x_uvec = GM_mf.crossprod(y_uvec, z_uvec)
+        x_uvec /== GM_mf.vec3_len(x_uvec)
 
         return np.array([x_uvec, y_uvec, z_uvec])
 
@@ -1015,20 +1015,20 @@ default code:
 .. code-block:: python
 
     import numpy as np
-    import GMAP.src.tools.MathFunctions as GM_MF
+    import GMAP.src.tools.MathFunctions as GM_mf
 
     def GM_get_rotation_matrix(map_, system, osc):
         z_uvec = (osc.positions_box[1] - osc.positions_box[0]) @ system.boxvects
-        z_uvec /= GM_MF.vec3_len(z_uvec)
+        z_uvec /= GM_mf.vec3_len(z_uvec)
 
         smalldir = np.argmin(np.abs(z_uvec))
         x_uvec = np.zeros((3))
         x_uvec[smalldir] = 1
-        x_uvec = GM_MF.project(z_uvec, x_uvec)
-        x_uvec /= GM_MF.vec3_len(x_uvec)
+        x_uvec = GM_mf.project(z_uvec, x_uvec)
+        x_uvec /= GM_mf.vec3_len(x_uvec)
 
-        y_uvec = GM_MF.crossprod(z_uvec, x_uvec)
-        y_uvec /== GM_MF.vec3_len(y_uvec)
+        y_uvec = GM_mf.crossprod(z_uvec, x_uvec)
+        y_uvec /== GM_mf.vec3_len(y_uvec)
 
         return np.array([x_uvec, y_uvec, z_uvec])
 .. #endregion
@@ -1111,7 +1111,7 @@ core.txt file::
 .. code-block:: python
 
     import numpy as np
-    import GMAP.src.tools.MathFunctions as GM_MF
+    import GMAP.src.tools.MathFunctions as GM_mf
 
     def GM_get_dipole_dir(map_, system, osc):
 
@@ -1127,7 +1127,7 @@ core.txt file::
         r_vec = r_vec @ system.boxvects  # back to cartesian coordinates
 
         # normalizing and correct type.
-        r_vec /= GM_MF.vec3_len(r_vec)  # only a direction -> normalize!!
+        r_vec /= GM_mf.vec3_len(r_vec)  # only a direction -> normalize!!
         r_vec = r_vec.astype('float32')  # correct numpy dtype
 
         # Then, position of dipole vector:

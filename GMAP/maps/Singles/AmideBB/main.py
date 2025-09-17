@@ -4,15 +4,14 @@ import numpy as np
 
 # GMAP imports
 import GMAP.src.tools.constants as GM_con
-import GMAP.src.tools.DefaultMapFunctions as GM_DMF
-import GMAP.src.tools.PrintTools as GM_PT
-# from GMAP.src.tools.PrintTools import devprint as dpr
+import GMAP.src.tools.default_map_functions as GM_dmf
+import GMAP.src.tools.print_tools as GM_pt
 
 # own module imports
-import AmideBB_code.calculation_methods as MC_CM
-import AmideBB_code.local_atoms_finder as MC_LAF
-import AmideBB_code.neighbor_manager as MC_NM
-import AmideBB_code.parameter_changer as MC_PC
+import AmideBB_code.calculation_methods as MC_cm
+import AmideBB_code.local_atoms_finder as MC_laf
+import AmideBB_code.neighbor_manager as MC_nm
+import AmideBB_code.parameter_changer as MC_pc
 
 
 def GM_adjust_map_core_raw(map_):
@@ -63,7 +62,7 @@ def GM_adjust_map_core_raw(map_):
         ] for struct in oldentry
     ]
 
-    MC_PC.adjust_map_core_raw(map_)
+    MC_pc.adjust_map_core_raw(map_)
 
 
 def GM_adjust_oscillators(map_, system, oscillator_list):
@@ -106,7 +105,7 @@ def GM_adjust_oscillators(map_, system, oscillator_list):
     """
 
     # Sort oscillators into the correct order
-    oscillator_list = MC_PC.oscillator_sorter(map_, system, oscillator_list)
+    oscillator_list = MC_pc.oscillator_sorter(map_, system, oscillator_list)
 
     # tell each oscillator what/who it's neighbors are.
     # N term is first, C term is last
@@ -159,7 +158,7 @@ def GM_filter_oscillators(map_, system, oscillator_list):
         All oscillators belonging to a single struct of this map.
     """
 
-    filterfunc = GM_DMF.get_filter_oscillators()
+    filterfunc = GM_dmf.get_filter_oscillators()
     filtered_oscs = filterfunc(map_, system, oscillator_list)
 
     CtermNBs = {osc.CtermNB for osc in filtered_oscs}
@@ -209,7 +208,7 @@ def GM_post_init(map_, system):
             amSC_rps.frequency_map_choice != rps.frequency_map_choice
             and not rps.allow_map_mismatch
         ):
-            GM_PT.Printer.warning(
+            GM_pt.Printer.warning(
                 "Warning! The current calculation makes use of both the "
                 "AmideBB and AmideSC maps, but they make use of different "
                 "frequency maps. For most physical applications, this does "
@@ -223,7 +222,7 @@ def GM_post_init(map_, system):
             amSC_rps.dipole_map_choice != rps.dipole_map_choice
             and not rps.allow_map_mismatch
         ):
-            GM_PT.Printer.warning(
+            GM_pt.Printer.warning(
                 "Warning! The current calculation makes use of both the "
                 "AmideBB and AmideSC maps, but they make use of different "
                 "dipole maps. For most physical applications, this does "
@@ -237,7 +236,7 @@ def GM_post_init(map_, system):
             amSC_rps.legacy_mode != rps.legacy_mode
             and not rps.allow_map_mismatch
         ):
-            GM_PT.Printer.warning(
+            GM_pt.Printer.warning(
                 "Warning! The current calculation makes use of both the "
                 "AmideBB and AmideSC maps, but they try to emulate different "
                 "versions. For most physical applications, this does "
@@ -250,27 +249,27 @@ def GM_post_init(map_, system):
 
     # Initialize the prepro data structures (those that GMAP did for
     # non-prepro groups)
-    MC_PC.initialize_prepro_properties(map_)
+    MC_pc.initialize_prepro_properties(map_)
 
     # assign correct dipole function
     if map_.RunPars.dipole_map_choice == "Torii":
-        map_.code.GM_calculate_dipole = MC_CM.calc_dipole_Torii
+        map_.code.GM_calculate_dipole = MC_cm.calc_dipole_Torii
         map_.Core.dipole_gas_phase = np.float32(map_.Core.dipole_gas_phase)
         map_.Core.dipole_Torii_angle = np.float32(
             1 / np.tan(GM_con.deg2rad * map_.RunPars.Torii_dipole_angle))
     else:
-        map_.code.GM_calculate_dipole = MC_CM.calc_dipole_Jansen
+        map_.code.GM_calculate_dipole = MC_cm.calc_dipole_Jansen
 
     if map_.RunPars.legacy_mode == "AIM":
         map_.code.GM_get_position_DMF = map_.code.GM_get_position
-        map_.code.GM_get_position = MC_CM.get_position
+        map_.code.GM_get_position = MC_cm.get_position
 
     # now, knowing neighbors, we can determine the local atoms.
     oscillator_list = system.oscillators_ordered["AmideBB"]
-    MC_LAF.find_local_atoms(map_, system, oscillator_list)
+    MC_laf.find_local_atoms(map_, system, oscillator_list)
 
-    MC_NM.read_maps(map_)
-    MC_CM.determine_maps(oscillator_list, map_, system)
+    MC_nm.read_maps(map_)
+    MC_cm.determine_maps(oscillator_list, map_, system)
 
     if "TRESP" in main_runpars.requested_pairmapdict.keys():
         trespmap = main_runpars.requested_pairmapdict["TRESP"]
@@ -280,7 +279,7 @@ def GM_post_init(map_, system):
         map_.Core.TRESP_pro_charges = trespmap.code.get_charges(trespmap, map_)
 
     if not map_.success:
-        GM_PT.Printer.warning(
+        GM_pt.Printer.warning(
             "An issue occurred while initializing the AmideBB map stored at "
             f"{map_.directory}. Please first try restarting, then "
             "reinstalling, then contacting the map developer, as this map "
@@ -396,7 +395,7 @@ def GM_calculate_frequency(map_, system, osc):
         map_.RunPars.frequency_map_choice != "Tokmakoff"
         and map_.RunPars.consider_nearest_neighbours
     ):
-        freq += MC_CM.neighbor_influence(map_, system, osc)
+        freq += MC_cm.neighbor_influence(map_, system, osc)
 
     return freq
 

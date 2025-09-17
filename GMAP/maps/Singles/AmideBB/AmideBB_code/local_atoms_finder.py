@@ -1,6 +1,4 @@
 
-# from GMAP.src.tools.PrintTools import devprint as dpr
-
 
 def find_local_atoms(map_, system, oscillator_list):
     """Finds the local atoms for all oscillators in this map.

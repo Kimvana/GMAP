@@ -11,15 +11,15 @@ tests missing:
 import pytest
 
 # local imports
-import GMAP.src.tools.CodingTools as GM_CT
-import GMAP.src.tools.Exceptions as GM_Ex
-import GMAP.src.tools.PrintTools as GM_PT
-import GMAP.src.tools.ReferenceHandler as GM_RH
+import GMAP.src.tools.coding_tools as GM_ct
+import GMAP.src.tools.exceptions as GM_ex
+import GMAP.src.tools.print_tools as GM_pt
+import GMAP.src.tools.reference_handler as GM_rh
 
 
 class TestReference:
     def test_input_string(self):
-        ref = GM_RH.Reference(get_reference_string1())
+        ref = GM_rh.Reference(get_reference_string1())
         assert ref.success is True
         assert ref.input_string == get_reference_string1()
         assert ref.title == "A very cool paper"
@@ -37,34 +37,34 @@ class TestReference:
         assert ref.reporttext == {"dip": ["dipole moment of Cool", "hello!"]}
 
     def test_input_string_broken(self):
-        ref = GM_RH.Reference(get_reference_string_broken1())
+        ref = GM_rh.Reference(get_reference_string_broken1())
         assert ref.success is False
 
-        ref = GM_RH.Reference(get_reference_string_broken2())
+        ref = GM_rh.Reference(get_reference_string_broken2())
         assert ref.success is False
 
     def test_eq(self):
         # two separate instances, but same contents.
-        assert GM_RH.Reference(get_reference_string1()) == (
-            GM_RH.Reference(get_reference_string1())
+        assert GM_rh.Reference(get_reference_string1()) == (
+            GM_rh.Reference(get_reference_string1())
         )
 
     def test_str(self):
-        ref = GM_RH.Reference(get_reference_string1())
+        ref = GM_rh.Reference(get_reference_string1())
         assert str(ref) == (
             'LastName1, S.; LastName2, E.. "A very cool paper". In Best '
             "Journal vol. 42 (1752), p. 666, doi: DOIcode, "
             "url: https://coolwebsite.com"
         )
 
-        ref = GM_RH.Reference(get_reference_string2())
+        ref = GM_rh.Reference(get_reference_string2())
         assert str(ref) == (
             'LastName2, S.; LastName1, E.. "A very cool paper". In Best '
             "Journal 42.2 (Aug 1752), pp. 666-777, doi: DOIcode, "
             "url: https://coolwebsite2.com"
         )
 
-        ref = GM_RH.Reference(get_reference_string3())
+        ref = GM_rh.Reference(get_reference_string3())
         assert str(ref) == (
             'This, A.; Paper, B.; Has, C.; Very, D.; Many, E. et al. "A very'
             ' cool paper". In Best Journal'
@@ -72,7 +72,7 @@ class TestReference:
             "url: https://coolwebsite3.com"
         )
 
-        ref = GM_RH.Reference(get_reference_string_bare())
+        ref = GM_rh.Reference(get_reference_string_bare())
         assert str(ref) == (
             "unknown author. unknown title. In unknown journal vol. unknown "
             "(unknown year), issn: only an ISSN"
@@ -86,53 +86,53 @@ def test_read_reference_file(tmp_path):
     with open(tmp_path / "reffile.txt", "w") as fhand:
         fhand.write(two_ref_string)
 
-    allrefs = GM_RH.read_reference_file(tmp_path / "reffile.txt")
+    allrefs = GM_rh.read_reference_file(tmp_path / "reffile.txt")
     assert allrefs == {
         "coolpaper": [
-            GM_RH.Reference(get_reference_string1()),
-            GM_RH.Reference(get_reference_string3())],
-        "coolpaper2": [GM_RH.Reference(get_reference_string2())]}
+            GM_rh.Reference(get_reference_string1()),
+            GM_rh.Reference(get_reference_string3())],
+        "coolpaper2": [GM_rh.Reference(get_reference_string2())]}
 
 
 def test_report_references(capsys):
-    RunPars = GM_CT.CustomClass(**{"output_data": ["dip", "ham"]})
+    RunPars = GM_ct.CustomClass(**{"output_data": ["dip", "ham"]})
     references = [
-        GM_RH.Reference(get_reference_string1()),
-        GM_RH.Reference(get_reference_string2()),
-        GM_RH.Reference(get_reference_string3())]
+        GM_rh.Reference(get_reference_string1()),
+        GM_rh.Reference(get_reference_string2()),
+        GM_rh.Reference(get_reference_string3())]
 
-    GM_PT.Printer.set_state("running")
-    GM_RH.report_references(RunPars, references)
+    GM_pt.Printer.set_state("running")
+    GM_rh.report_references(RunPars, references)
     captured = capsys.readouterr()
     assert captured.out.endswith(
         "The following reference was used for calculating the:\n"
         " - dipole moment of Cool\n"
         " - hello!\n" +
-        GM_PT.word_wrap(str(GM_RH.Reference(get_reference_string1()))) +
+        GM_pt.word_wrap(str(GM_rh.Reference(get_reference_string1()))) +
         "\n\nThe following reference was used for calculating the:\n"
         " - dipole moment of Cool\n"
         " - hello!\n" +
-        GM_PT.word_wrap(str(GM_RH.Reference(get_reference_string2()))) +
+        GM_pt.word_wrap(str(GM_rh.Reference(get_reference_string2()))) +
         "\n\nThe following reference was used for calculating the:\n"
         " - dipole moment of Cool\n"
         " - hello!\n" +
-        GM_PT.word_wrap(str(GM_RH.Reference(get_reference_string3()))) + "\n\n"
+        GM_pt.word_wrap(str(GM_rh.Reference(get_reference_string3()))) + "\n\n"
     )
 
 
 def test_flatten_iterable():
-    ref = GM_RH.Reference(get_reference_string1())
-    assert GM_RH.flatten_iterable(ref) == [ref]
-    assert GM_RH.flatten_iterable([ref]) == [ref]
-    assert GM_RH.flatten_iterable({"x": ref}) == [ref]
-    with pytest.raises(GM_Ex.GmapTypeError):
-        assert GM_RH.flatten_iterable("x") == [ref]
-    assert GM_RH.flatten_iterable([[ref]]) == [ref]
-    assert GM_RH.flatten_iterable({"x": [ref]}) == [ref]
-    assert GM_RH.flatten_iterable([{"x": ref}]) == [ref]
-    assert GM_RH.flatten_iterable([ref, [ref]]) == [ref, ref]
-    with pytest.raises(GM_Ex.GmapTypeError):
-        assert GM_RH.flatten_iterable([["x"]]) == [ref]
+    ref = GM_rh.Reference(get_reference_string1())
+    assert GM_rh.flatten_iterable(ref) == [ref]
+    assert GM_rh.flatten_iterable([ref]) == [ref]
+    assert GM_rh.flatten_iterable({"x": ref}) == [ref]
+    with pytest.raises(GM_ex.GmapTypeError):
+        assert GM_rh.flatten_iterable("x") == [ref]
+    assert GM_rh.flatten_iterable([[ref]]) == [ref]
+    assert GM_rh.flatten_iterable({"x": [ref]}) == [ref]
+    assert GM_rh.flatten_iterable([{"x": ref}]) == [ref]
+    assert GM_rh.flatten_iterable([ref, [ref]]) == [ref, ref]
+    with pytest.raises(GM_ex.GmapTypeError):
+        assert GM_rh.flatten_iterable([["x"]]) == [ref]
 
 
 def get_reference_string1():

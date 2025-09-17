@@ -5,7 +5,7 @@ import numpy as np
 
 # gmap imports
 import GMAP.src.tools.constants as GM_con
-import GMAP.src.tools.MathFunctions as GM_MF
+import GMAP.src.tools.math_functions as GM_mf
 
 
 def GM_prep_coupling(map_, system, oscixlist, osclist):
@@ -36,21 +36,21 @@ def GM_prep_coupling(map_, system, oscixlist, osclist):
     magnitude = map_.RunPars.Torii_dipole_magnitude
 
     for oscix, osc in zip(oscixlist, osclist):
-        COvec = GM_MF.PBC_boxdiff_triclin(
+        COvec = GM_mf.PBC_boxdiff_triclin(
             osc.positions_box[1], osc.positions_box[0], system.boxvects)
-        COvec /= GM_MF.vec3_len(COvec)
-        CNvec = GM_MF.PBC_boxdiff_triclin(
+        COvec /= GM_mf.vec3_len(COvec)
+        CNvec = GM_mf.PBC_boxdiff_triclin(
             osc.positions_box[3], osc.positions_box[0], system.boxvects)
-        CNvec /= GM_MF.vec3_len(CNvec)
+        CNvec /= GM_mf.vec3_len(CNvec)
         dri = 0.665 * COvec + 0.258 * CNvec
 
         map_.dipole_pos_arr[oscix] = osc.positions[0] + dri
 
-        COvecDri = GM_MF.dotprod(COvec, dri)
+        COvecDri = GM_mf.dotprod(COvec, dri)
         dip_vec = dri - COvec * (COvecDri + itheta * np.sqrt(
-            GM_MF.dotprod(dri, dri) - COvecDri * COvecDri))
+            GM_mf.dotprod(dri, dri) - COvecDri * COvecDri))
         map_.dipole_vec_arr[oscix] = (
-            dip_vec / GM_MF.vec3_len(dip_vec) * magnitude)
+            dip_vec / GM_mf.vec3_len(dip_vec) * magnitude)
 
     map_.dipole_pos_arr = map_.dipole_pos_arr @ system.boxvects_inv
 
@@ -127,16 +127,16 @@ def calc_coupling(oscix1, oscix2, pos_arr, vec_arr, boxvects, i4pieps):
     # fourPiEps_inv = np.float32(5034.11656)
     # the positions array is in box-coordinates -> easy subtraction, then
     # move back into cartesian
-    d = GM_MF.PBC_back2box(pos_arr[oscix1, :] - pos_arr[oscix2, :], boxvects)
-    ir2 = 1/GM_MF.dotprod(d, d)
+    d = GM_mf.PBC_back2box(pos_arr[oscix1, :] - pos_arr[oscix2, :], boxvects)
+    ir2 = 1/GM_mf.dotprod(d, d)
     ir = np.sqrt(ir2)
     ir3 = ir*ir2
     ir5 = ir3*ir2
 
     return i4pieps * (
-        GM_MF.dotprod(vec_arr[oscix1], vec_arr[oscix2]) * ir3
-        - 3.0 * GM_MF.dotprod(vec_arr[oscix1], d)
-        * GM_MF.dotprod(vec_arr[oscix2], d) * ir5)
+        GM_mf.dotprod(vec_arr[oscix1], vec_arr[oscix2]) * ir3
+        - 3.0 * GM_mf.dotprod(vec_arr[oscix1], d)
+        * GM_mf.dotprod(vec_arr[oscix2], d) * ir5)
 
 
 def GM_pre_run(map_, system):

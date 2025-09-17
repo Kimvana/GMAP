@@ -1,12 +1,11 @@
 
 # 3rd party lib imports
-# import matplotlib.pyplot as plt
 import numpy as np
 
 # local imports
-import GMAP.src.tools.CodingTools as GM_CT
-import GMAP.src.tools.ColorSchemes as GM_CS
-import GMAP.src.tools.Plotter as GM_Pl
+import GMAP.src.tools.coding_tools as GM_ct
+import GMAP.src.tools.color_schemes as GM_cs
+import GMAP.src.tools.plotter as GM_Pl
 
 
 def test_plot_coupling_choices(tmp_path):
@@ -20,7 +19,7 @@ def test_plot_coupling_choices(tmp_path):
         "aaCoupler",
         "acCoupler"
     ]
-    coupmaps = [GM_CT.CustomClass(
+    coupmaps = [GM_ct.CustomClass(
         **{"allpairs": [], "name": name}) for name in coupmapnames]
     for ix1, map1 in enumerate(osclist):
         for ix2, map2 in enumerate(osclist):
@@ -40,14 +39,14 @@ def test_plot_coupling_choices(tmp_path):
     for coupmap in coupmaps:
         coupmap.allpairs = np.array(coupmap.allpairs, dtype="int32")
 
-    runpars = GM_CT.CustomClass(**{
+    runpars = GM_ct.CustomClass(**{
         "requested_pairmapdict": {
             name: map_ for name, map_ in zip(coupmapnames, coupmaps)},
         "couplingvis_figsize": 8,
         "couplingvis_dpi": 100,
         "output_couplingvis_filename": tmp_path / "couplingvis.pdf"
     })
-    system = GM_CT.CustomClass(**{"nosc": len(osclist)})
+    system = GM_ct.CustomClass(**{"nosc": len(osclist)})
 
     # run the code
     fig, ax = GM_Pl.plot_coupling_choices(runpars, system)
@@ -60,10 +59,10 @@ def test_plot_coupling_choices(tmp_path):
 
     ncoupmaps = len(runpars.requested_pairmapdict)
     used_colors = list(
-        GM_CS.DiscreteRainbowGenerator().get_color_list_from_int(
+        GM_cs.DiscreteRainbowGenerator().get_color_list_from_int(
             ncoupmaps, "rgbarrfloat32").astype("float32"))
     used_colors.append(
-        GM_CS.DiscreteRainbowGenerator.bad_data_float32.astype("float32"))
+        GM_cs.DiscreteRainbowGenerator.bad_data_float32.astype("float32"))
     plot_colors = list(np.unique(
         plot_array.reshape(-1, plot_array.shape[-1]), axis=0))
     for color in plot_colors:

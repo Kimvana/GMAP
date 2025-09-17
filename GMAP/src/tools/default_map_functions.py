@@ -3,10 +3,10 @@
 import numpy as np
 
 # local imports
-import GMAP.src.tools.Exceptions as GM_Ex
-import GMAP.src.tools.MathFunctions as GM_MF
-import GMAP.src.tools.PhysicsFunctions as GM_PF
-import GMAP.src.tools.PrintTools as GM_PT
+import GMAP.src.tools.exceptions as GM_ex
+import GMAP.src.tools.math_functions as GM_mf
+import GMAP.src.tools.physics_functions as GM_pf
+import GMAP.src.tools.print_tools as GM_pt
 
 
 class NewModule:
@@ -65,12 +65,12 @@ def get_filter_oscillators():
             success, filtered = filter_single_line(
                 rule, "white", filtered, oscset, map_, system)
             if not success:
-                GM_PT.Printer.warning(
+                GM_pt.Printer.warning(
                     "\nUsing the parameter 'singles_whitelist', the map "
                     f"{map_.name} "
                     "requestested a specific selection, but it was not "
                     "recognized. ",
-                    "SU_NP_8", True, GMAPerrclass=GM_Ex.GmapFileSyntaxError
+                    "SU_NP_8", True, GMAPerrclass=GM_ex.GmapFileSyntaxError
                 )
 
         # from the whitelisted, remove all those in blacklist.
@@ -79,12 +79,12 @@ def get_filter_oscillators():
                 rule, "black", filtered, oscset, map_, system
             )
             if not success:
-                GM_PT.Printer.warning(
+                GM_pt.Printer.warning(
                     "\nUsing the parameter 'singles_whitelist', the map "
                     f"{map_.name} "
                     "requestested a specific selection, but it was not "
                     "recognized. ",
-                    "SU_NP_8", True, GMAPerrclass=GM_Ex.GmapFileSyntaxError
+                    "SU_NP_8", True, GMAPerrclass=GM_ex.GmapFileSyntaxError
                 )
 
         # sort the oscillators in correct order (same as before)
@@ -149,28 +149,28 @@ def filter_single_line(line, BW, found, avail, map_, system):
         case "resnums":
             # we can use/support hyphens, too, but not commas/periods.
             if not set("".join(line[1:])).issubset("1234567890-"):
-                GM_PT.Printer.warning(
+                GM_pt.Printer.warning(
                     f"\nUsing the parameter 'singles_{BW}list', the map "
                     f"{map_.name}"
                     "was requestested certain residue numbers, but this "
                     "specification used non-numeric characters. Please make "
                     "sure to only use numbers and hyphens. ",
-                    "SU_NP_8", True, GMAPerrclass=GM_Ex.GmapFileSyntaxError
+                    "SU_NP_8", True, GMAPerrclass=GM_ex.GmapFileSyntaxError
                 )
             try:
                 resnums = set(map_.Core.allow_ranges(line[1:], system.nres))
             except IndexError as IErr:
-                GM_PT.Printer.warning(
+                GM_pt.Printer.warning(
                     f"\nUsing the parameter 'singles_{BW}list', the map "
                     f"{map_.name}"
                     "was requestested certain residue numbers, but the "
                     "specific residue numbers requested do not exist in the "
                     "provided MD system. ",
                     "SU_NP_8", True, exception=IErr,
-                    GMAPerrclass=GM_Ex.GmapIndexError
+                    GMAPerrclass=GM_ex.GmapIndexError
                 )
             except Exception as Ex:
-                GM_PT.Printer.warning(
+                GM_pt.Printer.warning(
                     f"\nUsing the parameter 'singles_{BW}list', the map "
                     f"{map_.name}"
                     "was requestested certain residue numbers, but the "
@@ -179,7 +179,7 @@ def filter_single_line(line, BW, found, avail, map_, system):
                     "numbers separated by spaces "
                     "and/or ranges of integers separated by a hyphen.",
                     "SU_NP_8", True, exception=Ex,
-                    GMAPerrclass=GM_Ex.GmapFileSyntaxError
+                    GMAPerrclass=GM_ex.GmapFileSyntaxError
                 )
 
             # filtered = []
@@ -315,7 +315,7 @@ def VEG_from_residues(local_atoms):
                 system.residues.first_ix[resnum],
                 system.residues.last_ix[resnum] + 1
             )])
-        CoM = GM_PF.calc_CoM(system, atnums)
+        CoM = GM_pf.calc_CoM(system, atnums)
         return CoM
 
     local_atoms = [int(num) for num in local_atoms]
@@ -342,7 +342,7 @@ def VEG_from_com(local_atoms):
 
     def GM_get_VEG_ref(map_, system, osc):
         atnums = [osc.used_atoms[ix] for ix in local_atoms]
-        CoM = GM_PF.calc_CoM(system, atnums)
+        CoM = GM_pf.calc_CoM(system, atnums)
         return CoM
 
     local_atoms = [int(num) for num in local_atoms]
@@ -395,7 +395,7 @@ def interpret_position(map_, details, parname, center=None):
         exec(codestring)
     except Exception as ex:
         corefile = (map_.directory / 'core.txt').resolve()
-        GM_PT.Printer.warning(
+        GM_pt.Printer.warning(
             f"\nThe file {corefile} does not contain a valid definition of "
             f"{parname}.",
             "MI_MC_9", exception=ex
@@ -433,7 +433,7 @@ def get_get_dipole_dir(map_):
     # Move vector back into the box, and normalize
     codestring += "    r_vec = (r_vec - np.floor(r_vec + 0.5))\n"
     codestring += "    r_vec = r_vec @ system.boxvects\n"
-    codestring += "    r_vec /= GM_MF.vec3_len(r_vec)\n"
+    codestring += "    r_vec /= GM_mf.vec3_len(r_vec)\n"
     codestring += "    r_vec = r_vec.astype('float32')\n\n"
 
     # find position of the dipole
@@ -450,7 +450,7 @@ def get_get_dipole_dir(map_):
         exec(codestring)
     except Exception as ex:
         corefile = (map_.directory / 'core.txt').resolve()
-        GM_PT.Printer.warning(
+        GM_pt.Printer.warning(
             f"\nThe file {corefile} does not contain a valid definition of "
             "r_vec and/or r_pos.",
             "MI_MC_9", exception=ex
@@ -509,19 +509,19 @@ def get_get_rotation_matrix(map_):
     direc = given_directions[0]
     codestring += f"    {direc} = (" + envelop_int(
         " ".join(map_.rawcore[direc]),
-        # "GM_MF.PBCvect(system.positions[osc.used_atoms[", "]])"
+        # "GM_mf.PBCvect(system.positions[osc.used_atoms[", "]])"
         "osc.positions_box[", "]"
     ) + ") @ system.boxvects\n"
-    codestring += f"    {direc} /= GM_MF.vec3_len({direc})\n\n"
+    codestring += f"    {direc} /= GM_mf.vec3_len({direc})\n\n"
 
     # the second direction depends on the type
     olddir = direc
     if map_.Core.type == "standard":
         direc = given_directions[1]
-        codestring += f"    {direc} = GM_MF.project({olddir}, ("
+        codestring += f"    {direc} = GM_mf.project({olddir}, ("
         codestring += envelop_int(
             " ".join(map_.rawcore[direc]),
-            # "GM_MF.PBCvect(system.positions[osc.used_atoms[", "]])"
+            # "GM_mf.PBCvect(system.positions[osc.used_atoms[", "]])"
             "osc.positions_box[", "]"
         ) + ") @ system.boxvects)\n"
     elif map_.Core.type == "linear":
@@ -532,14 +532,14 @@ def get_get_rotation_matrix(map_):
         codestring += f"    smalldir = np.argmin(np.abs({olddir}))\n"
         codestring += f"    {direc} = np.zeros((3))\n"
         codestring += f"    {direc}[smalldir] = 1\n"
-        codestring += f"    {direc} = GM_MF.project({olddir}, {direc})\n"
+        codestring += f"    {direc} = GM_mf.project({olddir}, {direc})\n"
 
-    codestring += f"    {direc} /= GM_MF.vec3_len({direc})\n\n"
+    codestring += f"    {direc} /= GM_mf.vec3_len({direc})\n\n"
 
     # the third direction is always the cross product
     lastdir = [x for x in allparnames if x not in (olddir, direc)][0]
-    codestring += f"    {lastdir} = GM_MF.crossprod({olddir}, {direc})\n"
-    codestring += f"    {lastdir} /= GM_MF.vec3_len({lastdir})\n\n"
+    codestring += f"    {lastdir} = GM_mf.crossprod({olddir}, {direc})\n"
+    codestring += f"    {lastdir} /= GM_mf.vec3_len({lastdir})\n\n"
 
     # now, combine into array to return
     codestring += "    return np.array([x_uvec, y_uvec, z_uvec])\n"
@@ -549,7 +549,7 @@ def get_get_rotation_matrix(map_):
         exec(codestring)
     except Exception as ex:
         corefile = (map_.directory / 'core.txt').resolve()
-        GM_PT.Printer.warning(
+        GM_pt.Printer.warning(
             f"\nThe file {corefile} does not contain a valid definition of "
             "x_uvec, y_uvec and/or z_uvec.",
             "MI_MC_9", exception=ex
@@ -827,4 +827,4 @@ def envelop_int(string, pre, post):
 # never called, just to remove the unused warnings for imports
 def unused_user():
     _ = np.array([1, 2])
-    _ = GM_MF.dotprod(np.array([1, 2, 3]), np.array([1, 2, 3]))
+    _ = GM_mf.dotprod(np.array([1, 2, 3]), np.array([1, 2, 3]))

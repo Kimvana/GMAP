@@ -19,12 +19,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # local imports
-import GMAP.src.tools.ColorSchemes as GM_CS
+import GMAP.src.tools.color_schemes as GM_cs
 
 
 class TestQualitativeColorScheme:
     def test_fails(self):
-        mycolorscheme = GM_CS.QualitativeColorScheme(
+        mycolorscheme = GM_cs.QualitativeColorScheme(
             "A temporary colorscheme for testing",
             "'#3355DD', '#882277'",
             "Blue Purple Green"
@@ -34,26 +34,26 @@ class TestQualitativeColorScheme:
 
 class TestDiscreteRainbowGenerator:
     def test_hexvals(self):
-        rainbowgen = GM_CS.DiscreteRainbowGenerator()
+        rainbowgen = GM_cs.DiscreteRainbowGenerator()
         assert rainbowgen.get_color_list_from_int(2, dtype="hex") == [
             "#1965B0", "#DC050C"]
 
     def test_uint8(self):
-        rainbowgen = GM_CS.DiscreteRainbowGenerator()
+        rainbowgen = GM_cs.DiscreteRainbowGenerator()
         assert np.all(
             rainbowgen.get_color_list_from_int(2, dtype="rgbarruint8") == (
                 np.array([[25, 101, 176], [220, 5, 12]]).astype("uint8")
             ))
 
     def test_color_from_iter(self):
-        rainbowgen = GM_CS.DiscreteRainbowGenerator()
+        rainbowgen = GM_cs.DiscreteRainbowGenerator()
         ite = ["first item in the list", "and a second"]
         assert rainbowgen.get_color_list_from_iterable(ite, dtype="hex") == [
             "#1965B0", "#DC050C"]
 
 
 def test_register_schemes():
-    GM_CS.register_schemes("both", "testimport_")
+    GM_cs.register_schemes("both", "testimport_")
     avail_schemes = set(plt.colormaps())
     schemes_imported = ["sunset", "nightfall", "BuRd", "PRGn"]
     schemes_imported += [

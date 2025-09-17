@@ -1,7 +1,4 @@
 
-# standard library imports
-# import inspect
-
 
 class Singleton(type):
     """Metaclassing this class makes any class a singleton.

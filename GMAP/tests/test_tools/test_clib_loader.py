@@ -19,10 +19,10 @@ import numpy as np
 import pytest
 
 # local imports
-from .test_SystemReader import parameter_getter
-import GMAP.src.tools.CLibLoader as GM_CL
-import GMAP.src.tools.CodingTools as GM_CT
-import GMAP.src.tools.Exceptions as GM_Ex
+from .test_system_reader import parameter_getter
+import GMAP.src.tools.clib_loader as GM_cl
+import GMAP.src.tools.coding_tools as GM_ct
+import GMAP.src.tools.exceptions as GM_ex
 
 
 class TestVClib:
@@ -33,7 +33,7 @@ class TestVClib:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter("AmideSC", cmdline, load_clib=False)
 
-        VEGlib = GM_CL.VEG_CLib(RunPars)
+        VEGlib = GM_cl.VEG_CLib(RunPars)
         RunPars.estatic_range = np.float32(60)
         RunPars.estatic_smooth_range = np.float32(5)
 
@@ -179,7 +179,7 @@ class TestVClib:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter("AmideSC", cmdline, load_clib=False)
 
-        VEGlib = GM_CL.VEG_CLib(RunPars)
+        VEGlib = GM_cl.VEG_CLib(RunPars)
         RunPars.estatic_range = np.float32(60)
         RunPars.estatic_smooth_range = np.float32(5)
 
@@ -243,7 +243,7 @@ class TestVClib:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter("AmideSC", cmdline, load_clib=False)
 
-        VEGlib = GM_CL.VEG_CLib(RunPars)
+        VEGlib = GM_cl.VEG_CLib(RunPars)
         RunPars.estatic_range = np.float32(60)
         RunPars.estatic_smooth_range = np.float32(5)
 
@@ -306,7 +306,7 @@ class TestVClib:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter("AmideSC", cmdline, load_clib=False)
 
-        VEGlib = GM_CL.VEG_CLib(RunPars)
+        VEGlib = GM_cl.VEG_CLib(RunPars)
         RunPars.estatic_range = np.float32(60)
         RunPars.estatic_smooth_range = np.float32(5)
 
@@ -473,7 +473,7 @@ class TestVClib:
             CmdPars, mapdict, pairs_mapdict
         ) = parameter_getter("AmideSC", cmdline, load_clib=False)
 
-        VEGlib = GM_CL.VEG_CLib(RunPars)
+        VEGlib = GM_cl.VEG_CLib(RunPars)
         RunPars.estatic_range = np.float32(60)
         RunPars.estatic_smooth_range = np.float32(5)
 
@@ -566,18 +566,18 @@ class TestVClib:
         RunPars.VEG_clib_file = (
             RunPars.VEG_clib_file.parent / "doesntexist.txt")
         matchstr = "CL_VG_1$"
-        with pytest.raises(GM_Ex.GmapOSError, match=matchstr):
-            _ = GM_CL.VEG_CLib(RunPars)
+        with pytest.raises(GM_ex.GmapOSError, match=matchstr):
+            _ = GM_cl.VEG_CLib(RunPars)
 
         RunPars.VEG_clib_file = (
             RunPars.VEG_clib_file.parent / "VEG.obj")
-        with pytest.raises(GM_Ex.GmapOSError, match=matchstr):
-            _ = GM_CL.VEG_CLib(RunPars)
+        with pytest.raises(GM_ex.GmapOSError, match=matchstr):
+            _ = GM_cl.VEG_CLib(RunPars)
 
         RunPars.VEG_clib_file = (
             RunPars.VEG_clib_file.parent)
-        with pytest.raises(GM_Ex.GMAPexception, match=matchstr):
-            _ = GM_CL.VEG_CLib(RunPars)
+        with pytest.raises(GM_ex.GMAPexception, match=matchstr):
+            _ = GM_cl.VEG_CLib(RunPars)
 
 
 def get_System_1():
@@ -620,14 +620,14 @@ def get_System_1():
     boxdims = np.array([100, 100, 100], dtype="float32")
     halfbox = np.array([50, 50, 50], dtype="float32")
 
-    return GM_CT.CustomClass(**{
+    return GM_ct.CustomClass(**{
         "positions_c": np.ctypeslib.as_ctypes(np.ravel(positions)),
         "positions_box_c": np.ctypeslib.as_ctypes(np.ravel(positions_box)),
         "masses_c": np.ctypeslib.as_ctypes(masses),
         "charges_c": np.ctypeslib.as_ctypes(charges),
         "influencers_atix_c": np.ctypeslib.as_ctypes(influencers),
         "n_influencers": n_influencers,
-        "residues": GM_CT.CustomClass(**{
+        "residues": GM_ct.CustomClass(**{
             "CoM_box_c": np.ctypeslib.as_ctypes(np.ravel(residues_CoM)),
             "CoM_c": np.ctypeslib.as_ctypes(np.ravel(residues_CoM)),
             "first_ix_c": np.ctypeslib.as_ctypes(res_first_ix),
@@ -645,7 +645,7 @@ def get_oscillator_1():
     estat_ats = np.array([0, 1], dtype="int32")
     VEG_refpos = np.array([10, 30, 70], dtype="float32")
     VEGout = np.zeros((2, 10), dtype="float32")
-    return GM_CT.CustomClass(**{
+    return GM_ct.CustomClass(**{
         "electrostatic_atoms_c": np.ctypeslib.as_ctypes(estat_ats),
         "n_estatic_atoms": np.int32(2),
         "VEG_refpos_c": np.ctypeslib.as_ctypes(VEG_refpos),
@@ -653,8 +653,8 @@ def get_oscillator_1():
         "n_local_atoms": np.int32(2),
         "VEGout": VEGout,
         "VEGout_c": np.ctypeslib.as_ctypes(np.ravel(VEGout)),
-        "Map": GM_CT.CustomClass(**{
-            "Core": GM_CT.CustomClass(**{
+        "Map": GM_ct.CustomClass(**{
+            "Core": GM_ct.CustomClass(**{
                 "electrostatic_choice_c": 3  # we want gradients!!!
             })
         })

@@ -14,36 +14,36 @@ import numpy as np
 import pytest
 
 # local imports
-import GMAP.src.tools.CodingTools as GM_CT
-import GMAP.src.tools.DefaultMapFunctions as GM_DMF
-import GMAP.src.tools.Exceptions as GM_Ex
-import GMAP.src.tools.FileHandler as GM_FH
-import GMAP.src.tools.MapReader as GM_MR
-import GMAP.src.tools.PrintTools as GM_PT
+import GMAP.src.tools.coding_tools as GM_ct
+import GMAP.src.tools.default_map_functions as GM_dmf
+import GMAP.src.tools.exceptions as GM_ex
+import GMAP.src.tools.file_handler as GM_fh
+import GMAP.src.tools.map_reader as GM_mr
+import GMAP.src.tools.print_tools as GM_pt
 
 
 def test_get_adjust_RunPars():
-    newfunc = GM_DMF.get_adjust_RunPars()
+    newfunc = GM_dmf.get_adjust_RunPars()
     confirm_does_nothing(newfunc)
 
 
 def test_get_adjust_map_core_raw():
-    newfunc = GM_DMF.get_adjust_map_core_raw()
+    newfunc = GM_dmf.get_adjust_map_core_raw()
     confirm_does_nothing(newfunc)
 
 
 def test_get_adjust_oscillators():
-    newfunc = GM_DMF.get_adjust_oscillators()
+    newfunc = GM_dmf.get_adjust_oscillators()
     confirm_returns_last(newfunc)
 
 
 def test_filter_single_line():
-    map_ = GM_CT.CustomClass(**{
+    map_ = GM_ct.CustomClass(**{
         "name": "mymap",
-        "Core": GM_CT.CustomClass(**{
-            "allow_ranges": GM_MR.SingleCore.allow_ranges
+        "Core": GM_ct.CustomClass(**{
+            "allow_ranges": GM_mr.SingleCore.allow_ranges
         })})
-    system = GM_CT.CustomClass(**{
+    system = GM_ct.CustomClass(**{
         "nres": 100,
         "resnums": [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7],
         "resnames": list("AABBCCDDEEFFGGHH")
@@ -51,143 +51,143 @@ def test_filter_single_line():
 
     oscillators = []
     for i in range(8):
-        oscillators.append(GM_CT.CustomClass(**{
+        oscillators.append(GM_ct.CustomClass(**{
             "used_atoms": [i * 2, i * 2 + 1]
         }))
 
     fullset = set(oscillators)
     first_half = set(oscillators[:4])
 
-    assert GM_DMF.filter_single_line(
+    assert GM_dmf.filter_single_line(
         [":All"], "white", first_half, fullset, map_, system) == (
             True, fullset)
-    assert GM_DMF.filter_single_line(
+    assert GM_dmf.filter_single_line(
         [":All"], "black", first_half, fullset, map_, system) == (
             True, set())
-    assert GM_DMF.filter_single_line(
+    assert GM_dmf.filter_single_line(
         [":None"], "white", first_half, fullset, map_, system) == (
             True, set())
-    assert GM_DMF.filter_single_line(
+    assert GM_dmf.filter_single_line(
         [":None"], "black", first_half, fullset, map_, system) == (
             True, first_half)
 
-    assert GM_DMF.filter_single_line(
+    assert GM_dmf.filter_single_line(
         ["resnums", "0-3"], "white", set(), fullset, map_, system) == (
             True, first_half)
-    assert GM_DMF.filter_single_line(
+    assert GM_dmf.filter_single_line(
         ["resnums", "4-7"], "black", fullset, fullset, map_, system) == (
             True, first_half)
 
-    assert GM_DMF.filter_single_line(
+    assert GM_dmf.filter_single_line(
         ["resnames", "A", "B", "C", "D"],
         "white", set(), fullset, map_, system) == (
             True, first_half)
-    assert GM_DMF.filter_single_line(
+    assert GM_dmf.filter_single_line(
         ["resnames", "E", "F", "G", "H"],
         "black", fullset, fullset, map_, system) == (
             True, first_half)
 
-    assert GM_DMF.filter_single_line(
+    assert GM_dmf.filter_single_line(
         ["unknown_filter"], "white", first_half, fullset, map_, system) == (
             False, first_half)
 
 
 def test_get_post_init():
-    newfunc = GM_DMF.get_post_init()
+    newfunc = GM_dmf.get_post_init()
     confirm_does_nothing(newfunc)
 
 
 def test_get_pre_run():
-    newfunc = GM_DMF.get_pre_run()
+    newfunc = GM_dmf.get_pre_run()
     confirm_does_nothing(newfunc)
 
 
 def test_get_pre_frame():
-    newfunc = GM_DMF.get_pre_frame()
+    newfunc = GM_dmf.get_pre_frame()
     confirm_does_nothing(newfunc)
 
 
 def test_get_post_frame():
-    newfunc = GM_DMF.get_post_frame()
+    newfunc = GM_dmf.get_post_frame()
     confirm_does_nothing(newfunc)
 
 
 def test_get_post_run():
-    newfunc = GM_DMF.get_post_run()
+    newfunc = GM_dmf.get_post_run()
     confirm_does_nothing(newfunc)
 
 
 def test_get_change_coup_type():
     for desout in [42, "hello", 3.141592]:
-        newfunc = GM_DMF.get_change_coup_type(desout)
+        newfunc = GM_dmf.get_change_coup_type(desout)
         confirm_returns_input(newfunc, desout)
 
 
 def test_prep_coupling():
-    newfunc = GM_DMF.get_prep_coupling()
+    newfunc = GM_dmf.get_prep_coupling()
     confirm_does_nothing(newfunc)
 
 
 def test_get_str_osc():
-    newfunc = GM_DMF.get_str_osc()
-    osc1 = GM_CT.CustomClass(**{"used_atoms": [0, 1, 2]})
-    osc2 = GM_CT.CustomClass(**{"used_atoms": [3, 4, 5]})
-    system = GM_CT.CustomClass(**{"resnums": [0, 0, 0, 1, 1, 1]})
+    newfunc = GM_dmf.get_str_osc()
+    osc1 = GM_ct.CustomClass(**{"used_atoms": [0, 1, 2]})
+    osc2 = GM_ct.CustomClass(**{"used_atoms": [3, 4, 5]})
+    system = GM_ct.CustomClass(**{"resnums": [0, 0, 0, 1, 1, 1]})
     assert newfunc(None, system, osc1) == "living on residue number 0"
     assert newfunc(None, system, osc2) == "living on residue number 1"
 
 
 def test_report_system():
-    newfunc = GM_DMF.get_report_system()
-    map_ = GM_CT.CustomClass(**{"name": "A map for testing"})
-    system = GM_CT.CustomClass(**{"oscillators_ordered": {
+    newfunc = GM_dmf.get_report_system()
+    map_ = GM_ct.CustomClass(**{"name": "A map for testing"})
+    system = GM_ct.CustomClass(**{"oscillators_ordered": {
         "A map for testing": [3, 5, 1, 8, 9]}})
     assert newfunc(map_, system) == "A map for testing:       5"
 
 
 def test_report_references():
-    newfunc = GM_DMF.get_report_references()
-    map_ = GM_CT.CustomClass(**{"references": "this is a reference"})
-    system = GM_CT.CustomClass(**{})
+    newfunc = GM_dmf.get_report_references()
+    map_ = GM_ct.CustomClass(**{"references": "this is a reference"})
+    system = GM_ct.CustomClass(**{})
     assert newfunc(map_, system) == "this is a reference"
 
 
 def test_get_get_VEG_ref():
     VEGref_res = ["residues", "0", "2"]
-    map_ = GM_CT.CustomClass(**{
+    map_ = GM_ct.CustomClass(**{
         "rawcore": {
             "VEG_reference": VEGref_res
         }
     })
 
-    mainfunc = GM_DMF.get_get_VEG_ref(map_)
-    subfunc = GM_DMF.VEG_from_residues(VEGref_res[1:])
+    mainfunc = GM_dmf.get_get_VEG_ref(map_)
+    subfunc = GM_dmf.VEG_from_residues(VEGref_res[1:])
     confirm_funcs_equal(mainfunc, subfunc)
 
     VEGref_CoM = ["CoM", "0", "2"]
     map_.rawcore["VEG_reference"] = VEGref_CoM
-    mainfunc = GM_DMF.get_get_VEG_ref(map_)
-    subfunc = GM_DMF.VEG_from_com(VEGref_CoM[1:])
+    mainfunc = GM_dmf.get_get_VEG_ref(map_)
+    subfunc = GM_dmf.VEG_from_com(VEGref_CoM[1:])
     confirm_funcs_equal(mainfunc, subfunc)
 
     VEGref_pos = ["position", "((((0+1)/2.0)+2)/2.0)"]
     map_.rawcore["VEG_reference"] = VEGref_pos
-    mainfunc = GM_DMF.get_get_VEG_ref(map_)
-    subfunc = GM_DMF.interpret_position(map_, VEGref_pos[1:], "VEG_reference")
+    mainfunc = GM_dmf.get_get_VEG_ref(map_)
+    subfunc = GM_dmf.interpret_position(map_, VEGref_pos[1:], "VEG_reference")
     confirm_funcs_equal(mainfunc, subfunc)
 
 
 def test_VEG_from_residues():
     VEGref_res = ["residues", "0", "2"]
-    map_ = GM_CT.CustomClass(**{
+    map_ = GM_ct.CustomClass(**{
         "rawcore": {
             "VEG_reference": VEGref_res
         }
     })
-    subfunc = GM_DMF.VEG_from_residues(["0", "2"])
+    subfunc = GM_dmf.VEG_from_residues(["0", "2"])
 
     system = get_system_VEGtests()
-    osc = GM_CT.CustomClass(**{
+    osc = GM_ct.CustomClass(**{
         "used_atoms": [0, 1, 2, 3]
     })
 
@@ -197,16 +197,16 @@ def test_VEG_from_residues():
 
 def test_VEG_from_com():
     VEGref_CoM = ["CoM", "0", "2"]
-    map_ = GM_CT.CustomClass(**{
+    map_ = GM_ct.CustomClass(**{
         "rawcore": {
             "VEG_reference": VEGref_CoM
         }
     })
 
-    subfunc = GM_DMF.VEG_from_com(["0", "2"])
+    subfunc = GM_dmf.VEG_from_com(["0", "2"])
 
     system = get_system_VEGtests()
-    osc = GM_CT.CustomClass(**{
+    osc = GM_ct.CustomClass(**{
         "used_atoms": [0, 1, 2, 3]
     })
 
@@ -216,15 +216,15 @@ def test_VEG_from_com():
 
 def test_interpret_position():
     VEGref_pos = ["position", "((((0+1)/2.0)+2)/2.0)"]
-    map_ = GM_CT.CustomClass(**{
+    map_ = GM_ct.CustomClass(**{
         "rawcore": {
             "VEG_reference": VEGref_pos
         }
     })
-    subfunc = GM_DMF.interpret_position(map_, VEGref_pos[1:], "VEG_reference")
+    subfunc = GM_dmf.interpret_position(map_, VEGref_pos[1:], "VEG_reference")
 
     system = get_system_VEGtests()
-    osc = GM_CT.CustomClass(**{
+    osc = GM_ct.CustomClass(**{
         "used_atoms": [0, 1, 2, 3]
     })
     osc.positions_box = (
@@ -238,14 +238,14 @@ def test_MI_MC_9(capsys):
     # too few opening brackets (should be 4 instead of two)
     VEGref_pos = ["position", "((0+1)/2.0)+2)/2.0)"]
 
-    map_ = GM_CT.CustomClass(**{
+    map_ = GM_ct.CustomClass(**{
         "rawcore": {
             "VEG_reference": VEGref_pos
         },
-        "directory": GM_FH.FileLocations.cwd
+        "directory": GM_fh.FileLocations.cwd
     })
-    _ = GM_DMF.interpret_position(map_, VEGref_pos[1:], "VEG_reference")
-    GM_PT.Printer.print_backlog()
+    _ = GM_dmf.interpret_position(map_, VEGref_pos[1:], "VEG_reference")
+    GM_pt.Printer.print_backlog()
     captured = capsys.readouterr()
     assert captured.out.endswith("MI_MC_9\n")
 
@@ -261,32 +261,32 @@ def test_MI_MC_9(capsys):
 
 
 def test_SU_NP_8(capsys):
-    map_ = GM_CT.CustomClass(**{
+    map_ = GM_ct.CustomClass(**{
         "name": "mymap",
-        "Core": GM_CT.CustomClass(**{
-            "allow_ranges": GM_MR.SingleCore.allow_ranges}),
-        "RunPars": GM_CT.CustomClass(**{
-            "MainRunPars": GM_CT.CustomClass(**{
+        "Core": GM_ct.CustomClass(**{
+            "allow_ranges": GM_mr.SingleCore.allow_ranges}),
+        "RunPars": GM_ct.CustomClass(**{
+            "MainRunPars": GM_ct.CustomClass(**{
                 "singles_whitelist_dict": {"mymap": [[":All"]]},
                 "singles_blacklist_dict": {"mymap": [[":None"]]}})})
     })
-    system = GM_CT.CustomClass(**{
+    system = GM_ct.CustomClass(**{
         "nres": 100})
     oscillators = []
     for i in range(8):
-        oscillators.append(GM_CT.CustomClass(**{
+        oscillators.append(GM_ct.CustomClass(**{
             "used_atoms": [i * 2, i * 2 + 1]
         }))
 
-    func = GM_DMF.get_filter_oscillators()
+    func = GM_dmf.get_filter_oscillators()
 
     map_.RunPars.MainRunPars.singles_whitelist_dict["mymap"] = [["unknown"]]
-    with pytest.raises(GM_Ex.GmapFileSyntaxError, match="SU_NP_8$"):
+    with pytest.raises(GM_ex.GmapFileSyntaxError, match="SU_NP_8$"):
         func(map_, system, oscillators)
     map_.RunPars.MainRunPars.singles_whitelist_dict["mymap"] = [[":All"]]
 
     map_.RunPars.MainRunPars.singles_blacklist_dict["mymap"] = [["unknown"]]
-    with pytest.raises(GM_Ex.GmapFileSyntaxError, match="SU_NP_8$"):
+    with pytest.raises(GM_ex.GmapFileSyntaxError, match="SU_NP_8$"):
         func(map_, system, oscillators)
     map_.RunPars.MainRunPars.singles_blacklist_dict["mymap"] = [[":None"]]
 
@@ -294,17 +294,17 @@ def test_SU_NP_8(capsys):
     # errors in filter_single_line()
 
     # Trigger the first error (non-ints in input)
-    with pytest.raises(GM_Ex.GmapFileSyntaxError, match="SU_NP_8$"):
-        _ = GM_DMF.filter_single_line(
+    with pytest.raises(GM_ex.GmapFileSyntaxError, match="SU_NP_8$"):
+        _ = GM_dmf.filter_single_line(
             ["resnums", "not", "a", "number"], "white", set(), set("hello"),
             map_, system)
 
-    with pytest.raises(GM_Ex.GmapIndexError, match="SU_NP_8$"):
-        _ = GM_DMF.filter_single_line(
+    with pytest.raises(GM_ex.GmapIndexError, match="SU_NP_8$"):
+        _ = GM_dmf.filter_single_line(
             ["resnums", "102"], "white", set(), set("hello"), map_, system)
 
-    with pytest.raises(GM_Ex.GmapFileSyntaxError, match="SU_NP_8$"):
-        _ = GM_DMF.filter_single_line(
+    with pytest.raises(GM_ex.GmapFileSyntaxError, match="SU_NP_8$"):
+        _ = GM_dmf.filter_single_line(
             ["resnums", "5-7-3"], "white", set(), set("hello"), map_, system)
 
 
@@ -392,8 +392,8 @@ def confirm_funcs_equal(funcA, funcB):
 
 
 def get_system_VEGtests():
-    system = GM_CT.CustomClass(**{
-        "residues": GM_CT.CustomClass(**{
+    system = GM_ct.CustomClass(**{
+        "residues": GM_ct.CustomClass(**{
             "first_ix": [0, 2, 4, 6],
             "last_ix": [1, 3, 5, 7]
         }),
@@ -417,4 +417,4 @@ def get_system_VEGtests():
 
 # just for coverage....
 def test_unused():
-    assert GM_DMF.unused_user() is None
+    assert GM_dmf.unused_user() is None

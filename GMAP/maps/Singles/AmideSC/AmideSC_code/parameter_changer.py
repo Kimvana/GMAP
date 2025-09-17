@@ -1,6 +1,6 @@
 
 # GMAP imports
-import GMAP.src.tools.PrintTools as GM_PT
+import GMAP.src.tools.print_tools as GM_pt
 
 
 def adjust_map_core_raw(map_):
@@ -48,7 +48,7 @@ def adjust_map_core_raw(map_):
             map_.rawcore["dipole_gas_phase"] = ["0.276"]
         case "Jansen":
             if not map_.RunPars.frequency_map_choice == "Jansen":
-                GM_PT.Printer.warning(  # no exitbool - error is not fatal.
+                GM_pt.Printer.warning(  # no exitbool - error is not fatal.
                     "Error in the map AmideSC: The Jansen dipole map was "
                     "requested without using the Jansen frequency map. Either "
                     "change your frequency map choice to Jansen, or "
