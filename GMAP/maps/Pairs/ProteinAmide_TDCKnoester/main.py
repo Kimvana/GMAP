@@ -18,16 +18,16 @@ def GM_prep_coupling(map_, system, oscixlist, osclist):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everyting the program currently knows
         about the MD system.
     oscixlist : list of int
         The oscillator indices of all oscillators that are treated by
         this map. Some might be only in a single pair, others in many.
-    osclist : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osclist : list of :class:`~GMAP.src.tools.system_reader.Oscillator`
         All oscillators treated by this map.
     """
 
@@ -58,10 +58,10 @@ def GM_calc_coupling(map_, system, hamiltonian):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everyting the program currently knows
         about the MD system.
     hamiltonian : `np.ndarray`
@@ -128,10 +128,10 @@ def GM_pre_run(map_, system):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everyting the program currently knows
         about the MD system.
     """

@@ -1,7 +1,7 @@
-GMAP.src.tools.MapReader module
+GMAP.src.tools.map_reader module
 ===============================
 
-.. automodule:: GMAP.src.tools.MapReader
+.. automodule:: GMAP.src.tools.map_reader
    :members:
    :undoc-members:
    :show-inheritance:

@@ -1,6 +1,6 @@
 """
 Tests all the functions/classes/methods in the file:
-src/tools/ParameterParser.py.
+src/tools/parameter_parser.py.
 
 Missing tests:
 
@@ -161,14 +161,14 @@ class TestRefPars:
             "float_test_free_list": [32.0, 64.1],
             "float_test_choice_list": [99.9, 71.5],
             "float_test_choice_list2": [33.0, 42.7],
-            "path_test_free": [Path("../test_MathFunctions.py")],
+            "path_test_free": [Path("../test_math_functions.py")],
             "path_test_free_new": [Path("test_outfile.txt")],
             "path_test_free_new_list": [
                 Path("test_outfile_0_1.txt"), Path("test_outfile_0_2.txt")
             ],
             "path_test_dir1": [Path("../../test_tools")],
             "path_test_dir2": [Path("../Data")],
-            "path_test_rel11": [Path("test_MathFunctions.py")],
+            "path_test_rel11": [Path("test_math_functions.py")],
             "path_test_rel21_new": [Path("test_outfile_2_1.txt")],
             "path_test_rel22_new_list": [
                 Path("test_outfile_2_2_1.txt"), Path("test_outfile_2_2_2.txt")
@@ -630,16 +630,16 @@ class TestRawPars:
             "float_test_free_list": [32.0, 87.0],
             "float_test_choice_list": [99.9],
             "float_test_choice_list2": [44.5, 33.0],
-            "path_test_free": [Path("../test_MathFunctions.py")],
+            "path_test_free": [Path("../test_math_functions.py")],
             "path_test_free_new": [Path("tost_outfile.txt")],
-            # "path_test_choice": [Path("../test_MathFunctions.py")],
+            # "path_test_choice": [Path("../test_math_functions.py")],
             "path_test_free_new_list": [
                 Path("test_outfile_0_1.txt"), Path("test_outfile_0_2.txt")
             ],
             "path_test_dir1": [Path("../../test_tools")],
             "path_test_dir2": [Path("../Data/testout")],
-            "path_test_rel11": [Path("test_ParameterParser.py")],
-            # "path_test_rel12_choice": [Path("test_MathFunctions.py")],
+            "path_test_rel11": [Path("test_parameter_parser.py")],
+            # "path_test_rel12_choice": [Path("test_math_functions.py")],
             "path_test_rel21_new": [Path("tost_outfile_2_1.txt")],
             "path_test_rel22_new_list": [
                 Path("test_outfile_2_2_1.txt"), Path("tost_outfile_2_2_2.txt")
@@ -1072,7 +1072,7 @@ class TestRunPars:
             "-tp9", "tast_outfile_2_2_4.txt", "tast_outfile_2_2_0.txt\\;",
             "--log_directory", "tests/test_tools/Data",
             "--output_directory", "tests/test_tools/Data",
-            "--path_test_nodef", "tests/test_tools/test_MathFunctions.py"
+            "--path_test_nodef", "tests/test_tools/test_math_functions.py"
         ]
 
         (
@@ -1166,7 +1166,7 @@ class TestRunPars:
         assert RunPars.float_test_choice_list2 == [44.5, 33.0]
 
         assert RunPars.path_test_free == Path(
-            curpath / "../test_MathFunctions.py").resolve()
+            curpath / "../test_math_functions.py").resolve()
         assert RunPars.path_test_free_new == Path(
             curpath / "../Data/tost_outfile.txt").resolve()
         # assert RunPars.path_test_choice == Path(
@@ -1180,9 +1180,9 @@ class TestRunPars:
         assert RunPars.path_test_dir2 == Path(
             curpath / "../Data/testout2").resolve()
         assert RunPars.path_test_rel11 == Path(
-            curpath / "../test_ParameterParser.py").resolve()
+            curpath / "../test_parameter_parser.py").resolve()
         # assert RunPars.path_test_rel12_choice == Path(
-        #     curpath / "../test_MathFunctions.py").resolve()
+        #     curpath / "../test_math_functions.py").resolve()
         assert RunPars.path_test_rel21_new == Path(
             curpath / "../Data/testout2/tost_outfile_2_1.txt").resolve()
         assert RunPars.path_test_rel22_new_list == [
@@ -1350,7 +1350,7 @@ class TestRunPars:
         for RunPars, exp_ddf, exp_ndf, exp_dnf, exp_nnf in zip(
             allrunpars, expected_ddf, expected_ndf, expected_dnf, expected_nnf
         ):
-            # GM_PT.devprint(counter)
+            # GM_pt.devprint(counter)
             # counter += 1
             assert RunPars.def_def_file == exp_ddf
             assert RunPars.nod_def_file == exp_ndf
@@ -1361,7 +1361,7 @@ class TestRunPars:
         pardict = {
             "start_frame": ["4"],
             "int_test_nodef": ["33"],
-            "path_test_nodef": [Path("test_MathFunctions.py")]
+            "path_test_nodef": [Path("test_math_functions.py")]
         }
 
         curpath = Path(__file__).resolve()
@@ -1384,7 +1384,7 @@ class TestRunPars:
             "start_frame": ["4"],
             "number_frames": ["20"],
             "int_test_nodef": ["33"],
-            "path_test_nodef": [Path("test_MathFunctions.py")]
+            "path_test_nodef": [Path("test_math_functions.py")]
         }
 
         curpath = Path(__file__).resolve()
@@ -1404,7 +1404,7 @@ class TestRunPars:
         pardict = {
             "number_frames": ["4"],
             "int_test_nodef": ["33"],
-            "path_test_nodef": [Path("test_MathFunctions.py")]
+            "path_test_nodef": [Path("test_math_functions.py")]
         }
 
         curpath = Path(__file__).resolve()
@@ -1426,7 +1426,7 @@ class TestRunPars:
         pardict = {
             "stop_frame": ["4"],
             "int_test_nodef": ["33"],
-            "path_test_nodef": [Path("test_MathFunctions.py")]
+            "path_test_nodef": [Path("test_math_functions.py")]
         }
 
         curpath = Path(__file__).resolve()
@@ -1455,7 +1455,7 @@ class TestRunPars:
                 ["DipDip", "CystBridge:CystBridge", "AmideSC:AmideBB"]
             ],
             "int_test_nodef": ["33"],
-            "path_test_nodef": [Path("test_MathFunctions.py")]
+            "path_test_nodef": [Path("test_math_functions.py")]
         }
 
         curpath = Path(__file__).resolve()
@@ -1503,7 +1503,7 @@ class TestRunPars:
     def test_resolve_singles_BWlist(self):
         cmdline = [
             "--int_test_nodef", "22",
-            "--path_test_nodef", "tests/test_tools/test_MathFunctions.py"
+            "--path_test_nodef", "tests/test_tools/test_math_functions.py"
         ]
         pardict = {
             "maps_to_use": ["AmideSC", "AmideBB", "CystBridge"],
@@ -1519,7 +1519,7 @@ class TestRunPars:
 
         cmdline = [
             "--int_test_nodef", "22",
-            "--path_test_nodef", "tests/test_tools/test_MathFunctions.py"
+            "--path_test_nodef", "tests/test_tools/test_math_functions.py"
         ]
         pardict = {
             "maps_to_use": ["AmideSC", "AmideBB", "CystBridge"],
@@ -1537,7 +1537,7 @@ class TestRunPars:
     def test_final_resolve_coupling_scale(self):
         cmdline = [
             "--int_test_nodef", "22",
-            "--path_test_nodef", "tests/test_tools/test_MathFunctions.py"
+            "--path_test_nodef", "tests/test_tools/test_math_functions.py"
         ]
         pardict = {
             "maps_to_use": ["AmideSC", "AmideBB", "CystBridge"],
@@ -1558,7 +1558,7 @@ class TestRunPars:
 
     def test_SU_NP_1(self):
         cmdline = [
-            "--path_test_nodef", "tests/test_tools/test_MathFunctions.py"
+            "--path_test_nodef", "tests/test_tools/test_math_functions.py"
         ]
         self.systest_runpars(cmdline, "SU_NP_1", GM_ex.GmapParameterError)
 
@@ -1576,7 +1576,7 @@ class TestRunPars:
 
         cmdline = [
             "--int_test_nodef", "22",
-            "--path_test_nodef", "tests/test_tools/test_MathFunctions.py",
+            "--path_test_nodef", "tests/test_tools/test_math_functions.py",
             "--path_test_free_new", "this/file/location/doesnt_exist.really"
         ]
         self.systest_runpars(cmdline, "SU_NP_2", GM_ex.GmapFileNotFoundError)
@@ -1602,7 +1602,7 @@ class TestRunPars:
     def test_SU_NP_7(self):
         cmdline = [
             "--int_test_nodef", "22",
-            "--path_test_nodef", "tests/test_tools/test_MathFunctions.py",
+            "--path_test_nodef", "tests/test_tools/test_math_functions.py",
             "--estatic_smooth_range", "40"
         ]
         pardict = {"estatic_range": ["10"]}
@@ -1611,7 +1611,7 @@ class TestRunPars:
 
         cmdline = [
             "--int_test_nodef", "22",
-            "--path_test_nodef", "tests/test_tools/test_MathFunctions.py",
+            "--path_test_nodef", "tests/test_tools/test_math_functions.py",
             "--estatics_method", "perres_nocut"
         ]
         pardict = {"estatic_smooth_range": ["20"]}
@@ -1622,7 +1622,7 @@ class TestRunPars:
         # invalid length (no couppairs given)
         cmdline = [
             "--int_test_nodef", "22",
-            "--path_test_nodef", "tests/test_tools/test_MathFunctions.py"
+            "--path_test_nodef", "tests/test_tools/test_math_functions.py"
         ]
         pardict = {
             "maps_to_use": ["AmideSC", "AmideBB", "CystBridge"],
@@ -1638,7 +1638,7 @@ class TestRunPars:
         # invalid couppair choice (group not chosen/available)
         cmdline = [
             "--int_test_nodef", "22",
-            "--path_test_nodef", "tests/test_tools/test_MathFunctions.py"
+            "--path_test_nodef", "tests/test_tools/test_math_functions.py"
         ]
         pardict = {
             "maps_to_use": ["AmideSC", "AmideBB", "CystBridge"],
@@ -1654,7 +1654,7 @@ class TestRunPars:
         # invalid amount of items in coupling choice 'pair' (not 1 colon)
         cmdline = [
             "--int_test_nodef", "22",
-            "--path_test_nodef", "tests/test_tools/test_MathFunctions.py"
+            "--path_test_nodef", "tests/test_tools/test_math_functions.py"
         ]
         pardict = {
             "maps_to_use": ["AmideSC", "AmideBB", "CystBridge"],
@@ -1670,7 +1670,7 @@ class TestRunPars:
         # first item in coupling choice pair is 'nothing'
         cmdline = [
             "--int_test_nodef", "22",
-            "--path_test_nodef", "tests/test_tools/test_MathFunctions.py"
+            "--path_test_nodef", "tests/test_tools/test_math_functions.py"
         ]
         pardict = {
             "maps_to_use": ["AmideSC", "AmideBB", "CystBridge"],
@@ -1686,7 +1686,7 @@ class TestRunPars:
         # invalid length for coupling scaling
         cmdline = [
             "--int_test_nodef", "22",
-            "--path_test_nodef", "tests/test_tools/test_MathFunctions.py"
+            "--path_test_nodef", "tests/test_tools/test_math_functions.py"
         ]
         pardict = {
             "maps_to_use": ["AmideSC", "AmideBB", "CystBridge"],
@@ -1702,7 +1702,7 @@ class TestRunPars:
         # invalid coupling scale choice (can't be float'ed)
         cmdline = [
             "--int_test_nodef", "22",
-            "--path_test_nodef", "tests/test_tools/test_MathFunctions.py"
+            "--path_test_nodef", "tests/test_tools/test_math_functions.py"
         ]
         pardict = {
             "maps_to_use": ["AmideSC", "AmideBB", "CystBridge"],
@@ -1718,7 +1718,7 @@ class TestRunPars:
         # singles_B/Wlist have fewer than 2 arguments
         cmdline = [
             "--int_test_nodef", "22",
-            "--path_test_nodef", "tests/test_tools/test_MathFunctions.py",
+            "--path_test_nodef", "tests/test_tools/test_math_functions.py",
             "--singles_whitelist", ":All\\;"
         ]
         pardict = {
@@ -1732,7 +1732,7 @@ class TestRunPars:
         # singles_B/Wlist has invalid map choice
         cmdline = [
             "--int_test_nodef", "22",
-            "--path_test_nodef", "tests/test_tools/test_MathFunctions.py",
+            "--path_test_nodef", "tests/test_tools/test_math_functions.py",
             "--singles_whitelist", ":notvalid", "choice\\;"
         ]
         pardict = {
@@ -1828,12 +1828,12 @@ class TestMapPars:
                 "float_test_choice_list": [99.9, 71.5, 43.0, 88.4],
                 "float_test_choice_list2": [44.5, 33.0, 12.8, 42.7],
                 # "path_test_choice": [
-                #     Path("../../../../test_ParameterParser.py"),
-                #     Path("../../../../test_MathFunctions.py")
+                #     Path("../../../../test_parameter_parser.py"),
+                #     Path("../../../../test_math_functions.py")
                 # ],
                 # "path_test_rel12_choice": [
-                #     Path("test_ParameterParser.py"),
-                #     Path("test_MathFunctions.py")
+                #     Path("test_parameter_parser.py"),
+                #     Path("test_math_functions.py")
                 # ],
                 # "path_test_rel23_new_choice": [
                 #     Path("test_outfile_2_3_1.txt"),
@@ -1866,17 +1866,17 @@ class TestMapPars:
                 "float_test_free_list": [32.0, 64.1],
                 "float_test_choice_list": [99.9, 71.5],
                 "float_test_choice_list2": [33.0, 42.7],
-                "path_test_free": [Path("../../../../test_MathFunctions.py")],
+                "path_test_free": [Path("../../../../test_math_functions.py")],
                 "path_test_free_new": [Path("test_outfile.txt")],
                 # "path_test_choice": [
-                #     Path("../../../../test_ParameterParser.py")],
+                #     Path("../../../../test_parameter_parser.py")],
                 "path_test_free_new_list": [
                     Path("test_outfile_0_1.txt"), Path("test_outfile_0_2.txt")
                 ],
                 "path_test_dir1": [Path("../../../../../test_tools")],
                 "path_test_dir2": [Path("../../../../Data")],
-                "path_test_rel11": [Path("test_MathFunctions.py")],
-                # "path_test_rel12_choice": [Path("test_ParameterParser.py")],
+                "path_test_rel11": [Path("test_math_functions.py")],
+                # "path_test_rel12_choice": [Path("test_parameter_parser.py")],
                 "path_test_rel21_new": [Path("test_outfile_2_1.txt")],
                 "path_test_rel22_new_list": [
                     Path("test_outfile_2_2_1.txt"),

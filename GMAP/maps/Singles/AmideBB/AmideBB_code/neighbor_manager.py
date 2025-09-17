@@ -21,7 +21,7 @@ class NeighborMap:
     ----------
     fname : str or `pathlib.Path`
         the name of the file that contains the map information
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
 
@@ -92,9 +92,9 @@ class NeighborMap:
 
         Parameters
         ----------
-        Nosc, Cosc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        Nosc, Cosc : :class:`~GMAP.src.tools.system_reader.Oscillator`
             The oscillators for which the shift should be calculated.
-        system : :class:`~GMAP.src.tools.SystemReader.System`
+        system : :class:`~GMAP.src.tools.system_reader.System`
             The object that stores everything the program currently
             knows about the system being treated (names, numbers, types,
             masses, charges of all atoms, for example)
@@ -145,7 +145,7 @@ def read_maps(map_):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
     """

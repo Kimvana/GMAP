@@ -10,7 +10,7 @@ This is an optional file containing all keyword parameters the map needs. The fi
 
 Any parameter specified here can be set/supplied by the user, so choices can vary for each calculation.
 
-In the program, the contents of this file are stored in the map-specific instance of a :class:`~GMAP.src.tools.MapReader.Map` object, as the `RefPars` attribute.
+In the program, the contents of this file are stored in the map-specific instance of a :class:`~GMAP.src.tools.map_reader.Map` object, as the `RefPars` attribute.
 
 For a good example, you can look at the file 'reference_parameters.ref' in the sourcefiles directory. It contains all the parameters used by the program.
 

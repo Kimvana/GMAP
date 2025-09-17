@@ -27,7 +27,7 @@ class NeighborMap:
     ----------
     fname : str or `pathlib.Path`
         the name of the file that contains the map information
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
 
@@ -100,9 +100,9 @@ class NeighborMap:
 
         Parameters
         ----------
-        Nosc, Cosc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        Nosc, Cosc : :class:`~GMAP.src.tools.system_reader.Oscillator`
             The oscillators for which the shift should be calculated.
-        system : :class:`~GMAP.src.tools.SystemReader.System`
+        system : :class:`~GMAP.src.tools.system_reader.System`
             The object that stores everything the program currently
             knows about the system being treated (names, numbers, types,
             masses, charges of all atoms, for example)
@@ -152,10 +152,10 @@ def GM_calc_coupling(map_, system, hamiltonian):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everyting the program currently knows
         about the MD system.
     hamiltonian : `np.ndarray`
@@ -176,10 +176,10 @@ def GM_pre_run(map_, system):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everyting the program currently knows
         about the MD system.
     """
@@ -202,10 +202,10 @@ def determine_map(pair, map_, system):
     pair : Tuple of 2 int
         The oscillator indices of the two oscillators making up this
         pair.
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -271,10 +271,10 @@ def GM_post_init(map_, system):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -299,12 +299,12 @@ def DLcheck(osc1, osc2, map_, system):
 
     Parameters
     ----------
-    osc1, osc2 : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osc1, osc2 : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The oscillators surrounding the amino acid in question
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)

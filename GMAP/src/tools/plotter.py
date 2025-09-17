@@ -26,10 +26,10 @@ def plot_coupling_choices(RunPars, system):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)

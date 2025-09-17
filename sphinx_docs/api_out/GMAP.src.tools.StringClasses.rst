@@ -1,7 +1,7 @@
-GMAP.src.tools.StringClasses module
+GMAP.src.tools.string_classes module
 ===================================
 
-.. automodule:: GMAP.src.tools.StringClasses
+.. automodule:: GMAP.src.tools.string_classes
    :members:
    :undoc-members:
    :show-inheritance:

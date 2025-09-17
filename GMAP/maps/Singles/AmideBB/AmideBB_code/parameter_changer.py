@@ -15,7 +15,7 @@ def adjust_map_core_raw(map_):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
     """
@@ -73,7 +73,7 @@ def adjust_mcr_freqchoice(map_):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
     """
@@ -140,19 +140,19 @@ def oscillator_sorter(map_, system, oscillator_list):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    oscillator_list : list of :class:`~GMAP.src.tools.system_reader.Oscillator`
         All oscillators belonging to a single struct of this map.
 
     Returns
     -------
-    newlist : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    newlist : list of :class:`~GMAP.src.tools.system_reader.Oscillator`
         The same oscillators as in oscillator list, but in the desired
         order.
     """
@@ -205,7 +205,7 @@ def initialize_prepro_properties(map_):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
     """

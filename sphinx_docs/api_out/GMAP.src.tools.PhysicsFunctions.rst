@@ -1,7 +1,7 @@
-GMAP.src.tools.PhysicsFunctions module
+GMAP.src.tools.physics_functions module
 ======================================
 
-.. automodule:: GMAP.src.tools.PhysicsFunctions
+.. automodule:: GMAP.src.tools.physics_functions
    :members:
    :undoc-members:
    :show-inheritance:

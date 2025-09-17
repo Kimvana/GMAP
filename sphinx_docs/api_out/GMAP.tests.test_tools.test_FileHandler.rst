@@ -1,7 +1,7 @@
-GMAP.tests.test\_tools.test\_FileHandler module
+GMAP.tests.test\_tools.test\_file_handler module
 ===============================================
 
-.. automodule:: GMAP.tests.test_tools.test_FileHandler
+.. automodule:: GMAP.tests.test_tools.test_file_handler
    :members:
    :undoc-members:
    :show-inheritance:

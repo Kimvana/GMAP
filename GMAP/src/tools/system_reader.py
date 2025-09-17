@@ -18,7 +18,7 @@ class System:
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
 
@@ -83,7 +83,7 @@ class System:
         The radius of the sphere in which distances can be calculated
         accurately. If the length of any vector exceeds this size, there
         is a chance that vector is not actually the shortest available.
-    residues : :class:`~GMAP.src.tools.SystemReader.Residues`
+    residues : :class:`~GMAP.src.tools.system_reader.Residues`
         This class contains information on a per-residue basis instead
         of a per-atom basis like this class does.
     rightangled : bool
@@ -93,7 +93,7 @@ class System:
         self.charges) equals 0. The precision used can be changed using
         the parameter
         :ref:`neutral_charge_threshold<UserGuide_page_parameter_overview>`.
-    oscillators : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    oscillators : list of :class:`~GMAP.src.tools.system_reader.Oscillator`
         All oscillators that were found in the MD system. These are the
         ones calculations will be performed on.
     influencers_atix : list of int
@@ -101,13 +101,13 @@ class System:
     nosc : int
         The amount of oscillators present in the system.
     oscillators_ordered : dict of str: list of \
-        :class:`~GMAP.src.tools.SystemReader.Oscillator` pairs
+        :class:`~GMAP.src.tools.system_reader.Oscillator` pairs
         All oscillators, but grouped by the map they belong to.
     oscillators_ordered_ix : dict of str: list of int pairs
         Same as oscillators_ordered, but only listing oscillator indices
         instead of oscillator objects.
     oscillators_ordered_coup : dict of str: list of \
-        :class:`~GMAP.src.tools.SystemReader.Oscillator` pairs
+        :class:`~GMAP.src.tools.system_reader.Oscillator` pairs
         All oscillators, but grouped by the coupling map they belong to.
         This structure is intended for use by prep-methods of coupling
         maps, as it is a simple overview of all oscillators that the
@@ -151,7 +151,7 @@ class System:
 
         Parameters
         ----------
-        RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
             The 'main' RunPars instance containing all the basic
             run-defining parameters.
         """
@@ -296,7 +296,7 @@ class System:
 
         Parameters
         ----------
-        RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
             The 'main' RunPars instance containing all the basic
             run-defining parameters.
         """
@@ -421,7 +421,7 @@ class System:
 
         Parameters
         ----------
-        RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
             The 'main' RunPars instance containing all the basic
             run-defining parameters.
         """
@@ -456,7 +456,7 @@ class System:
         # at them / edit.
 
         nosc = sum([len(oscillators) for oscillators in allgroups])
-        # GM_PT.Printer.print(2, f"found {self.nosc} oscillators.")
+        # GM_pt.Printer.print(2, f"found {self.nosc} oscillators.")
         if nosc == 0:
             GM_pt.Printer.warning(
                 "\nNone of the requested oscillators could be found in the "
@@ -497,7 +497,7 @@ class System:
             oscillator.oscix = oscix
 
         self.nosc = len(self.oscillators)
-        # GM_PT.Printer.print(2, f"found {self.nosc} oscillators.")
+        # GM_pt.Printer.print(2, f"found {self.nosc} oscillators.")
         if self.nosc == 0:
             GM_pt.Printer.warning(
                 "\nNone of the requested oscillators could be found in the "
@@ -516,15 +516,15 @@ class System:
 
         Parameters
         ----------
-        struct : :class:`~GMAP.src.tools.MapReader.Structure`
+        struct : :class:`~GMAP.src.tools.map_reader.Structure`
             The structure template that will be matched.
-        map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+        map_ : :class:`~GMAP.src.tools.map_reader.SingleMap`
             The map instance the structure belongs to.
 
         Returns
         -------
         all_oscillators : list of \
-            :class:`~GMAP.src.tools.SystemReader.Oscillator`
+            :class:`~GMAP.src.tools.system_reader.Oscillator`
             All oscillators that were found matching the given
             structure.
         """
@@ -561,7 +561,7 @@ class System:
 
         Parameters
         ----------
-        residue : :class:`~GMAP.src.tools.MapReader.Residue`
+        residue : :class:`~GMAP.src.tools.map_reader.Residue`
             The desired residue template for which the MD system will be
             searched.
 
@@ -700,7 +700,7 @@ class System:
             candidate for this residue. Each group in list(2) is itself
             a list of the (system-) indices of the atoms that make up
             the group.
-        struct : :class:`~GMAP.src.tools.MapReader.Structure`
+        struct : :class:`~GMAP.src.tools.map_reader.Structure`
             What the oscillator we're looking for looks like.
 
         Returns
@@ -782,7 +782,7 @@ class System:
             missing.
         base_residue : list of int
             The system indices of the group we're trying to extend
-        struct : :class:`~GMAP.src.tools.MapReader.Structure`
+        struct : :class:`~GMAP.src.tools.map_reader.Structure`
             What the oscillator we're looking for looks like.
         all_oscillators : list of list of list of int
             Contains all groups of atoms that are a match for each of
@@ -830,7 +830,7 @@ class System:
 
         Parameters
         ----------
-        RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
             The 'main' RunPars instance containing all the basic
             run-defining parameters.
         """
@@ -854,7 +854,7 @@ class System:
 
         Parameters
         ----------
-        RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
             The 'main' RunPars instance containing all the basic
             run-defining parameters.
         """
@@ -973,7 +973,7 @@ class System:
 
         Parameters
         ----------
-        RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
             The 'main' RunPars instance containing all the basic
             run-defining parameters.
         """
@@ -1013,7 +1013,7 @@ class Residues:
 
     Parameters
     ----------
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The class containing all the information on the system of the
         MD trajectory.
 
@@ -1117,18 +1117,18 @@ class Oscillator:
 
     Parameters
     ----------
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The class containing all the information on the system of the
         MD trajectory.
     atoms : list of int
         The indices of the atoms that make up this oscillator. All atoms
         specified in functional_group are in here.
-    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map that this oscillator belongs to.
 
     Attributes
     ----------
-    Map : :class:`~GMAP.src.tools.MapReader.SingleMap`
+    Map : :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map that this oscillator belongs to.
     used_atoms : list of int
         Using Map.used_atoms - contains the system indices of the atoms
@@ -1295,7 +1295,7 @@ class Oscillator:
 
         Parameters
         ----------
-        system : :class:`~GMAP.src.tools.SystemReader.System`
+        system : :class:`~GMAP.src.tools.system_reader.System`
             The object that stores all information on the MD system
         """
 
@@ -1321,7 +1321,7 @@ class Oscillator:
 
         Parameters
         ----------
-        system : :class:`~GMAP.src.tools.SystemReader.System`
+        system : :class:`~GMAP.src.tools.system_reader.System`
             The class containing all the information on the system of the
             MD trajectory.
 
@@ -1345,7 +1345,7 @@ class Oscillator:
 
         Parameters
         ----------
-        system : :class:`~GMAP.src.tools.SystemReader.System`
+        system : :class:`~GMAP.src.tools.system_reader.System`
             The class containing all the information on the system of
             the MD trajectory.
 
@@ -1372,7 +1372,7 @@ def gen_universe(RunPars):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
 
@@ -1445,7 +1445,7 @@ def check_box_charge(RunPars, charges):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     charges : np.ndarray

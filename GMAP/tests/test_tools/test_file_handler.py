@@ -1,6 +1,6 @@
 """
 Tests all the functions/classes/methods in the file:
-src/tools/FileHandler.py.
+src/tools/file_handler.py.
 
 Missing tests:
 

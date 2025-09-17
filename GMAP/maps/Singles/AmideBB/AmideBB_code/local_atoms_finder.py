@@ -5,14 +5,14 @@ def find_local_atoms(map_, system, oscillator_list):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    oscillator_list : list of :class:`~GMAP.src.tools.system_reader.Oscillator`
         All oscillators belonging to a single struct of this map.
     """
 
@@ -47,7 +47,7 @@ def get_Tokmakoff_locals(oscillator_list):
 
     Parameters
     ----------
-    oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    oscillator_list : list of :class:`~GMAP.src.tools.system_reader.Oscillator`
         All oscillators belonging to a single struct of this map.
     """
 
@@ -63,11 +63,11 @@ def add_proline_HDs(system, oscillator_list):
 
     Parameters
     ----------
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    oscillator_list : list of :class:`~GMAP.src.tools.system_reader.Oscillator`
         All oscillators belonging to a single struct of this map.
     """
 
@@ -92,11 +92,11 @@ def get_Nterm_locals(system, osc):
 
     Parameters
     ----------
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osc : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The oscillator for which these local atoms need to be found
     """
 
@@ -114,11 +114,11 @@ def get_Cterm_locals(osc):
 
     Parameters
     ----------
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osc : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The oscillator for which these local atoms need to be found
     """
 
@@ -135,11 +135,11 @@ def get_proline_atoms(system, osc):
 
     Parameters
     ----------
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osc : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The oscillator for which these local atoms need to be found
     """
 
@@ -178,14 +178,14 @@ def get_CA_hydrogen_atoms(map_, system, osc):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osc : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The oscillator for which these local atoms need to be found
     """
 

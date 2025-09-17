@@ -1621,9 +1621,9 @@ class RawPars:
         """Check whether `not_found` is empty
 
         This method is called after
-        :meth:`~GMAP.src.tools.MapReader.Map.find_rawpars` is run for
+        :meth:`~GMAP.src.tools.map_reader.Map.find_rawpars` is run for
         every available instance of
-        :class:`~GMAP.src.tools.MapReader.Map`. Any parameters
+        :class:`~GMAP.src.tools.map_reader.Map`. Any parameters
         recognised there were removed from
         the `not_found` dictionary, so it should be empty, if all
         parameters were understood. Here we check if that is indeed the
@@ -1680,7 +1680,7 @@ class RunPars:
         Whether this instance of RunPar belongs to the main program (and
         thus contains parameters about the runtime itself) - indicated
         by 'True', or if it belongs to an instance of
-        :class:`~GMAP.src.tools.MapReader.Map` - indicated by 'False'.
+        :class:`~GMAP.src.tools.map_reader.Map` - indicated by 'False'.
     MainRunPars : :class:`RunPars` or None, default=None
         The instance of RunPars that is the main (and thus contains the
         main parameters). If the main instance is still being created,
@@ -1703,7 +1703,7 @@ class RunPars:
         Whether this instance of RunPar belongs to the main program (and
         thus contains parameters about the runtime itself) - indicated
         by 'True', or if it belongs to an instance of
-        :class:`~GMAP.src.tools.MapReader.Map` - indicated by 'False'.
+        :class:`~GMAP.src.tools.map_reader.Map` - indicated by 'False'.
     MainRunPars : :class:`RunPars`
         The instance of RunPars that is the main (and thus contains the
         main parameters). When assigning this attribute to the 'main'
@@ -1711,21 +1711,21 @@ class RunPars:
     detected_requires_bonds : bool
         Whether (one of) the maps requested for use require(s) bonds
     available_maps_singles : dict of str: \
-        :class:`~GMAP.src.tools.MapReader.SingleMap` pairs
+        :class:`~GMAP.src.tools.map_reader.SingleMap` pairs
         The maps that are available during the calculation. These are
         available for any other maps that might want to know something
         from these.
     requested_mapdict : dict of str: \
-        :class:`~GMAP.src.tools.MapReader.SingleMap` pairs
+        :class:`~GMAP.src.tools.map_reader.SingleMap` pairs
         The maps that should be applied during the calculation. This
         must be a subset of available_maps_singles
     available_maps_pairs : dict of str: \
-        :class:`~GMAP.src.tools.MapReader.PairMap` pairs
+        :class:`~GMAP.src.tools.map_reader.PairMap` pairs
         The pairmaps that are available during the calculation. If any
         pairmap requires another, it must be present in at least this
         list.
     requested_pairmapdict : dict of str: \
-        :class:`~GMAP.src.tools.MapReader.PairMap` pairs
+        :class:`~GMAP.src.tools.map_reader.PairMap` pairs
         The pair maps that should be applied during the calculation.
         This must be a subset of available_maps_pairs.
     pair_v_coupling_dict : dict of (tuple of str): str pairs
@@ -2668,7 +2668,7 @@ def get_parameters(in_parfile, argslist):
     parameter file. Users can have a different set of defaults defined
     in the default parameter file, and specific choices for this (set
     of) runs in the input parameter file and the command line. This
-    function uses the functionality in src/tools/ParameterParser.py to
+    function uses the functionality in src/tools/parameter_parser.py to
     collect all choices, and construct a final set of choices from them.
     All generated options are then returned.
 
@@ -2682,17 +2682,17 @@ def get_parameters(in_parfile, argslist):
 
     Returns
     -------
-    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     Singles_mapdict : dict of str: \
-        :class:`~GMAP.src.tools.MapReader.SingleMap` pairs
-        Stores all the :class:`~GMAP.src.tools.MapReader.SingleMap`
+        :class:`~GMAP.src.tools.map_reader.SingleMap` pairs
+        Stores all the :class:`~GMAP.src.tools.map_reader.SingleMap`
         objects for each map supplied. The keys are the Map.name
         attributes corresponding to the maps stored as values.
     Pairs_mapdict : dict of str: \
-        :class:`~GMAP.src.tools.MapReader.PairMap` pairs
-        Stores all the :class:`~GMAP.src.tools.MapReader.PairMap`
+        :class:`~GMAP.src.tools.map_reader.PairMap` pairs
+        Stores all the :class:`~GMAP.src.tools.map_reader.PairMap`
         objects for each map supplied. The keys are the Map.name
         attributes corresponding to the maps stored as values.
     CmdPars : :class:`RawPars`

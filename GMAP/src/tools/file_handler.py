@@ -395,7 +395,7 @@ def try_file(fname):
 def check_file_readability(fname, doprint=True, doquit=True):
     """Checks if a given file can be read.
 
-    If not, lets GM_PT.Printer raise the appropriate error.
+    If not, lets GM_pt.Printer raise the appropriate error.
 
     .. seealso::
         :func:`try_file`
@@ -440,7 +440,7 @@ def write_output(RunPars, framenum, outputs):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     framenum : int
@@ -513,7 +513,7 @@ def write_single(RunPars, framenum, framenum_arr, fname, data):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     framenum : int
@@ -553,7 +553,7 @@ def clear_output(RunPars):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     """
@@ -579,7 +579,7 @@ def clear_single(RunPars, fname):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     fname : `pathlib.Path`
@@ -609,10 +609,10 @@ def write_legend(RunPars, system):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The class containing all the information on the system of the
         MD trajectory.
     """
@@ -631,10 +631,10 @@ def write_parameter_file(RefPars, RunPars, system, CmdPars, InPars, DefPars):
     RefPars : :class:`RefPars`
         Contains all available parameters from GMAP itself
         (not map-specific)
-    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The class containing all the information on the system of the
         MD trajectory.
     CmdPars : :class:`RawPars`
@@ -686,7 +686,7 @@ def write_single_parameter_source(
     reffhand : `_io.TextIOWrapper`
         The reference parameter file handle which contains all
         parameters that should be written.
-    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     outfhand : `_io.TextIOWrapper`
@@ -791,7 +791,7 @@ def write_parameter_line_main(
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     parname : str

@@ -260,7 +260,7 @@ class ColStr(str):
         return [ColStr(item) for item in super().split(*args, **kwargs)]
 
     def wrap(self, deslen, wrap_preline=""):
-        """A shortcut to :func:`~GMAP.src.tools.PrintTools.word_wrap`
+        """A shortcut to :func:`~GMAP.src.tools.print_tools.word_wrap`
 
         Applies the word_wrap function to itself and returns the result.
 

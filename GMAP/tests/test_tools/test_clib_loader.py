@@ -1,6 +1,6 @@
 """
 Tests all the functions/classes/methods in the file:
-src/tools/CLibLoader.py.
+src/tools/clib_loader.py.
 
 Missing tests:
 
@@ -611,7 +611,7 @@ def get_System_1():
     res_first_ix = np.array([0, 2, 4], dtype="int32")
     res_last_ix = np.array([1, 3, 5], dtype="int32")
     nres = np.int32(3)
-    # residues_CoM = GM_PF.system_CoM(
+    # residues_CoM = GM_pf.system_CoM(
     #     positions, masses, boxvects_inv, boxvects,
     #     res_first_ix, res_last_ix, nres
     # )

@@ -1,6 +1,6 @@
 """
 Tests all the functions/classes/methods in the file:
-src/tools/ColorSchemes.py.
+src/tools/color_schemes.py.
 
 Missing tests:
 

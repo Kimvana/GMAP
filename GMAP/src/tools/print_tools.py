@@ -29,7 +29,7 @@ class Printer(metaclass=GM_ct.Singleton):
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
+    Files : :class:`~GMAP.src.tools.file_handler.FileLocations`
         Contains all currently known paths and other file-related properties.
 
     Attributes
@@ -46,16 +46,16 @@ class Printer(metaclass=GM_ct.Singleton):
         influences the desired printing behaviour.
     color_mode : str
         How colors should be printed. 24bit, 4bit, or white.
-    colors : :class:`~GMAP.src.tools.ColorSchemes.PrinterColors`
+    colors : :class:`~GMAP.src.tools.color_schemes.PrinterColors`
         Colors to be used/sampled by other functions. Contains unique
         color names.
-    _colors : :class:`~GMAP.src.tools.ColorSchemes.PrinterColors`
+    _colors : :class:`~GMAP.src.tools.color_schemes.PrinterColors`
         The actual colors to be used. Contains a dict to translate the
         unique color names of cls.colors to ANSI escape codes.
     line_length : int
         The desired line length for both the command line and log files.
     dont_report_error : list of \
-    :class:`~GMAP.src.tools.StringClasses.ErrCode`
+    :class:`~GMAP.src.tools.string_classes.ErrCode`
         Any error codes in this list will not be reported on when
         encountered. Silenced fatal errors will still quit the program.
     Timer : :class:`~Timer`
@@ -67,7 +67,7 @@ class Printer(metaclass=GM_ct.Singleton):
     verbose_logfile : int
         How verbose the prints to the log file should be.
     preline : list of (list of int, str pairs) or list of (list of int,\
-     :class: `~GMAP.src.tools.StringClasses.ColStr` pairs)
+     :class: `~GMAP.src.tools.string_classes.ColStr` pairs)
         Short bits that should be printed at the beginning of every
         output line. The ints represent the verbose levels at which the
         companion string should be printed. These (short!) strings can
@@ -231,7 +231,7 @@ class Printer(metaclass=GM_ct.Singleton):
         ----------
         verbose : int
             The verbose level at which the message will be printed
-        message : str or :class:`GMAP.src.tools.StringClasses.ColStr`
+        message : str or :class:`GMAP.src.tools.string_classes.ColStr`
             The message to format for printing
         line_length : int
             How many characters can at most be on a line.
@@ -325,7 +325,7 @@ class Printer(metaclass=GM_ct.Singleton):
             that error can be caught and fed into this function.
         GMAPerrclass : BaseException, default=None
             The exact exception that should be raised if the error is
-            fatal. One should pick one from GMAP.src.tools.Exceptions.
+            fatal. One should pick one from GMAP.src.tools.exceptions.
         """
 
         # if this default is set directly in the function signature, a circular
@@ -423,7 +423,7 @@ class Printer(metaclass=GM_ct.Singleton):
         Printer will always be initialized in startup mode, without a
         user-specified log file and verbose choices. This function allows
         to re-chose those three values, allowing 'importing' them after
-        :class:`~GMAP.src.tools.ParameterParser.RunPars` finds them.
+        :class:`~GMAP.src.tools.parameter_parser.RunPars` finds them.
 
         If a parameter is not given, or explicitly given as None, then
         the existing value is kept.
@@ -634,7 +634,7 @@ def color_test():  # run this one with word_wrap to 150 (8 colors per row)
     .. important::
         This function is no longer used, and just here for testing/
         development purposes. There is now a more fancy version:
-        :func:`GMAP.src.tools.Plotter.plot_color_conv`.
+        :func:`GMAP.src.tools.plotter.plot_color_conv`.
 
         Only when pandas is an issue, or when the commandline
         specifically is desired to generate the output, this function
@@ -676,14 +676,14 @@ def word_wrap(string, deslen=79, wrap_preline=""):
 
     Parameters
     ----------
-    string : str or :class:`~GMAP.src.tools.StringClasses.ColStr`
+    string : str or :class:`~GMAP.src.tools.string_classes.ColStr`
         The string to format.
     deslen : int, default=79
         The maximum amount of characters per line.
 
     Returns
     -------
-    new_string : str or :class:`~GMAP.src.tools.StringClasses.ColStr`
+    new_string : str or :class:`~GMAP.src.tools.string_classes.ColStr`
         The original input `string`, but with newline characters added
         where necessary. Retains input type.
     wrap_preline : str

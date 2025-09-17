@@ -355,7 +355,7 @@ def report_references(RunPars, iterable):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     iterable : :class:`Reference` or list or dict
@@ -433,7 +433,7 @@ def sort_references(RunPars, references):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     references : list of :class:`Reference`

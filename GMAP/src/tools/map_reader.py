@@ -43,7 +43,7 @@ class Map:
     name : str
         The name of this map. Often indicates the functional group
         modelled.
-    RefPars : :class:`~GMAP.src.tools.ParameterParser.RefPars`
+    RefPars : :class:`~GMAP.src.tools.parameter_parser.RefPars`
         The parameters defined and used by this map. Does not contain
         parameters used by this map, but defined elsewhere.
     success : bool
@@ -57,17 +57,17 @@ class Map:
         are the files available for appending using 'add_corefile'
     type : str
         The type of this map. Either 'Singles' or 'Doubles'
-    CmdPars : :class:`~GMAP.src.tools.ParameterParser.RawPars`
+    CmdPars : :class:`~GMAP.src.tools.parameter_parser.RawPars`
         The object storing all parameters provided on the command line
         that belong to this map.
-    InPars : :class:`~GMAP.src.tools.ParameterParser.RawPars`
+    InPars : :class:`~GMAP.src.tools.parameter_parser.RawPars`
         The object storing all parameters provided in the input
         parameter file that belong to this map.
-    DefPars : :class:`~GMAP.src.tools.ParameterParser.RawPars`
+    DefPars : :class:`~GMAP.src.tools.parameter_parser.RawPars`
         The object storing all parameters provided in the default
         parameter file that belong to this map. If no such file was
         provided, an empty instance is used instead.
-    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The RunPars instance containing all the basic run-defining
         parameters that belong to this map.
     code : module
@@ -83,7 +83,7 @@ class Map:
     Notes
     -----
     .. seealso ::
-        :class:`~GMAP.src.tools.ParameterParser.RefPars`
+        :class:`~GMAP.src.tools.parameter_parser.RefPars`
     """
 
     def __init__(self, mapdir, avail_files):
@@ -102,7 +102,7 @@ class Map:
 
         Looks inside `self.directory` for a file of the name
         `parameters.ref`, If found, the resulting
-        :class:`~GMAP.src.tools.ParameterParser.RefPars` object is
+        :class:`~GMAP.src.tools.parameter_parser.RefPars` object is
         stored as the `self.RefPars` attribute.
         """
 
@@ -127,13 +127,13 @@ class Map:
 
         Parameters
         ----------
-        CmdPars : :class:`~GMAP.src.tools.ParameterParser.RawPars`
+        CmdPars : :class:`~GMAP.src.tools.parameter_parser.RawPars`
             The object storing all parameters provided on the command
             line.
-        InPars : :class:`~GMAP.src.tools.ParameterParser.RawPars`
+        InPars : :class:`~GMAP.src.tools.parameter_parser.RawPars`
             The object storing all parameters provided in the input
             parameter file.
-        DefPars : :class:`~GMAP.src.tools.ParameterParser.RawPars`
+        DefPars : :class:`~GMAP.src.tools.parameter_parser.RawPars`
             The object storing all parameters provided in the default
             parameter file. If no such file was provided, RefPars is
             used instead.
@@ -177,7 +177,7 @@ class Map:
 
         Parameters
         ----------
-        RawParInst : :class:`~GMAP.src.tools.ParameterParser.RawPars`
+        RawParInst : :class:`~GMAP.src.tools.parameter_parser.RawPars`
             The instance through which to look for parameters that
             belong to this map.
 
@@ -210,7 +210,7 @@ class Map:
 
         Parameters
         ----------
-        RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
             The 'main' RunPars instance containing all the basic
             run-defining parameters.
         """
@@ -776,7 +776,7 @@ class PairMap(Map):
 
         Parameters
         ----------
-        main_runpars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        main_runpars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
             The 'main' RunPars instance containing all the basic
             run-defining parameters.
         requester : str or NoneType, default=None
@@ -840,11 +840,11 @@ class PairMap(Map):
 
         Parameters
         ----------
-        main_runpars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        main_runpars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
             The 'main' RunPars instance containing all the basic
             run-defining parameters.
         oscillators : list of \
-        :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        :class:`~GMAP.src.tools.system_reader.Oscillator`
             The map requesting the map we're checking. This is needed
             to avoid the confusion of a map not directly requested by
             the user throwing errors.
@@ -876,7 +876,7 @@ class PairMap(Map):
 
         Parameters
         ----------
-        main_runpars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        main_runpars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
             The 'main' RunPars instance containing all the basic
             run-defining parameters.
         singles_to_check : iterable of str
@@ -921,7 +921,7 @@ class PairMap(Map):
 
         Parameters
         ----------
-        main_runpars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        main_runpars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
             The 'main' RunPars instance containing all the basic
             run-defining parameters.
         singles_to_check : iterable of str
@@ -970,7 +970,7 @@ class PairMap(Map):
 
         Parameters
         ----------
-        main_runpars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        main_runpars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
             The 'main' RunPars instance containing all the basic
             run-defining parameters.
         """
@@ -1014,7 +1014,7 @@ class SingleCore:
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.SingleMap`
         The object that stores the map which this core.txt file belongs
         to.
 
@@ -1177,7 +1177,7 @@ class SingleCore:
         ----------
         rawcore : dict of str: list of str pairs
             The raw contents of the file core.txt
-        map_runpars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        map_runpars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
             The RunPars instance containing all the map-specific
             parameters.
         mapdir : pathlib.Path
@@ -1721,7 +1721,7 @@ class SingleCore:
         #     not all(ix in struct.indices for struct in self.functional_group)
         #     for ix in used_atoms
         # ):
-        #     GM_PT.Printer.warning(
+        #     GM_pt.Printer.warning(
         #         "\nCould not interpret the choice for the parameter "
         #         "'used_atoms'"
         #         f" in the file {mapdir / 'core.txt'}. Please make sure the "
@@ -1841,7 +1841,7 @@ class SingleCore:
         # # now, see if choice is valid
         # maxlen = len(self.used_atoms)
         # if any(ix >= maxlen for ix in estatic_atoms):
-        #     GM_PT.Printer.warning(
+        #     GM_pt.Printer.warning(
         #         "\nCould not interpret the choice for the parameter "
         #         "'electrostatic_atoms'"
         #         f" in the file {mapdir / 'core.txt'}. Please make sure the "
@@ -1921,7 +1921,7 @@ class SingleCore:
         # now, see if choice is valid
         # maxlen = len(self.used_atoms)
         # if any(ix >= maxlen for ix in local_atoms):
-        #     GM_PT.Printer.warning(
+        #     GM_pt.Printer.warning(
         #         "\nCould not interpret the choice for the parameter "
         #         "'local_atoms'"
         #         f" in the file {mapdir / 'core.txt'}. Please make sure the "
@@ -2661,7 +2661,7 @@ class PairCore:
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.SingleMap`
         The object that stores the map which this core.txt file belongs
         to.
 
@@ -2752,7 +2752,7 @@ class PairCore:
 
         Parameters
         ----------
-        main_runpars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        main_runpars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
             The 'main' RunPars instance containing all the basic
             run-defining parameters.
         rawcore : dict of str - list of str pairs
@@ -2920,7 +2920,7 @@ class Structure:
 
     Attributes
     ----------
-    residues : list of :class:`~GMAP.src.tools.MapReader.Residue`
+    residues : list of :class:`~GMAP.src.tools.map_reader.Residue`
         What atom/residue names go into each of the residues.
     bonds : list of list of ints
         What bonds make up the oscillator.
@@ -3028,12 +3028,12 @@ def manage_maps_singles(RunPars, mapdict):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
-    mapdict : dict of str: :class:`~GMAP.src.tools.MapReader.SingleMap`\
+    mapdict : dict of str: :class:`~GMAP.src.tools.map_reader.SingleMap`\
     pairs
-        Stores all the :class:`~GMAP.src.tools.MapReader.SingleMap`
+        Stores all the :class:`~GMAP.src.tools.map_reader.SingleMap`
         objects for each map supplied. The keys are the Map.name
         attributes corresponding to the maps stored as values.
     """
@@ -3083,12 +3083,12 @@ def manage_maps_pairs(RunPars, mapdict):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
-    mapdict : dict of str: :class:`~GMAP.src.tools.MapReader.PairMap`\
+    mapdict : dict of str: :class:`~GMAP.src.tools.map_reader.PairMap`\
     pairs
-        Stores all the :class:`~GMAP.src.tools.MapReader.PairMap`
+        Stores all the :class:`~GMAP.src.tools.map_reader.PairMap`
         objects for each map supplied. The keys are the Map.name
         attributes corresponding to the maps stored as values.
     """
@@ -3199,7 +3199,7 @@ def scan_mapdirs(mapdirs, maptype):
     mapdirs : list of pathlib.Path
         A list of directories which should be scanned for maps. This
         object is created by
-        :func:`~GMAP.src.tools.ParameterParser.find_mapdir`.
+        :func:`~GMAP.src.tools.parameter_parser.find_mapdir`.
     maptype : str
         Either 'Singles' for getting singles maps, or 'Pairs' for
         getting pairs maps.

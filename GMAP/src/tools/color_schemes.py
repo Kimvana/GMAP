@@ -41,7 +41,7 @@ class PrinterColors(GM_ct.CustomClass):
 
     Parameters
     ----------
-    **kwargs : :class:`~GMAP.src.tools.StringClasses.ColStr`
+    **kwargs : :class:`~GMAP.src.tools.string_classes.ColStr`
         Each kwarg will be assumed a color, where the key is the name
         of the color, and the value the string containing the ANSI
         sequence for that specific color.
@@ -50,11 +50,11 @@ class PrinterColors(GM_ct.CustomClass):
     ----------
     **kwargs :
         Each of the kwargs becomes an attribute of the class.
-    coldict : dict of str: :class:`~GMAP.src.tools.StringClasses.ColStr`\
+    coldict : dict of str: :class:`~GMAP.src.tools.string_classes.ColStr`\
     pairs
         The dictionary representation of all custom attributes of the
         class instance
-    coldict_r : dict of :class:`~GMAP.src.tools.StringClasses.ColStr`:\
+    coldict_r : dict of :class:`~GMAP.src.tools.string_classes.ColStr`:\
     str pairs
         The inverse of self.coldict
     """

@@ -23,7 +23,7 @@
 - Its the modern era, we have storage space! Code does not need to be compactly written, legibility is the most important in this project
 - Don't worry about efficiency/speed of a function if it doesnt take more than 1% of total calculation time. This doesn't mean we should aim for blatantly needlessly expensive code.
 - Document the choices/assumptions/etc you make, so they can be put in a (dev)manual later. If it's too much to immediately write them down neatly, put them over [here](#dump-section)
-- Printing should *_always_* be done with a custom print command (except when defining these), not the python default print. if you want to temporarily print something during development, use ```GMAP.src.tools.PrintTools.devprint()``` instead. It behaves _EXACTLY_ like print does, but adds a linenumber and name of file/function to the print - this way, it is easy to find it back, and remove it.
+- Printing should *_always_* be done with a custom print command (except when defining these), not the python default print. if you want to temporarily print something during development, use ```GMAP.src.tools.print_tools.devprint()``` instead. It behaves _EXACTLY_ like print does, but adds a linenumber and name of file/function to the print - this way, it is easy to find it back, and remove it.
 - When creating strings for printing, f-strings are the preferred method.
 
 [back to top](#quick-menu)
@@ -444,7 +444,7 @@ Pytest also gives the ability to generate a web page to look at everything in mo
 - (KvA) Add option to output potentials (e.g. only potential caused by a-helix on atoms nearby)
   - Or, more generally, option to output any property the program calculates? Maybe as a separate GEM functionality?
 - (KvA) If the top/trj files come from a type(DefPars) == RefPars, or from a RefPars itself, automatically enter demo mode?
-- (KvA) I think there might be an issue with the residue number allocation - What if there's an MD package with repeating residue numbers, but segments of only 1 residue? then, the residue number would stay consistent, but it would in fact be a different residue :/ -- means that tools/SystemReader.system.abs_resnums needs an update.
+- (KvA) I think there might be an issue with the residue number allocation - What if there's an MD package with repeating residue numbers, but segments of only 1 residue? then, the residue number would stay consistent, but it would in fact be a different residue :/ -- means that tools/system_reader.system.abs_resnums needs an update.
 
 [back to top](#quick-menu)
 

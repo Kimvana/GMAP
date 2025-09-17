@@ -1,7 +1,7 @@
-GMAP.tests.test\_tools.test\_StringClasses module
+GMAP.tests.test\_tools.test\_string_classes module
 =================================================
 
-.. automodule:: GMAP.tests.test_tools.test_StringClasses
+.. automodule:: GMAP.tests.test_tools.test_string_classes
    :members:
    :undoc-members:
    :show-inheritance:

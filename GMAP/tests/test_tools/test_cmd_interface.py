@@ -1,6 +1,6 @@
 """
 Tests all the functions/classes/methods in the file:
-src/tools/CmdInterface.py.
+src/tools/cmd_interface.py.
 
 Missing tests:
 

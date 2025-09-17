@@ -1,7 +1,7 @@
-GMAP.src.tools.CLibLoader module
+GMAP.src.tools.clib_loader module
 ================================
 
-.. automodule:: GMAP.src.tools.CLibLoader
+.. automodule:: GMAP.src.tools.clib_loader
    :members:
    :undoc-members:
    :show-inheritance:

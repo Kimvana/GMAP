@@ -1,7 +1,7 @@
-GMAP.src.tools.DefaultMapFunctions module
+GMAP.src.tools.default_map_functions module
 =========================================
 
-.. automodule:: GMAP.src.tools.DefaultMapFunctions
+.. automodule:: GMAP.src.tools.default_map_functions
    :members:
    :undoc-members:
    :show-inheritance:

@@ -13,12 +13,12 @@ def calc_dipole_Torii(map_, system, osc):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map instance which this function will belong to.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The class containing all the information on the system of the
         MD trajectory.
-    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osc : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The specific oscillator for which the transformation is required.
 
     Returns
@@ -92,12 +92,12 @@ def calc_dipole_Jansen(map_, system, osc):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map instance which this function will belong to.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The class containing all the information on the system of the
         MD trajectory.
-    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osc : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The specific oscillator for which the transformation is required.
 
     Returns
@@ -128,12 +128,12 @@ def get_position(map_, system, osc):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map instance which this function will belong to.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The class containing all the information on the system of the
         MD trajectory.
-    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osc : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The specific oscillator for which the transformation is required.
 
     Returns
@@ -157,12 +157,12 @@ def neighbor_influence(map_, system, osc):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map instance which this function will belong to.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The class containing all the information on the system of the
         MD trajectory.
-    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osc : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The specific oscillator for which the transformation is required.
 
     Returns
@@ -190,12 +190,12 @@ def determine_maps(oscillator_list, map_, system):
 
     Parameters
     ----------
-    oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    oscillator_list : list of :class:`~GMAP.src.tools.system_reader.Oscillator`
         All oscillators belonging to a single struct of this map.
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -216,13 +216,13 @@ def determine_map(osc1, osc2, map_, system):
 
     Parameters
     ----------
-    osc1, osc2 : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osc1, osc2 : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The specific oscillators for which the neighbour mapping is
         determined.
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -281,12 +281,12 @@ def DLcheck(osc1, osc2, map_, system):
 
     Parameters
     ----------
-    osc1, osc2 : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osc1, osc2 : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The oscillators surrounding the amino acid in question
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)

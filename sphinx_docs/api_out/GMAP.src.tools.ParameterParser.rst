@@ -1,7 +1,7 @@
-GMAP.src.tools.ParameterParser module
+GMAP.src.tools.parameter_parser module
 =====================================
 
-.. automodule:: GMAP.src.tools.ParameterParser
+.. automodule:: GMAP.src.tools.parameter_parser
    :members:
    :undoc-members:
    :show-inheritance:

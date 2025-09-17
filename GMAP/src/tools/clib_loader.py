@@ -20,7 +20,7 @@ class VEG_CLib(metaclass=GM_ct.Singleton):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic run-defining
         parameters.
 
@@ -236,14 +236,14 @@ class VEG_CLib(metaclass=GM_ct.Singleton):
 
         Parameters
         ----------
-        system : :class:`~GMAP.src.tools.SystemReader.System`
+        system : :class:`~GMAP.src.tools.system_reader.System`
             The object that stores everything the program currently knows
             about the system being treated (names, numbers, types, masses,
             charges of all atoms, for example)
-        RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
             The 'main' RunPars instance containing all the basic
             run-defining parameters.
-        oscillator : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        oscillator : :class:`~GMAP.src.tools.system_reader.Oscillator`
             The specific oscillator for which the potentials are required.
         """
 
@@ -293,14 +293,14 @@ class VEG_CLib(metaclass=GM_ct.Singleton):
 
         Parameters
         ----------
-        system : :class:`~GMAP.src.tools.SystemReader.System`
+        system : :class:`~GMAP.src.tools.system_reader.System`
             The object that stores everything the program currently knows
             about the system being treated (names, numbers, types, masses,
             charges of all atoms, for example)
-        RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
             The 'main' RunPars instance containing all the basic
             run-defining parameters.
-        oscillator : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        oscillator : :class:`~GMAP.src.tools.system_reader.Oscillator`
             The specific oscillator for which the potentials are required.
         """
 
@@ -349,14 +349,14 @@ class VEG_CLib(metaclass=GM_ct.Singleton):
 
         Parameters
         ----------
-        system : :class:`~GMAP.src.tools.SystemReader.System`
+        system : :class:`~GMAP.src.tools.system_reader.System`
             The object that stores everything the program currently knows
             about the system being treated (names, numbers, types, masses,
             charges of all atoms, for example)
-        RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
             The 'main' RunPars instance containing all the basic
             run-defining parameters.
-        oscillator : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        oscillator : :class:`~GMAP.src.tools.system_reader.Oscillator`
             The specific oscillator for which the potentials are required.
         """
 
@@ -406,14 +406,14 @@ class VEG_CLib(metaclass=GM_ct.Singleton):
 
         Parameters
         ----------
-        system : :class:`~GMAP.src.tools.SystemReader.System`
+        system : :class:`~GMAP.src.tools.system_reader.System`
             The object that stores everything the program currently knows
             about the system being treated (names, numbers, types, masses,
             charges of all atoms, for example)
-        RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+        RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
             The 'main' RunPars instance containing all the basic
             run-defining parameters.
-        oscillator : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        oscillator : :class:`~GMAP.src.tools.system_reader.Oscillator`
             The specific oscillator for which the potentials are required.
         """
 

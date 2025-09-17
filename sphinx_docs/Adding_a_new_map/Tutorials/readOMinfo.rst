@@ -60,14 +60,14 @@ Bonus: raising your own errors
 
 After we found a possible mismatch between the two maps, we should do something with it. There is a few options:
 
-We could print some text, telling the user there is an issue. The user sees the message that the two maps don't match, but the program continues. The disadvantage of this option is that the user could simply miss out on a message, but the advantage is that if the user is okay with (or even intending for) that difference, the program can still continue. If you want to do it that way, the GMAP.src.tools.PrintTools module contains the :class:`~GMAP.src.tools.PrintTools.Printer` class. It has a method that allows for more detailed printing, and should *always* be used instead of the main python print method:
+We could print some text, telling the user there is an issue. The user sees the message that the two maps don't match, but the program continues. The disadvantage of this option is that the user could simply miss out on a message, but the advantage is that if the user is okay with (or even intending for) that difference, the program can still continue. If you want to do it that way, the GMAP.src.tools.print_tools module contains the :class:`~GMAP.src.tools.print_tools.Printer` class. It has a method that allows for more detailed printing, and should *always* be used instead of the main python print method:
 
 
 .. code-block:: python
 
-    import GMAP.src.tools.PrintTools as GM_PT
+    import GMAP.src.tools.print_tools as GM_pt
 
-    GM_PT.Printer.print(2, "This message is moderately important")
+    GM_pt.Printer.print(2, "This message is moderately important")
 
 In the main GMAP code, you'll see that if a lot needs to be printed, the Printer object is stored in a variable to make calling slightly easier/faster. The first argument (integer) is the verbose level at or above which this message should be printed. Be very conservative here! 0 (the lowest) is only used by GMAP for reporting errors that terminate the program, not even the logo is shown. If nothing bad happens, the program is completely silent.
 
@@ -75,7 +75,7 @@ The other option for dealing with our error is to raise a 'proper' error. If thi
 
 .. code-block:: python
 
-    import GMAP.src.tools.PrintTools as GM_PT
+    import GMAP.src.tools.print_tools as GM_pt
 
     def GM_post_init(map_, system):
         # verify that both dipole maps (if applicable) have the same map choices
@@ -88,7 +88,7 @@ The other option for dealing with our error is to raise a 'proper' error. If thi
                 amSC_rps.frequency_map_choice != rps.frequency_map_choice
                 and not rps.allow_map_mismatch
             ):
-                GM_PT.Printer.warning(
+                GM_pt.Printer.warning(
                     "Text of the warning",
                     "map_AmideBB_2", True
                 )

@@ -51,26 +51,26 @@ def GM_adjust_oscillators(map_, system, oscillator_list):
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.FileHandler.FileLocations`
+    Files : :class:`~GMAP.src.tools.file_handler.FileLocations`
         Contains all currently known paths and other file-related
         properties.
         Has to be updated after RunPars is finalized.
-    Printer : :class:`~GMAP.src.tools.PrintTools.Printer`
+    Printer : :class:`~GMAP.src.tools.print_tools.Printer`
         The object that allows to cleanly log and print during runtime,
         and handle errors.
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    oscillator_list : list of :class:`~GMAP.src.tools.system_reader.Oscillator`
         All oscillators belonging to a single struct of this map.
 
     Returns
     -------
-    oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    oscillator_list : list of :class:`~GMAP.src.tools.system_reader.Oscillator`
         All oscillators belonging to a single struct of this map.
     """
 

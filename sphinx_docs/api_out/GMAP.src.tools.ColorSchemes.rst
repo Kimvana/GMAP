@@ -1,7 +1,7 @@
-GMAP.src.tools.ColorSchemes module
+GMAP.src.tools.color_schemes module
 ==================================
 
-.. automodule:: GMAP.src.tools.ColorSchemes
+.. automodule:: GMAP.src.tools.color_schemes
    :members:
    :undoc-members:
    :show-inheritance:

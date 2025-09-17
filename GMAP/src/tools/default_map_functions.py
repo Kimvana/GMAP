@@ -110,15 +110,15 @@ def filter_single_line(line, BW, found, avail, map_, system):
         Should either be "black" or "white". Anything that does not
         exactly match "white" (case sensitive) is taken to be "black".
         Indicates whether we're blacklisting or whitelisting currently.
-    found : set of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    found : set of :class:`~GMAP.src.tools.system_reader.Oscillator`
         The oscillators that should be kept, (i.e. have already been
         found) considering the black/whitelist lines so far.
-    avail : set of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    avail : set of :class:`~GMAP.src.tools.system_reader.Oscillator`
         The oscillators that are available in the system.
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about the map the oscillators belong to.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -130,7 +130,7 @@ def filter_single_line(line, BW, found, avail, map_, system):
         allows maps writing a custom GM_filter_oscillators to still use
         this function first to give the same support as GMAP, and then
         also apply their own rules.
-    found : set of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    found : set of :class:`~GMAP.src.tools.system_reader.Oscillator`
         The oscillators that should be used given the already processed
         black/whitelist rules.
     """
@@ -265,7 +265,7 @@ def get_get_VEG_ref(map_):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map instance which this function will belong to.
 
     Returns
@@ -358,7 +358,7 @@ def interpret_position(map_, details, parname, center=None):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map instance which this function will belong to.
     details : list of str
         The string(s) explaining what to do. Ints will be converted to
@@ -411,7 +411,7 @@ def get_get_dipole_dir(map_):
 
     parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map instance which this function will belong to.
 
     returns
@@ -488,7 +488,7 @@ def get_get_rotation_matrix(map_):
 
     parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map instance which this function will belong to.
 
     returns
@@ -571,7 +571,7 @@ def get_calculate_dipole(map_):
 
     parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map instance which this function will belong to.
 
     returns
@@ -623,7 +623,7 @@ def get_calculate_frequency(map_):
 
     parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map instance which this function will belong to.
 
     returns

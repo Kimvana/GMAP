@@ -1,6 +1,6 @@
 """
 Tests all the functions/classes/methods in the file:
-src/tools/PhysicsFunctions.py.
+src/tools/physics_functions.py.
 
 Missing tests:
 
@@ -35,7 +35,7 @@ import GMAP.src.tools.parameter_parser as GM_pp
 class TestCode:
     def test_extract_code(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         (
@@ -52,7 +52,7 @@ class TestCode:
 
     def test_extract_code_nocode(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         (
@@ -69,7 +69,7 @@ class TestCode:
 
     def test_GM_adjust_RunPars_custom(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_extract_code"
@@ -89,7 +89,7 @@ class TestCode:
 
     def test_GM_adjust_RunPars_default(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_extract_code_nocode"
@@ -118,7 +118,7 @@ class TestCode:
 
     def test_find_core(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_find_core"
@@ -140,13 +140,13 @@ class TestCode:
 
     def test_find_core_unicodedecodeerror(self, capfd):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;",
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;",
             "--prevent_overwrite", "False"
         ]
         inpardict = {}
         mapname = "test_unicodedecodeerror_core"
         fhand = open(
-            "tests/test_tools/Data/maps_for_test_MapReader_1/Singles/"
+            "tests/test_tools/Data/maps_for_test_map_reader_1/Singles/"
             + mapname + "/core.txt", 'wb'
         )
 
@@ -170,7 +170,7 @@ class TestCode:
 
     def test_append_core(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_appending"
@@ -193,7 +193,7 @@ class TestCode:
 
     def test_Core(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_Core"
@@ -221,7 +221,7 @@ class TestCode:
         # parse_estatic_choice and parse_type
         for i in range(1, 5):
             cmdline = [
-                "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+                "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
             ]
             inpardict = {}
             mapname = f"test_MI_MC_6_{i}"
@@ -238,7 +238,7 @@ class TestCode:
 
         # if not self.success after parse_functional_group
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_MI_MC_2"
@@ -254,7 +254,7 @@ class TestCode:
 
         # using a map without estatic_atoms
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_estatic_None"
@@ -270,7 +270,7 @@ class TestCode:
 
     def test_code_add_builds_1(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;",
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;",
             "--verbose", "4", "--verbose_logfile", "4"
         ]
         inpardict = {}
@@ -330,7 +330,7 @@ class TestCode:
 
     def test_code_add_builds_2(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_code_build_2"
@@ -397,7 +397,7 @@ class TestCode:
 
     def test_code_add_builds_3(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_code_build_3"
@@ -462,7 +462,7 @@ class TestCode:
 
         # we tested all substeps, now just to confirm the totality runs, too
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_code_build_1"
@@ -481,7 +481,7 @@ class TestCode:
         # --------------------------------------------------------------
 
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_MI_MR_2"
@@ -503,7 +503,7 @@ class TestCode:
         # --------------------------------------------------------------
 
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_MI_MR_6"
@@ -525,7 +525,7 @@ class TestCode:
         # --------------------------------------------------------------
 
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_MI_MC_1"
@@ -547,7 +547,7 @@ class TestCode:
         # --------------------------------------------------------------
 
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_MI_MC_10_1"
@@ -568,7 +568,7 @@ class TestCode:
 
     def test_MI_MC_6(self, capfd):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_MI_MC_6_5"
@@ -589,7 +589,7 @@ class TestCode:
 
     def test_MI_MC_9(self, capfd):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_MI_MC_9_1"
@@ -611,7 +611,7 @@ class TestCode:
         # --------------------------------------------------------------
 
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_MI_MC_9_2"
@@ -632,7 +632,7 @@ class TestCode:
 
     def test_MI_MC_10(self, capfd):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_MI_MC_10_1"
@@ -654,7 +654,7 @@ class TestCode:
         # --------------------------------------------------------------
 
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_MI_MC_10_2"
@@ -675,7 +675,7 @@ class TestCode:
 
     def test_MI_MR_1(self, capfd):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_MI_MR_1"
@@ -695,7 +695,7 @@ class TestCode:
 
     def test_MI_MR_2(self, capfd):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_MI_MR_2"
@@ -717,7 +717,7 @@ class TestCode:
 
     def test_MI_MR_3(self, capfd):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_MI_MR_3_1"
@@ -738,7 +738,7 @@ class TestCode:
         assert out.endswith("MI_MR_3\n")
 
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_MI_MR_3_2"
@@ -760,7 +760,7 @@ class TestCode:
 
     def test_MI_MR_4(self, capfd):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_MI_MR_4"
@@ -782,7 +782,7 @@ class TestCode:
 
     def test_MI_MR_6(self, capfd):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_MI_MR_6"
@@ -804,7 +804,7 @@ class TestCode:
 
     def test_MI_MR_7(self, capfd):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_MI_MR_7"
@@ -1022,7 +1022,7 @@ class TestSingleCore:
     # test_funcgroupfile  (ham_first    f)
     def test_parse_functional_group(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_Core"
@@ -1084,7 +1084,7 @@ class TestSingleCore:
 
     def test_parse_functional_group_fromfile(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_funcgroupfile"
@@ -1123,7 +1123,7 @@ class TestSingleCore:
 
     def test_parse_functional_group_bonds(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_funcgroup_bonded"
@@ -1149,7 +1149,7 @@ class TestSingleCore:
         # Should test for cases:
         # "All", "alL", "0-12","0-6,5-11","13-10", "5101870-3"
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_AllowRanges"
@@ -1189,7 +1189,7 @@ class TestSingleCore:
 
     def test_parse_used_atoms(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_Core"
@@ -1209,7 +1209,7 @@ class TestSingleCore:
 
     def test_parse_estatic_atoms(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_Core"
@@ -1230,7 +1230,7 @@ class TestSingleCore:
 
     def test_estatic_atoms_None(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_estatic_None"
@@ -1251,7 +1251,7 @@ class TestSingleCore:
 
     def test_parse_estatic_choice(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_Core"
@@ -1274,7 +1274,7 @@ class TestSingleCore:
     # tests something normal program flow could never reach
     def test_estatic_choice_None(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_estatic_None"
@@ -1296,7 +1296,7 @@ class TestSingleCore:
 
     def test_parse_type(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_Core"
@@ -1318,7 +1318,7 @@ class TestSingleCore:
 
     def test_type_estat_None(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_estatic_None"
@@ -1340,7 +1340,7 @@ class TestSingleCore:
 
     def test_type_estat_V(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_estat_choice_V"
@@ -1362,7 +1362,7 @@ class TestSingleCore:
 
     def test_parse_local_atoms(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_Core"
@@ -1383,7 +1383,7 @@ class TestSingleCore:
 
     def test_local_atoms_None(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_local_None"
@@ -1404,7 +1404,7 @@ class TestSingleCore:
 
     def test_parse_dipoles(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_dipoles_datafile_maglong"
@@ -1428,7 +1428,7 @@ class TestSingleCore:
         # -------------------------
 
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_dipoles_datafile_xyzgood"
@@ -1459,7 +1459,7 @@ class TestSingleCore:
         # ------------
 
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_dipoles_datafile_NA"
@@ -1481,7 +1481,7 @@ class TestSingleCore:
         # ------------
 
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_dipoles_datafile_magG"
@@ -1502,7 +1502,7 @@ class TestSingleCore:
 
     def test_parse_frequency(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_dipoles_datafile_maglong"
@@ -1529,7 +1529,7 @@ class TestSingleCore:
         # ------------
 
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_dipoles_datafile_NA"
@@ -1551,7 +1551,7 @@ class TestSingleCore:
         # ------------
 
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_dipoles_datafile_magG"
@@ -1572,7 +1572,7 @@ class TestSingleCore:
 
     def test_bohr_consts(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_bohr_const"
@@ -1627,7 +1627,7 @@ class TestSingleCore:
         # --------------------------------------------------------------
 
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_bohr_const2"
@@ -1661,7 +1661,7 @@ class TestSingleCore:
     def test_freqmult(self):
 
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_freqmult"
@@ -1684,7 +1684,7 @@ class TestSingleCore:
 
     def test_posonlymap(self):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
         ]
         inpardict = {}
         mapname = "test_posonly"
@@ -1816,7 +1816,7 @@ class TestSingleCore:
         self, errcode, capfd, mapname=None, finish_before=None
     ):
         cmdline = [
-            "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;",
+            "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;",
             "--prevent_overwrite", "False"
         ]
         inpardict = {}
@@ -1934,7 +1934,7 @@ def test_map_vac_freq_dip():
     maplist = ["test_vac_dipfreq"]
     inpars = {
         "maps_to_use": maplist,
-        "map_directory": ["Data/maps_for_test_MapReader_1"]
+        "map_directory": ["Data/maps_for_test_map_reader_1"]
     }
     (
         RunPars, RefPars, DefPars, InPars, CmdPars,
@@ -2022,7 +2022,7 @@ def test_MI_MM_2(capsys):
 
 def test_MI_MM_5(capsys):
     cmdline = [
-        "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;"
+        "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;"
     ]
     maplist = ["test_posonly"]
     inpars = {
@@ -2043,7 +2043,7 @@ def basic_setup(
 ):
     """Sets up a map until it has a RunPars (not yet analyzed the core).
 
-    All steps in here are tested by test_ParameterParser.py. If any
+    All steps in here are tested by test_parameter_parser.py. If any
     issues occur within this function, run that file alone, first.
     """
 

@@ -12,12 +12,12 @@ def calc_dipole_Torii(map_, system, osc):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map instance which this function will belong to.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The class containing all the information on the system of the
         MD trajectory.
-    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osc : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The specific oscillator for which the transformation is required.
 
     Returns
@@ -90,12 +90,12 @@ def get_position(map_, system, osc):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map instance which this function will belong to.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The class containing all the information on the system of the
         MD trajectory.
-    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osc : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The specific oscillator for which the transformation is required.
 
     Returns

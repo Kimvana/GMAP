@@ -1,6 +1,6 @@
 """
 Tests all the functions/classes/methods in the file:
-src/tools/DefaultMapFunctions.py.
+src/tools/default_map_functions.py.
 
 Missing tests:
 

@@ -39,7 +39,7 @@ So, lets use this parameter in a function! As the code for AmideBB is rather com
 
 .. code-block:: python
 
-    import GMAP.src.tools.SystemReader as GM_SR
+    import GMAP.src.tools.system_reader as GM_sr
 
     def GM_calculate_dipole(map_, system, osc):  # actually, MC_CM.calc_dipole_torii
         # COvec is the vector pointing from central carbon to oxygen

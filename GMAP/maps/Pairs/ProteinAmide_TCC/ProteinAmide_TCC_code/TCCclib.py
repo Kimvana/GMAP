@@ -19,7 +19,7 @@ class TCC_Clib(metaclass=GM_ct.Singleton):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.PairMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.PairMap`
         The TCC map object in the code - this will be the object that
         gains the new c-library attribute.
 
@@ -92,10 +92,10 @@ class TCC_Clib(metaclass=GM_ct.Singleton):
 
         Parameters
         ----------
-        map_ : :class:`~GMAP.src.tools.MapReader.PairMap`
+        map_ : :class:`~GMAP.src.tools.map_reader.PairMap`
             The TRESP map object in the code - this will be the object
             that gains the new c-library attribute.
-        system : :class:`~GMAP.src.tools.SystemReader.System`
+        system : :class:`~GMAP.src.tools.system_reader.System`
             The object that stores everything the program currently
             knows about the system being treated (names, numbers, types,
             masses, charges of all atoms, for example)
@@ -124,10 +124,10 @@ class TCC_Clib(metaclass=GM_ct.Singleton):
 
         Parameters
         ----------
-        map_ : :class:`~GMAP.src.tools.MapReader.PairMap`
+        map_ : :class:`~GMAP.src.tools.map_reader.PairMap`
             The TCC map object in the code - this will be the object
             that gains the new c-library attribute.
-        system : :class:`~GMAP.src.tools.SystemReader.System`
+        system : :class:`~GMAP.src.tools.system_reader.System`
             The object that stores everything the program currently
             knows about the system being treated (names, numbers, types,
             masses, charges of all atoms, for example)
@@ -165,10 +165,10 @@ def init_map_for_clib(map_, system):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.PairMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.PairMap`
         The TCC map object in the code - this will be the object that
         gains the new c-library attribute.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)

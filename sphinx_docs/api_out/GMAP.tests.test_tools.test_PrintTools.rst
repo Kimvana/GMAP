@@ -1,7 +1,7 @@
-GMAP.tests.test\_tools.test\_PrintTools module
+GMAP.tests.test\_tools.test\_print_tools module
 ==============================================
 
-.. automodule:: GMAP.tests.test_tools.test_PrintTools
+.. automodule:: GMAP.tests.test_tools.test_print_tools
    :members:
    :undoc-members:
    :show-inheritance:

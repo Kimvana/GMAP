@@ -1,7 +1,7 @@
-GMAP.src.tools.MathFunctions module
+GMAP.src.tools.math_functions module
 ===================================
 
-.. automodule:: GMAP.src.tools.MathFunctions
+.. automodule:: GMAP.src.tools.math_functions
    :members:
    :undoc-members:
    :show-inheritance:

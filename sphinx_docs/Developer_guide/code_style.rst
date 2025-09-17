@@ -61,9 +61,9 @@ General rules
 - Don't worry about efficiency/speed of a function if it doesnt take more than 1% of total calculation time. This doesn't mean we should aim for blatantly needlessly expensive code -  'good means good enough'.
 - Printing should **always** be done using a custom print command, **never** using python's own ``print()``. Unless, of course, when defining the custom print commands.
 
-  - If you want to report something to the user, the :class:`~GMAP.src.tools.PrintTools.Printer` object has the ``print`` method. This method takes care of verbose settings, log files, etc.
-  - If you want to report an issue, use the warning method of the :class:`~GMAP.src.tools.PrintTools.Printer` object. These can also halt the program if the issue is severe enough.
-  - If you just want to print something for testing during development, use the :func:`~GMAP.src.tools.PrintTools.devprint` function inside PrintTools. Import it at the top of the document as dpr to make it convenient to use.
+  - If you want to report something to the user, the :class:`~GMAP.src.tools.print_tools.Printer` object has the ``print`` method. This method takes care of verbose settings, log files, etc.
+  - If you want to report an issue, use the warning method of the :class:`~GMAP.src.tools.print_tools.Printer` object. These can also halt the program if the issue is severe enough.
+  - If you just want to print something for testing during development, use the :func:`~GMAP.src.tools.print_tools.devprint` function inside print_tools. Import it at the top of the document as dpr to make it convenient to use.
 - When creating strings to be printed, f-strings are the preferred method.
 
 

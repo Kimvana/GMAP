@@ -33,7 +33,7 @@ def GM_adjust_map_core_raw(map_):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
     """
@@ -88,19 +88,19 @@ def GM_adjust_oscillators(map_, system, oscillator_list):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    oscillator_list : list of :class:`~GMAP.src.tools.system_reader.Oscillator`
         All oscillators belonging to a single struct of this map.
 
     Returns
     -------
-    oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    oscillator_list : list of :class:`~GMAP.src.tools.system_reader.Oscillator`
         All oscillators belonging to a single struct of this map.
     """
 
@@ -127,7 +127,7 @@ def GM_filter_oscillators(map_, system, oscillator_list):
     """Filter through the found oscillators based on the black- and
     whitelist settings.
 
-    For this map specific, we just use the code provided by GM_DMF, but
+    For this map specific, we just use the code provided by GM_dmf, but
     we use this custom function to intercept the results from the
     default version - we need to see whether the selected oscillators
     have any neighbours that are not in the selection.
@@ -142,19 +142,19 @@ def GM_filter_oscillators(map_, system, oscillator_list):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    oscillator_list : list of :class:`~GMAP.src.tools.system_reader.Oscillator`
         All oscillators belonging to this map.
 
     Returns
     -------
-    filtered_oscs : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    filtered_oscs : list of :class:`~GMAP.src.tools.system_reader.Oscillator`
         All oscillators belonging to a single struct of this map.
     """
 
@@ -189,10 +189,10 @@ def GM_post_init(map_, system):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -299,10 +299,10 @@ def GM_pre_frame(map_, system):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -319,14 +319,14 @@ def GM_str_osc(map_, system, oscillator):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    oscillator : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    oscillator : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The specific oscillator for which the string is required.
 
     Returns
@@ -356,14 +356,14 @@ def GM_calculate_frequency(map_, system, osc):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osc : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The specific oscillator for which the frequency is required.
 
     Returns
@@ -415,14 +415,14 @@ def GM_calculate_raman(map_, system, osc):
     created. Maybe, they won't stay of fixed magnitude in local coordinates
     forever, but depend on sth like VEG or atomic distances in the future.
 
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osc : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The specific oscillator for which the transformation is required.
 
     Returns
@@ -507,10 +507,10 @@ def GM_report_references(map_, system):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -527,7 +527,7 @@ def GM_report_references(map_, system):
         dictionary, once for each key.
 
         Associated with each key is a list of
-        :class:`~GMAP.src.tools.ReferenceHandler.Reference` objects,
+        :class:`~GMAP.src.tools.reference_handler.Reference` objects,
         each of which corresponds to a single entry in the .bib file.
     """
 

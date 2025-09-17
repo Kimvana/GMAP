@@ -22,7 +22,7 @@ def test_devprint(capsys):
     GM_pt.devprint("this is a test")
     captured = capsys.readouterr()
     assert captured.out == (
-        "(line   22) this is a test (from test_devprint in test_PrintTools.py)"
+        "(line   22) this is a test (from test_devprint in test_print_tools.py)"
         "\n"
     )
 
@@ -89,7 +89,7 @@ class TestTimer:
 
 def test_header_custom(capsys):
     # only to see if things are passed correctly. Full functionality should
-    # be tested by test_StringClasses::testHeader
+    # be tested by test_string_classes::testHeader
 
     prep_printer()
     GM_pt.header(1, "test header", "custom")

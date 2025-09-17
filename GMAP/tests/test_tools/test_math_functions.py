@@ -1,6 +1,6 @@
 """
 Tests all the functions/classes/methods in the file:
-src/tools/MathFunctions.py.
+src/tools/math_functions.py.
 
 Missing tests:
     None?

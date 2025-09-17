@@ -24,7 +24,7 @@ def calc_CoM(system, atomlist):
 
     Parameters
     ----------
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -124,10 +124,10 @@ def calc_frame(RunPars, system, outputs):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -220,11 +220,11 @@ def calc_dipole(system, oscillator):
 
     Parameters
     ----------
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    oscillator : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    oscillator : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The specific oscillator for which the calculation is requested.
 
     Returns
@@ -254,11 +254,11 @@ def calc_frequency(system, oscillator):
 
     Parameters
     ----------
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    oscillator : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    oscillator : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The specific oscillator for which the calculation is requested.
 
     Returns
@@ -278,11 +278,11 @@ def calc_raman(system, oscillator):
 
     Parameters
     ----------
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    oscillator : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    oscillator : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The specific oscillator for which the calculation is requested.
 
     Returns
@@ -304,11 +304,11 @@ def get_positions(system, oscillator):
 
     Parameters
     ----------
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    oscillator : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    oscillator : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The specific oscillator for which the calculation is requested.
 
     Returns
@@ -329,11 +329,11 @@ def get_doublepos(system, oscillator):
 
     Parameters
     ----------
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    oscillator : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    oscillator : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The specific oscillator for which the calculation is requested.
 
     Returns
@@ -359,10 +359,10 @@ def prep_coupling(RunPars, system):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -383,10 +383,10 @@ def calc_coupling(RunPars, system, outputs):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -416,10 +416,10 @@ def generate_output_structures(RunPars, system):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.ParameterParser.RunPars`
+    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)

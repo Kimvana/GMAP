@@ -472,7 +472,7 @@ def parameter_getter(mapname, cmdline=None, inpardict=None, load_clib=True):
 
     # prepare inputs
     cmdadd = [
-        "-md", "tests/test_tools/Data/maps_for_test_MapReader_1\\;",
+        "-md", "tests/test_tools/Data/maps_for_test_map_reader_1\\;",
         "--couplings_to_use", "None", ":All\\;"
     ]
     if cmdline is None:

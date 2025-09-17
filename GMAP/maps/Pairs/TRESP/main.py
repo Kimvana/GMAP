@@ -105,9 +105,9 @@ def gc_get_filename(map_, oscmap):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.PairMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.PairMap`
         The TRESP map object
-    oscmap: :class:`~GMAP.src.tools.MapReader.SingleMap`
+    oscmap: :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map object of the map for which we'd like to obtain TRESP
         charges.
 
@@ -154,9 +154,9 @@ def gc_get_file_contents(fname, map_, oscmap):
     ----------
     fname : pathlib.Path
         The path to the file that stores the TRESP charges.
-    map_ : :class:`~GMAP.src.tools.MapReader.PairMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.PairMap`
         The TRESP map object
-    oscmap: :class:`~GMAP.src.tools.MapReader.SingleMap`
+    oscmap: :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map object of the map for which we'd like to obtain TRESP
         charges.
 
@@ -215,9 +215,9 @@ def gc_get_multiplier(keyword, map_, oscmap):
     keyword : str
         The name of the parameter used in oscmap's core.txt file to
         store the multiplication factor.
-    map_ : :class:`~GMAP.src.tools.MapReader.PairMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.PairMap`
         The TRESP map object
-    oscmap: :class:`~GMAP.src.tools.MapReader.SingleMap`
+    oscmap: :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map object of the map for which we'd like to obtain TRESP
         charges.
 
