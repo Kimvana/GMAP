@@ -11,7 +11,7 @@ GMAP help [program]
 
 GMAP GEM
     This program will create the required files for calculating
-    electronic spectra.
+    vibrational and electronic spectra.
 
 GMAP Setup
     This program will copy the source code and maps to target folder.

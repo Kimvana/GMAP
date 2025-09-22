@@ -124,7 +124,6 @@ def calc_coupling(oscix1, oscix2, pos_arr, vec_arr, boxvects, i4pieps):
     # 4piEinv = 1/(4 * pi * eps_0) Jm/C^2
     # Gives 5034.11656 cm^-1 * ang^3 Deb^-2
 
-    # fourPiEps_inv = np.float32(5034.11656)
     # the positions array is in box-coordinates -> easy subtraction, then
     # move back into cartesian
     d = GM_mf.PBC_back2box(pos_arr[oscix1, :] - pos_arr[oscix2, :], boxvects)

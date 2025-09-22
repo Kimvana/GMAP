@@ -30,10 +30,10 @@ This map needs some installation before it can be used:
     - run the following command, making sure to point to the path of the sourcefiles directory of your installation (that we looked up earlier)
       cl.exe /LD /Fe: TCC_clib_Win64bit /I\your\GMAP\location\sourcefiles TCC_clib.cpp (or, for absolute files, /I d:\path\to\sourcefiles)
   - Linux:
-    - You are already in the correct directory (TRESP/src) to run the install command. Run the following command, making sure to point to the path of the sourcefiles directory of your installation (that we looked up earlier):
+    - You are already in the correct directory (ProteinAmide_TCC/src) to run the install command. Run the following command, making sure to point to the path of the sourcefiles directory of your installation (that we looked up earlier):
       g++ -fPIC -shared -o TCC_clib_Linux.so -I/your/GMAP/location/sourcefiles TCC_clib.cpp
   - MacOS:
-    - You are already in the correct directory (TRESP/src) to run the install command. Run the following command, making sure to point to the path of the sourcefiles directory of your installation (that we looked up earlier):
+    - You are already in the correct directory (ProteinAmide_TCC/src) to run the install command. Run the following command, making sure to point to the path of the sourcefiles directory of your installation (that we looked up earlier):
       g++ -fPIC -shared -o TCC_clib_MacOS.dylib  -I/your/GMAP/location/sourcefiles TCC_clib.cpp
 
 

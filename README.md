@@ -1,6 +1,9 @@
-# GEMAIM-dev
+# GMAP
 
-This is the development version of GEMAIM. 
+This is the main version of GMAP. Both the stable release version (main branch) and developments (other branches) can be found here.
+
+GMAP is a package of tools for use in computing spectra from molecular dynamics trajectories. Currently, the main event is GEM, which supports both vibrational and electronic spectroscopy.
+
 
 on this page:
 - [How to install](#how-to-install-general-users)
@@ -93,8 +96,8 @@ When you've made some choices to the code, and would like to rebuild the docs, n
 ### files that need compiling
 
 * (always) GMAP/sourcefiles/VEG.cpp (see instructions below)
-* (optional) GMAP/maps/Pairs/ProteinAmide_TCC/src/TCC_clib.cpp (modified command, see TCC map README)
-* (optional) GMAP/maps/Pairs/TRESP/src/TRESP_clib.cpp (modified command, see TRESP map README)
+* (optional) GMAP/maps/Pairs/ProteinAmide_TCC/src/TCC_clib.cpp (modified command, see TCC map README). This is only needed if the map is used.
+* (optional) GMAP/maps/Pairs/TRESP/src/TRESP_clib.cpp (modified command, see TRESP map README). This is only needed if the map is used.
 
 ### windows
 

@@ -105,7 +105,7 @@ GEM is intended to be the more generalist successor of `AIM <github.com/kimvana/
 Concept of maps
 ---------------
 
-Both GEM makes use of maps. A map basically encodes a relationship. Usually between one or more electrostatic properties, and a spectroscopic one. A simple example is the Tokmakoff map - it relates the strength of the electric field at a given point in a given direction to the frequency at which an amide group is expected to oscillate.
+GEM makes use of maps. A map basically encodes a relationship. Usually between one or more electrostatic properties, and a spectroscopic one. A simple example is the Tokmakoff map - it relates the strength of the electric field at a given point in a given direction to the frequency at which an amide group is expected to oscillate.
 
 Maps allow to combine ab initio methods and advantages with that of molecular dynamics. Again using the Tokmakoff map as an example, a protein would be too large to calculate the different frequencies of using ab initio methods, but the frequencies have too much quantum nature to be treated classically. The relationship encoded in a map, luckily, does not require an entire protein, but a smaller model system that can be treated using ab initio methods. The map can then be applied to the classically-generated MD trajectory, resulting in much faster computation times, but still considering the quantum nature.
 

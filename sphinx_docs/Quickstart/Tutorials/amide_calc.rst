@@ -227,7 +227,7 @@ Improving on our first input parameter file.
 Now we have confirmed the program can detect our protein properly, let's decide on the parameters we'd like to use for the computation. We'll discuss multiple parameters here, and the section will end with an example input file where everything is combined.
 
 .. warning:: 
-    Not all combinations of choices are recommended. As always, consult the README of any map you're planning on using, as it should contain all information about these kinds of matters. It does for the AmideBB and AmideSC maps.
+    Not all combinations of choices are recommended. As always, consult the README of any map you're planning on using, as it should contain all information about these kinds of matters. It does for the AmideBB and AmideSC maps. It is also generally strongly recommended to carefully check out the original related papers as provided.
 
 Firstly, don't forget to increase the amount of frames with the 'number_frames' parameter to the desired amount. Anything larger than the amount of available frames will be ignored, so could safely be used.
 

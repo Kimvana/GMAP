@@ -9,7 +9,7 @@ electrostatic_choice V   	# the potential
 
 local_atoms All
 
-frequency_gas_phase 15390 	     # Qy from Eric et al. 2023, page 1100 
+frequency_gas_phase 15390 	     # Qy from Eric et al. 2023, page 1100, 10.1021/acs.jpcb.2c07143
 frequency_data_file_linear   diff_charges_CHELPG.txt
 multiply_freq     GM_con.e2i4pieps_angcm
 
