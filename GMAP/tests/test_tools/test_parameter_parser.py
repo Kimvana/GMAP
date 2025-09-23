@@ -9,7 +9,7 @@ Missing tests:
 
 (CUHTAT - currently unknown how to access this )
 - SU_FP_7 (CUHTAT)   (383-384)
-- RefPars parse choice - unknown dtype (CUHTAT)  (445)
+- ref_pars parse choice - unknown dtype (CUHTAT)  (445)
 - RawPars verify choice - unknown dtype (CUHTAT)  (1190)
 - RawPars checkparexist - variable may occur multiple times, but is also
   not expected in deffiles (N/A in refpars)  (1303)
@@ -34,14 +34,14 @@ import GMAP.src.tools.parameter_parser as GM_pp
 
 class TestRefPars:
     def test_correctness(self):
-        RefPars = GM_pp.RefPars(
+        ref_pars = GM_pp.RefPars(
             Path(
                 "tests/test_tools/Data/reference_parameters_1.ref"),
             True
         )
 
-        assert RefPars.fname.name == "reference_parameters_1.ref"
-        assert RefPars.options == {
+        assert ref_pars.fname.name == "reference_parameters_1.ref"
+        assert ref_pars.options == {
             "verbose": [0, 1, 2, 3, 4],
             "verbose_logfile": [0, 1, 2, 3, 4],
             "command_line_color": ["white", "4bit", "24bit"],
@@ -69,7 +69,7 @@ class TestRefPars:
             "float_test_choice_list": [99.9, 71.5, 43.0, 88.4],
             "float_test_choice_list2": [44.5, 33.0, 12.8, 42.7],
         }
-        assert RefPars.choices == {
+        assert ref_pars.choices == {
             "topology_file": [Path("../../../sourcefiles/pdb_1AKI.tpr")],
             "trajectory_file": [Path(
                 "../../../sourcefiles/pdb_1AKI_50frame.xtc"
@@ -174,7 +174,7 @@ class TestRefPars:
                 Path("test_outfile_2_2_1.txt"), Path("test_outfile_2_2_2.txt")
             ],
         }
-        assert RefPars.shorthands == {
+        assert ref_pars.shorthands == {
             "top": "topology_file",
             "trj": "trajectory_file",
             "sd": "source_directory",
@@ -215,7 +215,7 @@ class TestRefPars:
             "tp8": "path_test_rel21_new",
             "tp9": "path_test_rel22_new_list",
         }
-        assert RefPars.organized_filepars == {
+        assert ref_pars.organized_filepars == {
             "source_directory": [
                 "default_parameter_filename",
                 "VEG_clib_file"],
@@ -235,14 +235,14 @@ class TestRefPars:
                 "path_test_rel21_new", "path_test_rel22_new_list"
             ]
         }
-        assert RefPars.organized_filepars_id == {
+        assert ref_pars.organized_filepars_id == {
             "sd": "source_directory",
             "lg": "log_directory",
             "op": "output_directory",
             "t1": "path_test_dir1",
             "t2": "path_test_dir2"
         }
-        assert RefPars.allfilepars == [
+        assert ref_pars.allfilepars == [
             "topology_file",
             "trajectory_file",
             "source_directory",
@@ -276,7 +276,7 @@ class TestRefPars:
             "path_test_rel22_new_list",
             "path_test_nodef"
         ]
-        assert RefPars.filepars_create == [
+        assert ref_pars.filepars_create == [
             "log_filename",
             "log_profiling_filename",
             "log_profiling_tempfile",
@@ -296,7 +296,7 @@ class TestRefPars:
             "path_test_rel21_new",
             "path_test_rel22_new_list",
         ]
-        assert RefPars.intpars == [
+        assert ref_pars.intpars == [
             "verbose",
             "verbose_logfile",
             "command_line_length",
@@ -313,7 +313,7 @@ class TestRefPars:
             "int_test_choice_list2",
             "int_test_nodef"
         ]
-        assert RefPars.floatpars == [
+        assert ref_pars.floatpars == [
             "dielectric_constant",
             "neutral_charge_threshold",
             "estatic_range",
@@ -332,7 +332,7 @@ class TestRefPars:
             "float_test_choice_list",
             "float_test_choice_list2"
         ]
-        assert RefPars.boolpars == [
+        assert ref_pars.boolpars == [
             "safe_mode",
             "dark_mode",
             "prevent_overwrite",
@@ -343,7 +343,7 @@ class TestRefPars:
             "bool_test2",
             "bool_test3"
         ]
-        assert RefPars.strpars == [
+        assert ref_pars.strpars == [
             "maps_to_use",
             "couplings_to_use",
             "couplings_scale",
@@ -370,14 +370,14 @@ class TestRefPars:
             "str_test_choice_list",
             "str_test_choice_list2"
         ]
-        assert RefPars.not_expected_in_deffile == [
+        assert ref_pars.not_expected_in_deffile == [
             "default_parameter_filename",
             "log_directory",
             "output_directory",
             "int_test_nodef",
             "path_test_nodef"
         ]
-        assert RefPars.maybe_list == [
+        assert ref_pars.maybe_list == [
             "map_directory",
             "maps_to_use",
             "couplings_to_use",
@@ -406,19 +406,19 @@ class TestRefPars:
         ]
 
     def test_variations(self):
-        RefPars = GM_pp.RefPars(
+        ref_pars = GM_pp.RefPars(
             Path(
                 "tests/test_tools/Data/reference_parameters_3.ref"),
             True
         )
 
-        assert RefPars.choices["influencers"] == [
+        assert ref_pars.choices["influencers"] == [
             ":All", "-", "(", ":None", ")"]
 
-        assert RefPars.choices["command_line_color"] == ["white"]
+        assert ref_pars.choices["command_line_color"] == ["white"]
 
     def test_SU_FP_1(self):
-        RefPars = GM_pp.RefPars(
+        ref_pars = GM_pp.RefPars(
             Path(
                 "tests/test_tools/Data/reference_parameters_1.ref"),
             True
@@ -427,7 +427,7 @@ class TestRefPars:
         with pytest.raises(GM_ex.GmapNotImplementedError, match="SU_FP_1$"):
             GM_pp.RefPars.add_reffile(
                 Path("tests/test_tools/Data/reference_parameters_1.ref"),
-                RefPars
+                ref_pars
             )
 
     def test_SU_FP_2(self):
@@ -529,20 +529,20 @@ class TestRefPars:
 
 class TestRawPars:
     def test_fromfile(self):
-        RefPars = GM_pp.RefPars(
+        ref_pars = GM_pp.RefPars(
             Path(
                 "tests/test_tools/Data/reference_parameters_1.ref"),
             True
         )
-        DefPars = GM_pp.RawPars.from_file(
+        def_pars = GM_pp.RawPars.from_file(
             Path("tests/test_tools/Data/default_parameters_1.txt"),
-            RefPars, True
+            ref_pars, True
         )
         sd = Path("../../../sourcefiles")
 
-        assert DefPars.fname.name == "default_parameters_1.txt"
-        assert DefPars.is_default is True
-        assert DefPars.choices == {
+        assert def_pars.fname.name == "default_parameters_1.txt"
+        assert def_pars.is_default is True
+        assert def_pars.choices == {
             "topology_file": [sd / "pdb_1AKI.tpr"],
             "trajectory_file": [sd / "pdb_1AKI_50frame.xtc"],
             "source_directory": [sd],
@@ -650,10 +650,10 @@ class TestRawPars:
             #     Path("test_outfile_2_4_4.txt")
             # ]
         }
-        # Still missing DefPars.not_found
+        # Still missing def_pars.not_found
 
     def test_fromdict(self):
-        RefPars = TestRawPars.setup_test_SU_WP_base()
+        ref_pars = TestRawPars.setup_test_SU_WP_base()
 
         pardict = {
             "verbose": ["4"],
@@ -669,13 +669,13 @@ class TestRawPars:
             "path_test_dir2": ["../testout2"]
         }
 
-        InPars = GM_pp.RawPars.from_dict(
-            Path("mydict"), pardict, RefPars, False
+        in_pars = GM_pp.RawPars.from_dict(
+            Path("mydict"), pardict, ref_pars, False
         )
 
-        assert InPars.fname.name == "mydict"
-        assert InPars.is_default is False
-        assert InPars.choices == {
+        assert in_pars.fname.name == "mydict"
+        assert in_pars.is_default is False
+        assert in_pars.choices == {
             "verbose": [4],
             "hamiltonian_units": ["eV"],
             "hamiltonian_multiplier": [GM_con.cm2eV],
@@ -694,7 +694,7 @@ class TestRawPars:
             "int_test_free_list": [88, 44],
             "path_test_dir2": [Path("../testout2")]
         }
-        # Still missing InPars.not_found
+        # Still missing in_pars.not_found
 
     def test_fromcmd(self):
         cmdline = [
@@ -711,16 +711,16 @@ class TestRawPars:
             "--doublepos_units", "nm"
         ]
 
-        RefPars, _, _, maprefdict = self.setup_test_SU_WP_cmd(
+        ref_pars, _, _, maprefdict = self.setup_test_SU_WP_cmd(
             cmdline)
 
-        CmdPars = GM_pp.RawPars.from_cmdline(
-            cmdline, RefPars, maprefdict, False
+        cmd_pars = GM_pp.RawPars.from_cmdline(
+            cmdline, ref_pars, maprefdict, False
         )
 
-        assert CmdPars.fname.name == "command line"
-        assert CmdPars.is_default is False
-        assert CmdPars.choices == {
+        assert cmd_pars.fname.name == "command line"
+        assert cmd_pars.is_default is False
+        assert cmd_pars.choices == {
             "int_test_free": [42],
             "bool_test1": [True],
             "bool_test2": [False],
@@ -741,18 +741,18 @@ class TestRawPars:
             "doublepos_units": ["nm"],
             "doublepos_multiplier": [0.1],
         }
-        # Still missing InPars.not_found
+        # Still missing in_pars.not_found
         # Also, test map-shorthand
 
     def test_variations(self):
         def infltest(cmdline, inflchoice):
-            RefPars, _, _, maprefdict = self.setup_test_SU_WP_cmd(
+            ref_pars, _, _, maprefdict = self.setup_test_SU_WP_cmd(
                 cmdline)
 
-            CmdPars = GM_pp.RawPars.from_cmdline(
-                cmdline, RefPars, maprefdict, False
+            cmd_pars = GM_pp.RawPars.from_cmdline(
+                cmdline, ref_pars, maprefdict, False
             )
-            assert CmdPars.choices["influencers"] == inflchoice
+            assert cmd_pars.choices["influencers"] == inflchoice
 
         infltest(
             ["--influencers_blacklist", ":None\\;"],
@@ -769,7 +769,7 @@ class TestRawPars:
             "segid A"
         )
 
-        RefPars = TestRawPars.setup_test_SU_WP_base()
+        ref_pars = TestRawPars.setup_test_SU_WP_base()
 
         pardict = {
             "verbose": ["4"],
@@ -783,13 +783,13 @@ class TestRawPars:
             # "path_test_dir2": ["../testout2"]
         }
 
-        InPars = GM_pp.RawPars.from_dict(
-            Path("mydict"), pardict, RefPars, False
+        in_pars = GM_pp.RawPars.from_dict(
+            Path("mydict"), pardict, ref_pars, False
         )
 
-        assert InPars.fname.name == "mydict"
-        assert InPars.is_default is False
-        assert InPars.choices == {
+        assert in_pars.fname.name == "mydict"
+        assert in_pars.is_default is False
+        assert in_pars.choices == {
             "verbose": [4],
             "raman_units": ["Ang3"],
             "raman_multiplier": [1],
@@ -913,13 +913,13 @@ class TestRawPars:
         pardict = {
             "nonexistentmap.par1": ["1"]
         }
-        RefPars = TestRawPars.setup_test_SU_WP_base()
-        InPars = GM_pp.RawPars.from_dict(
-            Path("mydict"), pardict, RefPars, False
+        ref_pars = TestRawPars.setup_test_SU_WP_base()
+        in_pars = GM_pp.RawPars.from_dict(
+            Path("mydict"), pardict, ref_pars, False
         )
 
         with pytest.raises(GM_ex.GmapKeyError, match="SU_WP_15$"):
-            InPars.finalize_map_pars()
+            in_pars.finalize_map_pars()
 
     def test_SU_WP_16(self):
         pardict = {
@@ -1008,45 +1008,45 @@ class TestRawPars:
 
     @staticmethod
     def setup_test_SU_WP_cmd(cmdline):
-        RefPars = TestRawPars.setup_test_SU_WP_base()
+        ref_pars = TestRawPars.setup_test_SU_WP_base()
 
-        InPars = GM_pp.RawPars.create_empty()
+        in_pars = GM_pp.RawPars.create_empty()
 
-        mapdirs = GM_pp.find_mapdir(cmdline, InPars, RefPars)
+        mapdirs = GM_pp.find_mapdir(cmdline, in_pars, ref_pars)
         mapdict = GM_mr.scan_mapdirs(mapdirs, "Singles")
         for map_ in mapdict.values():
             map_.find_refpars()
 
-        maprefdict = {name: _map.RefPars for name, _map in mapdict.items()}
+        maprefdict = {name: _map.ref_pars for name, _map in mapdict.items()}
 
-        return RefPars, InPars, mapdict, maprefdict
+        return ref_pars, in_pars, mapdict, maprefdict
 
     @staticmethod
     def setup_test_SU_WP_base():
-        RefPars = GM_pp.RefPars(
+        ref_pars = GM_pp.RefPars(
             Path(
                 "tests/test_tools/Data/reference_parameters_1.ref"),
             True
         )
-        return RefPars
+        return ref_pars
 
     @staticmethod
     def systest_cmdline(cmdline, errcode, errclass, isdef=False):
         (
-            RefPars, _, _, maprefdict
+            ref_pars, _, _, maprefdict
         ) = TestRawPars.setup_test_SU_WP_cmd(cmdline)
 
         with pytest.raises(errclass, match=f"{errcode}$"):
             _ = GM_pp.RawPars.from_cmdline(
-                cmdline, RefPars, maprefdict, isdef
+                cmdline, ref_pars, maprefdict, isdef
             )
 
     @staticmethod
     def systest_pardict(pardict, errcode, errclass, isdef=False):
-        RefPars = TestRawPars.setup_test_SU_WP_base()
+        ref_pars = TestRawPars.setup_test_SU_WP_base()
         with pytest.raises(errclass, match=f"{errcode}$"):
             _ = GM_pp.RawPars.from_dict(
-                Path("mydict"), pardict, RefPars, isdef
+                Path("mydict"), pardict, ref_pars, isdef
             )
 
 
@@ -1076,122 +1076,122 @@ class TestRunPars:
         ]
 
         (
-            RefPars, DefPars, InPars, _, CmdPars
+            ref_pars, def_pars, in_pars, _, cmd_pars
         ) = self.setup_for_runpars(pardict, curpath, cmdline)
 
-        # Actually create RunPars
+        # Actually create run_pars
 
-        RunPars = GM_pp.RunPars(
-            CmdPars, InPars, DefPars, RefPars, True
+        run_pars = GM_pp.RunPars(
+            cmd_pars, in_pars, def_pars, ref_pars, True
         )
-        RunPars.manage_dtypes()
-        print(RefPars.choices["output_format"])
+        run_pars.manage_dtypes()
+        print(ref_pars.choices["output_format"])
 
-        assert RunPars.is_main is True
+        assert run_pars.is_main is True
 
         # now, assert all choices...
-        assert RunPars.topology_file == Path(
+        assert run_pars.topology_file == Path(
             curpath / "../../../sourcefiles/pdb_1AKI.tpr").resolve()
-        assert RunPars.trajectory_file == Path(
+        assert run_pars.trajectory_file == Path(
             curpath / "../../../sourcefiles/pdb_1AKI_50frame.xtc").resolve()
-        assert RunPars.source_directory == Path(
+        assert run_pars.source_directory == Path(
             curpath / "../../../sourcefiles").resolve()
         # TLC - this can be made more rigorous
-        # assert (RunPars.VEG_clib_file == Path(
+        # assert (run_pars.VEG_clib_file == Path(
         #     curpath / "../../../sourcefiles/VEG_Win64bit.dll").resolve()) or
-        #     (RunPars.VEG_clib_file == Path(
+        #     (run_pars.VEG_clib_file == Path(
         #     curpath / "../../../sourcefiles/VEG_Win32bit.dll").resolve()) or
-        #     (RunPars.VEG_clib_file == Path(
+        #     (run_pars.VEG_clib_file == Path(
         #     curpath / "../../../sourcefiles/VEG_MacOS.dylib").resolve()) or
-        #     (RunPars.VEG_clib_file == Path(
+        #     (run_pars.VEG_clib_file == Path(
         #     curpath / "../../../sourcefiles/VEG_Linux.so").resolve())
-        assert RunPars.VEG_clib_file in [
+        assert run_pars.VEG_clib_file in [
             Path(curpath / ("../../../sourcefiles/VEG_" + fname)).resolve()
             for fname in [
                 "Win64bit.dll", "Win32bit.dll", "MacOS.dylib", "Linux.so"]
         ]
-        assert RunPars.log_directory == Path(curpath / "../Data").resolve()
-        assert RunPars.log_filename == Path(
+        assert run_pars.log_directory == Path(curpath / "../Data").resolve()
+        assert run_pars.log_filename == Path(
             curpath / "../Data/log.log").resolve()
-        assert RunPars.output_directory == Path(curpath / "../Data").resolve()
-        assert RunPars.output_estatics_filename == Path(
+        assert run_pars.output_directory == Path(curpath / "../Data").resolve()
+        assert run_pars.output_estatics_filename == Path(
             curpath / "../Data/estatics.txt").resolve()
-        assert RunPars.output_hamiltonian_filename == Path(
+        assert run_pars.output_hamiltonian_filename == Path(
             curpath / "../Data/hamiltonian").resolve()
-        assert RunPars.output_dipole_filename == Path(
+        assert run_pars.output_dipole_filename == Path(
             curpath / "../Data/dipoles").resolve()
-        assert RunPars.output_energies_filename == Path(
+        assert run_pars.output_energies_filename == Path(
             curpath / "../Data/energies").resolve()
-        assert RunPars.map_directory == [Path(
+        assert run_pars.map_directory == [Path(
             curpath / "../../../maps").resolve()]
-        assert RunPars.maps_to_use == ["AmideSC"]
-        assert RunPars.influencers == [":All"]
+        assert run_pars.maps_to_use == ["AmideSC"]
+        assert run_pars.influencers == [":All"]
 
-        assert RunPars.verbose == 4
-        assert RunPars.verbose_logfile == 1
-        assert RunPars.prevent_overwrite is False
-        assert RunPars.output_format == ["bin", "txt"]
-        assert RunPars.output_data == ["ham", "dip", "pos"]
+        assert run_pars.verbose == 4
+        assert run_pars.verbose_logfile == 1
+        assert run_pars.prevent_overwrite is False
+        assert run_pars.output_format == ["bin", "txt"]
+        assert run_pars.output_data == ["ham", "dip", "pos"]
 
-        assert RunPars.neutral_charge_threshold == 0.0001
-        assert RunPars.guess_bonds is False
-        assert RunPars.estatic_range == np.float32(20)
-        assert RunPars.estatic_smooth_range == np.float32(5)
+        assert run_pars.neutral_charge_threshold == 0.0001
+        assert run_pars.guess_bonds is False
+        assert run_pars.estatic_range == np.float32(20)
+        assert run_pars.estatic_smooth_range == np.float32(5)
 
-        assert RunPars.start_frame == 0
-        assert RunPars.number_frames == 999999999
-        assert RunPars.stop_frame == 999999999
+        assert run_pars.start_frame == 0
+        assert run_pars.number_frames == 999999999
+        assert run_pars.stop_frame == 999999999
 
-        assert RunPars.str_test_free == "freechoice"
-        assert RunPars.str_test_choice == "not_this"
-        assert RunPars.str_test_free_list == ["freechoice1", "freechoice2"]
-        assert RunPars.str_test_choice_list == ["not_this"]
-        assert RunPars.str_test_choice_list2 == ["dont_pick_this", "but_this"]
+        assert run_pars.str_test_free == "freechoice"
+        assert run_pars.str_test_choice == "not_this"
+        assert run_pars.str_test_free_list == ["freechoice1", "freechoice2"]
+        assert run_pars.str_test_choice_list == ["not_this"]
+        assert run_pars.str_test_choice_list2 == ["dont_pick_this", "but_this"]
 
-        assert RunPars.bool_test1 is True
-        assert RunPars.bool_test2 is False
-        assert RunPars.bool_test3 is False
+        assert run_pars.bool_test1 is True
+        assert run_pars.bool_test2 is False
+        assert run_pars.bool_test3 is False
 
-        assert RunPars.int_test_free == 42
-        assert RunPars.int_test_choice == 65
-        assert RunPars.int_test_free_list == [88, 44]
-        assert RunPars.int_test_choice_list == [64]
-        assert RunPars.int_test_choice_list2 == [12, 85]
-        assert RunPars.int_test_nodef == 33
+        assert run_pars.int_test_free == 42
+        assert run_pars.int_test_choice == 65
+        assert run_pars.int_test_free_list == [88, 44]
+        assert run_pars.int_test_choice_list == [64]
+        assert run_pars.int_test_choice_list2 == [12, 85]
+        assert run_pars.int_test_nodef == 33
 
-        assert RunPars.float_test_free == 6.2
-        assert RunPars.float_test_choice == 83.7
-        assert RunPars.float_test_free_list == [32.0, 87.0]
-        assert RunPars.float_test_choice_list == [99.9]
-        assert RunPars.float_test_choice_list2 == [44.5, 33.0]
+        assert run_pars.float_test_free == 6.2
+        assert run_pars.float_test_choice == 83.7
+        assert run_pars.float_test_free_list == [32.0, 87.0]
+        assert run_pars.float_test_choice_list == [99.9]
+        assert run_pars.float_test_choice_list2 == [44.5, 33.0]
 
-        assert RunPars.path_test_free == Path(
+        assert run_pars.path_test_free == Path(
             curpath / "../test_math_functions.py").resolve()
-        assert RunPars.path_test_free_new == Path(
+        assert run_pars.path_test_free_new == Path(
             curpath / "../Data/tost_outfile.txt").resolve()
-        # assert RunPars.path_test_choice == Path(
+        # assert run_pars.path_test_choice == Path(
         #     curpath / "../test_Mathfunctions.py").resolve()
-        assert RunPars.path_test_free_new_list == [
+        assert run_pars.path_test_free_new_list == [
             Path(curpath / "../Data/test_outfile_0_1.txt").resolve(),
             Path(curpath / "../Data/test_outfile_0_2.txt").resolve()
         ]
-        assert RunPars.path_test_dir1 == Path(
+        assert run_pars.path_test_dir1 == Path(
             curpath / "..").resolve()
-        assert RunPars.path_test_dir2 == Path(
+        assert run_pars.path_test_dir2 == Path(
             curpath / "../Data/testout2").resolve()
-        assert RunPars.path_test_rel11 == Path(
+        assert run_pars.path_test_rel11 == Path(
             curpath / "../test_parameter_parser.py").resolve()
-        # assert RunPars.path_test_rel12_choice == Path(
+        # assert run_pars.path_test_rel12_choice == Path(
         #     curpath / "../test_math_functions.py").resolve()
-        assert RunPars.path_test_rel21_new == Path(
+        assert run_pars.path_test_rel21_new == Path(
             curpath / "../Data/testout2/tost_outfile_2_1.txt").resolve()
-        assert RunPars.path_test_rel22_new_list == [
+        assert run_pars.path_test_rel22_new_list == [
             Path(curpath / "../../../tast_outfile_2_2_4.txt").resolve(),
             Path(curpath / "../../../tast_outfile_2_2_0.txt").resolve()
         ]
-        # assert RunPars.path_test_rel23_new_choice == Path(
+        # assert run_pars.path_test_rel23_new_choice == Path(
         #     curpath / "../Data/testout2/test_outfile_2_3_1.txt").resolve()
-        # assert RunPars.path_test_rel24_new_choice_list == [
+        # assert run_pars.path_test_rel24_new_choice_list == [
         #     Path(
         #         curpath / "../Data/testout2/test_outfile_2_4_1.txt"
         #     ).resolve(),
@@ -1204,14 +1204,14 @@ class TestRunPars:
         # Assumes that RefPars and RawPars work correctly!!!
 
         # setup - Create all necessary objects.
-        RefPars = GM_pp.RefPars(
+        ref_pars = GM_pp.RefPars(
             Path(
                 "tests/test_tools/Data/reference_parameters_2.ref"),
             True
         )
-        DefPars = GM_pp.RawPars.from_file(
+        def_pars = GM_pp.RawPars.from_file(
             Path("tests/test_tools/Data/default_parameters_2.txt"),
-            RefPars, True
+            ref_pars, True
         )
 
         pardicts = []
@@ -1235,33 +1235,33 @@ class TestRunPars:
                             cmdlines[-1].append("fromcmd.txt")
 
         curpath = Path(__file__).resolve()
-        allInPars = [
+        all_in_pars = [
             GM_pp.RawPars.from_dict(
                 curpath / "../Data/testout/imaginary_inpfile", pardict,
-                RefPars, False
+                ref_pars, False
             ) for pardict in pardicts
         ]
 
         mapdirs = GM_pp.find_mapdir(
-            cmdlines[0], allInPars[0], DefPars)
+            cmdlines[0], all_in_pars[0], def_pars)
         mapdict = GM_mr.scan_mapdirs(mapdirs, "Singles")
         for map_ in mapdict.values():
             map_.find_refpars()
 
-        maprefdict = {name: _map.RefPars for name, _map in mapdict.items()}
+        maprefdict = {name: _map.ref_pars for name, _map in mapdict.items()}
 
-        allCmdPars = [
+        all_cmd_pars = [
             GM_pp.RawPars.from_cmdline(
-                cmdline, RefPars, maprefdict, False
+                cmdline, ref_pars, maprefdict, False
             ) for cmdline in cmdlines
         ]
 
-        # Actually create RunPars
+        # Actually create run_pars
         allrunpars = []
-        for CmdPars in allCmdPars:
-            for InPars in allInPars:
+        for cmd_pars in all_cmd_pars:
+            for in_pars in all_in_pars:
                 allrunpars.append(GM_pp.RunPars(
-                    CmdPars, InPars, DefPars, RefPars, True
+                    cmd_pars, in_pars, def_pars, ref_pars, True
                 ))
 
         # orders:
@@ -1347,15 +1347,15 @@ class TestRunPars:
         ]
 
         # counter = 0
-        for RunPars, exp_ddf, exp_ndf, exp_dnf, exp_nnf in zip(
+        for run_pars, exp_ddf, exp_ndf, exp_dnf, exp_nnf in zip(
             allrunpars, expected_ddf, expected_ndf, expected_dnf, expected_nnf
         ):
             # GM_pt.devprint(counter)
             # counter += 1
-            assert RunPars.def_def_file == exp_ddf
-            assert RunPars.nod_def_file == exp_ndf
-            assert RunPars.def_nod_file == exp_dnf
-            assert RunPars.nod_nod_file == exp_nnf
+            assert run_pars.def_def_file == exp_ddf
+            assert run_pars.nod_def_file == exp_ndf
+            assert run_pars.def_nod_file == exp_dnf
+            assert run_pars.nod_nod_file == exp_nnf
 
     def test_framenumbers(self):
         pardict = {
@@ -1369,16 +1369,16 @@ class TestRunPars:
         cmdline = []
 
         (
-            RefPars, DefPars, InPars, _, CmdPars
+            ref_pars, def_pars, in_pars, _, cmd_pars
         ) = self.setup_for_runpars(pardict, curpath, cmdline)
 
-        RunPars = GM_pp.RunPars(
-            CmdPars, InPars, DefPars, RefPars, True
+        run_pars = GM_pp.RunPars(
+            cmd_pars, in_pars, def_pars, ref_pars, True
         )
 
-        assert RunPars.start_frame == 4
-        assert RunPars.number_frames == 999999995
-        assert RunPars.stop_frame == 999999999
+        assert run_pars.start_frame == 4
+        assert run_pars.number_frames == 999999995
+        assert run_pars.stop_frame == 999999999
 
         pardict = {
             "start_frame": ["4"],
@@ -1390,16 +1390,16 @@ class TestRunPars:
         curpath = Path(__file__).resolve()
 
         (
-            RefPars, DefPars, InPars, _, CmdPars
+            ref_pars, def_pars, in_pars, _, cmd_pars
         ) = self.setup_for_runpars(pardict, curpath, cmdline)
 
-        RunPars = GM_pp.RunPars(
-            CmdPars, InPars, DefPars, RefPars, True
+        run_pars = GM_pp.RunPars(
+            cmd_pars, in_pars, def_pars, ref_pars, True
         )
 
-        assert RunPars.start_frame == 4
-        assert RunPars.number_frames == 20
-        assert RunPars.stop_frame == 24
+        assert run_pars.start_frame == 4
+        assert run_pars.number_frames == 20
+        assert run_pars.stop_frame == 24
 
         pardict = {
             "number_frames": ["4"],
@@ -1412,16 +1412,16 @@ class TestRunPars:
         cmdline = ["--stop_frame", "8"]
 
         (
-            RefPars, DefPars, InPars, _, CmdPars
+            ref_pars, def_pars, in_pars, _, cmd_pars
         ) = self.setup_for_runpars(pardict, curpath, cmdline)
 
-        RunPars = GM_pp.RunPars(
-            CmdPars, InPars, DefPars, RefPars, True
+        run_pars = GM_pp.RunPars(
+            cmd_pars, in_pars, def_pars, ref_pars, True
         )
 
-        assert RunPars.start_frame == 4
-        assert RunPars.number_frames == 4
-        assert RunPars.stop_frame == 8
+        assert run_pars.start_frame == 4
+        assert run_pars.number_frames == 4
+        assert run_pars.stop_frame == 8
 
         pardict = {
             "stop_frame": ["4"],
@@ -1434,16 +1434,16 @@ class TestRunPars:
         cmdline = ["--stop_frame", "8"]
 
         (
-            RefPars, DefPars, InPars, _, CmdPars
+            ref_pars, def_pars, in_pars, _, cmd_pars
         ) = self.setup_for_runpars(pardict, curpath, cmdline)
 
-        RunPars = GM_pp.RunPars(
-            CmdPars, InPars, DefPars, RefPars, True
+        run_pars = GM_pp.RunPars(
+            cmd_pars, in_pars, def_pars, ref_pars, True
         )
 
-        assert RunPars.start_frame == 0
-        assert RunPars.number_frames == 8
-        assert RunPars.stop_frame == 8
+        assert run_pars.start_frame == 0
+        assert run_pars.number_frames == 8
+        assert run_pars.stop_frame == 8
 
     def test_coupchoices(self):
         pardict = {
@@ -1462,13 +1462,13 @@ class TestRunPars:
         cmdline = ["-md", "maps", "tests/test_tools/Data/test_mapdir\\;"]
 
         (
-            RefPars, DefPars, InPars, _, CmdPars
+            ref_pars, def_pars, in_pars, _, cmd_pars
         ) = self.setup_for_runpars(pardict, curpath, cmdline)
 
-        RunPars = GM_pp.RunPars(
-            CmdPars, InPars, DefPars, RefPars, True
+        run_pars = GM_pp.RunPars(
+            cmd_pars, in_pars, def_pars, ref_pars, True
         )
-        assert RunPars.pair_v_coupling_dict == {
+        assert run_pars.pair_v_coupling_dict == {
             ("AmideSC", "AmideSC"): "DipDip",
             ("AmideSC", "AmideBB"): "DipDip",
             ("AmideSC", "CystBridge"): None,
@@ -1479,7 +1479,7 @@ class TestRunPars:
             ("CystBridge", "AmideBB"): None,
             ("CystBridge", "CystBridge"): "DipDip"
         }
-        assert RunPars.coupling_v_pair_dict == {
+        assert run_pars.coupling_v_pair_dict == {
             "DipDip": [
                 ("AmideSC", "AmideSC"),
                 ("AmideSC", "AmideBB"),
@@ -1496,7 +1496,7 @@ class TestRunPars:
         }
 
         _ = GM_pp.RawPars.from_file(
-            curpath.parent/"Data"/"rawpars_coupling.txt", RefPars,
+            curpath.parent/"Data"/"rawpars_coupling.txt", ref_pars,
             False
         )
 
@@ -1511,10 +1511,10 @@ class TestRunPars:
         }
         curpath = Path("")
         (
-            RefPars, DefPars, InPars, _, CmdPars
+            ref_pars, def_pars, in_pars, _, cmd_pars
         ) = TestRunPars.setup_for_runpars(pardict, curpath, cmdline)
 
-        runpars = GM_pp.RunPars(CmdPars, InPars, DefPars, RefPars, True)
+        runpars = GM_pp.RunPars(cmd_pars, in_pars, def_pars, ref_pars, True)
         assert len(runpars.singles_whitelist_dict["AmideSC"]) == 2
 
         cmdline = [
@@ -1528,10 +1528,10 @@ class TestRunPars:
         }
         curpath = Path("")
         (
-            RefPars, DefPars, InPars, _, CmdPars
+            ref_pars, def_pars, in_pars, _, cmd_pars
         ) = TestRunPars.setup_for_runpars(pardict, curpath, cmdline)
 
-        runpars = GM_pp.RunPars(CmdPars, InPars, DefPars, RefPars, True)
+        runpars = GM_pp.RunPars(cmd_pars, in_pars, def_pars, ref_pars, True)
         assert len(runpars.singles_whitelist_dict["AmideSC"]) == 3
 
     def test_final_resolve_coupling_scale(self):
@@ -1545,10 +1545,10 @@ class TestRunPars:
         }
         curpath = Path("")
         (
-            RefPars, DefPars, InPars, _, CmdPars
+            ref_pars, def_pars, in_pars, _, cmd_pars
         ) = TestRunPars.setup_for_runpars(pardict, curpath, cmdline)
 
-        runpars = GM_pp.RunPars(CmdPars, InPars, DefPars, RefPars, True)
+        runpars = GM_pp.RunPars(cmd_pars, in_pars, def_pars, ref_pars, True)
         runpars.requested_pairmapdict = {"map": "dummy"}
         runpars.final_resolve_coupling_scale()
         assert runpars.coupling_scale_factors_dict == {
@@ -1744,32 +1744,32 @@ class TestRunPars:
     @staticmethod
     def setup_for_runpars(pardict, inparspath, cmdline):
         # setup - Create all necessary objects.
-        RefPars = GM_pp.RefPars(
+        ref_pars = GM_pp.RefPars(
             Path(
                 "tests/test_tools/Data/reference_parameters_1.ref"),
             True
         )
-        DefPars = GM_pp.RawPars.from_file(
+        def_pars = GM_pp.RawPars.from_file(
             Path("tests/test_tools/Data/default_parameters_1.txt"),
-            RefPars, True
+            ref_pars, True
         )
 
-        InPars = GM_pp.RawPars.from_dict(
-            inparspath, pardict, RefPars, False
+        in_pars = GM_pp.RawPars.from_dict(
+            inparspath, pardict, ref_pars, False
         )
 
-        mapdirs = GM_pp.find_mapdir(cmdline, InPars, DefPars)
+        mapdirs = GM_pp.find_mapdir(cmdline, in_pars, def_pars)
         mapdict = GM_mr.scan_mapdirs(mapdirs, "Singles")
         for map_ in mapdict.values():
             map_.find_refpars()
 
-        maprefdict = {name: _map.RefPars for name, _map in mapdict.items()}
+        maprefdict = {name: _map.ref_pars for name, _map in mapdict.items()}
 
-        CmdPars = GM_pp.RawPars.from_cmdline(
-            cmdline, RefPars, maprefdict, False
+        cmd_pars = GM_pp.RawPars.from_cmdline(
+            cmdline, ref_pars, maprefdict, False
         )
 
-        return RefPars, DefPars, InPars, mapdict, CmdPars
+        return ref_pars, def_pars, in_pars, mapdict, cmd_pars
 
     @staticmethod
     def systest_runpars(cmdline, errcode, errclass, pardict=None):
@@ -1777,12 +1777,12 @@ class TestRunPars:
             pardict = {}
         curpath = Path("")
         (
-            RefPars, DefPars, InPars, _, CmdPars
+            ref_pars, def_pars, in_pars, _, cmd_pars
         ) = TestRunPars.setup_for_runpars(pardict, curpath, cmdline)
 
         with pytest.raises(errclass, match=f"{errcode}$"):
             _ = GM_pp.RunPars(
-                CmdPars, InPars, DefPars, RefPars, True
+                cmd_pars, in_pars, def_pars, ref_pars, True
             )
 
 
@@ -1810,10 +1810,10 @@ class TestMapPars:
             fname_tofind = Path(curpath / "../Data/test_mapdir/Singles")
             fname_tofind /= f"testmap{counter}/parameters.ref"
             # counter += 1
-            print(map_.RefPars.fname)
+            print(map_.ref_pars.fname)
             print(fname_tofind.resolve())
-            assert map_.RefPars.fname == fname_tofind.resolve()
-            assert map_.RefPars.options == {
+            assert map_.ref_pars.fname == fname_tofind.resolve()
+            assert map_.ref_pars.options == {
                 "str_test_choice": ["pick_this", "not_this", "or_this"],
                 "str_test_choice_list": [
                     "pick_this", "and_this", "not_this", "or_this"
@@ -1847,7 +1847,7 @@ class TestMapPars:
                 # ]
 
             }
-            assert map_.RefPars.choices == {
+            assert map_.ref_pars.choices == {
                 "str_test_free": ["freechoice"],
                 "str_test_choice": ["pick_this"],
                 "str_test_free_list": ["freechoice1", "freechoice2"],
@@ -1889,7 +1889,7 @@ class TestMapPars:
                 #     Path("test_outfile_2_4_4.txt")
                 # ]
             }
-            assert map_.RefPars.shorthands == {
+            assert map_.ref_pars.shorthands == {
                 "ts1": "str_test_free",
                 "ts2": "str_test_choice",
                 "ts3": "str_test_free_list",
@@ -1920,7 +1920,7 @@ class TestMapPars:
                 # "tp10": "path_test_rel23_new_choice",
                 # "tp11": "path_test_rel24_new_choice_list"
             }
-            assert map_.RefPars.organized_filepars == {
+            assert map_.ref_pars.organized_filepars == {
                 "path_test_dir1": [
                     "path_test_rel11",
                     # "path_test_rel12_choice"
@@ -1931,11 +1931,11 @@ class TestMapPars:
                     # "path_test_rel24_new_choice_list"
                 ]
             }
-            assert map_.RefPars.organized_filepars_id == {
+            assert map_.ref_pars.organized_filepars_id == {
                 "t1": "path_test_dir1",
                 "t2": "path_test_dir2"
             }
-            assert map_.RefPars.allfilepars == [
+            assert map_.ref_pars.allfilepars == [
                 "path_test_free",
                 "path_test_free_new",
                 # "path_test_choice",
@@ -1949,7 +1949,7 @@ class TestMapPars:
                 # "path_test_rel23_new_choice",
                 # "path_test_rel24_new_choice_list"
             ]
-            assert map_.RefPars.filepars_create == [
+            assert map_.ref_pars.filepars_create == [
                 "path_test_free_new",
                 "path_test_free_new_list",
                 "path_test_rel21_new",
@@ -1957,34 +1957,34 @@ class TestMapPars:
                 # "path_test_rel23_new_choice",
                 # "path_test_rel24_new_choice_list"
             ]
-            assert map_.RefPars.intpars == [
+            assert map_.ref_pars.intpars == [
                 "int_test_free",
                 "int_test_choice",
                 "int_test_free_list",
                 "int_test_choice_list",
                 "int_test_choice_list2"
             ]
-            assert map_.RefPars.floatpars == [
+            assert map_.ref_pars.floatpars == [
                 "float_test_free",
                 "float_test_choice",
                 "float_test_free_list",
                 "float_test_choice_list",
                 "float_test_choice_list2"
             ]
-            assert map_.RefPars.boolpars == [
+            assert map_.ref_pars.boolpars == [
                 "bool_test1",
                 "bool_test2",
                 "bool_test3"
             ]
-            assert map_.RefPars.strpars == [
+            assert map_.ref_pars.strpars == [
                 "str_test_free",
                 "str_test_choice",
                 "str_test_free_list",
                 "str_test_choice_list",
                 "str_test_choice_list2"
             ]
-            assert map_.RefPars.not_expected_in_deffile == []
-            assert map_.RefPars.maybe_list == [
+            assert map_.ref_pars.not_expected_in_deffile == []
+            assert map_.ref_pars.maybe_list == [
                 "str_test_free_list",
                 "str_test_choice_list",
                 "str_test_choice_list2",
@@ -2012,19 +2012,19 @@ class TestMapPars:
             "-testmap2.notb2"
         ]
 
-        _, _, InPars, CmdPars, mapdict = self.setup_maprawpars(
+        _, _, in_pars, cmd_pars, mapdict = self.setup_maprawpars(
             pardict, cmdline)
 
-        assert CmdPars.not_found == {}
-        assert InPars.not_found == {}
+        assert cmd_pars.not_found == {}
+        assert in_pars.not_found == {}
 
         testmap1 = mapdict["testmap1"]
         testmap2 = mapdict["testmap2"]
 
-        assert testmap1.InPars.choices == {"int_test_free": [42]}
-        assert testmap1.CmdPars.choices == {"int_test_choice": [65]}
-        assert testmap2.InPars.choices == {"float_test_free": [88.8]}
-        assert testmap2.CmdPars.choices == {
+        assert testmap1.in_pars.choices == {"int_test_free": [42]}
+        assert testmap1.cmd_pars.choices == {"int_test_choice": [65]}
+        assert testmap2.in_pars.choices == {"float_test_free": [88.8]}
+        assert testmap2.cmd_pars.choices == {
             "bool_test1": [False], "bool_test2": [False]}
 
     def test_maprawpars2(self):
@@ -2040,20 +2040,20 @@ class TestMapPars:
             "-testmap2.notb2"
         ]
 
-        _, _, InPars, CmdPars, mapdict = self.setup_maprawpars(
+        _, _, in_pars, cmd_pars, mapdict = self.setup_maprawpars(
             pardict, cmdline, Path(
                 "tests/test_tools/Data/default_parameters_2_formap.txt"))
 
-        assert CmdPars.not_found == {}
-        assert InPars.not_found == {}
+        assert cmd_pars.not_found == {}
+        assert in_pars.not_found == {}
 
         testmap1 = mapdict["testmap1"]
         testmap2 = mapdict["testmap2"]
 
-        assert testmap1.InPars.choices == {"int_test_free": [42]}
-        assert testmap1.CmdPars.choices == {"int_test_choice": [65]}
-        assert testmap2.InPars.choices == {"float_test_free": [88.8]}
-        assert testmap2.CmdPars.choices == {
+        assert testmap1.in_pars.choices == {"int_test_free": [42]}
+        assert testmap1.cmd_pars.choices == {"int_test_choice": [65]}
+        assert testmap2.in_pars.choices == {"float_test_free": [88.8]}
+        assert testmap2.cmd_pars.choices == {
             "bool_test1": [False], "bool_test2": [False]}
 
     def test_SU_WP_6(self):
@@ -2063,21 +2063,21 @@ class TestMapPars:
             "tests/test_tools/Data/default_parameters_2_formap_SU_WP_6.txt"
         )
         (
-            RefPars, DefPars, InPars, mapdict
+            ref_pars, def_pars, in_pars, mapdict
         ) = TestMapPars.setup_maprefpars(pardict, cmdline, deffilepath)
 
         for map_ in mapdict.values():
             map_.find_refpars()
 
-        CmdPars = GM_pp.RawPars.from_cmdline(
-            cmdline, RefPars,
-            {name: map_.RefPars for name, map_ in mapdict.items()},
+        cmd_pars = GM_pp.RawPars.from_cmdline(
+            cmdline, ref_pars,
+            {name: map_.ref_pars for name, map_ in mapdict.items()},
             False
         )
 
         with pytest.raises(GM_ex.GmapKeyError, match="SU_WP_6$"):
             for map_ in mapdict.values():
-                map_.find_rawpars(CmdPars, InPars, DefPars)
+                map_.find_rawpars(cmd_pars, in_pars, def_pars)
 
     def test_SU_WP_14(self):
         pardict = {"map_directory": ["Data/test_mapdir"]}
@@ -2086,21 +2086,21 @@ class TestMapPars:
             "tests/test_tools/Data/default_parameters_2_formap_SU_WP_14.txt"
         )
         (
-            RefPars, DefPars, InPars, mapdict
+            ref_pars, def_pars, in_pars, mapdict
         ) = TestMapPars.setup_maprefpars(pardict, cmdline, deffilepath)
 
         for map_ in mapdict.values():
             map_.find_refpars()
 
-        CmdPars = GM_pp.RawPars.from_cmdline(
-            cmdline, RefPars,
-            {name: map_.RefPars for name, map_ in mapdict.items()},
+        cmd_pars = GM_pp.RawPars.from_cmdline(
+            cmdline, ref_pars,
+            {name: map_.ref_pars for name, map_ in mapdict.items()},
             False
         )
 
         with pytest.raises(GM_ex.GmapParameterError, match="SU_WP_14$"):
             for map_ in mapdict.values():
-                map_.find_rawpars(CmdPars, InPars, DefPars)
+                map_.find_rawpars(cmd_pars, in_pars, def_pars)
 
     def test_maprunpars(self):
         pardict = {
@@ -2116,29 +2116,29 @@ class TestMapPars:
         ]
 
         (
-            RefPars, DefPars, InPars, CmdPars, mapdict
+            ref_pars, def_pars, in_pars, cmd_pars, mapdict
         ) = self.setup_maprawpars(
             pardict, cmdline)
 
-        RunPars = GM_pp.RunPars(
-            CmdPars, InPars, DefPars, RefPars, True
+        run_pars = GM_pp.RunPars(
+            cmd_pars, in_pars, def_pars, ref_pars, True
         )
 
         for map_ in mapdict.values():
-            map_.find_runpars(RunPars)
+            map_.find_runpars(run_pars)
 
         testmap1 = mapdict["testmap1"]
         testmap2 = mapdict["testmap2"]
 
-        assert testmap1.RunPars.is_main is False
-        assert testmap2.RunPars.is_main is False
+        assert testmap1.run_pars.is_main is False
+        assert testmap2.run_pars.is_main is False
 
-        assert testmap1.RunPars.int_test_free == 42
-        assert testmap1.RunPars.int_test_choice == 65
+        assert testmap1.run_pars.int_test_free == 42
+        assert testmap1.run_pars.int_test_choice == 65
 
-        assert testmap2.RunPars.float_test_free == 88.8
-        assert testmap2.RunPars.bool_test1 is False
-        assert testmap2.RunPars.bool_test2 is False
+        assert testmap2.run_pars.float_test_free == 88.8
+        assert testmap2.run_pars.bool_test1 is False
+        assert testmap2.run_pars.bool_test2 is False
 
     def test_maprunpars2(self):
         pardict = {
@@ -2154,39 +2154,39 @@ class TestMapPars:
         ]
 
         (
-            RefPars, DefPars, InPars, CmdPars, mapdict
+            ref_pars, def_pars, in_pars, cmd_pars, mapdict
         ) = self.setup_maprawpars(
             pardict, cmdline, Path(
                 "tests/test_tools/Data/default_parameters_2_formap.txt"))
 
-        RunPars = GM_pp.RunPars(
-            CmdPars, InPars, DefPars, RefPars, True
+        run_pars = GM_pp.RunPars(
+            cmd_pars, in_pars, def_pars, ref_pars, True
         )
 
         for map_ in mapdict.values():
-            map_.find_runpars(RunPars)
+            map_.find_runpars(run_pars)
 
         testmap1 = mapdict["testmap1"]
         testmap2 = mapdict["testmap2"]
 
-        assert testmap1.RunPars.is_main is False
-        assert testmap2.RunPars.is_main is False
+        assert testmap1.run_pars.is_main is False
+        assert testmap2.run_pars.is_main is False
 
-        assert testmap1.RunPars.int_test_free == 42
-        assert testmap1.RunPars.int_test_choice == 65
+        assert testmap1.run_pars.int_test_free == 42
+        assert testmap1.run_pars.int_test_choice == 65
 
-        assert testmap2.RunPars.float_test_free == 88.8
-        assert testmap2.RunPars.bool_test1 is False
-        assert testmap2.RunPars.bool_test2 is False
+        assert testmap2.run_pars.float_test_free == 88.8
+        assert testmap2.run_pars.bool_test1 is False
+        assert testmap2.run_pars.bool_test2 is False
 
     def test_SU_MR_1(self):
         # setup - Create all necessary objects.
-        RefPars = GM_pp.RefPars(
+        ref_pars = GM_pp.RefPars(
             Path(
                 "tests/test_tools/Data/reference_parameters_2.ref"),
             True
         )
-        DefPars = RefPars
+        def_pars = ref_pars
 
         pardict = {
             "map_directory": ["Data/test_mapdir"],
@@ -2195,8 +2195,8 @@ class TestMapPars:
         }
 
         curpath = Path(__file__).resolve()
-        InPars = GM_pp.RawPars.from_dict(
-            curpath, pardict, RefPars, False
+        in_pars = GM_pp.RawPars.from_dict(
+            curpath, pardict, ref_pars, False
         )
 
         cmdline = [
@@ -2205,21 +2205,21 @@ class TestMapPars:
             "-testmap2.notb2"
         ]
 
-        mapdirs = GM_pp.find_mapdir(cmdline, InPars, DefPars)
+        mapdirs = GM_pp.find_mapdir(cmdline, in_pars, def_pars)
         mapdict = GM_mr.scan_mapdirs(mapdirs, "Singles")
         for map_ in mapdict.values():
             map_.find_refpars()
 
-        CmdPars = GM_pp.RawPars.from_cmdline(
-            cmdline, RefPars,
-            {name: _map.RefPars for name, _map in mapdict.items()},
+        cmd_pars = GM_pp.RawPars.from_cmdline(
+            cmdline, ref_pars,
+            {name: _map.ref_pars for name, _map in mapdict.items()},
             False
         )
-        CmdPars.not_found["testmap1.booltest.1"] = ["True"]
+        cmd_pars.not_found["testmap1.booltest.1"] = ["True"]
 
         with pytest.raises(GM_ex.GmapValueError, match="SU_MR_1$"):
             for map_ in mapdict.values():
-                map_.find_rawpars(CmdPars, InPars, DefPars)
+                map_.find_rawpars(cmd_pars, in_pars, def_pars)
 
     def test_SU_NP_2(self):
         pardict = {}
@@ -2229,17 +2229,17 @@ class TestMapPars:
         ]
 
         (
-            RefPars, DefPars, InPars, CmdPars, mapdict
+            ref_pars, def_pars, in_pars, cmd_pars, mapdict
         ) = self.setup_maprawpars(
             pardict, cmdline)
 
-        RunPars = GM_pp.RunPars(
-            CmdPars, InPars, DefPars, RefPars, True
+        run_pars = GM_pp.RunPars(
+            cmd_pars, in_pars, def_pars, ref_pars, True
         )
 
         with pytest.raises(GM_ex.GmapFileNotFoundError, match="SU_NP_2$"):
             for map_ in mapdict.values():
-                map_.find_runpars(RunPars)
+                map_.find_runpars(run_pars)
 
     def test_SU_NP_3(self):
         pardict = {}
@@ -2249,71 +2249,71 @@ class TestMapPars:
         ]
 
         (
-            RefPars, DefPars, InPars, CmdPars, mapdict
+            ref_pars, def_pars, in_pars, cmd_pars, mapdict
         ) = self.setup_maprawpars(
             pardict, cmdline)
 
-        RunPars = GM_pp.RunPars(
-            CmdPars, InPars, DefPars, RefPars, True
+        run_pars = GM_pp.RunPars(
+            cmd_pars, in_pars, def_pars, ref_pars, True
         )
 
         with pytest.raises(GM_ex.GmapNotADirectoryError, match="SU_NP_3$"):
             for map_ in mapdict.values():
-                map_.find_runpars(RunPars)
+                map_.find_runpars(run_pars)
 
     @staticmethod
     def setup_maprefpars(pardict, cmdline, defparfilename=None):
         # setup - Create all necessary objects.
-        # RefPars = GM_PP.RefPars(
+        # ref_pars = GM_PP.RefPars(
         #     Path(
         #         "tests/test_tools/Data/reference_parameters_2.ref"),
         #     True
         # )
-        RefPars = GM_pp.RefPars(
+        ref_pars = GM_pp.RefPars(
             Path(
                 "sourcefiles/reference_parameters.ref"
             ), True
         )
         if defparfilename:
-            DefPars = GM_pp.RawPars.from_file(
-                defparfilename, RefPars, True)
+            def_pars = GM_pp.RawPars.from_file(
+                defparfilename, ref_pars, True)
         else:
-            DefPars = RefPars
+            def_pars = ref_pars
 
         curpath = Path(__file__).resolve()
-        InPars = GM_pp.RawPars.from_dict(
-            curpath, pardict, RefPars, False
+        in_pars = GM_pp.RawPars.from_dict(
+            curpath, pardict, ref_pars, False
         )
 
-        mapdirs = GM_pp.find_mapdir(cmdline, InPars, DefPars)
+        mapdirs = GM_pp.find_mapdir(cmdline, in_pars, def_pars)
         mapdict = GM_mr.scan_mapdirs(mapdirs, "Singles")
 
-        return RefPars, DefPars, InPars, mapdict
+        return ref_pars, def_pars, in_pars, mapdict
 
     @staticmethod
     def setup_maprawpars(pardict, cmdline, defparfilename=None):
         (
-            RefPars, DefPars, InPars, mapdict
+            ref_pars, def_pars, in_pars, mapdict
         ) = TestMapPars.setup_maprefpars(pardict, cmdline, defparfilename)
 
         for map_ in mapdict.values():
             map_.find_refpars()
 
-        CmdPars = GM_pp.RawPars.from_cmdline(
-            cmdline, RefPars,
-            {name: map_.RefPars for name, map_ in mapdict.items()},
+        cmd_pars = GM_pp.RawPars.from_cmdline(
+            cmdline, ref_pars,
+            {name: map_.ref_pars for name, map_ in mapdict.items()},
             False
         )
 
         for map_ in mapdict.values():
-            map_.find_rawpars(CmdPars, InPars, DefPars)
+            map_.find_rawpars(cmd_pars, in_pars, def_pars)
 
-        CmdPars.finalize_map_pars()
-        InPars.finalize_map_pars()
-        if DefPars.fname != RefPars.fname:
-            DefPars.finalize_map_pars()
+        cmd_pars.finalize_map_pars()
+        in_pars.finalize_map_pars()
+        if def_pars.fname != ref_pars.fname:
+            def_pars.finalize_map_pars()
 
-        return RefPars, DefPars, InPars, CmdPars, mapdict
+        return ref_pars, def_pars, in_pars, cmd_pars, mapdict
 
 
 def test_get_parameters():
@@ -2321,35 +2321,35 @@ def test_get_parameters():
     argslist = []
 
     (
-        RunPars, mapdict, pairs_mapdict, CmdPars, InPars, DefPars, RefPars
+        run_pars, mapdict, pairs_mapdict, cmd_pars, in_pars, def_pars, ref_pars
     ) = GM_pp.get_parameters(
         in_parfile, argslist
     )
 
     # A huuuuge amount of tests would be needed here, but all of GM_PP
     # has already been tested separately.
-    assert InPars.fname.name == "input_parameters_1.txt"
-    assert DefPars == RefPars
+    assert in_pars.fname.name == "input_parameters_1.txt"
+    assert def_pars == ref_pars
     assert len(mapdict) == 8
-    assert CmdPars.choices == {}
+    assert cmd_pars.choices == {}
 
     (
-        RunPars, mapdict, pairs_mapdict, CmdPars, InPars, DefPars, RefPars
+        run_pars, mapdict, pairs_mapdict, cmd_pars, in_pars, def_pars, ref_pars
     ) = GM_pp.get_parameters(
         None, argslist
     )
 
-    assert InPars.choices == {}
+    assert in_pars.choices == {}
 
     argslist = ["-dpf", "tests/test_tools/Data/default_parameters.txt"]
 
     (
-        RunPars, mapdict, pairs_mapdict, CmdPars, InPars, DefPars, RefPars
+        run_pars, mapdict, pairs_mapdict, cmd_pars, in_pars, def_pars, ref_pars
     ) = GM_pp.get_parameters(
         in_parfile, argslist
     )
 
-    assert DefPars.fname.name == "default_parameters.txt"
+    assert def_pars.fname.name == "default_parameters.txt"
 
 
 def test_parse_commandline():
@@ -2547,23 +2547,23 @@ def test_SU_PP_3():
 
     # -------
 
-    RefPars = GM_pp.RefPars(
+    ref_pars = GM_pp.RefPars(
         Path(
             "tests/test_tools/Data/reference_parameters_2.ref"),
         True
     )
-    DefPars = RefPars
+    def_pars = ref_pars
 
     curpath = Path(__file__).resolve()
-    InPars = GM_pp.RawPars.from_dict(
-        curpath, {}, RefPars, False
+    in_pars = GM_pp.RawPars.from_dict(
+        curpath, {}, ref_pars, False
     )
 
     cmdline = ["-md", "this/dir/doesnt_exist\\;"]
 
     with pytest.raises(GM_ex.GmapNotADirectoryError, match="SU_PP_3$"):
         _ = GM_pp.find_mapdir(
-            cmdline, InPars, DefPars)
+            cmdline, in_pars, def_pars)
 
 
 def test_SU_PP_4():

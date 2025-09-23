@@ -46,6 +46,7 @@ class TCC_Clib(metaclass=GM_ct.Singleton):
     def __init__(self, map_):
         self.clib = ct.CDLL(str(map_.clibfile))
 
+        self.clib.prep_coupling.restype = None
         self.clib.prep_coupling.argtypes = [
             ct.c_int,  # nosc
             ct.c_int,  # noscats
@@ -60,8 +61,8 @@ class TCC_Clib(metaclass=GM_ct.Singleton):
             ct.POINTER(ct.c_float),  # v_pro
             ct.POINTER(ct.c_float)  # tcc_v
         ]
-        self.clib.prep_coupling.restype = None
 
+        self.clib.calc_coupling.restype = None
         self.clib.calc_coupling.argtypes = [
             ct.c_int,  # npairs
             ct.POINTER(ct.c_int),  # allpairs
@@ -80,7 +81,6 @@ class TCC_Clib(metaclass=GM_ct.Singleton):
             ct.c_int,  # totosc
             ct.POINTER(ct.c_float)  # hamiltonian
         ]
-        self.clib.calc_coupling.restype = None
 
     def prep_coupling(self, map_, system):
         """Prepare all couplings for this map, this frame.

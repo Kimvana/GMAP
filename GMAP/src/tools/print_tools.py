@@ -29,7 +29,7 @@ class Printer(metaclass=GM_ct.Singleton):
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.file_handler.FileLocations`
+    files : :class:`~GMAP.src.tools.file_handler.FileLocations`
         Contains all currently known paths and other file-related properties.
 
     Attributes
@@ -58,10 +58,10 @@ class Printer(metaclass=GM_ct.Singleton):
     :class:`~GMAP.src.tools.string_classes.ErrCode`
         Any error codes in this list will not be reported on when
         encountered. Silenced fatal errors will still quit the program.
-    Timer : :class:`~Timer`
+    timer : :class:`~Timer`
         The timer that keeps track of calculation times.
     syspathcopy : list
-        A copy of sys.path made when Files was instantiated.
+        A copy of sys.path made when files was instantiated.
     verbose : int
         How verbose the prints to the command line should be.
     verbose_logfile : int
@@ -75,7 +75,7 @@ class Printer(metaclass=GM_ct.Singleton):
         like those used for demo mode.
     """
 
-    def __init__(self, Files):
+    def __init__(self, files):
         cls = self.__class__
         # The requested log file name/location is not immediately known, but
         # we still want to log information of the run. As long as the logfile
@@ -85,7 +85,7 @@ class Printer(metaclass=GM_ct.Singleton):
 
         # this can be done through self.program_state
         # self.logfilefound = False
-        cls.logfile = Files.cwd / f"crash_{Files._now_str}.log"
+        cls.logfile = files.cwd / f"crash_{files._now_str}.log"
         cls.backlog = []
 
         # 'startup' for initial part of code
@@ -100,9 +100,9 @@ class Printer(metaclass=GM_ct.Singleton):
         # error codes which shouldn't be printed by warning.
         cls.dont_report_error = []
 
-        cls.Timer = Timer(start=Files.start)
+        cls.timer = Timer(start=files.start)
 
-        cls.syspathcopy = Files.syspathcopy
+        cls.syspathcopy = files.syspathcopy
 
         # to have some kind of default - will be changed as soon as parameter
         # choices are known.
@@ -134,8 +134,8 @@ class Printer(metaclass=GM_ct.Singleton):
         line_length : int or None, default=None
             At what length the program should wrap lines. Lines printed
             to the terminal or logfile will not exceed this length. If
-            provided, RunPars.command_line_length will be ignored. If
-            the default None is provided, RunPars.command_line_length
+            provided, run_pars.command_line_length will be ignored. If
+            the default None is provided, run_pars.command_line_length
             will be used.
         detailed instructions : list of int or None, default=None
             Any extra instructions. If None, an empty list will be
@@ -155,7 +155,7 @@ class Printer(metaclass=GM_ct.Singleton):
             These kwargs are forwarded to the call to python's print.
         """
 
-        # This means that RunPars hasn't been completed yet, and many print
+        # This means that run_pars hasn't been completed yet, and many print
         # settings are still unknown. So if we don't have to print, don't!
         if cls.program_state == "startup":
             cls.backlog.append([
@@ -481,9 +481,9 @@ class Printer(metaclass=GM_ct.Singleton):
             To what precision the time should be reported.
         """
 
-        cls.Timer.add_time(label)
+        cls.timer.add_time(label)
         now = datetime.datetime.now().strftime("%a %d %H:%M")
-        runtime = time_to_str(cls.Timer.get_time(label), precision)
+        runtime = time_to_str(cls.timer.get_time(label), precision)
         cls.print(
             verbose_level,
             f"{cls.colors.blue_hc}[{now}] {cls.colors.clear}{runtime}:  "

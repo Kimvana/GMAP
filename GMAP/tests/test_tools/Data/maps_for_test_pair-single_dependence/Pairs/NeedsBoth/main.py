@@ -13,8 +13,8 @@ import numpy as np
 # parameter (especially if theres multiple that are linked), the way
 # RunPar is built might not be correct. In this function, the user can
 # fix that.
-def GM_adjust_RunPars(map_):
-    """Makes the necessary changes to Map.RunPar.
+def GM_adjust_run_pars(map_):
+    """Makes the necessary changes to map_.run_pars.
 
     Is expected to not return anything - return value is not caught.
 
@@ -45,8 +45,8 @@ def GM_adjust_RunPars(map_):
 # more information about the oscillator is available (dipole, VEG properties)
 def GM_prep_coupling(map_, system, oscixlist, osclist):
     for oscix, osc in zip(oscixlist, osclist):
-        map_.scalar_arr1[oscix] = osc.Map.rawcore["NeedsBoth.scalar1"][0]
-        map_.scalar_arr2[oscix] = osc.Map.code.CP_NeedsBoth_get_scalar2()
+        map_.scalar_arr1[oscix] = osc.map.rawcore["NeedsBoth.scalar1"][0]
+        map_.scalar_arr2[oscix] = osc.map.code.CP_NeedsBoth_get_scalar2()
 
 
 def GM_calc_coupling(map_, system, oscix1, osc1, oscix2, osc2):

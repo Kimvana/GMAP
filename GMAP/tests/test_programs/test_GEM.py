@@ -1,6 +1,6 @@
 
 # local imports
-from GMAP.src.tools import cmd_interface as GM_ci
+import GMAP.src.tools.cmd_interface as GM_ci
 
 
 # Now, we also test whether the program can actually run.

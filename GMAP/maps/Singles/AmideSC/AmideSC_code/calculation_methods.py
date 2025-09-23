@@ -43,7 +43,7 @@ def calc_dipole_Torii(map_, system, osc):
 
     # dipole moment vector itself
     r_vec = dipole_Torii(
-        COvec, CNvec, map_.Core.dipole_Torii_angle, map_.Core.dipole_gas_phase)
+        COvec, CNvec, map_.core.dipole_Torii_angle, map_.core.dipole_gas_phase)
 
     return r_vec, r_pos
 

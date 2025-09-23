@@ -56,7 +56,7 @@ class Singleton(type):
         return cls._instances[cls]
 
 
-class singletonproperty:
+class SingletonProperty:
     # decorator implementation for having @property work on the class of a
     # singleton subclass, instead of just an instance
 

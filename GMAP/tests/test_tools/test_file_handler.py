@@ -61,7 +61,7 @@ def test_get_bare_file():
 
 def test_write_output():
     cwd = Path(".").resolve()
-    RunPars = GM_ct.CustomClass(**{
+    run_pars = GM_ct.CustomClass(**{
         "output_hamiltonian_filename": cwd / "hamiltonian",
         "output_dipole_filename": cwd / "dipoles",
         "output_energies_filename": cwd / "energies",
@@ -117,12 +117,12 @@ def test_write_output():
         [7, 8, 9],
         [3, 4, 5]
     ], dtype="float32")
-    hamfname = RunPars.output_hamiltonian_filename
-    dipfname = RunPars.output_dipole_filename
-    enefname = RunPars.output_energies_filename
-    ramfname = RunPars.output_raman_filename
-    posfname = RunPars.output_positions_filename
-    dbpfname = RunPars.output_doublepos_filename
+    hamfname = run_pars.output_hamiltonian_filename
+    dipfname = run_pars.output_dipole_filename
+    enefname = run_pars.output_energies_filename
+    ramfname = run_pars.output_raman_filename
+    posfname = run_pars.output_positions_filename
+    dbpfname = run_pars.output_doublepos_filename
 
     # clear files
     for fname in (hamfname, dipfname, enefname, ramfname, posfname, dbpfname):
@@ -131,7 +131,7 @@ def test_write_output():
         with open(fname.parent / f"{fname.name}.txt", "w"):
             pass
 
-    GM_fh.write_output(RunPars, framenum, outputs)
+    GM_fh.write_output(run_pars, framenum, outputs)
 
     # -----  test contents hamiltonian  -----
 
@@ -144,7 +144,7 @@ def test_write_output():
     assert np.all(squareham == outputs["hamiltonian"])
 
     txtham = np.loadtxt(
-        str(RunPars.output_hamiltonian_filename) + ".txt",
+        str(run_pars.output_hamiltonian_filename) + ".txt",
         dtype="float32"
     )[1:]  # skip first, that is frame ix
     squareham = np.zeros((4, 4))
@@ -161,7 +161,7 @@ def test_write_output():
     assert np.all(bindip == outputs["energies"])
 
     txtdip = np.loadtxt(
-        str(RunPars.output_energies_filename) + ".txt",
+        str(run_pars.output_energies_filename) + ".txt",
         dtype="float32"
     )[1:]  # skip first, that is frame ix
     # txtdip = txtdip.reshape((3, 4)).T
@@ -176,7 +176,7 @@ def test_write_output():
     assert np.all(bindip == outputs["dipoles"])
 
     txtdip = np.loadtxt(
-        str(RunPars.output_dipole_filename) + ".txt",
+        str(run_pars.output_dipole_filename) + ".txt",
         dtype="float32"
     )[1:]  # skip first, that is frame ix
     txtdip = txtdip.reshape((3, 4)).T
@@ -191,7 +191,7 @@ def test_write_output():
     assert np.all(binram == outputs["raman"])
 
     txtram = np.loadtxt(
-        str(RunPars.output_raman_filename) + ".txt",
+        str(run_pars.output_raman_filename) + ".txt",
         dtype="float32"
     )[1:]  # skip first, that is frame ix
     txtram = txtram.reshape((6, 4)).T
@@ -206,7 +206,7 @@ def test_write_output():
     assert np.all(bindip == outputs["positions"])
 
     txtdip = np.loadtxt(
-        str(RunPars.output_positions_filename) + ".txt",
+        str(run_pars.output_positions_filename) + ".txt",
         dtype="float32"
     )[1:]  # skip first, that is frame ix
     txtdip = txtdip.reshape((3, 4)).T
@@ -221,7 +221,7 @@ def test_write_output():
     assert np.all(bindip == outputs["doublepos"])
 
     txtdip = np.loadtxt(
-        str(RunPars.output_doublepos_filename) + ".txt",
+        str(run_pars.output_doublepos_filename) + ".txt",
         dtype="float32"
     )[1:]  # skip first, that is frame ix
     txtdip = txtdip.reshape((3, 8)).T
@@ -230,7 +230,7 @@ def test_write_output():
 
 def test_write_output_multiplied():
     cwd = Path(".").resolve()
-    RunPars = GM_ct.CustomClass(**{
+    run_pars = GM_ct.CustomClass(**{
         "output_hamiltonian_filename": cwd / "hamiltonian",
         "output_dipole_filename": cwd / "dipoles",
         "output_energies_filename": cwd / "energies",
@@ -286,12 +286,12 @@ def test_write_output_multiplied():
         [7, 8, 9],
         [3, 4, 5]
     ], dtype="float32")
-    hamfname = RunPars.output_hamiltonian_filename
-    dipfname = RunPars.output_dipole_filename
-    enefname = RunPars.output_energies_filename
-    ramfname = RunPars.output_raman_filename
-    posfname = RunPars.output_positions_filename
-    dbpfname = RunPars.output_doublepos_filename
+    hamfname = run_pars.output_hamiltonian_filename
+    dipfname = run_pars.output_dipole_filename
+    enefname = run_pars.output_energies_filename
+    ramfname = run_pars.output_raman_filename
+    posfname = run_pars.output_positions_filename
+    dbpfname = run_pars.output_doublepos_filename
 
     # clear files
     for fname in (hamfname, dipfname, enefname, ramfname, posfname, dbpfname):
@@ -300,7 +300,7 @@ def test_write_output_multiplied():
         with open(fname.parent / f"{fname.name}.txt", "w"):
             pass
 
-    GM_fh.write_output(RunPars, framenum, outputs)
+    GM_fh.write_output(run_pars, framenum, outputs)
 
     # -----  test contents hamiltonian  -----
 
@@ -313,7 +313,7 @@ def test_write_output_multiplied():
     assert np.all(squareham == outputs["hamiltonian"])
 
     txtham = np.loadtxt(
-        str(RunPars.output_hamiltonian_filename) + ".txt",
+        str(run_pars.output_hamiltonian_filename) + ".txt",
         dtype="float32"
     )[1:]  # skip first, that is frame ix
     squareham = np.zeros((4, 4))
@@ -330,7 +330,7 @@ def test_write_output_multiplied():
     assert np.all(bindip == outputs["energies"])
 
     txtdip = np.loadtxt(
-        str(RunPars.output_energies_filename) + ".txt",
+        str(run_pars.output_energies_filename) + ".txt",
         dtype="float32"
     )[1:]  # skip first, that is frame ix
     # txtdip = txtdip.reshape((3, 4)).T
@@ -345,7 +345,7 @@ def test_write_output_multiplied():
     assert np.all(bindip == outputs["dipoles"])
 
     txtdip = np.loadtxt(
-        str(RunPars.output_dipole_filename) + ".txt",
+        str(run_pars.output_dipole_filename) + ".txt",
         dtype="float32"
     )[1:]  # skip first, that is frame ix
     txtdip = txtdip.reshape((3, 4)).T
@@ -360,7 +360,7 @@ def test_write_output_multiplied():
     assert np.all(binram == outputs["raman"])
 
     txtram = np.loadtxt(
-        str(RunPars.output_raman_filename) + ".txt",
+        str(run_pars.output_raman_filename) + ".txt",
         dtype="float32"
     )[1:]  # skip first, that is frame ix
     txtram = txtram.reshape((6, 4)).T
@@ -375,7 +375,7 @@ def test_write_output_multiplied():
     assert np.all(bindip == outputs["positions"])
 
     txtdip = np.loadtxt(
-        str(RunPars.output_positions_filename) + ".txt",
+        str(run_pars.output_positions_filename) + ".txt",
         dtype="float32"
     )[1:]  # skip first, that is frame ix
     txtdip = txtdip.reshape((3, 4)).T
@@ -390,7 +390,7 @@ def test_write_output_multiplied():
     assert np.all(bindip == outputs["doublepos"])
 
     txtdip = np.loadtxt(
-        str(RunPars.output_doublepos_filename) + ".txt",
+        str(run_pars.output_doublepos_filename) + ".txt",
         dtype="float32"
     )[1:]  # skip first, that is frame ix
     txtdip = txtdip.reshape((3, 8)).T
@@ -471,12 +471,12 @@ def test_write_legend():
 
         def __str__(self):
             return (
-                f"Oscillator of type {self.Map.name} "
-                f"{self.Map.code.GM_str_osc(self.ix)}"
+                f"Oscillator of type {self.map.name} "
+                f"{self.map.code.GM_str_osc(self.ix)}"
             )
 
     cwd = Path(".").resolve()
-    RunPars = GM_ct.CustomClass(**{
+    run_pars = GM_ct.CustomClass(**{
         "output_legend_filename": cwd / "legend.txt"
     })
     map_ = GM_ct.CustomClass(**{
@@ -484,13 +484,13 @@ def test_write_legend():
         "name": "mockmap"
     })
     system = GM_ct.CustomClass(**{"oscillators": [MockOsc(**{
-        "Map": map_,
+        "map": map_,
         "ix": ix
     }) for ix in range(4)]})
 
-    outfname = RunPars.output_legend_filename
+    outfname = run_pars.output_legend_filename
 
-    GM_fh.write_legend(RunPars, system)
+    GM_fh.write_legend(run_pars, system)
 
     with open(str(outfname)) as fhand:
         contents = fhand.read()

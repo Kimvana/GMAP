@@ -16,7 +16,7 @@ def find_local_atoms(map_, system, oscillator_list):
         All oscillators belonging to a single struct of this map.
     """
 
-    if map_.RunPars.frequency_map_choice == "Tokmakoff":
+    if map_.run_pars.frequency_map_choice == "Tokmakoff":
         get_Tokmakoff_locals(oscillator_list)
 
         # bring updates to c-friendly versions of the local_atoms list
@@ -26,7 +26,7 @@ def find_local_atoms(map_, system, oscillator_list):
 
     add_proline_HDs(system, oscillator_list)
 
-    if map_.RunPars.consider_nearest_neighbours:
+    if map_.run_pars.consider_nearest_neighbours:
         for osc in oscillator_list:
             if osc.NtermNB is not None:
                 osc.local_atoms.extend(get_Nterm_locals(system, osc.NtermNB))
@@ -191,7 +191,7 @@ def get_CA_hydrogen_atoms(map_, system, osc):
 
     CA_hydrogen_atoms = []
     resnums = list(osc.resnums)
-    if map_.RunPars.consider_nearest_neighbours:
+    if map_.run_pars.consider_nearest_neighbours:
         if osc.CtermNB is not None:
             resnums.append(osc.CtermNB.resnums[1])
         if osc.NtermNB is not None and system.types[0][:4] != "opls":

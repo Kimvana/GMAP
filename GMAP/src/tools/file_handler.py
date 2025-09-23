@@ -78,31 +78,31 @@ class FileLocations(metaclass=GM_ct.Singleton):
         obset(self, "_exec_os", find_exec_os())
         obset(self, "_clib_extension", GM_con.clib_ext_dict[self._exec_os])
 
-    @GM_ct.singletonproperty
+    @GM_ct.SingletonProperty
     def callcommand(self):
         return self._callcommand
 
-    @GM_ct.singletonproperty
+    @GM_ct.SingletonProperty
     def instruction(self):
         return self._instruction
 
-    @GM_ct.singletonproperty
+    @GM_ct.SingletonProperty
     def now_str(self):
         return self._now_str
 
-    @GM_ct.singletonproperty
+    @GM_ct.SingletonProperty
     def sourcedir_hc(self):
         return self._sourcedir_hc
 
-    @GM_ct.singletonproperty
+    @GM_ct.SingletonProperty
     def mapdir_hc(self):
         return self._mapdir_hc
 
-    @GM_ct.singletonproperty
+    @GM_ct.SingletonProperty
     def exec_os(self):
         return self._exec_os
 
-    @GM_ct.singletonproperty
+    @GM_ct.SingletonProperty
     def clib_extension(self):
         return self._clib_extension
 
@@ -432,7 +432,7 @@ def check_file_readability(fname, doprint=True, doquit=True):
     return True
 
 
-def write_output(RunPars, framenum, outputs):
+def write_output(run_pars, framenum, outputs):
     """Write the output for a single frame to files.
 
     Writes all outputs - all (requested) datastructures in all
@@ -440,7 +440,7 @@ def write_output(RunPars, framenum, outputs):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     framenum : int
@@ -452,68 +452,68 @@ def write_output(RunPars, framenum, outputs):
 
     framenum_arr = np.array([framenum], dtype='float32')
 
-    if "ham" in RunPars.output_data:
+    if "ham" in run_pars.output_data:
         hamiltonian = outputs["hamiltonian"]
-        hamiltonian *= RunPars.hamiltonian_multiplier
+        hamiltonian *= run_pars.hamiltonian_multiplier
         reshaped = hamiltonian[np.triu_indices_from(hamiltonian)]
         write_single(
-            RunPars, framenum, framenum_arr,
-            RunPars.output_hamiltonian_filename, reshaped
+            run_pars, framenum, framenum_arr,
+            run_pars.output_hamiltonian_filename, reshaped
         )
 
-    if "ene" in RunPars.output_data:
+    if "ene" in run_pars.output_data:
         energies = outputs["energies"]
-        energies *= RunPars.energies_multiplier
+        energies *= run_pars.energies_multiplier
         write_single(
-            RunPars, framenum, framenum_arr, RunPars.output_energies_filename,
-            energies
+            run_pars, framenum, framenum_arr,
+            run_pars.output_energies_filename, energies
         )
 
-    if "dip" in RunPars.output_data:
+    if "dip" in run_pars.output_data:
         dipoles = outputs["dipoles"]
-        dipoles *= RunPars.dipoles_multiplier
+        dipoles *= run_pars.dipoles_multiplier
         reshaped = dipoles.T.flatten()
         write_single(
-            RunPars, framenum, framenum_arr,
-            RunPars.output_dipole_filename, reshaped
+            run_pars, framenum, framenum_arr,
+            run_pars.output_dipole_filename, reshaped
         )
 
-    if "ram" in RunPars.output_data:
+    if "ram" in run_pars.output_data:
         raman = outputs["raman"]
-        raman *= RunPars.raman_multiplier
+        raman *= run_pars.raman_multiplier
         reshaped = raman.T.flatten()
         write_single(
-            RunPars, framenum, framenum_arr,
-            RunPars.output_raman_filename, reshaped
+            run_pars, framenum, framenum_arr,
+            run_pars.output_raman_filename, reshaped
         )
 
-    if "pos" in RunPars.output_data:
+    if "pos" in run_pars.output_data:
         positions = outputs["positions"]
-        positions *= RunPars.positions_multiplier
+        positions *= run_pars.positions_multiplier
         reshaped = positions.T.flatten()
         write_single(
-            RunPars, framenum, framenum_arr,
-            RunPars.output_positions_filename, reshaped
+            run_pars, framenum, framenum_arr,
+            run_pars.output_positions_filename, reshaped
         )
 
-    if "dbp" in RunPars.output_data:
+    if "dbp" in run_pars.output_data:
         doublepos = outputs["doublepos"]
-        doublepos *= RunPars.doublepos_multiplier
+        doublepos *= run_pars.doublepos_multiplier
         reshaped = doublepos.T.flatten()
         write_single(
-            RunPars, framenum, framenum_arr,
-            RunPars.output_doublepos_filename, reshaped
+            run_pars, framenum, framenum_arr,
+            run_pars.output_doublepos_filename, reshaped
         )
 
 
-def write_single(RunPars, framenum, framenum_arr, fname, data):
+def write_single(run_pars, framenum, framenum_arr, fname, data):
     """Write a single datastructure to files of given name.
 
     Writes to all different requested formats at once.
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     framenum : int
@@ -527,12 +527,12 @@ def write_single(RunPars, framenum, framenum_arr, fname, data):
         The data that should be written to the file.
     """
 
-    if "bin" in RunPars.output_format:
+    if "bin" in run_pars.output_format:
         with open(fname.parent / f"{fname.name}.bin", "ab") as fhand:
             framenum_arr.tofile(fhand)  # write frame number
             data.tofile(fhand)  # write data itself (Ham or Dip or ...)
 
-    if "txt" in RunPars.output_format:
+    if "txt" in run_pars.output_format:
         with open(
             fname.parent / f"{fname.name}.txt", "a", encoding='utf-8'
         ) as fhand:
@@ -546,40 +546,40 @@ def write_single(RunPars, framenum, framenum_arr, fname, data):
             fhand.write("\n")
 
 
-def clear_output(RunPars):
+def clear_output(run_pars):
     """Prepare an empty file for each output
 
     If files already exist, clears them. If not, creates them.
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     """
 
-    if "ham" in RunPars.output_data:
-        clear_single(RunPars, RunPars.output_hamiltonian_filename)
-    if "ene" in RunPars.output_data:
-        clear_single(RunPars, RunPars.output_energies_filename)
-    if "dip" in RunPars.output_data:
-        clear_single(RunPars, RunPars.output_dipole_filename)
-    if "ram" in RunPars.output_data:
-        clear_single(RunPars, RunPars.output_raman_filename)
-    if "pos" in RunPars.output_data:
-        clear_single(RunPars, RunPars.output_positions_filename)
-    if "dbp" in RunPars.output_data:
-        clear_single(RunPars, RunPars.output_doublepos_filename)
+    if "ham" in run_pars.output_data:
+        clear_single(run_pars, run_pars.output_hamiltonian_filename)
+    if "ene" in run_pars.output_data:
+        clear_single(run_pars, run_pars.output_energies_filename)
+    if "dip" in run_pars.output_data:
+        clear_single(run_pars, run_pars.output_dipole_filename)
+    if "ram" in run_pars.output_data:
+        clear_single(run_pars, run_pars.output_raman_filename)
+    if "pos" in run_pars.output_data:
+        clear_single(run_pars, run_pars.output_positions_filename)
+    if "dbp" in run_pars.output_data:
+        clear_single(run_pars, run_pars.output_doublepos_filename)
 
 
-def clear_single(RunPars, fname):
+def clear_single(run_pars, fname):
     """Clears any file if it exists prior to writing
 
     A file shouldn't contain anything when first appended to.
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     fname : `pathlib.Path`
@@ -587,15 +587,15 @@ def clear_single(RunPars, fname):
         should not include the extension!
     """
 
-    if "bin" in RunPars.output_format:
+    if "bin" in run_pars.output_format:
         with open(fname.parent / f"{fname.name}.bin", "wb") as _:
             pass
-    if "txt" in RunPars.output_format:
+    if "txt" in run_pars.output_format:
         with open(fname.parent / f"{fname.name}.txt", "w") as _:
             pass
 
 
-def write_legend(RunPars, system):
+def write_legend(run_pars, system):
     """Writes the contents of the legend file.
 
     The purpose of the legend file is to specify what the other output
@@ -609,7 +609,7 @@ def write_legend(RunPars, system):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     system : :class:`~GMAP.src.tools.system_reader.System`
@@ -617,66 +617,69 @@ def write_legend(RunPars, system):
         MD trajectory.
     """
 
-    with open(RunPars.output_legend_filename, "w", encoding='utf-8') as fhand:
+    with open(run_pars.output_legend_filename, "w", encoding='utf-8') as fhand:
         for oscix, oscillator in enumerate(system.oscillators):
             fhand.write(f"at index {oscix}: {oscillator}\n")
 
 
-def write_parameter_file(RefPars, RunPars, system, CmdPars, InPars, DefPars):
+def write_parameter_file(
+    ref_pars, run_pars, system, cmd_pars, in_pars, def_pars
+):
     """Save the parameters of the current run to a file so the run can
     be repeated.
 
     Parameters
     ----------
-    RefPars : :class:`RefPars`
+    ref_pars : :class:`RefPars`
         Contains all available parameters from GMAP itself
         (not map-specific)
-    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     system : :class:`~GMAP.src.tools.system_reader.System`
         The class containing all the information on the system of the
         MD trajectory.
-    CmdPars : :class:`RawPars`
+    cmd_pars : :class:`RawPars`
         Contains any parameter choices made on the command line
-    InPars : :class:`RawPars`
+    in_pars : :class:`RawPars`
         Contains any parameter choices made in the input parameter file
-    DefPars : :class:`RawPars` or :class:`RefPars`
-        Contains all default parameter choices. Might be RefPars, might
+    def_pars : :class:`RawPars` or :class:`RefPars`
+        Contains all default parameter choices. Might be ref_pars, might
         be from a separate default parameters file.
     """
 
     # initialize file
     with open(
-        RunPars.output_parameter_filename, "w", encoding='utf-8'
+        run_pars.output_parameter_filename, "w", encoding='utf-8'
     ) as outfhand:
         # write GMAP parameters
-        with open(RefPars.fname, "r") as reffhand:
+        with open(ref_pars.fname, "r") as reffhand:
             write_single_parameter_source(
-                reffhand, RunPars, outfhand, "GMAP", CmdPars, InPars, DefPars)
+                reffhand, run_pars, outfhand, "GMAP", cmd_pars, in_pars,
+                def_pars)
 
         # write parameters of all active singles maps
-        for singles_map in RunPars.requested_mapdict.values():
+        for singles_map in run_pars.requested_mapdict.values():
             with open(
                 singles_map.directory / "parameters.ref", "r"
             ) as reffhand:
                 write_single_parameter_source(
-                    reffhand, singles_map.RunPars, outfhand, singles_map.name,
-                    singles_map.CmdPars, singles_map.InPars,
-                    singles_map.DefPars)
+                    reffhand, singles_map.run_pars, outfhand, singles_map.name,
+                    singles_map.cmd_pars, singles_map.in_pars,
+                    singles_map.def_pars)
 
         # write parameters of all active pairs maps.
-        for pairs_map in RunPars.requested_pairmapdict.values():
+        for pairs_map in run_pars.requested_pairmapdict.values():
             with open(
                 pairs_map.directory / "parameters.ref", "r"
             ) as reffhand:
                 write_single_parameter_source(
-                    reffhand, pairs_map.RunPars, outfhand, pairs_map.name,
-                    pairs_map.CmdPars, pairs_map.InPars, pairs_map.DefPars)
+                    reffhand, pairs_map.run_pars, outfhand, pairs_map.name,
+                    pairs_map.cmd_pars, pairs_map.in_pars, pairs_map.def_pars)
 
 
 def write_single_parameter_source(
-    reffhand, RunPars, outfhand, sourcename, CmdPars, InPars, DefPars
+    reffhand, run_pars, outfhand, sourcename, cmd_pars, in_pars, def_pars
 ):
     """Save the parameters of a single source to a file so the run can
     be repeated.
@@ -686,7 +689,7 @@ def write_single_parameter_source(
     reffhand : `_io.TextIOWrapper`
         The reference parameter file handle which contains all
         parameters that should be written.
-    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     outfhand : `_io.TextIOWrapper`
@@ -695,12 +698,12 @@ def write_single_parameter_source(
     sourcename : str
         The name of the source (GMAP or name of map) whose parameters
         should be saved.
-    CmdPars : :class:`RawPars`
+    cmd_pars : :class:`RawPars`
         Contains any parameter choices made on the command line
-    InPars : :class:`RawPars`
+    in_pars : :class:`RawPars`
         Contains any parameter choices made in the input parameter file
-    DefPars : :class:`RawPars` or :class:`RefPars`
-        Contains all default parameter choices. Might be RefPars, might
+    def_pars : :class:`RawPars` or :class:`RefPars`
+        Contains all default parameter choices. Might be ref_pars, might
         be from a separate default parameters file.
     """
 
@@ -718,7 +721,7 @@ def write_single_parameter_source(
         prparname = get_full_parameter_name(parname, sourcename)
 
         # if this line does not contain a parameter
-        if not hasattr(RunPars, parname):
+        if not hasattr(run_pars, parname):
             outfhand.write(line)
             continue
 
@@ -734,8 +737,8 @@ def write_single_parameter_source(
 
         # write all parameters that are not expected to occur multiple times
         sp_choices, sp_prname = write_parameter_line_main(
-            RunPars, parname, prparname, sp_prname, outfhand, linelist,
-            CmdPars, InPars, DefPars)
+            run_pars, parname, prparname, sp_prname, outfhand, linelist,
+            cmd_pars, in_pars, def_pars)
 
     outfhand.write("\n\n\n")
 
@@ -783,15 +786,15 @@ def get_full_parameter_name(parname, sourcename):
 
 
 def write_parameter_line_main(
-    RunPars, parname, prparname, sp_prname, outfhand, linelist,
-    CmdPars, InPars, DefPars
+    run_pars, parname, prparname, sp_prname, outfhand, linelist,
+    cmd_pars, in_pars, def_pars
 ):
     """Save the parameters of a single source to a file so the run can
     be repeated.
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     parname : str
@@ -806,12 +809,12 @@ def write_parameter_line_main(
         be written.
     linelist : list of str
         The line from the reference parameter file, split on "#".
-    CmdPars : :class:`RawPars`
+    cmd_pars : :class:`RawPars`
         Contains any parameter choices made on the command line
-    InPars : :class:`RawPars`
+    in_pars : :class:`RawPars`
         Contains any parameter choices made in the input parameter file
-    DefPars : :class:`RawPars` or :class:`RefPars`
-        Contains all default parameter choices. Might be RefPars, might
+    def_pars : :class:`RawPars` or :class:`RefPars`
+        Contains all default parameter choices. Might be ref_pars, might
         be from a separate default parameters file.
     """
 
@@ -821,7 +824,7 @@ def write_parameter_line_main(
         "influencers_select_atoms"))
     all_unit_ends = set(("_units", "_multiplier"))
 
-    choice = getattr(RunPars, parname)
+    choice = getattr(run_pars, parname)
     # Write parameters that are allowed to occur multiple times
     if (
         isinstance(choice, list)
@@ -848,7 +851,7 @@ def write_parameter_line_main(
         if prparname != "influencers_whitelist":
             return [], sp_prname
         write_parameter_intersect(
-            outfhand, prparname, CmdPars, InPars, DefPars, all_inf_pars,
+            outfhand, prparname, cmd_pars, in_pars, def_pars, all_inf_pars,
             linelist)
 
     # Write unit-specifying parameters
@@ -863,7 +866,8 @@ def write_parameter_line_main(
             return [], sp_prname
         parnames = [prparname.split("_")[0] + item for item in all_unit_ends]
         write_parameter_intersect(
-            outfhand, prparname, CmdPars, InPars, DefPars, parnames, linelist)
+            outfhand, prparname, cmd_pars, in_pars, def_pars, parnames,
+            linelist)
 
     # Write 'normal' / other parameters.
     else:
@@ -885,7 +889,7 @@ def write_parameter_line(outfhand, prparname, choice, linelist):
         The full name of the parameter (possibly including source name)
         that we'd like to write to file.
     choice : any
-        The choice as saved in RunPars for this parameter
+        The choice as saved in run_pars for this parameter
     linelist : list of str
         The line from the reference parameter file, split on "#".
     """
@@ -903,7 +907,7 @@ def write_parameter_line(outfhand, prparname, choice, linelist):
 
 
 def write_parameter_intersect(
-    outfhand, prparname, CmdPars, InPars, DefPars, parnames, linelist
+    outfhand, prparname, cmd_pars, in_pars, def_pars, parnames, linelist
 ):
     """Save a single parameter. This one has multiple options in the
     reference file, of which only one may be written.
@@ -919,12 +923,12 @@ def write_parameter_intersect(
     prparname : str
         The full name of the parameter (possibly including source name)
         that we'd like to write to file.
-    CmdPars : :class:`RawPars`
+    cmd_pars : :class:`RawPars`
         Contains any parameter choices made on the command line
-    InPars : :class:`RawPars`
+    in_pars : :class:`RawPars`
         Contains any parameter choices made in the input parameter file
-    DefPars : :class:`RawPars` or :class:`RefPars`
-        Contains all default parameter choices. Might be RefPars, might
+    def_pars : :class:`RawPars` or :class:`RefPars`
+        Contains all default parameter choices. Might be ref_pars, might
         be from a separate default parameters file.
     parnames : iterable
         The parameter names that are an acceptable substitute for
@@ -933,7 +937,7 @@ def write_parameter_intersect(
         The line from the reference parameter file, split on "#".
     """
 
-    for parsource in (CmdPars, InPars):
+    for parsource in (cmd_pars, in_pars):
         intersection = set(parnames).intersection(parsource.choices)
         if len(intersection) > 0:
             parameter = intersection.pop()
@@ -942,4 +946,4 @@ def write_parameter_intersect(
             return
     # if no source mentions any influencers
     write_parameter_line(
-        outfhand, prparname, DefPars.choices[prparname], linelist)
+        outfhand, prparname, def_pars.choices[prparname], linelist)

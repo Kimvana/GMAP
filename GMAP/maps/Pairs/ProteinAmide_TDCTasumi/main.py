@@ -32,8 +32,8 @@ def GM_prep_coupling(map_, system, oscixlist, osclist):
         All oscillators treated by this map.
     """
 
-    itheta = map_.Core.dipole_Torii_angle
-    magnitude = map_.RunPars.Torii_dipole_magnitude
+    itheta = map_.core.dipole_Torii_angle
+    magnitude = map_.run_pars.Torii_dipole_magnitude
 
     for oscix, osc in zip(oscixlist, osclist):
         COvec = GM_mf.PBC_boxdiff_triclin(
@@ -156,5 +156,5 @@ def GM_pre_run(map_, system):
 
     map_.dipole_vec_arr = np.zeros((system.nosc, 3), dtype="float32")
     map_.dipole_pos_arr = np.zeros((system.nosc, 3), dtype="float32")
-    map_.Core.dipole_Torii_angle = np.float32(
-        1 / np.tan(GM_con.deg2rad * map_.RunPars.Torii_dipole_angle))
+    map_.core.dipole_Torii_angle = np.float32(
+        1 / np.tan(GM_con.deg2rad * map_.run_pars.Torii_dipole_angle))

@@ -31,8 +31,8 @@ def GM_prep_coupling(map_, system, oscixlist, osclist):
         All oscillators treated by this map.
     """
 
-    displace = map_.RunPars.displace
-    tanangle = map_.RunPars.tanangle
+    displace = map_.run_pars.displace
+    tanangle = map_.run_pars.tanangle
 
     for oscix, osc in zip(oscixlist, osclist):
         COvec = GM_mf.PBC_boxdiff_triclin(

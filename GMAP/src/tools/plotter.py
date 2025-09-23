@@ -16,7 +16,7 @@ import GMAP.src.tools.math_functions as GM_mf
 
 # ========== Functions for users ==========
 
-def plot_coupling_choices(RunPars, system):
+def plot_coupling_choices(run_pars, system):
     """Creates the plot showing what coupling method is picked for each
     entry.
 
@@ -26,7 +26,7 @@ def plot_coupling_choices(RunPars, system):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     system : :class:`~GMAP.src.tools.system_reader.System`
@@ -48,10 +48,10 @@ def plot_coupling_choices(RunPars, system):
 
     # Obtain colors for plotting
     presentcoupmaps = [
-        coupmap for coupmap in RunPars.requested_pairmapdict.values()
+        coupmap for coupmap in run_pars.requested_pairmapdict.values()
         if coupmap.allpairs.shape[0] != 0]
     ncoupmaps = len(presentcoupmaps)
-    # ncoupmaps = len(RunPars.requested_pairmapdict)
+    # ncoupmaps = len(run_pars.requested_pairmapdict)
     if ncoupmaps > 28:  # the discrete rainbow can support 28 colors max.
         colors = GM_cs.DiscreteRainbowGenerator().get_color_list_from_int(
             28, "rgbarrfloat32")
@@ -82,15 +82,15 @@ def plot_coupling_choices(RunPars, system):
     colors = np.concatenate((no_data, colors))
     handles = [Rectangle((0, 0), 1, 1, color=col) for col in colors]
     labels = ["no coupling"] + [coupmap.name for coupmap in presentcoupmaps]
-    # labels = ["no coupling"] + list(RunPars.requested_pairmapdict.keys())
+    # labels = ["no coupling"] + list(run_pars.requested_pairmapdict.keys())
     ax.legend(handles, labels)
 
     # Save the figure
     fig.set_size_inches(
-        RunPars.couplingvis_figsize, RunPars.couplingvis_figsize * 0.75)
+        run_pars.couplingvis_figsize, run_pars.couplingvis_figsize * 0.75)
     fig.savefig(
-        RunPars.output_couplingvis_filename, bbox_inches='tight',
-        dpi=RunPars.couplingvis_dpi)
+        run_pars.output_couplingvis_filename, bbox_inches='tight',
+        dpi=run_pars.couplingvis_dpi)
     return fig, ax  # Should not be caught in program, just for testing.
 
 

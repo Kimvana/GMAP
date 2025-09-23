@@ -49,7 +49,7 @@ import GMAP.src.tools.reference_handler as GM_rh
 import GMAP.src.tools.system_reader as GM_sr
 
 
-def manage_frame(frame, RunPars):
+def manage_frame(frame, run_pars):
     """Performs all the checks involved with starting a new frame.
 
     Future/TODO:
@@ -63,17 +63,17 @@ def manage_frame(frame, RunPars):
     ----------
     frame : `MDA.Timestep`
         The frame that will be treated next.
-    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     """
 
     framenum = frame.frame
-    if framenum >= RunPars.stop_frame:
+    if framenum >= run_pars.stop_frame:
         return True
 
     # Do a frame number print here! (for ETA type prints)
-    relframenum = framenum - RunPars.start_frame
+    relframenum = framenum - run_pars.start_frame
 
     # If this is the 0th frame, or only first digit is non-zero.
     # We multiply relframenum (the n in nth frame treated) by 10 to make
@@ -95,10 +95,10 @@ def manage_frame(frame, RunPars):
         "end time  (est.)"
     )
     print_frame_ETA(
-        verbose_level, framenum, RunPars.start_frame, RunPars.stop_frame)
+        verbose_level, framenum, run_pars.start_frame, run_pars.stop_frame)
 
     # Check if there is enough time to do another batch of frames
-    return early_stop(framenum, RunPars)
+    return early_stop(framenum, run_pars)
 
 
 def print_frame_ETA(verbose, framenum, startframe, endframe):
@@ -154,7 +154,7 @@ def print_frame_ETA(verbose, framenum, startframe, endframe):
         the parameter end_frame.
     """
 
-    timer = GM_pt.Printer.Timer
+    timer = GM_pt.Printer.timer
     toprint = []
 
     # first, add current time (e.g. Fri 13 HH:MM)
@@ -191,7 +191,7 @@ def print_frame_ETA(verbose, framenum, startframe, endframe):
     GM_pt.Printer.print(verbose, " | ".join(toprint))
 
 
-def early_stop(framenum, RunPars):
+def early_stop(framenum, run_pars):
     """Determines whether to stop the calculation early, or to continue.
 
     This decision is based on the amount of remaining time, used time,
@@ -205,32 +205,32 @@ def early_stop(framenum, RunPars):
     the program to finish things off after the last batch.
     """
 
-    relframenum = framenum - RunPars.start_frame
+    relframenum = framenum - run_pars.start_frame
     if relframenum == 0:  # don't quit on first frame
         return False
 
     # only consider quitting after completing a batch
-    if relframenum % RunPars.batch_size != 0:
+    if relframenum % run_pars.batch_size != 0:
         return False
 
     # now, actually check whether the next batch will fit.
-    timer = GM_pt.Printer.Timer
+    timer = GM_pt.Printer.timer
     now_ns = timer.get_time("FrameUpdate")
     start_heavy_ns = timer.get_time("StartLoop")
     ns_per_frame = int((now_ns - start_heavy_ns) / (relframenum))
-    avail_time_ns = RunPars.time_limit * 60 * 1000000000
+    avail_time_ns = run_pars.time_limit * 60 * 1000000000
 
     # if we could do another two batches, allow this batch to continue.
     # why two? because we also need time to finish up the calculation
     # after the last batch.
-    if avail_time_ns - now_ns > 2 * ns_per_frame * RunPars.batch_size:
+    if avail_time_ns - now_ns > 2 * ns_per_frame * run_pars.batch_size:
         return False
     else:
-        RunPars.end_frame = framenum
+        run_pars.end_frame = framenum
         return True
 
 
-def trj_loop(RunPars, system):
+def trj_loop(run_pars, system):
     """Performs the main per-frame loop for GEM.
 
     Does the last bit of initialization that needs to happen, and then
@@ -238,7 +238,7 @@ def trj_loop(RunPars, system):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     system : :class:`~GMAP.src.tools.system_reader.System`
@@ -253,11 +253,11 @@ def trj_loop(RunPars, system):
     # create empty structures, initialize whats needed
 
     # compare runpar endframe to mda nframes - adjust endframe
-    if RunPars.stop_frame >= len(system.universe.trajectory):
-        RunPars.stop_frame = len(system.universe.trajectory)
+    if run_pars.stop_frame >= len(system.universe.trajectory):
+        run_pars.stop_frame = len(system.universe.trajectory)
 
     # Confirm start_frame is still smaller than stop, after the change
-    if RunPars.start_frame > RunPars.stop_frame:
+    if run_pars.start_frame > run_pars.stop_frame:
         GM_pt.Printer.warning(
             "Encountered an issue with the parameter start_frame. The frame "
             "doesn't exist, as the provided trajectory is too short. In the "
@@ -269,23 +269,23 @@ def trj_loop(RunPars, system):
 
     # let maps prepare for the calculation
     for mapname in system.oscillators_ordered.keys():  # singles
-        map_ = RunPars.requested_mapdict[mapname]
+        map_ = run_pars.requested_mapdict[mapname]
         map_.code.GM_pre_run(map_, system)
 
     # pair maps only need to prepare if couplings are to be calculated.
-    if "ham" in RunPars.output_data:
+    if "ham" in run_pars.output_data:
         for mapname in system.oscillators_ordered_coup.keys():  # pairs
-            map_ = RunPars.requested_pairmapdict[mapname]
+            map_ = run_pars.requested_pairmapdict[mapname]
             map_.code.GM_pre_run(map_, system)
 
     # And in case maps did anything weird...
-    RunPars.manage_dtypes()
+    run_pars.manage_dtypes()
 
     # Report on the system we're going to treat.
-    GM_fh.write_legend(RunPars, system)
+    GM_fh.write_legend(run_pars, system)
 
     trj = system.universe.trajectory
-    GM_fh.clear_output(RunPars)
+    GM_fh.clear_output(run_pars)
 
     # In case MDA needs a long time to start the loop.
     GM_pt.Printer.add_time(
@@ -305,15 +305,15 @@ def trj_loop(RunPars, system):
         "end time  (est.)", detailed_instructions=[1, 2, 3]
     )
 
-    for frame in trj[RunPars.start_frame:]:
+    for frame in trj[run_pars.start_frame:]:
         GM_pt.Printer.add_time(
             4, "Starting on frame - starting updates", "FrameUpdate", "ms")
         # manage frame number (if not in range, skip, prints, ETA, etc)
-        if manage_frame(frame, RunPars):
+        if manage_frame(frame, run_pars):
             break
 
         # rebuild the frame-specific data (positions, box, etc)
-        system.update_properties(RunPars)
+        system.update_properties(run_pars)
         GM_pt.Printer.add_time(
             4, "done system updates. next: osc updates", "OscUpdate", "ms")
         for oscillator in system.oscillators:
@@ -325,47 +325,47 @@ def trj_loop(RunPars, system):
         # (only if needed) recalc COM
 
         # initialize output structures (like Ham)
-        outputs = GM_pf.generate_output_structures(RunPars, system)
+        outputs = GM_pf.generate_output_structures(run_pars, system)
 
         GM_pt.Printer.add_time(
             4, "initialize done. next: map init", "MapFInit", "ms")
 
         # call pre-frame funcs of maps
         for mapname in system.oscillators_ordered.keys():  # singles
-            map_ = RunPars.requested_mapdict[mapname]
+            map_ = run_pars.requested_mapdict[mapname]
             map_.code.GM_pre_frame(map_, system)
 
         # pair maps only need to be called if couplings are to be calculated.
-        if "ham" in RunPars.output_data:
+        if "ham" in run_pars.output_data:
             for mapname in system.oscillators_ordered_coup.keys():  # pairs
-                map_ = RunPars.requested_pairmapdict[mapname]
+                map_ = run_pars.requested_pairmapdict[mapname]
                 map_.code.GM_pre_frame(map_, system)
 
         GM_pt.Printer.add_time(
             4, "map init done. next: calculation", "Calc", "ms")
 
         # perform the actual calculations
-        outputs = GM_pf.calc_frame(RunPars, system, outputs)
+        outputs = GM_pf.calc_frame(run_pars, system, outputs)
 
         GM_pt.Printer.add_time(
             4, "calculation done. next: map final", "MapFPost", "ms")
 
         # call post-frame functions of maps
         for mapname in system.oscillators_ordered.keys():  # singles
-            map_ = RunPars.requested_mapdict[mapname]
+            map_ = run_pars.requested_mapdict[mapname]
             map_.code.GM_post_frame(map_, system)
 
         # pair maps only need to be called if couplings are to be calculated.
-        if "ham" in RunPars.output_data:
+        if "ham" in run_pars.output_data:
             for mapname in system.oscillators_ordered_coup.keys():  # pairs
-                map_ = RunPars.requested_pairmapdict[mapname]
+                map_ = run_pars.requested_pairmapdict[mapname]
                 map_.code.GM_post_frame(map_, system)
 
         GM_pt.Printer.add_time(
             4, "map final done. next: write output", "FrameWrite", "ms")
 
         # write calculated data to files
-        GM_fh.write_output(RunPars, frame.frame, outputs)
+        GM_fh.write_output(run_pars, frame.frame, outputs)
 
         GM_pt.Printer.add_time(
             4, "Frame completed. Loading next frame\n", "LoadFrame", "ms")
@@ -380,26 +380,26 @@ def trj_loop(RunPars, system):
 
     # lastly, do postcalc:
     for mapname in system.oscillators_ordered.keys():  # singles
-        map_ = RunPars.requested_mapdict[mapname]
+        map_ = run_pars.requested_mapdict[mapname]
         map_.code.GM_post_run(map_, system)
 
     # pair maps only need to do postcalc if couplings are to be calculated.
-    if "ham" in RunPars.output_data:
+    if "ham" in run_pars.output_data:
         for mapname in system.oscillators_ordered_coup.keys():  # pairs
-            map_ = RunPars.requested_pairmapdict[mapname]
+            map_ = run_pars.requested_pairmapdict[mapname]
             map_.code.GM_post_run(map_, system)
 
     # print all that the user does not yet know
     # (profiler?)
 
 
-def print_calculation_summary(RunPars, system):
+def print_calculation_summary(run_pars, system):
     """Reports how the calculation went, and some details users might
     want to know.
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     system : :class:`~GMAP.src.tools.system_reader.System`
@@ -415,13 +415,13 @@ def print_calculation_summary(RunPars, system):
         1, "Calculation\nsummary", "doublebox_bare", detailed_instructions=[1])
     GM_pt.header(2, "\n  Calculation  \nsummary\n", "doublebox_bare")
 
-    print_time_splits(RunPars)
+    print_time_splits(run_pars)
 
-    print_treated_avail_frames(RunPars, system)
+    print_treated_avail_frames(run_pars, system)
 
-    print_in_output_filenames(RunPars)
+    print_in_output_filenames(run_pars)
 
-    print_relevant_references(RunPars, system)
+    print_relevant_references(run_pars, system)
 
     end = " ██▓▓▒▒░░"
     start = end[::-1]
@@ -429,26 +429,26 @@ def print_calculation_summary(RunPars, system):
     pr.print(1, f"\n  {start}{msg}{end}")
 
 
-def print_time_splits(RunPars):
+def print_time_splits(run_pars):
     """Report how much time was spent on what parts of the calculation
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     """
 
     def sumavg(*args):
-        total_time = pr.Timer.get_total_ns(*args)
+        total_time = pr.timer.get_total_ns(*args)
         avg_time = total_time // nframes
         tot_str = GM_pt.time_to_str(total_time)
         avg_str = GM_pt.time_to_str(avg_time, "ms")
         return f"{tot_str: >12}  --> {avg_str[-12:]} / frame"
 
     pr = GM_pt.Printer
-    sum_ = pr.Timer.get_total_format
-    nframes = RunPars.stop_frame - RunPars.start_frame
+    sum_ = pr.timer.get_total_format
+    nframes = run_pars.stop_frame - run_pars.start_frame
 
     GM_pt.header(2, "Time spent", "doublebox_bare", newlines=(1, 1))
     init_labels = [
@@ -457,7 +457,7 @@ def print_time_splits(RunPars):
     f_upd = ["FrameUpdate", "PosBox", "COM"]
     f_init = f_upd + ["OscUpdate", "StructInit", "MapFInit"]
     f_calc = ["Calc", "VEGprop", "VEGcalc", "VEGuse"]
-    if "ham" in RunPars.output_data:
+    if "ham" in run_pars.output_data:
         f_calc += ["PrepCoup", "CalcCoup"]
     f_post = ["MapFPost", "FrameWrite"]
     perframe = f_init + f_calc + f_post + f_load
@@ -482,7 +482,7 @@ def print_time_splits(RunPars):
     pr.print(3, f"    Calculation:              {sumavg(*f_calc)}")
     pr.print(4, f"      Calculating estatics:   {sumavg('VEGcalc')}")
     pr.print(4, f"      SingleMap outputs:      {sumavg('VEGuse')}")
-    if "ham" in RunPars.output_data:
+    if "ham" in run_pars.output_data:
         pr.print(4, f"      Coupling preparation:   {sumavg('PrepCoup')}")
         pr.print(4, f"      Coupling calculation:   {sumavg('CalcCoup')}")
     pr.print(3, f"    Frame finalization:       {sumavg(*f_post)}")
@@ -491,7 +491,7 @@ def print_time_splits(RunPars):
     pr.print(2, f"  Calculation finalization:   {sum_(*post_labels): >12}")
 
 
-def print_treated_avail_frames(RunPars, system):
+def print_treated_avail_frames(run_pars, system):
     """Report what frames from MD are available, which were requested,
     and which actually calculated.
 
@@ -501,7 +501,7 @@ def print_treated_avail_frames(RunPars, system):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     system : :class:`~GMAP.src.tools.system_reader.System`
@@ -515,41 +515,41 @@ def print_treated_avail_frames(RunPars, system):
     msg = "Frames treated:     " + " " * 12
 
     # if the calculation was stopped early, the attribute end_frame exists.
-    last_frame = getattr(RunPars, "end_frame", RunPars.stop_frame)
-    pr.print(1, f"{msg}{RunPars.start_frame}-{last_frame}")
+    last_frame = getattr(run_pars, "end_frame", run_pars.stop_frame)
+    pr.print(1, f"{msg}{run_pars.start_frame}-{last_frame}")
     msg = "Frames requested:   " + " " * 12
-    pr.print(2, f"{msg}{RunPars.start_frame}-{RunPars.stop_frame}")
+    pr.print(2, f"{msg}{run_pars.start_frame}-{run_pars.stop_frame}")
     msg = "Frames available:   " + " " * 12
     pr.print(3, f"{msg}{0}-{len(system.universe.trajectory)}")
     msg = "Duration of frame:  " + " " * 12
     pr.print(1, f"{msg}{round(system.dt, 6) * 1000} fs")
     if round(system.dt, 6) == 1.0:
         pr.print(
-            1, 
+            1,
             "Important: a timestep of 1.0 ps is the MDAnalyse default if this "
             "information is not present in the MD files. Please check "
             "manually yourself if needed as the actual timestep is likely "
             "different.")
 
 
-def print_in_output_filenames(RunPars):
+def print_in_output_filenames(run_pars):
     """report which files were used during the calculation
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     """
 
-    def report_files(RunPars, shorthand, printfname, txtverb, binverb):
-        if shorthand in RunPars.output_data:
-            fname = getattr(RunPars, f"output_{printfname.lower()}_filename")
-            if "txt" in RunPars.output_format:
+    def report_files(run_pars, shorthand, printfname, txtverb, binverb):
+        if shorthand in run_pars.output_data:
+            fname = getattr(run_pars, f"output_{printfname.lower()}_filename")
+            if "txt" in run_pars.output_format:
                 temp = fname.parent / f"{fname.name}.txt"
                 text = f"{printfname} text file:"
                 wrapprint(txtverb, f"{text: <28}{temp}", ps)
-            if "bin" in RunPars.output_format:
+            if "bin" in run_pars.output_format:
                 temp = fname.parent / f"{fname.name}.bin"
                 text = f"{printfname} binary file:"
                 wrapprint(binverb, f"{text: <28}{temp}", ps)
@@ -576,41 +576,41 @@ def print_in_output_filenames(RunPars):
 
     pr.print(2, f"\n{line}  Input files {line}")
     wrapprint(1, f"Command issued:             {files.callcommand}", ps)
-    wrapprint(2, f"Default parameter file:     {RunPars.defparfilename}", ps)
-    wrapprint(2, f"Input parameter file:       {RunPars.inparfilename}", ps)
-    wrapprint(1, f"Topology file analyzed:     {RunPars.topology_file}", ps)
-    wrapprint(1, f"Trajectory file analyzed:   {RunPars.trajectory_file}", ps)
-    mapdirs = ", ".join([str(direc) for direc in RunPars.map_directory])
+    wrapprint(2, f"Default parameter file:     {run_pars.defparfilename}", ps)
+    wrapprint(2, f"Input parameter file:       {run_pars.inparfilename}", ps)
+    wrapprint(1, f"Topology file analyzed:     {run_pars.topology_file}", ps)
+    wrapprint(1, f"Trajectory file analyzed:   {run_pars.trajectory_file}", ps)
+    mapdirs = ", ".join([str(direc) for direc in run_pars.map_directory])
     wrapprint(2, f"Map directories used:       {mapdirs}", ps)
-    wrapprint(2, f"VEG-library file used:      {RunPars.VEG_clib_file}", ps)
+    wrapprint(2, f"VEG-library file used:      {run_pars.VEG_clib_file}", ps)
 
     pr.print(2, f"\n{line}  Output files {line}")
-    wrapprint(1, f"Logfile generated:          {RunPars.log_filename}", ps)
-    fname = RunPars.output_legend_filename
+    wrapprint(1, f"Logfile generated:          {run_pars.log_filename}", ps)
+    fname = run_pars.output_legend_filename
     wrapprint(2, f"Legend file generated:      {fname}", ps)
-    if "ham" in RunPars.output_data:
-        fname = RunPars.output_couplingvis_filename
+    if "ham" in run_pars.output_data:
+        fname = run_pars.output_couplingvis_filename
         wrapprint(2, f"Coupling visualization:     {fname}", ps)
-    report_files(RunPars, "ham", "Hamiltonian", 2, 2)
-    report_files(RunPars, "ene", "Energies", 2, 2)
-    report_files(RunPars, "dip", "Dipole", 2, 2)
-    report_files(RunPars, "ram", "Raman", 2, 2)
-    report_files(RunPars, "pos", "Positions", 2, 2)
-    report_files(RunPars, "dbp", "Doublepos", 2, 2)
-    if RunPars.profiler:
-        fname = RunPars.log_profiling_filename
+    report_files(run_pars, "ham", "Hamiltonian", 2, 2)
+    report_files(run_pars, "ene", "Energies", 2, 2)
+    report_files(run_pars, "dip", "Dipole", 2, 2)
+    report_files(run_pars, "ram", "Raman", 2, 2)
+    report_files(run_pars, "pos", "Positions", 2, 2)
+    report_files(run_pars, "dbp", "Doublepos", 2, 2)
+    if run_pars.profiler:
+        fname = run_pars.log_profiling_filename
         pr.print(2, f"profiler output:            {fname}")
-    if RunPars.profiler_graph:
-        fname = RunPars.log_profiling_graph_filename
+    if run_pars.profiler_graph:
+        fname = run_pars.log_profiling_graph_filename
         pr.print(2, f"profiler visualization:     {fname}")
 
 
-def print_relevant_references(RunPars, system):
+def print_relevant_references(run_pars, system):
     """report which references should be cited for this calculation
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     system : :class:`~GMAP.src.tools.system_reader.System`
@@ -627,17 +627,17 @@ def print_relevant_references(RunPars, system):
 
     all_references = []
     for singles_map in system.oscillators_ordered.keys():
-        singles_map = RunPars.requested_mapdict[singles_map]
+        singles_map = run_pars.requested_mapdict[singles_map]
         all_references.append(
             singles_map.code.GM_report_references(singles_map, system))
 
-    if "ham" in RunPars.output_data:
+    if "ham" in run_pars.output_data:
         for pairs_map in system.oscillators_ordered_coup.keys():
-            pairs_map = RunPars.requested_pairmapdict[pairs_map]
+            pairs_map = run_pars.requested_pairmapdict[pairs_map]
             all_references.append(
                 pairs_map.code.GM_report_references(pairs_map, system))
 
-    GM_rh.report_references(RunPars, all_references)
+    GM_rh.report_references(run_pars, all_references)
 
 
 # still a placeholder - this function still has to grow. Should in the
@@ -659,12 +659,12 @@ def GEM(callcommand):
 
     # Parameter parsing
     (
-        RunPars, singles_mapdict, pairs_mapdict, CmdPars, InPars, DefPars,
-        RefPars
+        run_pars, singles_mapdict, pairs_mapdict, cmd_pars, in_pars, def_pars,
+        ref_pars
     ) = GM_pp.get_parameters(in_parfile, argslist)
 
     # If requested, profile the run.
-    if RunPars.profiler:
+    if run_pars.profiler:
         profile = cProfile.Profile()
         profile.enable()
 
@@ -674,13 +674,13 @@ def GEM(callcommand):
     # --- end of SU errors ---
 
     # Map initialization
-    GM_mr.manage_maps_singles(RunPars, singles_mapdict)
-    GM_mr.manage_maps_pairs(RunPars, pairs_mapdict)
+    GM_mr.manage_maps_singles(run_pars, singles_mapdict)
+    GM_mr.manage_maps_pairs(run_pars, pairs_mapdict)
     GM_pt.Printer.add_time(
         2, "Added all maps, start loading C libraries", "ClibLoad", "ms")
 
     # initialize C library
-    GM_cl.VEG_CLib(RunPars)
+    GM_cl.VEG_CLib(run_pars)
 
     GM_pt.Printer.add_time(
         3, "Libraries loaded, start initializing MD system", "MDinit",
@@ -688,66 +688,66 @@ def GEM(callcommand):
     )
 
     # Looking at MD system - finding oscillators.
-    system = GM_sr.System(RunPars)
+    system = GM_sr.System(run_pars)
 
     GM_pt.Printer.add_time(
         3, "Initialized MD system, start initializing maps", "MapInit", "ms")
 
     # GEM is now done - let maps initialize as well
     for mapname in system.oscillators_ordered.keys():  # singles
-        map_ = RunPars.requested_mapdict[mapname]
+        map_ = run_pars.requested_mapdict[mapname]
         map_.code.GM_post_init(map_, system)
 
     # Report on what the system looks like (needs singles mapinit)
-    system.print_system(RunPars)
+    system.print_system(run_pars)
 
     GM_pt.Printer.add_time(
         3, "Initialization complete, start considering pairs", "MDinit", "ms")
 
-    if "ham" in RunPars.output_data:
+    if "ham" in run_pars.output_data:
         # prepare all pair lookup tables.
-        system.order_oscillators_pairs(RunPars)
+        system.order_oscillators_pairs(run_pars)
 
         # let all coupling maps initialize
         for mapname in system.oscillators_ordered_coup.keys():  # pairs
-            map_ = RunPars.requested_pairmapdict[mapname]
+            map_ = run_pars.requested_pairmapdict[mapname]
             map_.code.GM_post_init(map_, system)
 
         # obtain all multiply factors of all coupling maps
-        RunPars.final_resolve_coupling_scale()
+        run_pars.final_resolve_coupling_scale()
 
         # Save overview of found coupling maps to file.
-        GM_Pl.plot_coupling_choices(RunPars, system)
+        GM_Pl.plot_coupling_choices(run_pars, system)
 
     # Write output parameter file
     GM_fh.write_parameter_file(
-        RefPars, RunPars, system, CmdPars, InPars, DefPars)
+        ref_pars, run_pars, system, cmd_pars, in_pars, def_pars)
 
     # calculate all (requested) frames
-    trj_loop(RunPars, system)
+    trj_loop(run_pars, system)
 
     # finalize profiler
-    if RunPars.profiler:
+    if run_pars.profiler:
         profile.create_stats()
-        profile.dump_stats(RunPars.log_profiling_filename)
+        profile.dump_stats(run_pars.log_profiling_filename)
 
-    if RunPars.profiler_graph:
+    if run_pars.profiler_graph:
         strcommand = [
             "gprof2dot", "-f", "pstats",
-            RunPars.log_profiling_filename, "-o",
-            RunPars.log_profiling_tempfile]
+            run_pars.log_profiling_filename, "-o",
+            run_pars.log_profiling_tempfile]
         subprocess.run(strcommand)
 
         dpr("running dot")
         strcommand = [
-            "dot", "-Tpng", "-o", RunPars.log_profiling_graph_filename,
-            RunPars.log_profiling_tempfile]
+            "dot", "-Tpng", "-o", run_pars.log_profiling_graph_filename,
+            run_pars.log_profiling_tempfile]
         subprocess.run(strcommand)
 
         # remove the tempfile again
-        RunPars.log_profiling_tempfile.unlink()
+        run_pars.log_profiling_tempfile.unlink()
 
-    print_calculation_summary(RunPars, system)
+    print_calculation_summary(run_pars, system)
 
 
 # The jobs that GEM can currently execute.

@@ -328,7 +328,7 @@ def read_reference_string(string):
 # below: functions/classes used for printing/reporting the references
 
 
-def report_references(RunPars, iterable):
+def report_references(run_pars, iterable):
     """Report all references for this calculation.
 
     This function can be called once, or more often - the result doesn't
@@ -355,7 +355,7 @@ def report_references(RunPars, iterable):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     iterable : :class:`Reference` or list or dict
@@ -366,7 +366,7 @@ def report_references(RunPars, iterable):
     references = flatten_iterable(iterable)
 
     # list of ref objects with their reporttext (may haveduplicates)
-    references = sort_references(RunPars, references)
+    references = sort_references(run_pars, references)
 
     # dict of str(ref obj): list of all reporttext
     references = merge_references(references)
@@ -420,7 +420,7 @@ def flatten_iterable(iterable):
     return iterable
 
 
-def sort_references(RunPars, references):
+def sort_references(run_pars, references):
     """Part of reference-reporting. Collect all applicable references.
 
     Not all references have to be printed every calculation. Each
@@ -433,7 +433,7 @@ def sort_references(RunPars, references):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     references : list of :class:`Reference`
@@ -447,7 +447,7 @@ def sort_references(RunPars, references):
     """
 
     used_references = []
-    for calc_mode in RunPars.output_data:
+    for calc_mode in run_pars.output_data:
         for reference in references:
             if calc_mode in reference.reporttext:
                 for text in reference.reporttext[calc_mode]:

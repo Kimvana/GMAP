@@ -34,7 +34,7 @@ def adjust_map_core_raw(map_):
         "dp2_choice": "doublepos_1"
     }
     for parameter in ("pos_choice", "dp1_choice", "dp2_choice"):
-        choice = getattr(map_.RunPars, parameter)
+        choice = getattr(map_.run_pars, parameter)
         rawpar = pardict[parameter]
         match choice:
             case "C":  # the default
@@ -49,12 +49,12 @@ def adjust_map_core_raw(map_):
                 # map_.rawcore[rawpar] = ["(0+0.665*1+0.258*3)/1.923"]
                 map_.rawcore[rawpar] = ["0.077*0+0.665*1+0.258*3"]
 
-    match map_.RunPars.dipole_map_choice:
+    match map_.run_pars.dipole_map_choice:
         case "Torii":
             map_.rawcore["dipole_data_file"] = ["[N/A]"]
             map_.rawcore["dipole_gas_phase"] = ["0.276"]
         case "Jansen":
-            if not map_.RunPars.frequency_map_choice == "Jansen":
+            if not map_.run_pars.frequency_map_choice == "Jansen":
                 GM_pt.Printer.warning(  # no exitbool - error is not fatal.
                     "Error in the map AmideSC: The Jansen dipole map was "
                     "requested without using the Jansen frequency map. Either "
@@ -80,7 +80,7 @@ def adjust_mcr_freqchoice(map_):
 
     # atom order: CG  OD1  CB  ND2  HD21  HD22
 
-    choice = map_.RunPars.frequency_map_choice
+    choice = map_.run_pars.frequency_map_choice
     parname = "frequency_data_file_linear"
     secpar = "frequency_data_file_linear_prepro"
     match choice:
@@ -171,7 +171,7 @@ def oscillator_sorter(map_, system, oscillator_list):
 
     # then, sort oscillators
     newlist = []
-    if map_.RunPars.residue_order == "resname":
+    if map_.run_pars.residue_order == "resname":
         all_amino_acid_codes = [
             "ALA", "ARG", "ASN", "ASP", "CYS", "GLN", "GLU", "GLY",
             "HIS", "ILE", "LYS", "LEU", "MET",
@@ -224,9 +224,9 @@ def initialize_prepro_properties(map_):
         )
         map_.success = False
     else:
-        map_.Core.frequency_gas_phase_prepro = pp_gasfreq
+        map_.core.frequency_gas_phase_prepro = pp_gasfreq
 
-    pp_freqarr = map_.Core.parse_frequency_data_file(
+    pp_freqarr = map_.core.parse_frequency_data_file(
         map_.rawcore, map_.directory, "frequency_data_file_linear_prepro")
     if pp_freqarr is None:
         mapdir = map_.directory
@@ -239,17 +239,17 @@ def initialize_prepro_properties(map_):
         )
         map_.success = False
     else:
-        if map_.Core.length_units == "bohr":
+        if map_.core.length_units == "bohr":
             conv_factor = GM_con.bohr2ang
             pp_freqarr[:, 0] *= conv_factor
             pp_freqarr[:, 1:4] *= conv_factor**2
             pp_freqarr[:, 4:] *= conv_factor**3
-        map_.Core.frequency_data_array_linear_prepro = pp_freqarr
+        map_.core.frequency_data_array_linear_prepro = pp_freqarr
 
-    map_.Core.dipole_gas_phase_prepro = [np.float32(item) for item in [
+    map_.core.dipole_gas_phase_prepro = [np.float32(item) for item in [
         -0.268549, 0.086947, 0.0]]
-    map_.Core.dipole_gas_phase_array_prepro = np.array(
-        map_.Core.dipole_gas_phase_prepro)
+    map_.core.dipole_gas_phase_array_prepro = np.array(
+        map_.core.dipole_gas_phase_prepro)
     try:
         fname = "jansen_dipoles_prepro.txt"
         fname = (Path(__file__).resolve().parent.parent / fname).resolve()
@@ -264,14 +264,14 @@ def initialize_prepro_properties(map_):
         map_.success = False
         return
 
-    dip_arr = map_.Core.confirm_array_size(fdata, 10, 12, fname)
+    dip_arr = map_.core.confirm_array_size(fdata, 10, 12, fname)
     if not map_.success:
         return
 
-    map_.Core.dipole_data_array_prepro = dip_arr.reshape((3, -1, 10))
+    map_.core.dipole_data_array_prepro = dip_arr.reshape((3, -1, 10))
 
-    if map_.Core.length_units == "bohr":
+    if map_.core.length_units == "bohr":
         conv_factor = GM_con.bohr2ang
-        map_.Core.dipole_data_array_prepro[:, :, 0] *= conv_factor
-        map_.Core.dipole_data_array_prepro[:, :, 1:4] *= conv_factor**2
-        map_.Core.dipole_data_array_prepro[:, :, 4:] *= conv_factor**3
+        map_.core.dipole_data_array_prepro[:, :, 0] *= conv_factor
+        map_.core.dipole_data_array_prepro[:, :, 1:4] *= conv_factor**2
+        map_.core.dipole_data_array_prepro[:, :, 4:] *= conv_factor**3

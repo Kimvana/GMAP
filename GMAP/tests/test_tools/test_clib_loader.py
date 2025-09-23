@@ -29,19 +29,19 @@ class TestVClib:
     def test_calcVEG_perres_mm_triclin(self):
         cmdline = ["-md", "maps\\;"]
         (
-            RunPars, RefPars, DefPars, InPars,
-            CmdPars, mapdict, pairs_mapdict
+            run_pars, ref_pars, def_pars, in_pars,
+            cmd_pars, mapdict, pairs_mapdict
         ) = parameter_getter("AmideSC", cmdline, load_clib=False)
 
-        VEGlib = GM_cl.VEG_CLib(RunPars)
-        RunPars.estatic_range = np.float32(60)
-        RunPars.estatic_smooth_range = np.float32(5)
+        VEGlib = GM_cl.VEG_CLib(run_pars)
+        run_pars.estatic_range = np.float32(60)
+        run_pars.estatic_smooth_range = np.float32(5)
 
         system = get_System_1()
         oscillator = get_oscillator_1()
         VEGlib.calc_CoM_box(system)
 
-        VEGlib.calcVEG_perres_mm_triclin(system, RunPars, oscillator)
+        VEGlib.calcVEG_perres_mm_triclin(system, run_pars, oscillator)
 
         # Do not remove!!! These are the calculations to get to the correct
         # answer!
@@ -175,20 +175,20 @@ class TestVClib:
     def test_calcVEG_perres_mm_rhombic(self):
         cmdline = ["-md", "maps\\;"]
         (
-            RunPars, RefPars, DefPars, InPars,
-            CmdPars, mapdict, pairs_mapdict
+            run_pars, ref_pars, def_pars, in_pars,
+            cmd_pars, mapdict, pairs_mapdict
         ) = parameter_getter("AmideSC", cmdline, load_clib=False)
 
-        VEGlib = GM_cl.VEG_CLib(RunPars)
-        RunPars.estatic_range = np.float32(60)
-        RunPars.estatic_smooth_range = np.float32(5)
+        VEGlib = GM_cl.VEG_CLib(run_pars)
+        run_pars.estatic_range = np.float32(60)
+        run_pars.estatic_smooth_range = np.float32(5)
 
         system = get_System_1()
         oscillator = get_oscillator_1()
         VEGlib.calc_CoM_box(system)
         VEGlib.CoM_frombox(system)
 
-        VEGlib.calcVEG_perres_mm_rhombic(system, RunPars, oscillator)
+        VEGlib.calcVEG_perres_mm_rhombic(system, run_pars, oscillator)
 
         # All results are the same ones as from the triclinic method.
         # see the test for the triclinic for the calculation of these
@@ -239,13 +239,13 @@ class TestVClib:
     def test_calcVEG_perres_mm_influencers(self):
         cmdline = ["-md", "maps\\;"]
         (
-            RunPars, RefPars, DefPars, InPars,
-            CmdPars, mapdict, pairs_mapdict
+            run_pars, ref_pars, def_pars, in_pars,
+            cmd_pars, mapdict, pairs_mapdict
         ) = parameter_getter("AmideSC", cmdline, load_clib=False)
 
-        VEGlib = GM_cl.VEG_CLib(RunPars)
-        RunPars.estatic_range = np.float32(60)
-        RunPars.estatic_smooth_range = np.float32(5)
+        VEGlib = GM_cl.VEG_CLib(run_pars)
+        run_pars.estatic_range = np.float32(60)
+        run_pars.estatic_smooth_range = np.float32(5)
 
         # same system as the previous test, but 1 residue is now not an
         # influencer
@@ -256,7 +256,7 @@ class TestVClib:
         oscillator = get_oscillator_1()
         VEGlib.calc_CoM_box(system)
 
-        VEGlib.calcVEG_perres_mm_triclin(system, RunPars, oscillator)
+        VEGlib.calcVEG_perres_mm_triclin(system, run_pars, oscillator)
 
         # Do not remove!!! These are the calculations to get to the correct
         # answer!
@@ -302,19 +302,19 @@ class TestVClib:
     def test_calcVEG_perres_mm_triclin_nocut(self):
         cmdline = ["-md", "maps\\;"]
         (
-            RunPars, RefPars, DefPars, InPars,
-            CmdPars, mapdict, pairs_mapdict
+            run_pars, ref_pars, def_pars, in_pars,
+            cmd_pars, mapdict, pairs_mapdict
         ) = parameter_getter("AmideSC", cmdline, load_clib=False)
 
-        VEGlib = GM_cl.VEG_CLib(RunPars)
-        RunPars.estatic_range = np.float32(60)
-        RunPars.estatic_smooth_range = np.float32(5)
+        VEGlib = GM_cl.VEG_CLib(run_pars)
+        run_pars.estatic_range = np.float32(60)
+        run_pars.estatic_smooth_range = np.float32(5)
 
         system = get_System_1()
         oscillator = get_oscillator_1()
         VEGlib.calc_CoM_box(system)
 
-        VEGlib.calcVEG_perres_mm_triclin_nocut(system, RunPars, oscillator)
+        VEGlib.calcVEG_perres_mm_triclin_nocut(system, run_pars, oscillator)
 
         # Do not remove!!! These are the calculations to get to the correct
         # answer!
@@ -469,20 +469,20 @@ class TestVClib:
     def test_calcVEG_perres_mm_rhombic_nocut(self):
         cmdline = ["-md", "maps\\;"]
         (
-            RunPars, RefPars, DefPars, InPars,
-            CmdPars, mapdict, pairs_mapdict
+            run_pars, ref_pars, def_pars, in_pars,
+            cmd_pars, mapdict, pairs_mapdict
         ) = parameter_getter("AmideSC", cmdline, load_clib=False)
 
-        VEGlib = GM_cl.VEG_CLib(RunPars)
-        RunPars.estatic_range = np.float32(60)
-        RunPars.estatic_smooth_range = np.float32(5)
+        VEGlib = GM_cl.VEG_CLib(run_pars)
+        run_pars.estatic_range = np.float32(60)
+        run_pars.estatic_smooth_range = np.float32(5)
 
         system = get_System_1()
         oscillator = get_oscillator_1()
         VEGlib.calc_CoM_box(system)
         VEGlib.CoM_frombox(system)
 
-        VEGlib.calcVEG_perres_mm_rhombic_nocut(system, RunPars, oscillator)
+        VEGlib.calcVEG_perres_mm_rhombic_nocut(system, run_pars, oscillator)
 
         # same system, so same answers as for the triclinic version of this
         # function. See that one for explanation for all these values.
@@ -559,25 +559,25 @@ class TestVClib:
 
         cmdline = ["-md", "maps\\;"]
         (
-            RunPars, RefPars, DefPars, InPars,
-            CmdPars, mapdict, pairs_mapdict
+            run_pars, ref_pars, def_pars, in_pars,
+            cmd_pars, mapdict, pairs_mapdict
         ) = parameter_getter("AmideSC", cmdline, load_clib=False)
 
-        RunPars.VEG_clib_file = (
-            RunPars.VEG_clib_file.parent / "doesntexist.txt")
+        run_pars.VEG_clib_file = (
+            run_pars.VEG_clib_file.parent / "doesntexist.txt")
         matchstr = "CL_VG_1$"
         with pytest.raises(GM_ex.GmapOSError, match=matchstr):
-            _ = GM_cl.VEG_CLib(RunPars)
+            _ = GM_cl.VEG_CLib(run_pars)
 
-        RunPars.VEG_clib_file = (
-            RunPars.VEG_clib_file.parent / "VEG.obj")
+        run_pars.VEG_clib_file = (
+            run_pars.VEG_clib_file.parent / "VEG.obj")
         with pytest.raises(GM_ex.GmapOSError, match=matchstr):
-            _ = GM_cl.VEG_CLib(RunPars)
+            _ = GM_cl.VEG_CLib(run_pars)
 
-        RunPars.VEG_clib_file = (
-            RunPars.VEG_clib_file.parent)
+        run_pars.VEG_clib_file = (
+            run_pars.VEG_clib_file.parent)
         with pytest.raises(GM_ex.GMAPexception, match=matchstr):
-            _ = GM_cl.VEG_CLib(RunPars)
+            _ = GM_cl.VEG_CLib(run_pars)
 
 
 def get_System_1():
@@ -653,8 +653,8 @@ def get_oscillator_1():
         "n_local_atoms": np.int32(2),
         "VEGout": VEGout,
         "VEGout_c": np.ctypeslib.as_ctypes(np.ravel(VEGout)),
-        "Map": GM_ct.CustomClass(**{
-            "Core": GM_ct.CustomClass(**{
+        "map": GM_ct.CustomClass(**{
+            "core": GM_ct.CustomClass(**{
                 "electrostatic_choice_c": 3  # we want gradients!!!
             })
         })

@@ -53,7 +53,7 @@ def prep_coupling(oscixlist, osclist, system, map_):
         z = GM_mf.crossprod(COvec, CNvec)
         z /= GM_mf.vec3_len(z)
 
-        if osc.Map.name == "AmideSC" or osc.resnames[1] != "PRO":
+        if osc.map.name == "AmideSC" or osc.resnames[1] != "PRO":
             alpha = map_.alpha_gen
             v = map_.v_gen
         else:
@@ -110,14 +110,14 @@ def calc_coupling(oscix1, oscix2, map_, system):
     osc1 = system.oscillators[oscix1]
     osc2 = system.oscillators[oscix2]
 
-    if osc1.Map.name == "AmideSC" or osc1.resnames[1] != "PRO":
+    if osc1.map.name == "AmideSC" or osc1.resnames[1] != "PRO":
         q1 = map_.q_gen
         dq1 = map_.dq_gen
     else:
         q1 = map_.q_pro
         dq1 = map_.dq_pro
 
-    if osc2.Map.name == "AmideSC" or osc2.resnames[1] != "PRO":
+    if osc2.map.name == "AmideSC" or osc2.resnames[1] != "PRO":
         q2 = map_.q_gen
         dq2 = map_.dq_gen
     else:
@@ -183,7 +183,7 @@ def GM_pre_run(map_, system):
     for ix, oscix in enumerate(oscixlist):
         map_.oscix_to_ix[oscix] = ix
         osc = system.oscillators[oscix]
-        if osc.Map.name == "AmideBB" and osc.resnames[1] == "PRO":
+        if osc.map.name == "AmideBB" and osc.resnames[1] == "PRO":
             map_.dopro[ix] = 1
     map_.oscix_to_ix_c = np.ctypeslib.as_ctypes(map_.oscix_to_ix)
     map_.dopro_c = np.ctypeslib.as_ctypes(map_.dopro)

@@ -26,7 +26,7 @@ def GM_adjust_map_core_raw(map_):
 
     Is expected to not return anything - return value is not caught.
 
-    The core.txt file is stored in Map.rawcore. It has not yet been
+    The core.txt file is stored in map_.rawcore. It has not yet been
     parsed, just loaded into a dictionary. In this dictionary, each
     keyword is its own dictionary key. Most keywords can only occur once
     in the file - those have a list of the 'words' on the line as
@@ -93,7 +93,7 @@ def GM_adjust_oscillators(map_, system, oscillator_list):
         All oscillators belonging to a single struct of this map.
     """
 
-    if map_.RunPars.residue_order == "resname":
+    if map_.run_pars.residue_order == "resname":
         return oscillator_list
 
     # now, choice is 'resnum'. To change order to AIM order:
@@ -118,7 +118,7 @@ def GM_post_init(map_, system):
     calculation starts.
 
     Checks include:
-    - comparing RunPars of this map to that of AmideSC, if the latter is
+    - comparing run_pars of this map to that of AmideSC, if the latter is
       present and active
     - initializing the prepro properties/files
     - Assigning the correct functions based on the parameter choices
@@ -136,13 +136,13 @@ def GM_post_init(map_, system):
         charges of all atoms, for example)
     """
 
-    if map_.RunPars.dipole_map_choice == "Torii":
+    if map_.run_pars.dipole_map_choice == "Torii":
         map_.code.GM_calculate_dipole = MC_cm.calc_dipole_Torii
-        map_.Core.dipole_gas_phase = np.float32(map_.Core.dipole_gas_phase)
-        map_.Core.dipole_Torii_angle = np.float32(
-            1 / np.tan(GM_con.deg2rad * map_.RunPars.Torii_dipole_angle))
+        map_.core.dipole_gas_phase = np.float32(map_.core.dipole_gas_phase)
+        map_.core.dipole_Torii_angle = np.float32(
+            1 / np.tan(GM_con.deg2rad * map_.run_pars.Torii_dipole_angle))
 
-    if map_.RunPars.legacy_mode == "AIM":
+    if map_.run_pars.legacy_mode == "AIM":
         map_.code.GM_get_position_DMF = map_.code.GM_get_position
         map_.code.GM_get_position = MC_cm.get_position
 
@@ -300,13 +300,13 @@ def GM_report_references(map_, system):
     report_these.append("RamanAmide")
 
     # freq map used:
-    report_these.append(f"Emap{map_.RunPars.frequency_map_choice}SC")
+    report_these.append(f"Emap{map_.run_pars.frequency_map_choice}SC")
 
     report_dict = {key: map_.references[key] for key in report_these}
     report_dict["CP_DipDip"] = []
 
     # dip map used:
-    if map_.RunPars.dipole_map_choice == "Torii":
+    if map_.run_pars.dipole_map_choice == "Torii":
         report_dict["CP_DipDip"].extend(map_.references["DmapTorii"])
     else:
         report_dict["CP_DipDip"].extend(map_.references["DmapJansenSC"])

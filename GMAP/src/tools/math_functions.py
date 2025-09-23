@@ -347,12 +347,12 @@ def calc_color_dist(r1, g1, b1, r2, g2, b2):
 
     # redmean method: https://en.wikipedia.org/wiki/Color_difference
     r_bar = 0.5 * (r1 + r2)
-    delC = math.sqrt(
+    del_c = math.sqrt(
         (2 + r_bar/255) * abs(r1 - r2)**2
         + 4 * abs(g1 - g2)**2
         + (2 + (255 - r_bar)/255) * abs(b1 - b2)**2
     )
-    return delC
+    return del_c
 
 
 def convert_color_24_4(r, g, b, lookup={}):
@@ -385,11 +385,11 @@ def convert_color_24_4(r, g, b, lookup={}):
     maxdist = 765
     outcolor = (255, 255, 255)
     for ix, (col, output) in enumerate(GM_con.printed_colors.items()):
-        delC = calc_color_dist(*rgb, *col)
+        del_c = calc_color_dist(*rgb, *col)
         if 0 < ix < 4:
-            delC *= 2
-        if delC < maxdist:
-            maxdist = delC
+            del_c *= 2
+        if del_c < maxdist:
+            maxdist = del_c
             outcolor = output
 
     lookup[rgb] = outcolor

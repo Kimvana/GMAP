@@ -27,7 +27,7 @@ def adjust_map_core_raw(map_):
         "dp2_choice": "doublepos_1"
     }
     for parameter in ("pos_choice", "dp1_choice", "dp2_choice"):
-        choice = getattr(map_.RunPars, parameter)
+        choice = getattr(map_.run_pars, parameter)
         rawpar = pardict[parameter]
         match choice:
             case "C":  # the default
@@ -42,12 +42,12 @@ def adjust_map_core_raw(map_):
                 # map_.rawcore[rawpar] = ["(0+0.665*1+0.258*3)/1.923"]
                 map_.rawcore[rawpar] = ["0.077*0+0.665*1+0.258*3"]
 
-    match map_.RunPars.dipole_map_choice:
+    match map_.run_pars.dipole_map_choice:
         case "Torii":
             map_.rawcore["dipole_data_file"] = ["[N/A]"]
             map_.rawcore["dipole_gas_phase"] = ["0.276"]
         case "Jansen":
-            if not map_.RunPars.frequency_map_choice == "Jansen":
+            if not map_.run_pars.frequency_map_choice == "Jansen":
                 GM_pt.Printer.warning(  # no exitbool - error is not fatal.
                     "Error in the map AmideSC: The Jansen dipole map was "
                     "requested without using the Jansen frequency map. Either "
@@ -73,7 +73,7 @@ def adjust_mcr_freqchoice(map_):
 
     # atom order: CG  OD1  CB  ND2  HD21  HD22
 
-    choice = map_.RunPars.frequency_map_choice
+    choice = map_.run_pars.frequency_map_choice
     parname = "frequency_data_file_linear"
     match choice:
         case "Skinner":  # the default

@@ -22,8 +22,8 @@ import GMAP.src.tools.map_reader as GM_mr
 import GMAP.src.tools.print_tools as GM_pt
 
 
-def test_get_adjust_RunPars():
-    newfunc = GM_dmf.get_adjust_RunPars()
+def test_get_adjust_run_pars():
+    newfunc = GM_dmf.get_adjust_run_pars()
     confirm_does_nothing(newfunc)
 
 
@@ -40,7 +40,7 @@ def test_get_adjust_oscillators():
 def test_filter_single_line():
     map_ = GM_ct.CustomClass(**{
         "name": "mymap",
-        "Core": GM_ct.CustomClass(**{
+        "core": GM_ct.CustomClass(**{
             "allow_ranges": GM_mr.SingleCore.allow_ranges
         })})
     system = GM_ct.CustomClass(**{
@@ -167,7 +167,7 @@ def test_get_get_VEG_ref():
     VEGref_CoM = ["CoM", "0", "2"]
     map_.rawcore["VEG_reference"] = VEGref_CoM
     mainfunc = GM_dmf.get_get_VEG_ref(map_)
-    subfunc = GM_dmf.VEG_from_com(VEGref_CoM[1:])
+    subfunc = GM_dmf.VEG_from_CoM(VEGref_CoM[1:])
     confirm_funcs_equal(mainfunc, subfunc)
 
     VEGref_pos = ["position", "((((0+1)/2.0)+2)/2.0)"]
@@ -203,7 +203,7 @@ def test_VEG_from_com():
         }
     })
 
-    subfunc = GM_dmf.VEG_from_com(["0", "2"])
+    subfunc = GM_dmf.VEG_from_CoM(["0", "2"])
 
     system = get_system_VEGtests()
     osc = GM_ct.CustomClass(**{
@@ -249,24 +249,14 @@ def test_MI_MC_9(capsys):
     captured = capsys.readouterr()
     assert captured.out.endswith("MI_MC_9\n")
 
-    # system = get_system_VEGtests()
-    # osc = GM_CT.CustomClass(**{
-    #     "used_atoms": [0, 1, 2, 3]
-    # })
-    # osc.positions_box = (
-    #         system.positions[osc.used_atoms] @ system.boxvects_inv)
-
-    # out = np.array([1.25, 10, 20])
-    # assert np.all(subfunc(map_, system, osc) == out)
-
 
 def test_SU_NP_8(capsys):
     map_ = GM_ct.CustomClass(**{
         "name": "mymap",
-        "Core": GM_ct.CustomClass(**{
+        "core": GM_ct.CustomClass(**{
             "allow_ranges": GM_mr.SingleCore.allow_ranges}),
-        "RunPars": GM_ct.CustomClass(**{
-            "MainRunPars": GM_ct.CustomClass(**{
+        "run_pars": GM_ct.CustomClass(**{
+            "main_run_pars": GM_ct.CustomClass(**{
                 "singles_whitelist_dict": {"mymap": [[":All"]]},
                 "singles_blacklist_dict": {"mymap": [[":None"]]}})})
     })
@@ -280,15 +270,15 @@ def test_SU_NP_8(capsys):
 
     func = GM_dmf.get_filter_oscillators()
 
-    map_.RunPars.MainRunPars.singles_whitelist_dict["mymap"] = [["unknown"]]
+    map_.run_pars.main_run_pars.singles_whitelist_dict["mymap"] = [["unknown"]]
     with pytest.raises(GM_ex.GmapFileSyntaxError, match="SU_NP_8$"):
         func(map_, system, oscillators)
-    map_.RunPars.MainRunPars.singles_whitelist_dict["mymap"] = [[":All"]]
+    map_.run_pars.main_run_pars.singles_whitelist_dict["mymap"] = [[":All"]]
 
-    map_.RunPars.MainRunPars.singles_blacklist_dict["mymap"] = [["unknown"]]
+    map_.run_pars.main_run_pars.singles_blacklist_dict["mymap"] = [["unknown"]]
     with pytest.raises(GM_ex.GmapFileSyntaxError, match="SU_NP_8$"):
         func(map_, system, oscillators)
-    map_.RunPars.MainRunPars.singles_blacklist_dict["mymap"] = [[":None"]]
+    map_.run_pars.main_run_pars.singles_blacklist_dict["mymap"] = [[":None"]]
 
     # ----------------
     # errors in filter_single_line()

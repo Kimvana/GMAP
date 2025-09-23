@@ -30,14 +30,14 @@ def GM_post_init(map_, system):
         # If a map has a dedicated function, use that instead of interpreting
         # the provided file.
 
-        if hasattr(osc.Map.code, "CP_TRESP_get_charges"):
-            map_.charges[osc.oscix] = osc.Map.code.CP_TRESP_get_charges(
-                    osc.Map, system, osc)
+        if hasattr(osc.map.code, "CP_TRESP_get_charges"):
+            map_.charges[osc.oscix] = osc.map.code.CP_TRESP_get_charges(
+                    osc.map, system, osc)
         # only look for each type of singles once.
-        elif osc.Map.name in map_charges:
-            map_.charges[osc.oscix] = map_charges[osc.Map.name]
+        elif osc.map.name in map_charges:
+            map_.charges[osc.oscix] = map_charges[osc.map.name]
         else:
-            map_charges[osc.Map.name] = get_charges(map_, osc.Map)
+            map_charges[osc.map.name] = get_charges(map_, osc.map)
 
     MC_tc.init_map_for_clib(map_, system)
 
@@ -77,7 +77,6 @@ def GM_calc_coupling(map_, system, hamiltonian):
 
 
 def get_charges(map_, oscmap):
-
     # This map contains the keyword for the TRESP charges file, obtain
     # that file's name
     fname = gc_get_filename(map_, oscmap)
@@ -190,7 +189,7 @@ def gc_get_file_contents(fname, map_, oscmap):
         map_.success = False
         return None
 
-    if len(contents) > len(oscmap.Core.used_atoms):
+    if len(contents) > len(oscmap.core.used_atoms):
         GM_pt.Printer.warning(
             f"\nThe map {oscmap.name} provided the following file to the "
             f"{map_.name} coupling map, but that file has too many contents:"

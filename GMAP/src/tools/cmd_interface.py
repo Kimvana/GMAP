@@ -214,14 +214,13 @@ def cmd_to_help(allhelps, subch):
         Used by user to indicate intent.
     """
 
-    printer = Printer
     if subch.lower() in allhelps:
-        printer.print(0, GMAP.__doc__)
-        printer.quit_early()
+        Printer.print(0, GMAP.__doc__)
+        Printer.quit_early()
     elif subch in GMAP.alltools:
         modch = getattr(GMAP, subch)
-        printer.print(0, modch.__doc__)
-        printer.quit_early()
+        Printer.print(0, modch.__doc__)
+        Printer.quit_early()
     else:
         _report_unknown_choice()
 
@@ -243,11 +242,10 @@ def cmd_to_tools(allhelps, callcommand, choice, subch):
         Used by user to indicate intent.
     """
 
-    printer = Printer
     modch = getattr(GMAP, choice)
     if subch.lower() in allhelps:
-        printer.print(0, modch.__doc__)
-        printer.quit_early()
+        Printer.print(0, modch.__doc__)
+        Printer.quit_early()
     else:
         getattr(modch, choice)(callcommand[1:])
 

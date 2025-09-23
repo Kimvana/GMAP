@@ -1,8 +1,8 @@
 
 # what other singles maps must be successfully loaded in for this map to
 # function (because it uses some information or whatever)
-# maps requested here can not always be found in RunPars.requested_mapdict,
-# but they will be present in RunPars.available_maps_singles
+# maps requested here can not always be found in run_pars.requested_mapdict,
+# but they will be present in run_pars.available_maps_singles
 
 require_singles            None
 

@@ -235,7 +235,7 @@ def determine_map(pair, map_, system):
         # In the original code, Pro-Pro is actually treated as Gly-Pro
         if (
             Cosc.resnames[1] == "PRO"
-            and map_.RunPars.legacy_mode == "AmideImaps"
+            and map_.run_pars.legacy_mode == "AmideImaps"
         ):
             bondtype = "GP"
         else:
@@ -286,9 +286,9 @@ def GM_post_init(map_, system):
         fname.stem: NeighborMap(fname, map_) for fname in mapdir.iterdir()}
 
     # Copy the legacy_mode setting from the 'main' map to this one.
-    rps = map_.RunPars
-    main_runpars = rps.MainRunPars
-    protam_rps = main_runpars.requested_pairmapdict["ProteinAmide"].RunPars
+    rps = map_.run_pars
+    main_runpars = rps.main_run_pars
+    protam_rps = main_runpars.requested_pairmapdict["ProteinAmide"].run_pars
     rps.legacy_mode = protam_rps.legacy_mode
 
 

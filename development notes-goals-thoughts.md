@@ -256,12 +256,12 @@ In principle, calculating the potential at a given point (here we'll call it the
   - parse cmdline
   - for each map, make cmdpars, inpars, defpars
   - check if all parameters from cmdpars, inpars, defpars have now been found
-  - make RunPars
-- for each map, make RunPars
+  - make run_pars
+- for each map, make run_pars
 TO DO
 - read/interpret maps:
   - (X) for each map, find (+check? complete?) main.py 
-  - (X) for each map, call func to change RunPars
+  - (X) for each map, call func to change run_pars
   - (X) for each map, parse core.txt
   - (X) for each map, call func to change strs in core.txt
   - for each map, interpret core.txt / make funcs
@@ -402,7 +402,7 @@ Why? The colors are stored in binary format. Counting from the right, the first 
 - (KvA) currently, cmd line parser assumes a variable has either 1 assigned choice, or a variable amount.
 - (KvA) currently, code to create a RawPars instance for command line input is one big function, not the prettiest - needs tidying up? - maybe other functs, too?
 - (KvA) Added keyword parameter 'prevent_overwrite' (bool). It determines how to treat files that should be created. If the program has the instruction to create a new file, but the supplied fname already exists, what should happen? if this new keyword is set to false, the existing file will simply be overwritten. If it is set to True, the existing file will be renamed, so the supplied filename can be used for the new file. The new name for the file will be #oldname.num# - where num is the lowest integer number for which a file does not yet exist.
-- (KvA) Made it so that every map instance has its own CmdPars, InPars, DefPars, RefPars, RunPars. Each map shouldn't need any parameters but it's own, except for perhaps GEM-wide parameters. GEM itself shouldn't need any of the map parameters, so this all should work out.
+- (KvA) Made it so that every map instance has its own cmd_pars, in_pars, def_pars, ref_pars, run_pars. Each map shouldn't need any parameters but it's own, except for perhaps GEM-wide parameters. GEM itself shouldn't need any of the map parameters, so this all should work out.
 - (KvA) In order to run the unittests, move in command prompt to the GMAP directory. In there, run ```pytest tests``` to run all tests. adding the flag ```-s``` allows (some?) python prints to pass through, the flag ```--cov=src``` gives the coverage of the current unit tests. In case of issues, ```--full-trace``` gives a lot more tracebacks and other information. Finally, to see what parts of the code are not covered by the tests, run ```pytest --cov-report term-missing --cov=src tests```. The Fanciest of all? ```pytest --cov-report term-missing:skip-covered --cov=src tests```. Overview:
 
   - ```-s```  lets (some?) python prints through

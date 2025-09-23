@@ -115,7 +115,7 @@ def system_CoM(
     return CoM_array
 
 
-def calc_frame(RunPars, system, outputs):
+def calc_frame(run_pars, system, outputs):
     """The heart of the per-frame loop. Does the actual calculations.
 
     Currently, for each oscillator, the potential is calculated (if
@@ -124,7 +124,7 @@ def calc_frame(RunPars, system, outputs):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     system : :class:`~GMAP.src.tools.system_reader.System`
@@ -149,64 +149,70 @@ def calc_frame(RunPars, system, outputs):
     for oscix, oscillator in enumerate(system.oscillators):
         # Do we need the estatics?
         printer.add_time(5, "", "VEGcalc")
-        if any(data in RunPars.output_data for data in ("ham", "dip", "ene")):
-            if oscillator.Map.Core.electrostatic_choice in ("V", "E", "G"):
+        if any(data in run_pars.output_data for data in ("ham", "dip", "ene")):
+            if oscillator.map.core.electrostatic_choice in ("V", "E", "G"):
                 # calculate VEG
-                VEGlib.calcVEG_perres_main(system, RunPars, oscillator)
+                VEGlib.calcVEG_perres_main(system, run_pars, oscillator)
 
             # ROTATE VEG
-            if oscillator.Map.Core.electrostatic_choice in ("E", "G"):
+            if oscillator.map.core.electrostatic_choice in ("E", "G"):
                 oscillator.rotate_VEG()
 
             # scale VEG with dielectric_constant
-            oscillator.apply_dielectric_constant(RunPars.dielectric_constant)
+            oscillator.apply_dielectric_constant(run_pars.dielectric_constant)
 
         printer.add_time(5, "", "VEGuse")
 
-        if "ene" in RunPars.output_data and oscillator.Map.Core.ham_first:
+        if "ene" in run_pars.output_data and oscillator.map.core.ham_first:
             outputs["energies"][oscix] = calc_frequency(
                 system, oscillator)
 
-        if "ham" in RunPars.output_data and oscillator.Map.Core.ham_first:
+        if "ham" in run_pars.output_data and oscillator.map.core.ham_first:
             outputs["hamiltonian"][oscix, oscix] = calc_frequency(
                 system, oscillator)
 
         # do we need dipoles?
         # we also need dipoles for the (full) hamiiltonian.
-        if any(data in RunPars.output_data for data in ("ham", "dip")):
+        if any(data in run_pars.output_data for data in ("ham", "dip")):
             r_vec, r_pos = calc_dipole(system, oscillator)
             outputs["dipoles"][oscix] = r_vec  # needed for both ham and dip
 
-            if any(data in RunPars.output_data for data in ("ham")):
+            if any(data in run_pars.output_data for data in ("ham")):
                 outputs["dipole_pos"][oscix] = r_pos  # only ham!
 
-        if "ram" in RunPars.output_data:
+        if "ram" in run_pars.output_data:
             outputs["raman"][oscix] = calc_raman(system, oscillator)
 
-        if "ene" in RunPars.output_data and not oscillator.Map.Core.ham_first:
+        if (
+            "ene" in run_pars.output_data
+            and not oscillator.map.core.ham_first
+        ):
             outputs["energies"][oscix] = calc_frequency(
                 system, oscillator)
 
-        if "ham" in RunPars.output_data and not oscillator.Map.Core.ham_first:
+        if (
+            "ham" in run_pars.output_data
+            and not oscillator.map.core.ham_first
+        ):
             outputs["hamiltonian"][oscix, oscix] = calc_frequency(
                 system, oscillator)
 
-        if "pos" in RunPars.output_data:
+        if "pos" in run_pars.output_data:
             outputs["positions"][oscix] = get_positions(system, oscillator)
 
-        if "dbp" in RunPars.output_data:
+        if "dbp" in run_pars.output_data:
             # very similar to positions, but doublepos returns two positions
             # simultaneously, so we catch both into the doublepos array.
             outputs["doublepos"][oscix*2:(oscix+1)*2] = get_doublepos(
                 system, oscillator)
 
     # calculate the couplings for the hamiltonian
-    if "ham" in RunPars.output_data:
+    if "ham" in run_pars.output_data:
         printer.add_time(4, "Preparing coupling:", "PrepCoup", "ms")
-        prep_coupling(RunPars, system)
+        prep_coupling(run_pars, system)
 
         printer.add_time(4, "Calculating coupling:", "CalcCoup", "ms")
-        calc_coupling(RunPars, system, outputs)
+        calc_coupling(run_pars, system, outputs)
 
     return outputs
 
@@ -239,7 +245,7 @@ def calc_dipole(system, oscillator):
     """
 
     # every map should have a calc dipole function
-    map_ = oscillator.Map
+    map_ = oscillator.map
     r_vec, r_pos = map_.code.GM_calculate_dipole(
         map_, system, oscillator)
     setattr(oscillator, "dipole_vec", r_vec)
@@ -267,7 +273,7 @@ def calc_frequency(system, oscillator):
         The frequency found for this oscillator
     """
 
-    map_ = oscillator.Map
+    map_ = oscillator.map
     return map_.code.GM_calculate_frequency(map_, system, oscillator)
 
 
@@ -293,7 +299,7 @@ def calc_raman(system, oscillator):
         Datatype of this array must be float32!
     """
 
-    map_ = oscillator.Map
+    map_ = oscillator.map
     return map_.code.GM_calculate_raman(map_, system, oscillator)
 
 
@@ -318,7 +324,7 @@ def get_positions(system, oscillator):
         Datatype of this array must be float32!
     """
 
-    map_ = oscillator.Map
+    map_ = oscillator.map
     return map_.code.GM_get_position(map_, system, oscillator)
 
 
@@ -343,11 +349,11 @@ def get_doublepos(system, oscillator):
         oscillator. Datatype of these arrays must be float32!
     """
 
-    map_ = oscillator.Map
+    map_ = oscillator.map
     return map_.code.GM_get_doublepos(map_, system, oscillator)
 
 
-def prep_coupling(RunPars, system):
+def prep_coupling(run_pars, system):
     """Calculate some oscillator-dependent properties for couplings
 
     Although the actual coupling value depends on the precise
@@ -359,7 +365,7 @@ def prep_coupling(RunPars, system):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     system : :class:`~GMAP.src.tools.system_reader.System`
@@ -370,12 +376,12 @@ def prep_coupling(RunPars, system):
 
     for coupmapname, osclist in system.oscillators_ordered_coup.items():
         oscixlist = system.oscillators_ordered_coup_ix[coupmapname]
-        coupmap = RunPars.requested_pairmapdict[coupmapname]
+        coupmap = run_pars.requested_pairmapdict[coupmapname]
         coupmap.code.GM_prep_coupling(
             coupmap, system, oscixlist, osclist)
 
 
-def calc_coupling(RunPars, system, outputs):
+def calc_coupling(run_pars, system, outputs):
     """Calculate the couplings of the system.
 
     This function loops through the requested maps, and lets each
@@ -383,7 +389,7 @@ def calc_coupling(RunPars, system, outputs):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     system : :class:`~GMAP.src.tools.system_reader.System`
@@ -396,18 +402,18 @@ def calc_coupling(RunPars, system, outputs):
     """
 
     for coupmapname in system.oscillators_ordered_coup.keys():
-        coupmap = RunPars.requested_pairmapdict[coupmapname]
+        coupmap = run_pars.requested_pairmapdict[coupmapname]
         coupmap.code.GM_calc_coupling(
             coupmap, system, outputs["hamiltonian"])
 
         # scale all couplings with the parameter from the input parameters
         arr = coupmap.allpairs
         outputs["hamiltonian"][arr[:, 0], arr[:, 1]] *= (
-            RunPars.coupling_scale_factors_dict[coupmapname]
-            / RunPars.dielectric_constant)
+            run_pars.coupling_scale_factors_dict[coupmapname]
+            / run_pars.dielectric_constant)
 
 
-def generate_output_structures(RunPars, system):
+def generate_output_structures(run_pars, system):
     """The heart of the per-frame loop. Does the actual calculations.
 
     Currently, for each oscillator, the potential is calculated (if
@@ -416,7 +422,7 @@ def generate_output_structures(RunPars, system):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     system : :class:`~GMAP.src.tools.system_reader.System`
@@ -433,23 +439,23 @@ def generate_output_structures(RunPars, system):
 
     outputs = {}
     nosc = system.nosc
-    if any(data in RunPars.output_data for data in ("ham",)):
+    if any(data in run_pars.output_data for data in ("ham",)):
         outputs["hamiltonian"] = np.zeros((nosc, nosc), dtype="float32")
         outputs["dipole_pos"] = np.zeros((nosc, 3), dtype="float32")
 
-    if any(data in RunPars.output_data for data in ("ene",)):
+    if any(data in run_pars.output_data for data in ("ene",)):
         outputs["energies"] = np.zeros((nosc,), dtype="float32")
 
-    if any(data in RunPars.output_data for data in ("ham", "dip")):
+    if any(data in run_pars.output_data for data in ("ham", "dip")):
         outputs["dipoles"] = np.zeros((nosc, 3), dtype="float32")
 
-    if any(data in RunPars.output_data for data in ("ram",)):
+    if any(data in run_pars.output_data for data in ("ram",)):
         outputs["raman"] = np.zeros((nosc, 6), dtype="float32")
 
-    if any(data in RunPars.output_data for data in ("pos",)):
+    if any(data in run_pars.output_data for data in ("pos",)):
         outputs["positions"] = np.zeros((nosc, 3), dtype="float32")
 
-    if any(data in RunPars.output_data for data in ("dbp",)):
+    if any(data in run_pars.output_data for data in ("dbp",)):
         outputs["doublepos"] = np.zeros((nosc*2, 3), dtype="float32")
 
     return outputs

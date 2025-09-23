@@ -186,22 +186,22 @@ def test_get_positions(center, pos, dbp):
     cmdline = [
         "--verbose", "4", "--positions_center", f"{psstring}\\;"]
     (
-        RunPars, RefPars, DefPars, InPars,
-        CmdPars, mapdict, pairs_mapdict
+        run_pars, ref_pars, def_pars, in_pars,
+        cmd_pars, mapdict, pairs_mapdict
     ) = parameter_getter("test_calc_dipoles_xyz", cmdline)
     # position - 2,  db0 - 3, db1 - 1
 
     system = get_System_1()
     oscillator = get_oscillator_1()
-    setattr(oscillator, "Map", mapdict["test_calc_dipoles_xyz"])
+    setattr(oscillator, "map", mapdict["test_calc_dipoles_xyz"])
     setattr(
         oscillator, "positions_box",
         system.positions[0:4] @ system.boxvects_inv)
 
     setattr(
         oscillator, "rotation_matrix",
-        oscillator.Map.code.GM_get_rotation_matrix(
-            oscillator.Map, system, oscillator))
+        oscillator.map.code.GM_get_rotation_matrix(
+            oscillator.map, system, oscillator))
 
     pos = GM_pf.get_positions(system, oscillator)
     assert np.all(pos.round(4) == np.array(pos, dtype="float32").round(4))
@@ -222,21 +222,21 @@ def test_get_positions(center, pos, dbp):
 def test_calc_dipole_xyz():
     cmdline = ["--verbose", "4"]
     (
-        RunPars, RefPars, DefPars, InPars,
-        CmdPars, mapdict, pairs_mapdict
+        run_pars, ref_pars, def_pars, in_pars,
+        cmd_pars, mapdict, pairs_mapdict
     ) = parameter_getter("test_calc_dipoles_xyz", cmdline)
 
     system = get_System_1()
     oscillator = get_oscillator_1()
-    setattr(oscillator, "Map", mapdict["test_calc_dipoles_xyz"])
+    setattr(oscillator, "map", mapdict["test_calc_dipoles_xyz"])
     setattr(
         oscillator, "positions_box",
         system.positions[[0, 1]] @ system.boxvects_inv)
 
     setattr(
         oscillator, "rotation_matrix",
-        oscillator.Map.code.GM_get_rotation_matrix(
-            oscillator.Map, system, oscillator))
+        oscillator.map.code.GM_get_rotation_matrix(
+            oscillator.map, system, oscillator))
 
     r_vec, r_pos = GM_pf.calc_dipole(system, oscillator)
 
@@ -257,21 +257,21 @@ def test_calc_dipole_xyz():
 def test_calc_dipole_magnitude():
     cmdline = []
     (
-        RunPars, RefPars, DefPars, InPars,
-        CmdPars, mapdict, pairs_mapdict
+        run_pars, ref_pars, def_pars, in_pars,
+        cmd_pars, mapdict, pairs_mapdict
     ) = parameter_getter("test_calc_dipoles_magnitude", cmdline)
 
     system = get_System_1()
     oscillator = get_oscillator_1()
-    setattr(oscillator, "Map", mapdict["test_calc_dipoles_magnitude"])
+    setattr(oscillator, "map", mapdict["test_calc_dipoles_magnitude"])
     setattr(
         oscillator, "positions_box",
         system.positions[[0, 1]] @ system.boxvects_inv)
 
     setattr(
         oscillator, "rotation_matrix",
-        oscillator.Map.code.GM_get_rotation_matrix(
-            oscillator.Map, system, oscillator))
+        oscillator.map.code.GM_get_rotation_matrix(
+            oscillator.map, system, oscillator))
 
     r_vec, r_pos = GM_pf.calc_dipole(system, oscillator)
 
@@ -293,21 +293,21 @@ def test_calc_dipole_magnitude():
 def test_calc_frequency():
     cmdline = []
     (
-        RunPars, RefPars, DefPars, InPars,
-        CmdPars, mapdict, pairs_mapdict
+        run_pars, ref_pars, def_pars, in_pars,
+        cmd_pars, mapdict, pairs_mapdict
     ) = parameter_getter("test_calc_dipoles_magnitude", cmdline)
 
     system = get_System_1()
     oscillator = get_oscillator_1()
-    setattr(oscillator, "Map", mapdict["test_calc_dipoles_magnitude"])
+    setattr(oscillator, "map", mapdict["test_calc_dipoles_magnitude"])
     setattr(
         oscillator, "positions_box",
         system.positions[[0, 1]] @ system.boxvects_inv)
 
     setattr(
         oscillator, "rotation_matrix",
-        oscillator.Map.code.GM_get_rotation_matrix(
-            oscillator.Map, system, oscillator))
+        oscillator.map.code.GM_get_rotation_matrix(
+            oscillator.map, system, oscillator))
 
     freq = GM_pf.calc_frequency(system, oscillator)
 
@@ -324,21 +324,21 @@ def test_calc_frequency():
 
     cmdline = []
     (
-        RunPars, RefPars, DefPars, InPars,
-        CmdPars, mapdict, pairs_mapdict
+        run_pars, ref_pars, def_pars, in_pars,
+        cmd_pars, mapdict, pairs_mapdict
     ) = parameter_getter("test_calc_freq_quad", cmdline)
 
     system = get_System_1()
     oscillator = get_oscillator_1()
-    setattr(oscillator, "Map", mapdict["test_calc_freq_quad"])
+    setattr(oscillator, "map", mapdict["test_calc_freq_quad"])
     setattr(
         oscillator, "positions_box",
         system.positions[[0, 1]] @ system.boxvects_inv)
 
     setattr(
         oscillator, "rotation_matrix",
-        oscillator.Map.code.GM_get_rotation_matrix(
-            oscillator.Map, system, oscillator))
+        oscillator.map.code.GM_get_rotation_matrix(
+            oscillator.map, system, oscillator))
 
     freq = GM_pf.calc_frequency(system, oscillator)
 
@@ -359,21 +359,21 @@ def test_calc_frequency():
 
     cmdline = []
     (
-        RunPars, RefPars, DefPars, InPars,
-        CmdPars, mapdict, pairs_mapdict
+        run_pars, ref_pars, def_pars, in_pars,
+        cmd_pars, mapdict, pairs_mapdict
     ) = parameter_getter("test_calc_freq_linquad", cmdline)
 
     system = get_System_1()
     oscillator = get_oscillator_1()
-    setattr(oscillator, "Map", mapdict["test_calc_freq_linquad"])
+    setattr(oscillator, "map", mapdict["test_calc_freq_linquad"])
     setattr(
         oscillator, "positions_box",
         system.positions[[0, 1]] @ system.boxvects_inv)
 
     setattr(
         oscillator, "rotation_matrix",
-        oscillator.Map.code.GM_get_rotation_matrix(
-            oscillator.Map, system, oscillator))
+        oscillator.map.code.GM_get_rotation_matrix(
+            oscillator.map, system, oscillator))
 
     freq = GM_pf.calc_frequency(system, oscillator)
     # freq += 0*0 + 0.01*1 + 0.02*2 + 0.03*3 + 0*4 + 0.01*5 + 0.02*6 + 0.03*7
@@ -398,8 +398,8 @@ def test_calc_frequency():
 
 
 def test_prep_coupling():
-    RunPars, system, coupmap = prep_coupling_tests()
-    GM_pf.prep_coupling(RunPars, system)
+    run_pars, system, coupmap = prep_coupling_tests()
+    GM_pf.prep_coupling(run_pars, system)
 
     # the prepared r_vec should be the same as the one calculated by
     # (test)_calc_dipole(_magnitude)
@@ -417,14 +417,14 @@ def test_prep_coupling():
 
 
 def test_calc_coupling():
-    RunPars, system, coupmap = prep_coupling_tests()
-    GM_pf.prep_coupling(RunPars, system)
+    run_pars, system, coupmap = prep_coupling_tests()
+    GM_pf.prep_coupling(run_pars, system)
 
     # osclist = system.oscillators_ordered_coup["DipDip"]
     oscixlist = system.oscillators_ordered_coup_ix["DipDip"]
     coupmap.allpairs = np.array([(oscixlist[0], oscixlist[1])], dtype="int32")
     outputs = {"hamiltonian": np.zeros((2, 2), dtype="float32")}
-    GM_pf.calc_coupling(RunPars, system, outputs)
+    GM_pf.calc_coupling(run_pars, system, outputs)
     J = outputs["hamiltonian"][1, 0]
 
     # d = r(1) - r(2) = (8,28,68) - (28,68,8) = (-20, -40, -40) (PBC!)
@@ -577,19 +577,19 @@ def prep_coupling_tests():
         "couplings_to_use": [["DipDip", ":All"]]  # in 'main' maps
     }
     (
-        RunPars, RefPars, DefPars, InPars,
-        CmdPars, singles_mapdict, pairs_mapdict
+        run_pars, ref_pars, def_pars, in_pars,
+        cmd_pars, singles_mapdict, pairs_mapdict
     ) = tmr.basic_setup(cmdline, inpardict, finish_before="extract_code")
 
-    GM_mr.manage_maps_singles(RunPars, singles_mapdict)
+    GM_mr.manage_maps_singles(run_pars, singles_mapdict)
     oscillators = [get_oscillator_1(), get_oscillator_2()]
     for oscillator in oscillators:
         # assign map to the oscillators
         setattr(
-            oscillator, "Map", singles_mapdict["test_calc_dipoles_magnitude"])
+            oscillator, "map", singles_mapdict["test_calc_dipoles_magnitude"])
 
-    GM_mr.manage_maps_pairs(RunPars, pairs_mapdict)
-    RunPars.final_resolve_coupling_scale()
+    GM_mr.manage_maps_pairs(run_pars, pairs_mapdict)
+    run_pars.final_resolve_coupling_scale()
 
     system = get_System_1()
 
@@ -603,8 +603,8 @@ def prep_coupling_tests():
         # assign the correct rotation matrix to the oscillator
         setattr(
             oscillator, "rotation_matrix",
-            oscillator.Map.code.GM_get_rotation_matrix(
-                oscillator.Map, system, oscillator))
+            oscillator.map.code.GM_get_rotation_matrix(
+                oscillator.map, system, oscillator))
 
         GM_pf.calc_dipole(system, oscillator)
 
@@ -614,7 +614,7 @@ def prep_coupling_tests():
         "DipDip": [0, 1]})
     setattr(system, "nosc", len(oscillators))
 
-    coupmap = RunPars.requested_pairmapdict["DipDip"]
+    coupmap = run_pars.requested_pairmapdict["DipDip"]
     coupmap.code.GM_pre_run(coupmap, system)
 
-    return RunPars, system, coupmap
+    return run_pars, system, coupmap

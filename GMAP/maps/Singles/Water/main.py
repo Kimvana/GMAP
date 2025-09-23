@@ -51,13 +51,6 @@ def GM_adjust_oscillators(map_, system, oscillator_list):
 
     Parameters
     ----------
-    Files : :class:`~GMAP.src.tools.file_handler.FileLocations`
-        Contains all currently known paths and other file-related
-        properties.
-        Has to be updated after RunPars is finalized.
-    Printer : :class:`~GMAP.src.tools.print_tools.Printer`
-        The object that allows to cleanly log and print during runtime,
-        and handle errors.
     map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
@@ -122,6 +115,5 @@ def GM_get_dipole_mag(map_, system, osc):
     return (
         (0.7112 + 75.59 * E) * mug  # mu_i
         * (0.1934 - 0.175e-5 * freq)  # x_i
-        / GM_con.Debye2ea0
-        # / 0.393456 # convert from Bohr e to Debye
+        / GM_con.Debye2ea0  # / 0.393456 # convert from Bohr e to Debye
     )

@@ -20,7 +20,7 @@ class VEG_CLib(metaclass=GM_ct.Singleton):
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic run-defining
         parameters.
 
@@ -44,13 +44,13 @@ class VEG_CLib(metaclass=GM_ct.Singleton):
         so a .dll (windows), .so (linux) or .dylib (macOS) file.
     """
 
-    def __init__(self, RunPars):
+    def __init__(self, run_pars):
         try:
             msg = (
-                f"\nThe file {RunPars.VEG_clib_file} was requested to be used "
+                f"\nThe file {run_pars.VEG_clib_file} was requested to be used "
                 "as the VEG c-library. However, the file is invalid. "
             )
-            self.clib = ct.CDLL(str(RunPars.VEG_clib_file))
+            self.clib = ct.CDLL(str(run_pars.VEG_clib_file))
         except Exception as ex:
             GM_pt.Printer.warning(
                 msg, "CL_VG_1", True, exception=ex,
@@ -191,7 +191,7 @@ class VEG_CLib(metaclass=GM_ct.Singleton):
             system.residues.CoM_c
         )
 
-    def calcVEG_perres_main(self, system, RunPars, oscillator):
+    def calcVEG_perres_main(self, system, run_pars, oscillator):
         # First letter (n/c) is (No)Cut.
         # Second letter (r/t) is Rhombic/Triclinic
         allfuncs = {
@@ -200,20 +200,20 @@ class VEG_CLib(metaclass=GM_ct.Singleton):
             "tc": self.calcVEG_perres_mm_triclin,
             "tn": self.calcVEG_perres_mm_triclin_nocut
         }
-        if RunPars.treat_box == "orthorhombic":
+        if run_pars.treat_box == "orthorhombic":
             key = "r"
-        elif RunPars.treat_box == "triclinic":
+        elif run_pars.treat_box == "triclinic":
             key = "t"
         else:
             key = "t"
-        if RunPars.estatics_method == "perres":
+        if run_pars.estatics_method == "perres":
             key += "c"
-        elif RunPars.estatics_method == "perres_nocut":
+        elif run_pars.estatics_method == "perres_nocut":
             key += "n"
 
-        allfuncs[key](system, RunPars, oscillator)
+        allfuncs[key](system, run_pars, oscillator)
 
-    def calcVEG_perres_mm_triclin(self, system, RunPars, oscillator):
+    def calcVEG_perres_mm_triclin(self, system, run_pars, oscillator):
         """Calculate the potential on each of the requested points.
 
         This is basically a wrapper for the c function of the same
@@ -240,7 +240,7 @@ class VEG_CLib(metaclass=GM_ct.Singleton):
             The object that stores everything the program currently knows
             about the system being treated (names, numbers, types, masses,
             charges of all atoms, for example)
-        RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+        run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
             The 'main' RunPars instance containing all the basic
             run-defining parameters.
         oscillator : :class:`~GMAP.src.tools.system_reader.Oscillator`
@@ -252,7 +252,7 @@ class VEG_CLib(metaclass=GM_ct.Singleton):
             oscillator.electrostatic_atoms_c,  # tocalc
             oscillator.n_estatic_atoms,  # n_osc_ats
             oscillator.VEG_refpos_c,  # spherepos
-            oscillator.Map.Core.electrostatic_choice_c,  # calc_choice
+            oscillator.map.core.electrostatic_choice_c,  # calc_choice
             system.positions_box_c,  # positions_box
             system.charges_c,  # charges
             system.influencers_atix_c,  # influencer_atoms
@@ -263,14 +263,14 @@ class VEG_CLib(metaclass=GM_ct.Singleton):
             system.nres,  # n_res
             oscillator.local_atoms_c,  # local_atoms
             oscillator.n_local_atoms,  # n_locals
-            RunPars.estatic_range,  # r_sphere
-            RunPars.estatic_smooth_range,  # r_smooth
+            run_pars.estatic_range,  # r_sphere
+            run_pars.estatic_smooth_range,  # r_smooth
             system.boxvects_c,  # boxvects
             system.boxvects_inv_c,  # boxvects_inv
             oscillator.VEGout_c  # out
         )
 
-    def calcVEG_perres_mm_triclin_nocut(self, system, RunPars, oscillator):
+    def calcVEG_perres_mm_triclin_nocut(self, system, run_pars, oscillator):
         """Calculate the potential on each of the requested points.
 
         This is basically a wrapper for the c function of the same
@@ -297,7 +297,7 @@ class VEG_CLib(metaclass=GM_ct.Singleton):
             The object that stores everything the program currently knows
             about the system being treated (names, numbers, types, masses,
             charges of all atoms, for example)
-        RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+        run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
             The 'main' RunPars instance containing all the basic
             run-defining parameters.
         oscillator : :class:`~GMAP.src.tools.system_reader.Oscillator`
@@ -309,7 +309,7 @@ class VEG_CLib(metaclass=GM_ct.Singleton):
             oscillator.electrostatic_atoms_c,  # tocalc
             oscillator.n_estatic_atoms,  # n_osc_ats
             oscillator.VEG_refpos_c,  # spherepos
-            oscillator.Map.Core.electrostatic_choice_c,  # calc_choice
+            oscillator.map.core.electrostatic_choice_c,  # calc_choice
             system.positions_box_c,  # positions_box
             system.charges_c,  # charges
             system.influencers_atix_c,  # influencer_atoms
@@ -320,13 +320,13 @@ class VEG_CLib(metaclass=GM_ct.Singleton):
             system.nres,  # n_res
             oscillator.local_atoms_c,  # local_atoms
             oscillator.n_local_atoms,  # n_locals
-            RunPars.estatic_range,  # r_sphere
+            run_pars.estatic_range,  # r_sphere
             system.boxvects_c,  # boxvects
             system.boxvects_inv_c,  # boxvects_inv
             oscillator.VEGout_c  # out
         )
 
-    def calcVEG_perres_mm_rhombic(self, system, RunPars, oscillator):
+    def calcVEG_perres_mm_rhombic(self, system, run_pars, oscillator):
         """Calculate the potential on each of the requested points.
 
         This is basically a wrapper for the c function of the same
@@ -353,7 +353,7 @@ class VEG_CLib(metaclass=GM_ct.Singleton):
             The object that stores everything the program currently knows
             about the system being treated (names, numbers, types, masses,
             charges of all atoms, for example)
-        RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+        run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
             The 'main' RunPars instance containing all the basic
             run-defining parameters.
         oscillator : :class:`~GMAP.src.tools.system_reader.Oscillator`
@@ -365,7 +365,7 @@ class VEG_CLib(metaclass=GM_ct.Singleton):
             oscillator.electrostatic_atoms_c,  # tocalc
             oscillator.n_estatic_atoms,  # n_osc_ats
             oscillator.VEG_refpos_c,  # spherepos
-            oscillator.Map.Core.electrostatic_choice_c,  # calc_choice
+            oscillator.map.core.electrostatic_choice_c,  # calc_choice
             system.positions_c,  # positions
             system.charges_c,  # charges
             system.influencers_atix_c,  # influencer_atoms
@@ -376,14 +376,14 @@ class VEG_CLib(metaclass=GM_ct.Singleton):
             system.nres,  # n_res
             oscillator.local_atoms_c,  # local_atoms
             oscillator.n_local_atoms,  # n_locals
-            RunPars.estatic_range,  # r_sphere
-            RunPars.estatic_smooth_range,  # r_smooth
+            run_pars.estatic_range,  # r_sphere
+            run_pars.estatic_smooth_range,  # r_smooth
             system.halfbox_c,  # halfbox
             system.boxdims_c,  # boxdims
             oscillator.VEGout_c  # out
         )
 
-    def calcVEG_perres_mm_rhombic_nocut(self, system, RunPars, oscillator):
+    def calcVEG_perres_mm_rhombic_nocut(self, system, run_pars, oscillator):
         """Calculate the potential on each of the requested points.
 
         This is basically a wrapper for the c function of the same
@@ -410,7 +410,7 @@ class VEG_CLib(metaclass=GM_ct.Singleton):
             The object that stores everything the program currently knows
             about the system being treated (names, numbers, types, masses,
             charges of all atoms, for example)
-        RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+        run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
             The 'main' RunPars instance containing all the basic
             run-defining parameters.
         oscillator : :class:`~GMAP.src.tools.system_reader.Oscillator`
@@ -422,7 +422,7 @@ class VEG_CLib(metaclass=GM_ct.Singleton):
             oscillator.electrostatic_atoms_c,  # tocalc
             oscillator.n_estatic_atoms,  # n_osc_ats
             oscillator.VEG_refpos_c,  # spherepos
-            oscillator.Map.Core.electrostatic_choice_c,  # calc_choice
+            oscillator.map.core.electrostatic_choice_c,  # calc_choice
             system.positions_c,  # positions
             system.charges_c,  # charges
             system.influencers_atix_c,  # influencer_atoms
@@ -433,7 +433,7 @@ class VEG_CLib(metaclass=GM_ct.Singleton):
             system.nres,  # n_res
             oscillator.local_atoms_c,  # local_atoms
             oscillator.n_local_atoms,  # n_locals
-            RunPars.estatic_range,  # r_sphere
+            run_pars.estatic_range,  # r_sphere
             system.halfbox_c,  # halfbox
             system.boxdims_c,  # boxdims
             oscillator.VEGout_c  # out

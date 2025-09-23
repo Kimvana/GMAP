@@ -21,8 +21,8 @@ how about adding these?
 # parameter (especially if theres multiple that are linked), the way
 # RunPar is built might not be correct. In this function, the user can
 # fix that.
-def GM_adjust_RunPars(map_):
-    """Makes the necessary changes to Map.RunPar.
+def GM_adjust_run_pars(map_):
+    """Makes the necessary changes to map_.run_pars.
 
     Is expected to not return anything - return value is not caught.
 
@@ -45,7 +45,7 @@ def GM_adjust_map_core_raw(Mmap_ap):
 
     Is expected to not return anything - return value is not caught.
 
-    The core.txt file is stored in Map.rawcore. It has not yet been
+    The core.txt file is stored in map_.rawcore. It has not yet been
     parsed, just loaded into a dictionary. In this dictionary, each
     keyword is its own dictionary key. Most keywords can only occur once
     in the file - those have a list of the 'words' on the line as
@@ -56,7 +56,7 @@ def GM_adjust_map_core_raw(Mmap_ap):
     The purpose of this function is to change this dictionary. Perhaps,
     a rule in core.txt is dependent on a parameter of the map. This
     function can make a decision based on those parameters (stored in
-    Map.RunPars).
+    map_.run_pars).
 
     Parameters
     ----------

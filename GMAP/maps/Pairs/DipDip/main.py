@@ -11,15 +11,16 @@ from numba import njit
 import numpy as np
 
 # gmap imports
-from GMAP.src.tools import math_functions as GM_mf
-from GMAP.src.tools import reference_handler as GM_rh
+import GMAP.src.tools.constants as GM_con
+import GMAP.src.tools.math_functions as GM_mf
+import GMAP.src.tools.reference_handler as GM_rh
 
 
 # A function to adjust the parameters of the map. For some kinds of
 # parameter (especially if theres multiple that are linked), the way
 # RunPar is built might not be correct. In this function, the user can
 # fix that.
-def GM_adjust_RunPars(map_):
+def GM_adjust_run_pars(map_):
     """Makes the necessary changes to map_.RunPar.
 
     Is expected to not return anything - return value is not caught.
@@ -54,7 +55,7 @@ def GM_adjust_map_core_raw(map_):
     The purpose of this function is to change this dictionary. Perhaps,
     a rule in core.txt is dependent on a parameter of the map. This
     function can make a decision based on those parameters (stored in
-    Map.RunPars).
+    map_.run_pars).
 
     Parameters
     ----------
@@ -82,9 +83,9 @@ def GM_change_coup_type(map_, system, oscix1, osc1, oscix2, osc2):
 def GM_prep_coupling(map_, system, oscixlist, osclist):
     for oscix, osc in zip(oscixlist, osclist):
         # if the map has a function specifically for this map, use it!
-        if hasattr(osc.Map.code, "CP_DipDip_calc_dipole"):
+        if hasattr(osc.map.code, "CP_DipDip_calc_dipole"):
             map_.dipole_vec_arr[oscix], dip_pos = (
-                osc.Map.code.CP_DipDip_calc_dipole(osc.Map, system, osc))
+                osc.map.code.CP_DipDip_calc_dipole(osc.map, system, osc))
         else:
             map_.dipole_vec_arr[oscix] = osc.dipole_vec
             dip_pos = osc.dipole_pos
@@ -96,18 +97,21 @@ def GM_prep_coupling(map_, system, oscixlist, osclist):
 # The GM_calc_coupling function is expected to treat all couplings assigned
 # to this map, for a single frame.
 def GM_calc_coupling(map_, system, hamiltonian):
+    i4pieps = np.float32(
+        GM_con.i4pieps * GM_con.Debye**2 * GM_con.J2cm / GM_con.angstrom**3)
     for pair in map_.allpairs:
         oscix1, oscix2 = pair
         J = calc_coupling(
             oscix1, oscix2, map_.dipole_pos_arr, map_.dipole_vec_arr,
-            system.boxvects
+            system.boxvects, i4pieps
         )
         hamiltonian[oscix1, oscix2] = J
         hamiltonian[oscix2, oscix1] = J
 
+
 # Own function of DipDip - njitted for speed.
 @njit
-def calc_coupling(oscix1, oscix2, pos_arr, vec_arr, boxvects):
+def calc_coupling(oscix1, oscix2, pos_arr, vec_arr, boxvects, i4pieps):
     # Used constants:
     # Cm = (1/3.33564) * 10^30 D  (Coulomb meter in Debye)
     # m = 10^10 ang (meter in angstrom)
@@ -120,7 +124,6 @@ def calc_coupling(oscix1, oscix2, pos_arr, vec_arr, boxvects):
     # 4piEinv = 1/(4 * pi * eps_0) Jm/C^2
     # Gives 5034.11656 cm^-1 * ang*3 Deb^-2
 
-    fourPiEps_inv = np.float32(5034.11656)
     # the positions array is in box-coordinates -> easy subtraction, then
     # move back into cartesian
     d = GM_mf.PBC_back2box(pos_arr[oscix1, :] - pos_arr[oscix2, :], boxvects)
@@ -129,7 +132,7 @@ def calc_coupling(oscix1, oscix2, pos_arr, vec_arr, boxvects):
     ir3 = ir*ir2
     ir5 = ir3*ir2
 
-    return fourPiEps_inv * (
+    return i4pieps * (
         GM_mf.dotprod(vec_arr[oscix1], vec_arr[oscix2]) * ir3
         - 3.0 * GM_mf.dotprod(vec_arr[oscix1], d)
         * GM_mf.dotprod(vec_arr[oscix2], d) * ir5)
@@ -228,7 +231,7 @@ def GM_report_references(map_, system):
     # loop over all singles maps that have oscillators being coupled by this
     # map
     for singles_map in set(
-        [osc.Map for osc in system.oscillators_ordered_coup["DipDip"]]
+        [osc.map for osc in system.oscillators_ordered_coup["DipDip"]]
     ):
         # instead of looking at all references of the map, only look at those
         # that the map itself picked (in case of multiple models and such).

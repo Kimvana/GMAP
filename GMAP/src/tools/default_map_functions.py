@@ -19,7 +19,7 @@ class NewModule:
 # ------------------------
 
 
-def get_adjust_RunPars():
+def get_adjust_run_pars():
     return does_nothing
 
 
@@ -51,7 +51,7 @@ def get_filter_oscillators():
         - resnames - assumed a residue name.
         """
 
-        runpars = map_.RunPars.MainRunPars
+        runpars = map_.run_pars.main_run_pars
         wl_rules = runpars.singles_whitelist_dict.get(map_.name, [[":All"]])
         bl_rules = runpars.singles_blacklist_dict.get(map_.name, [[":None"]])
 
@@ -158,18 +158,18 @@ def filter_single_line(line, BW, found, avail, map_, system):
                     "SU_NP_8", True, GMAPerrclass=GM_ex.GmapFileSyntaxError
                 )
             try:
-                resnums = set(map_.Core.allow_ranges(line[1:], system.nres))
-            except IndexError as IErr:
+                resnums = set(map_.core.allow_ranges(line[1:], system.nres))
+            except IndexError as ierr:
                 GM_pt.Printer.warning(
                     f"\nUsing the parameter 'singles_{BW}list', the map "
                     f"{map_.name}"
                     "was requestested certain residue numbers, but the "
                     "specific residue numbers requested do not exist in the "
                     "provided MD system. ",
-                    "SU_NP_8", True, exception=IErr,
+                    "SU_NP_8", True, exception=ierr,
                     GMAPerrclass=GM_ex.GmapIndexError
                 )
-            except Exception as Ex:
+            except Exception as ex:
                 GM_pt.Printer.warning(
                     f"\nUsing the parameter 'singles_{BW}list', the map "
                     f"{map_.name}"
@@ -178,7 +178,7 @@ def filter_single_line(line, BW, found, avail, map_, system):
                     "Please make sure the choice consists of nothing but "
                     "numbers separated by spaces "
                     "and/or ranges of integers separated by a hyphen.",
-                    "SU_NP_8", True, exception=Ex,
+                    "SU_NP_8", True, exception=ex,
                     GMAPerrclass=GM_ex.GmapFileSyntaxError
                 )
 
@@ -282,7 +282,7 @@ def get_get_VEG_ref(map_):
         case "residues":
             GM_get_VEG_ref = VEG_from_residues(details)
         case "com":
-            GM_get_VEG_ref = VEG_from_com(details)
+            GM_get_VEG_ref = VEG_from_CoM(details)
         case "position":
             GM_get_VEG_ref = interpret_position(map_, details, "VEG_reference")
     return GM_get_VEG_ref
@@ -322,7 +322,7 @@ def VEG_from_residues(local_atoms):
     return GM_get_VEG_ref
 
 
-def VEG_from_com(local_atoms):
+def VEG_from_CoM(local_atoms):
     """Creates the function GM_get_VEG_ref for given atoms.
 
     Each atom given will count towards the VEG centre.
@@ -471,14 +471,14 @@ def get_get_dipole_mag():
     """
 
     def GM_get_dipole_mag(map_, system, osc):
-        if map_.Core.dipole_data_array is not None:
+        if map_.core.dipole_data_array is not None:
             return uses_maps(
-                map_.Core.dipole_gas_phase,
+                map_.core.dipole_gas_phase,
                 [osc.VEGout],
-                [map_.Core.dipole_data_array]
+                [map_.core.dipole_data_array]
             )
         else:
-            return map_.Core.dipole_gas_phase
+            return map_.core.dipole_gas_phase
 
     return GM_get_dipole_mag
 
@@ -516,7 +516,7 @@ def get_get_rotation_matrix(map_):
 
     # the second direction depends on the type
     olddir = direc
-    if map_.Core.type == "standard":
+    if map_.core.type == "standard":
         direc = given_directions[1]
         codestring += f"    {direc} = GM_mf.project({olddir}, ("
         codestring += envelop_int(
@@ -524,7 +524,7 @@ def get_get_rotation_matrix(map_):
             # "GM_mf.PBCvect(system.positions[osc.used_atoms[", "]])"
             "osc.positions_box[", "]"
         ) + ") @ system.boxvects)\n"
-    elif map_.Core.type == "linear":
+    elif map_.core.type == "linear":
         # get the next item in the list
         direc = allparnames[(allparnames.index(olddir) + 1) % 3]
 
@@ -593,20 +593,20 @@ def get_calculate_dipole(map_):
         _, r_pos = map_.code.GM_get_dipole_dir(map_, system, osc)
         # xyz = [
         #     uses_maps(omega, [osc.VEGout], [arr]) for omega, arr in zip(
-        #         map_.Core.dipole_gas_phase, map_.Core.dipole_data_array)
+        #         map_.core.dipole_gas_phase, map_.core.dipole_data_array)
         # ]
         # xyz_local = np.array(xyz, dtype="float32")
-        xyz_local = map_.Core.dipole_gas_phase_array + np.sum(
-            np.multiply(osc.VEGout[None, :, :], map_.Core.dipole_data_array),
+        xyz_local = map_.core.dipole_gas_phase_array + np.sum(
+            np.multiply(osc.VEGout[None, :, :], map_.core.dipole_data_array),
             axis=(1, 2)
         )
         xyz_cartesian = np.dot(xyz_local, osc.rotation_matrix)
         return xyz_cartesian, r_pos
 
-    if map_.Core.dipole_data_array is None:
+    if map_.core.dipole_data_array is None:
         return GM_get_dipole_vmag
 
-    if len(map_.Core.dipole_data_array.shape) == 2:
+    if len(map_.core.dipole_data_array.shape) == 2:
         return GM_get_dipole_vmag
 
     # now, the array must be of shape 3 (xyz-style file)
@@ -634,38 +634,38 @@ def get_calculate_frequency(map_):
     """
 
     def GM_calculate_freq_base(map_, system, osc):
-        return map_.Core.frequency_gas_phase
+        return map_.core.frequency_gas_phase
 
     def GM_calculate_freq_VEG_lin(map_, system, osc):
         freq = uses_maps(
-            map_.Core.frequency_gas_phase, [osc.VEGout],
-            [map_.Core.frequency_data_array_linear]
+            map_.core.frequency_gas_phase, [osc.VEGout],
+            [map_.core.frequency_data_array_linear]
         )
         return freq
 
     def GM_calculate_freq_VEG_quad(map_, system, osc):
         freq = uses_maps(
-            map_.Core.frequency_gas_phase, [osc.VEGout**2],
-            [map_.Core.frequency_data_array_quadratic]
+            map_.core.frequency_gas_phase, [osc.VEGout**2],
+            [map_.core.frequency_data_array_quadratic]
         )
         return freq
 
     def GM_calculate_freq_VEG_both(map_, system, osc):
         freq = uses_maps(
-            map_.Core.frequency_gas_phase,
+            map_.core.frequency_gas_phase,
             [osc.VEGout, osc.VEGout**2],
             [
-                map_.Core.frequency_data_array_linear,
-                map_.Core.frequency_data_array_quadratic]
+                map_.core.frequency_data_array_linear,
+                map_.core.frequency_data_array_quadratic]
         )
         return freq
 
-    if map_.Core.frequency_data_array_linear is None:
-        if map_.Core.frequency_data_array_quadratic is None:
+    if map_.core.frequency_data_array_linear is None:
+        if map_.core.frequency_data_array_quadratic is None:
             return GM_calculate_freq_base
         else:
             return GM_calculate_freq_VEG_quad
-    elif map_.Core.frequency_data_array_quadratic is None:
+    elif map_.core.frequency_data_array_quadratic is None:
         return GM_calculate_freq_VEG_lin
     else:
         return GM_calculate_freq_VEG_both
@@ -681,7 +681,7 @@ def get_get_position(map_):
     """
 
     instructions = map_.rawcore["position"]
-    position_center_choice = map_.RunPars.MainRunPars.positions_center
+    position_center_choice = map_.run_pars.main_run_pars.positions_center
     GM_get_positions = interpret_position(
         map_, instructions, "position", center=position_center_choice)
     return GM_get_positions

@@ -38,11 +38,11 @@ Lets look at the following example, where the two maps both have parameters of t
 
     def GM_post_init(map_, system):
         # verify that both dipole maps (if applicable) have the same map choices
-        rps = map_.RunPars  # RunPars object of this map
-        main_runpars = map_.RunPars.MainRunPars  # main GMAP RunPars object
+        rps = map_.run_pars  # RunPars object of this map
+        main_runpars = map_.run_pars.main_run_pars  # main GMAP RunPars object
         # is other map present?
         if "AmideSC" in main_runpars.requested_mapdict.keys():
-            amSC_rps = main_runpars.requested_mapdict["AmideSC"].RunPars
+            amSC_rps = main_runpars.requested_mapdict["AmideSC"].run_pars
             if amSC_rps.frequency_map_choice != rps.frequency_map_choice:
                 doError()
 
@@ -79,11 +79,11 @@ The other option for dealing with our error is to raise a 'proper' error. If thi
 
     def GM_post_init(map_, system):
         # verify that both dipole maps (if applicable) have the same map choices
-        rps = map_.RunPars  # RunPars object of this map
-        main_runpars = map_.RunPars.MainRunPars  # main GMAP RunPars object
+        rps = map_.run_pars  # run_pars object of this map
+        main_runpars = map_.run_pars.main_run_pars  # main GMAP RunPars object
         # is other map present?
         if "AmideSC" in main_runpars.requested_mapdict.keys():
-            amSC_rps = main_runpars.requested_mapdict["AmideSC"].RunPars
+            amSC_rps = main_runpars.requested_mapdict["AmideSC"].run_pars
             if (  # the maps do not match, and they're not allowed to mismatch.
                 amSC_rps.frequency_map_choice != rps.frequency_map_choice
                 and not rps.allow_map_mismatch

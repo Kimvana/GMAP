@@ -95,14 +95,14 @@ def test_read_reference_file(tmp_path):
 
 
 def test_report_references(capsys):
-    RunPars = GM_ct.CustomClass(**{"output_data": ["dip", "ham"]})
+    run_pars = GM_ct.CustomClass(**{"output_data": ["dip", "ham"]})
     references = [
         GM_rh.Reference(get_reference_string1()),
         GM_rh.Reference(get_reference_string2()),
         GM_rh.Reference(get_reference_string3())]
 
     GM_pt.Printer.set_state("running")
-    GM_rh.report_references(RunPars, references)
+    GM_rh.report_references(run_pars, references)
     captured = capsys.readouterr()
     assert captured.out.endswith(
         "The following reference was used for calculating the:\n"

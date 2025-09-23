@@ -46,6 +46,7 @@ class TRESP_Clib(metaclass=GM_ct.Singleton):
     def __init__(self, map_):
         self.clib = ct.CDLL(str(map_.clibfile))
 
+        self.clib.calc_coupling.restype = None
         self.clib.calc_coupling.argtypes = [
             ct.c_int,  # npairs
             ct.POINTER(ct.c_int),  # allpairs
@@ -59,7 +60,6 @@ class TRESP_Clib(metaclass=GM_ct.Singleton):
             ct.c_float,  # fpieps
             ct.POINTER(ct.c_float)  # hamiltonian
         ]
-        self.clib.calc_coupling.restype = None
 
     def calc_coupling(self, map_, system, fpieps, hamiltonian_c):
         """Calculate all couplings for this map, this frame.

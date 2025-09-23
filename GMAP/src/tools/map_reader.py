@@ -43,7 +43,7 @@ class Map:
     name : str
         The name of this map. Often indicates the functional group
         modelled.
-    RefPars : :class:`~GMAP.src.tools.parameter_parser.RefPars`
+    ref_pars : :class:`~GMAP.src.tools.parameter_parser.RefPars`
         The parameters defined and used by this map. Does not contain
         parameters used by this map, but defined elsewhere.
     success : bool
@@ -57,17 +57,17 @@ class Map:
         are the files available for appending using 'add_corefile'
     type : str
         The type of this map. Either 'Singles' or 'Doubles'
-    CmdPars : :class:`~GMAP.src.tools.parameter_parser.RawPars`
+    cmd_pars : :class:`~GMAP.src.tools.parameter_parser.RawPars`
         The object storing all parameters provided on the command line
         that belong to this map.
-    InPars : :class:`~GMAP.src.tools.parameter_parser.RawPars`
+    in_pars : :class:`~GMAP.src.tools.parameter_parser.RawPars`
         The object storing all parameters provided in the input
         parameter file that belong to this map.
-    DefPars : :class:`~GMAP.src.tools.parameter_parser.RawPars`
+    def_pars : :class:`~GMAP.src.tools.parameter_parser.RawPars`
         The object storing all parameters provided in the default
         parameter file that belong to this map. If no such file was
         provided, an empty instance is used instead.
-    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The RunPars instance containing all the basic run-defining
         parameters that belong to this map.
     code : module
@@ -77,7 +77,7 @@ class Map:
         functions.
     rawcore : dict of str: list of str pairs
         The contents of core.txt, after very simple parsing
-    Core : :class:`Core`
+    core : :class:`Core`
         The contents of core.txt, fully parsed and ready to use.
 
     Notes
@@ -103,39 +103,39 @@ class Map:
         Looks inside `self.directory` for a file of the name
         `parameters.ref`, If found, the resulting
         :class:`~GMAP.src.tools.parameter_parser.RefPars` object is
-        stored as the `self.RefPars` attribute.
+        stored as the `self.ref_pars` attribute.
         """
 
         refparfilename = self.directory / "parameters.ref"
         if refparfilename.is_file():
-            self.RefPars = GM_pp.RefPars(refparfilename, False)
+            self.ref_pars = GM_pp.RefPars(refparfilename, False)
         else:
-            # self.RefPars = None
+            # self.ref_pars = None
             with open(refparfilename, "w", encoding='utf-8') as _:
                 pass
-            self.RefPars = GM_pp.RefPars(refparfilename, False)
+            self.ref_pars = GM_pp.RefPars(refparfilename, False)
 
-    def find_rawpars(self, CmdPars, InPars, DefPars):
+    def find_rawpars(self, cmd_pars, in_pars, def_pars):
         """Creates CmdPars, InPars and DefPars objects for this map instance.
 
-        Searches through the provided CmdPars, InPars and DefPars to see
+        Searches through the provided cmd_pars, in_pars and def_pars to see
         whether there are any map-type parameters belonging to this map.
         If so, they are taken from there, put in the map-specific
-        instances for CmdPars, InPars and DefPars, and then removed from
+        instances for cmd_pars, in_pars and def_pars, and then removed from
         the source (as the source will be checked for emptiness at the
         end).
 
         Parameters
         ----------
-        CmdPars : :class:`~GMAP.src.tools.parameter_parser.RawPars`
+        cmd_pars : :class:`~GMAP.src.tools.parameter_parser.RawPars`
             The object storing all parameters provided on the command
             line.
-        InPars : :class:`~GMAP.src.tools.parameter_parser.RawPars`
+        in_pars : :class:`~GMAP.src.tools.parameter_parser.RawPars`
             The object storing all parameters provided in the input
             parameter file.
-        DefPars : :class:`~GMAP.src.tools.parameter_parser.RawPars`
+        def_pars : :class:`~GMAP.src.tools.parameter_parser.RawPars`
             The object storing all parameters provided in the default
-            parameter file. If no such file was provided, RefPars is
+            parameter file. If no such file was provided, ref_pars is
             used instead.
         """
 
@@ -144,34 +144,34 @@ class Map:
         # to empty the not_found array, so each source can be checked to make
         # sure all parameters are understood.
 
-        # first, CmdPars
-        map_pars = self.extract_notfound(CmdPars)
-        self.CmdPars = GM_pp.RawPars.from_dict(
-            "Cmdline", map_pars, self.RefPars, False
+        # first, cmd_pars
+        map_pars = self.extract_notfound(cmd_pars)
+        self.cmd_pars = GM_pp.RawPars.from_dict(
+            "Cmdline", map_pars, self.ref_pars, False
         )
         for parname in map_pars.keys():
-            del CmdPars.not_found[self.name + "." + parname]
+            del cmd_pars.not_found[self.name + "." + parname]
 
-        # InPars
-        map_pars = self.extract_notfound(InPars)
-        self.InPars = GM_pp.RawPars.from_dict(
-            InPars.fname, map_pars, self.RefPars, False
+        # in_pars
+        map_pars = self.extract_notfound(in_pars)
+        self.in_pars = GM_pp.RawPars.from_dict(
+            in_pars.fname, map_pars, self.ref_pars, False
         )
         for parname in map_pars.keys():
-            del InPars.not_found[self.name + "." + parname]
+            del in_pars.not_found[self.name + "." + parname]
 
-        # DefPars
-        if type(DefPars) is GM_pp.RawPars:
-            map_pars = self.extract_notfound(DefPars)
-            self.DefPars = GM_pp.RawPars.from_dict(
-                DefPars.fname, map_pars, self.RefPars, True
+        # def_pars
+        if type(def_pars) is GM_pp.RawPars:
+            map_pars = self.extract_notfound(def_pars)
+            self.def_pars = GM_pp.RawPars.from_dict(
+                def_pars.fname, map_pars, self.ref_pars, True
             )
             for parname in map_pars.keys():
-                del DefPars.not_found[self.name + "." + parname]
+                del def_pars.not_found[self.name + "." + parname]
         else:
-            self.DefPars = GM_pp.RawPars.create_empty()
+            self.def_pars = GM_pp.RawPars.create_empty()
 
-    def extract_notfound(self, RawParInst):
+    def extract_notfound(self, raw_par_inst):
         """Find all parameters of this map in the given RawPars
         instance.
 
@@ -188,7 +188,7 @@ class Map:
             parameters starting with 'self.name'.
         """
         map_pars = {}
-        for parname, choice in RawParInst.not_found.items():
+        for parname, choice in raw_par_inst.not_found.items():
             parnamelist = parname.split(".")
             if len(parnamelist) != 2:
                 GM_pt.Printer.warning(
@@ -201,24 +201,24 @@ class Map:
 
         return map_pars
 
-    def find_runpars(self, RunPars):
+    def find_runpars(self, run_pars):
         """Create a RunPars instance for this map.
 
-        Just like the main code, a map has a RefPars, DefPars, Inpars
-        and CmdPars instance, that all need to be combined into a
+        Just like the main code, a map has a ref_pars, def_pars, Inpars
+        and cmd_pars instance, that all need to be combined into a
         RunPars instance to be used further in the code.
 
         Parameters
         ----------
-        RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+        run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
             The 'main' RunPars instance containing all the basic
             run-defining parameters.
         """
 
-        if self.RefPars:
-            self.RunPars = GM_pp.RunPars(
-                self.CmdPars, self.InPars, self.DefPars,
-                self.RefPars, False, MainRunPars=RunPars
+        if self.ref_pars:
+            self.run_pars = GM_pp.RunPars(
+                self.cmd_pars, self.in_pars, self.def_pars,
+                self.ref_pars, False, main_run_pars=run_pars
             )
 
     def extract_code(self):
@@ -522,13 +522,13 @@ class SingleMap(Map):
 
         - interpret reference file if present
         - If there is a main.py file, read/extract it.
-        - If any of GM_adjust_[RunPars/map_core_raw/oscillators] are
+        - If any of GM_adjust_[run_pars/map_core_raw/oscillators] are
           missing, add the default for them.
-        - Run GM_adjust_RunPars
+        - Run GM_adjust_run_pars
         - Find the core.txt file, parse to rawcore. Supplement any
           files, if requested.
         - Run GM_adjust_map_core_raw
-        - Parse the final choice of rawcore to Core
+        - Parse the final choice of rawcore to core
         - If not present in self.code, create functions for
           GM_calculate_dipole and GM_get_rotation matrix based on core.
         """
@@ -540,16 +540,16 @@ class SingleMap(Map):
             self.code = GM_dmf.NewModule()
 
         # not all code can be added in yet - we need to make sure that
-        # we have adjust_RunPars and adjust_map_core_raw, as they might
+        # we have adjust_run_pars and adjust_map_core_raw, as they might
         # influence core.txt in ways that influence the functions
         # defined later.
         self.complete_code((
-            "adjust_RunPars",
+            "adjust_run_pars",
             "adjust_map_core_raw",
             "adjust_oscillators",
             "filter_oscillators"
         ))
-        self.code.GM_adjust_RunPars(self)
+        self.code.GM_adjust_run_pars(self)
 
         # simple parse of core.txt
         self.rawcore = self.find_core()
@@ -564,8 +564,8 @@ class SingleMap(Map):
         # allow the contents of core.txt to be changed
         self.code.GM_adjust_map_core_raw(self)
 
-        self.Core = SingleCore(self)
-        if not self.Core.success:
+        self.core = SingleCore(self)
+        if not self.core.success:
             self.success = False
             return
 
@@ -578,14 +578,14 @@ class SingleMap(Map):
         self.assert_function_presence()
 
         # adding more core-dependent functions to self.code.
-        if self.Core.electrostatic_choice:
+        if self.core.electrostatic_choice:
             self.complete_code(("get_VEG_ref",), ({"map_": self},))
-        if self.Core.can_output.intersection(["ham", "ene", "dip"]):
+        if self.core.can_output.intersection(["ham", "ene", "dip"]):
             self.complete_code(("calculate_dipole",), ({"map_": self},))
             self.complete_code(("get_dipole_mag",))
-        if self.Core.can_output.intersection(["ham", "ene"]):
+        if self.core.can_output.intersection(["ham", "ene"]):
             self.complete_code(("calculate_frequency",), ({"map_": self},))
-        if self.Core.can_output.intersection(["pos", "dbp"]):
+        if self.core.can_output.intersection(["pos", "dbp"]):
             self.complete_code(("get_position",), ({"map_": self},))
             self.complete_code(("get_doublepos",), ({"map_": self},))
 
@@ -621,7 +621,7 @@ class SingleMap(Map):
                 keyword in self.rawcore for keyword in ("r_vec", "r_pos")
             ):
                 needed_by = ("ham", "dip", "ene")
-                if self.Core.can_output.intersection(needed_by):
+                if self.core.can_output.intersection(needed_by):
                     GM_pt.Printer.warning(
                         f"\nThe file {self.corepath} does not contain a "
                         "definition of "
@@ -641,7 +641,7 @@ class SingleMap(Map):
         # they're not expected if 'type' isn't expected, either (they go
         # together)
         # (type is set to None if not in file)
-        if self.Core.type:
+        if self.core.type:
             msg = (
                 f"\nThe file {self.corepath} does not contain the right "
                 "amount of "
@@ -650,11 +650,11 @@ class SingleMap(Map):
                 "to be specified."
             )
             nvars = sum([vec + "_uvec" in self.rawcore for vec in "xyz"])
-            if self.Core.type == 'standard' and nvars != 2:
+            if self.core.type == 'standard' and nvars != 2:
                 GM_pt.Printer.warning(msg, "MI_MC_10")
                 self.success = False
                 return
-            elif self.Core.type == 'linear' and nvars != 1:
+            elif self.core.type == 'linear' and nvars != 1:
                 GM_pt.Printer.warning(msg, "MI_MC_10")
                 self.success = False
                 return
@@ -672,7 +672,7 @@ class SingleMap(Map):
         """
 
         if (
-            self.Core.can_output.intersection(["ram"])
+            self.core.can_output.intersection(["ram"])
             and not hasattr(self.code, "GM_calculate_raman")
         ):
             GM_pt.Printer.warning(
@@ -706,13 +706,13 @@ class PairMap(Map):
 
         - interpret reference file if present
         - If there is a main.py file, read/extract it.
-        - If any of GM_adjust_[RunPars/map_core_raw] are
+        - If any of GM_adjust_[run_pars/map_core_raw] are
           missing, add the default for them.
-        - Run GM_adjust_RunPars
+        - Run GM_adjust_run_pars
         - Find the core.txt file, parse to rawcore. Supplement any
           files, if requested.
         - Run GM_adjust_map_core_raw
-        - Parse the final choice of rawcore to Core
+        - Parse the final choice of rawcore to core
         - If not present in self.code, create functions for all missing
           behaviour
         """
@@ -726,10 +726,10 @@ class PairMap(Map):
             self.code = GM_dmf.NewModule()
 
         self.complete_code((
-            "adjust_RunPars",
+            "adjust_run_pars",
             "adjust_map_core_raw"
         ))
-        self.code.GM_adjust_RunPars(self)
+        self.code.GM_adjust_run_pars(self)
 
         # simple parse of core.txt
         self.rawcore = self.find_core()
@@ -744,8 +744,8 @@ class PairMap(Map):
         # allow the contents of core.txt to be changed
         self.code.GM_adjust_map_core_raw(self)
 
-        self.Core = PairCore(self)
-        if not self.Core.success:
+        self.core = PairCore(self)
+        if not self.core.success:
             self.success = False
             return
 
@@ -794,7 +794,7 @@ class PairMap(Map):
 
         # if any required single is not present
         missing_maps = [
-            map_ for map_ in self.Core.require_singles
+            map_ for map_ in self.core.require_singles
             if map_ not in main_runpars.available_maps_singles
         ]
         if missing_maps:
@@ -852,7 +852,7 @@ class PairMap(Map):
 
         all_singles_used = set()
         for osc in oscillators:
-            all_singles_used.add(osc.Map.name)
+            all_singles_used.add(osc.map.name)
 
         basestr = f"\nThe map {self.name} "
 
@@ -889,7 +889,7 @@ class PairMap(Map):
         missing_maps = [
             (map_, f"{self.name}.{keyword}")
             for map_ in singles_to_check
-            for keyword in self.Core.require_keywords
+            for keyword in self.core.require_keywords
             if f"{self.name}.{keyword}"
             not in main_runpars.requested_mapdict[map_].rawcore
         ]
@@ -934,7 +934,7 @@ class PairMap(Map):
         missing_maps = [
             (map_, f"CP_{self.name}_{func}")
             for map_ in singles_to_check
-            for func in self.Core.require_mapfuncs
+            for func in self.core.require_mapfuncs
             if not hasattr(
                 main_runpars.requested_mapdict[map_].code,
                 f"CP_{self.name}_{func}")
@@ -977,14 +977,14 @@ class PairMap(Map):
 
         # we need these maps, but they weren't directly requested by the user
         maybe_missing_maps = [
-            map_ for map_ in self.Core.require_pairs
+            map_ for map_ in self.core.require_pairs
             if map_ not in main_runpars.requested_pairmapdict
         ]
 
         if maybe_missing_maps:
             # we need these maps, but they are not available at all.
             missing_maps = [
-                map_ for map_ in self.Core.require_pairs
+                map_ for map_ in self.core.require_pairs
                 if map_ not in main_runpars.available_maps_pairs
             ]
             if missing_maps:
@@ -1095,7 +1095,7 @@ class SingleCore:
         self.success = True
 
         self.can_output = self.parse_can_output(
-            rawcore, map_.RunPars, map_.directory)
+            rawcore, map_.run_pars, map_.directory)
 
         self.ham_first = self.parse_ham_first(rawcore, map_.directory)
 
@@ -1110,8 +1110,8 @@ class SingleCore:
 
         self.electrostatic_choice = self.parse_estatic_choice(
                 rawcore, map_.directory)
-        choice_in_C_dict = {None: 0, "V": 1, "E": 2, "G": 3}
-        self.electrostatic_choice_c = choice_in_C_dict[
+        choice_in_c_dict = {None: 0, "V": 1, "E": 2, "G": 3}
+        self.electrostatic_choice_c = choice_in_c_dict[
             self.electrostatic_choice]
         if not self.success:
             return
@@ -1199,7 +1199,7 @@ class SingleCore:
             self.success = False
             return
 
-        options = map_runpars.MainRunPars.available_outputs
+        options = map_runpars.main_run_pars.available_outputs
         map_can_do = rawcore["can_output"]
 
         if not set(map_can_do).issubset(set(options)):
@@ -1690,16 +1690,16 @@ class SingleCore:
         try:
             # Note: rawcore["used_atoms"] is a list of whatever comes after
             #       used_atoms in the core.txt file used
-            minLen = min([  # Use the shortest structure
+            min_len = min([  # Use the shortest structure
                 len(struct.indices) for struct in self.functional_group])
-            used_atoms = self.allow_ranges(rawcore["used_atoms"], minLen)
+            used_atoms = self.allow_ranges(rawcore["used_atoms"], min_len)
 
-        except IndexError as IErr:
+        except IndexError as ierr:
             GM_pt.Printer.warning(
                 "\nChoice of parameter 'used_atoms' is out of bounds. "
                 f"In the file {mapdir / 'core.txt'}. Please make sure the "
                 "choice is within bounds.",
-                "MI_MC_8", exception=IErr
+                "MI_MC_8", exception=ierr
             )
             self.success = False
             return
@@ -1715,22 +1715,6 @@ class SingleCore:
             )
             self.success = False
             return
-
-        # I think this is now covered by the changed allow_ranges
-        # if any(
-        #     not all(ix in struct.indices for struct in self.functional_group)
-        #     for ix in used_atoms
-        # ):
-        #     GM_pt.Printer.warning(
-        #         "\nCould not interpret the choice for the parameter "
-        #         "'used_atoms'"
-        #         f" in the file {mapdir / 'core.txt'}. Please make sure the "
-        #         "indices don't exceed the amount of atoms given for the "
-        #         "parameter functional_group.",
-        #         "MI_MC_8"
-        #     )
-        #     self.success = False
-        #     return
 
         return used_atoms
 
@@ -1837,21 +1821,6 @@ class SingleCore:
             self.success = False
             return
 
-        # I think this is now covered by the changed allow_ranges
-        # # now, see if choice is valid
-        # maxlen = len(self.used_atoms)
-        # if any(ix >= maxlen for ix in estatic_atoms):
-        #     GM_pt.Printer.warning(
-        #         "\nCould not interpret the choice for the parameter "
-        #         "'electrostatic_atoms'"
-        #         f" in the file {mapdir / 'core.txt'}. Please make sure the "
-        #         "indices don't exceed the amount of atoms given for the "
-        #         "parameter used_atoms.",
-        #         "MI_MC_8"
-        #     )
-        #     self.success = False
-        #     return
-
         return estatic_atoms
 
     def parse_local_atoms(self, rawcore, mapdir):
@@ -1916,21 +1885,6 @@ class SingleCore:
                 )
                 self.success = False
                 return
-
-        # I think this is now covered by the changed allow_ranges
-        # now, see if choice is valid
-        # maxlen = len(self.used_atoms)
-        # if any(ix >= maxlen for ix in local_atoms):
-        #     GM_pt.Printer.warning(
-        #         "\nCould not interpret the choice for the parameter "
-        #         "'local_atoms'"
-        #         f" in the file {mapdir / 'core.txt'}. Please make sure the "
-        #         "indices don't exceed the amount of atoms given for the "
-        #         "parameter used_atoms.",
-        #         "MI_MC_8"
-        #     )
-        #     self.success = False
-        #     return
 
         return local_atoms
 
@@ -2698,7 +2652,7 @@ class PairCore:
                 rawcore, keyword))
 
         self.allowed_singles = self.parse_singles_BWlist(
-            map_.RunPars.MainRunPars, rawcore)
+            map_.run_pars.main_run_pars, rawcore)
 
         self.valid_combinations = self.parse_valid_combinations(
             rawcore, map_.directory)
@@ -3023,12 +2977,12 @@ class Residue:
         return f"{self.__class__.__name__}({repr(mylist)})"
 
 
-def manage_maps_singles(RunPars, mapdict):
+def manage_maps_singles(run_pars, mapdict):
     """Initializes and manages the detected maps in singles.
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     mapdict : dict of str: :class:`~GMAP.src.tools.map_reader.SingleMap`\
@@ -3042,9 +2996,9 @@ def manage_maps_singles(RunPars, mapdict):
         map_.initialize()
 
     mapdict = {map_.name: map_ for map_ in mapdict.values() if map_.success}
-    RunPars.available_maps_singles = mapdict
+    run_pars.available_maps_singles = mapdict
 
-    for map_choice in RunPars.maps_to_use:
+    for map_choice in run_pars.maps_to_use:
         if map_choice not in mapdict:
             GM_pt.Printer.warning(
                 f"\nThe map {map_choice} was requested for use. However, it "
@@ -3053,12 +3007,12 @@ def manage_maps_singles(RunPars, mapdict):
                 "MI_MM_1", True, GMAPerrclass=GM_ex.GmapKeyError
             )
 
-    for map_choice in RunPars.maps_to_use:
+    for map_choice in run_pars.maps_to_use:
         map_ = mapdict[map_choice]
-        if not set(RunPars.output_data).issubset(map_.Core.can_output):
+        if not set(run_pars.output_data).issubset(map_.core.can_output):
             difference = ", ".join(
-                set(RunPars.output_data) - map_.Core.can_output)
-            goal = ", ".join(RunPars.output_data)
+                set(run_pars.output_data) - map_.core.can_output)
+            goal = ", ".join(run_pars.output_data)
             GM_pt.Printer.warning(
                 f"\nThe map {map_choice} was requested for use in calculating "
                 f"{goal}. However, it cannot calculate the following output "
@@ -3069,21 +3023,21 @@ def manage_maps_singles(RunPars, mapdict):
 
     requested_mapdict = {
         map_.name: map_ for map_ in mapdict.values()
-        if map_.name in RunPars.maps_to_use
+        if map_.name in run_pars.maps_to_use
     }
-    RunPars.requested_mapdict = requested_mapdict
-    if any(map_.Core.requires_bonds for map_ in requested_mapdict.values()):
-        RunPars.detected_requires_bonds = True
+    run_pars.requested_mapdict = requested_mapdict
+    if any(map_.core.requires_bonds for map_ in requested_mapdict.values()):
+        run_pars.detected_requires_bonds = True
     else:
-        RunPars.detected_requires_bonds = False
+        run_pars.detected_requires_bonds = False
 
 
-def manage_maps_pairs(RunPars, mapdict):
+def manage_maps_pairs(run_pars, mapdict):
     """Initializes and manages the detected maps in singles.
 
     Parameters
     ----------
-    RunPars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
     mapdict : dict of str: :class:`~GMAP.src.tools.map_reader.PairMap`\
@@ -3097,9 +3051,9 @@ def manage_maps_pairs(RunPars, mapdict):
         map_.initialize()
 
     mapdict = {map_.name: map_ for map_ in mapdict.values() if map_.success}
-    RunPars.available_maps_pairs = mapdict
+    run_pars.available_maps_pairs = mapdict
 
-    for coupmapname, pairs in RunPars.coupling_v_pair_dict.items():
+    for coupmapname, pairs in run_pars.coupling_v_pair_dict.items():
         # check if the requested map exists
         if coupmapname not in mapdict and coupmapname is not None:
             GM_pt.Printer.warning(
@@ -3117,7 +3071,7 @@ def manage_maps_pairs(RunPars, mapdict):
         for pair in pairs:
             # check if the map can deal with these kinds of singles
             wrong_singles = [
-                osc for osc in pair if osc not in coupmap.Core.allowed_singles]
+                osc for osc in pair if osc not in coupmap.core.allowed_singles]
             if wrong_singles:
                 printstr = " and ".join(pair)
                 GM_pt.Printer.warning(
@@ -3129,7 +3083,7 @@ def manage_maps_pairs(RunPars, mapdict):
                 )
 
             # check if the map can deal with this exact coupling
-            if pair not in coupmap.Core.valid_combinations:
+            if pair not in coupmap.core.valid_combinations:
                 printstr = " and ".join(pair)
                 GM_pt.Printer.warning(
                     f"\nThe map {coupmapname} was requested for use in "
@@ -3146,13 +3100,13 @@ def manage_maps_pairs(RunPars, mapdict):
     # that couple oscillators that were requested by maps_to_use.
     requested_mapdict = {
         map_.name: map_ for map_ in mapdict.values()
-        if map_.name in RunPars.coupling_v_pair_dict.keys()
+        if map_.name in run_pars.coupling_v_pair_dict.keys()
     }
-    RunPars.requested_pairmapdict = requested_mapdict
+    run_pars.requested_pairmapdict = requested_mapdict
 
     # first check if all requested maps are valid till here
     for coupmap in requested_mapdict.values():
-        coupmap.check_singles(RunPars)
+        coupmap.check_singles(run_pars)
 
     # then, check if all requested maps are also still valid after paircheck.
     # new checks need to be done as long as new maps are found as dependencies.
@@ -3164,7 +3118,7 @@ def manage_maps_pairs(RunPars, mapdict):
         # we can't loop over the dict, as it might change size.
         for coupmapname in requested_maps:
             coupmap = requested_mapdict[coupmapname]
-            coupmap.check_pairs(RunPars)
+            coupmap.check_pairs(run_pars)
         new_requested_maps = set(requested_mapdict.keys())
 
     # loop is quit after no new maps were found. This means the last mapcheck

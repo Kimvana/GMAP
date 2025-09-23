@@ -1,7 +1,7 @@
 
 
-def GM_adjust_RunPars(map_):
-    """Makes the necessary changes to Map.RunPar.
+def GM_adjust_run_pars(map_):
+    """Makes the necessary changes to map_.run_pars.
 
     Is expected to not return anything - return value is not caught.
 
@@ -12,11 +12,11 @@ def GM_adjust_RunPars(map_):
         about this map.
     """
 
-    if map_.RunPars.overwrite_neutral_charge_threshold != 0:
+    if map_.run_pars.overwrite_neutral_charge_threshold != 0:
         setattr(
-            map_.RunPars.MainRunPars,
+            map_.run_pars.main_run_pars,
             "neutral_charge_threshold",
-            map_.RunPars.overwrite_neutral_charge_threshold
+            map_.run_pars.overwrite_neutral_charge_threshold
         )
 
 

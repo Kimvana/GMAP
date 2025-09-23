@@ -44,7 +44,7 @@ def calc_dipole_Torii(map_, system, osc):
 
     # dipole moment vector itself
     r_vec = dipole_Torii(
-        COvec, CNvec, map_.Core.dipole_Torii_angle, map_.Core.dipole_gas_phase)
+        COvec, CNvec, map_.core.dipole_Torii_angle, map_.core.dipole_gas_phase)
 
     return r_vec, r_pos
 
@@ -112,11 +112,11 @@ def calc_dipole_Jansen(map_, system, osc):
 
     _, r_pos = map_.code.GM_get_dipole_dir(map_, system, osc)
     if osc.resnames[1] == "PRO":
-        gasdip = map_.Core.dipole_gas_phase_array_prepro
-        diparr = map_.Core.dipole_data_array_prepro
+        gasdip = map_.core.dipole_gas_phase_array_prepro
+        diparr = map_.core.dipole_data_array_prepro
     else:
-        gasdip = map_.Core.dipole_gas_phase_array
-        diparr = map_.Core.dipole_data_array
+        gasdip = map_.core.dipole_gas_phase_array
+        diparr = map_.core.dipole_data_array
     xyz_local = gasdip + np.sum(
         np.multiply(osc.VEGout[None, :, :], diparr), axis=(1, 2))
     xyz_cartesian = np.dot(xyz_local, osc.rotation_matrix)
@@ -250,7 +250,7 @@ def determine_map(osc1, osc2, map_, system):
         # In the original code, Pro-Pro is actually treated as Gly-Pro
         if (
             osc2.resnames[1] == "PRO"
-            and map_.RunPars.legacy_mode == "AmideImaps"
+            and map_.run_pars.legacy_mode == "AmideImaps"
         ):
             bondtype = "GP"
         else:

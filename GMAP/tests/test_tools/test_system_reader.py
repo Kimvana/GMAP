@@ -36,12 +36,12 @@ class TestSystem:
     def test_set_properties(self):
         mapname = "test_code_build_1"
         (
-            RunPars, RefPars, DefPars, InPars,
-            CmdPars, mapdict, pairs_mapdict
+            run_pars, ref_pars, def_pars, in_pars,
+            cmd_pars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname)
 
         system = GM_sr.System.__new__(GM_sr.System)
-        setattr(system, "universe", GM_sr.gen_universe(RunPars))
+        setattr(system, "universe", GM_sr.gen_universe(run_pars))
         system.set_properties()
 
         all_properties = (
@@ -104,15 +104,15 @@ class TestSystem:
             "--influencers_whitelist", ":protein_cannonical", "CL\\;"
         ]
         (
-            RunPars, RefPars, DefPars, InPars,
-            CmdPars, mapdict, pairs_mapdict
+            run_pars, ref_pars, def_pars, in_pars,
+            cmd_pars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
         system = GM_sr.System.__new__(GM_sr.System)
-        setattr(system, "universe", GM_sr.gen_universe(RunPars))
+        setattr(system, "universe", GM_sr.gen_universe(run_pars))
         system.set_properties()
-        system.basic_boxchecks(RunPars)
-        system.find_influencers(RunPars)
+        system.basic_boxchecks(run_pars)
+        system.find_influencers(run_pars)
 
         print(system.influencers_atix[-20:])
         target = np.array([*range(1960)] + [*range(33868, 33876)])
@@ -126,15 +126,15 @@ class TestSystem:
             "--influencers_select_atoms", "protein", "or", "resname", "CL\\;"
         ]
         (
-            RunPars, RefPars, DefPars, InPars,
-            CmdPars, mapdict, pairs_mapdict
+            run_pars, ref_pars, def_pars, in_pars,
+            cmd_pars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
         system = GM_sr.System.__new__(GM_sr.System)
-        setattr(system, "universe", GM_sr.gen_universe(RunPars))
+        setattr(system, "universe", GM_sr.gen_universe(run_pars))
         system.set_properties()
-        system.basic_boxchecks(RunPars)
-        system.find_influencers(RunPars)
+        system.basic_boxchecks(run_pars)
+        system.find_influencers(run_pars)
 
         print(system.influencers_atix[-20:])
         target = np.array([*range(1960)] + [*range(33868, 33876)])
@@ -149,15 +149,15 @@ class TestSystem:
             "--verbose", "4"
         ]
         (
-            RunPars, RefPars, DefPars, InPars,
-            CmdPars, mapdict, pairs_mapdict
+            run_pars, ref_pars, def_pars, in_pars,
+            cmd_pars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
         system = GM_sr.System.__new__(GM_sr.System)
-        setattr(system, "universe", GM_sr.gen_universe(RunPars))
+        setattr(system, "universe", GM_sr.gen_universe(run_pars))
         system.set_properties()
-        system.basic_boxchecks(RunPars)
-        system.find_influencers(RunPars)
+        system.basic_boxchecks(run_pars)
+        system.find_influencers(run_pars)
 
         print(system.influencers_atix[-20:])
         target = np.array([*range(1960, 33876)])
@@ -173,15 +173,15 @@ class TestSystem:
             "--verbose", "4"
         ]
         (
-            RunPars, RefPars, DefPars, InPars,
-            CmdPars, mapdict, pairs_mapdict
+            run_pars, ref_pars, def_pars, in_pars,
+            cmd_pars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
         system = GM_sr.System.__new__(GM_sr.System)
-        setattr(system, "universe", GM_sr.gen_universe(RunPars))
+        setattr(system, "universe", GM_sr.gen_universe(run_pars))
         system.set_properties()
-        system.basic_boxchecks(RunPars)
-        system.find_influencers(RunPars)
+        system.basic_boxchecks(run_pars)
+        system.find_influencers(run_pars)
 
         print(system.influencers_atix[-20:])
         target = np.array([*range(0, 33876)])
@@ -196,11 +196,11 @@ class TestSystem:
             "--influencers_whitelist", ":protein_cannonical", "CL\\;"
         ]
         (
-            RunPars, RefPars, DefPars, InPars,
-            CmdPars, mapdict, pairs_mapdict
+            run_pars, ref_pars, def_pars, in_pars,
+            cmd_pars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
-        system = GM_sr.System(RunPars)
+        system = GM_sr.System(run_pars)
 
         assert len(system.oscillators) == 17
 
@@ -213,11 +213,11 @@ class TestSystem:
             "--influencers_whitelist", ":protein_cannonical", "CL\\;"
         ]
         (
-            RunPars, RefPars, DefPars, InPars,
-            CmdPars, mapdict, pairs_mapdict
+            run_pars, ref_pars, def_pars, in_pars,
+            cmd_pars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
-        system = GM_sr.System(RunPars)
+        system = GM_sr.System(run_pars)
 
         assert len(system.oscillators) == 145
 
@@ -225,11 +225,11 @@ class TestSystem:
         # just AmideSC
         mapname = "AmideSC"
         (
-            RunPars, RefPars, DefPars, InPars,
-            CmdPars, mapdict, pairs_mapdict
+            run_pars, ref_pars, def_pars, in_pars,
+            cmd_pars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname)
 
-        system = GM_sr.System(RunPars)
+        system = GM_sr.System(run_pars)
 
         assert len(system.oscillators) == 17
 
@@ -237,12 +237,12 @@ class TestSystem:
         # This is a map of a triple ALA subchain - only 1 present in 1AKI
         mapname = "test_multiple_res_osc"
         (
-            RunPars, RefPars, DefPars, InPars,
-            CmdPars, mapdict, pairs_mapdict
+            run_pars, ref_pars, def_pars, in_pars,
+            cmd_pars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, ["--dont_report_error", "MI__\\;"])
 
-        system = GM_sr.System(RunPars)
-        system.update_properties(RunPars)
+        system = GM_sr.System(run_pars)
+        system.update_properties(run_pars)
 
         assert len(system.oscillators) == 1
 
@@ -272,17 +272,17 @@ class TestSystem:
             "--verbose", "4"
         ]
         (
-            RunPars, RefPars, DefPars, InPars,
-            CmdPars, mapdict, pairs_mapdict
+            run_pars, ref_pars, def_pars, in_pars,
+            cmd_pars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
         system = GM_sr.System.__new__(GM_sr.System)
-        setattr(system, "universe", GM_sr.gen_universe(RunPars))
+        setattr(system, "universe", GM_sr.gen_universe(run_pars))
         system.set_properties()
-        system.basic_boxchecks(RunPars)
+        system.basic_boxchecks(run_pars)
 
         with pytest.raises(GM_ex.GmapFileSyntaxError, match="SU_NP_5$"):
-            system.find_influencers(RunPars)
+            system.find_influencers(run_pars)
 
     def test_SU_NP_6(self):
         mapname = "AmideSC"
@@ -291,17 +291,17 @@ class TestSystem:
             "--influencers_select_atoms", "or", "resname", "CL\\;"
         ]
         (
-            RunPars, RefPars, DefPars, InPars,
-            CmdPars, mapdict, pairs_mapdict
+            run_pars, ref_pars, def_pars, in_pars,
+            cmd_pars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
         system = GM_sr.System.__new__(GM_sr.System)
-        setattr(system, "universe", GM_sr.gen_universe(RunPars))
+        setattr(system, "universe", GM_sr.gen_universe(run_pars))
         system.set_properties()
-        system.basic_boxchecks(RunPars)
+        system.basic_boxchecks(run_pars)
 
         with pytest.raises(GM_ex.GMAPexception, match="SU_NP_6$"):
-            system.find_influencers(RunPars)
+            system.find_influencers(run_pars)
 
     def test_MD_SU_6(self):
         mapname = "AmideSC"
@@ -311,13 +311,13 @@ class TestSystem:
             "--couplings_to_use", "AneedsB", ":All\\;"
         ]
         (
-            RunPars, RefPars, DefPars, InPars,
-            CmdPars, mapdict, pairs_mapdict
+            run_pars, ref_pars, def_pars, in_parss,
+            cmd_pars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
-        system = GM_sr.System(RunPars)
+        system = GM_sr.System(run_pars)
 
         with pytest.raises(GM_ex.GmapParameterError, match="MD_SU_6$"):
-            system.order_oscillators_pairs(RunPars)
+            system.order_oscillators_pairs(run_pars)
 
 
 class TestOscillator:
@@ -328,11 +328,11 @@ class TestOscillator:
             "--influencers_whitelist", ":protein_cannonical", "CL\\;"
         ]
         (
-            RunPars, RefPars, DefPars, InPars,
-            CmdPars, mapdict, pairs_mapdict
+            run_pars, ref_pars, def_pars, in_pars,
+            cmd_pars, mapdict, pairs_mapdict
         ) = parameter_getter(mapname, cmdline)
 
-        system = GM_sr.System(RunPars)
+        system = GM_sr.System(run_pars)
         oscstr = str(system.oscillators[0])
         exp = "Oscillator of type AmideSC living on the residue ASN18"
         assert oscstr == exp
@@ -361,11 +361,11 @@ def test_gen_universe():
         "trajectory_file": ["../../sourcefiles/pdb_1AKI_50frame.xtc"]
     }
     (
-        RunPars, RefPars, DefPars, InPars,
-        CmdPars, mapdict, pairs_mapdict
+        run_pars, ref_pars, def_pars, in_pars,
+        cmd_pars, mapdict, pairs_mapdict
     ) = parameter_getter(mapname, inpardict=inpardict)
 
-    universe = GM_sr.gen_universe(RunPars)
+    universe = GM_sr.gen_universe(run_pars)
     assert isinstance(universe, MDA.Universe)
     assert len(universe.atoms) == 33876
 
@@ -385,15 +385,15 @@ def test_check_box_charge():
     inpardict = {"neutral_charge_threshold": ["0.001"]}
 
     (
-        RunPars, RefPars, DefPars, InPars,
-        CmdPars, mapdict, pairs_mapdict
+        run_pars, ref_pars, def_pars, in_pars,
+        cmd_pars, mapdict, pairs_mapdict
     ) = parameter_getter(mapname, inpardict=inpardict)
 
     charges = np.array([
         0.2, 0.4, -0.3, -0.3
     ])
 
-    assert GM_sr.check_box_charge(RunPars, charges)
+    assert GM_sr.check_box_charge(run_pars, charges)
 
 
 # there are 3 of these in gen_universe.
@@ -410,12 +410,12 @@ def test_MD_SU_1():
     }
 
     (
-        RunPars, RefPars, DefPars, InPars,
-        CmdPars, mapdict, pairs_mapdict
+        run_pars, ref_pars, def_pars, in_pars,
+        cmd_pars, mapdict, pairs_mapdict
     ) = parameter_getter(mapname, cmdline, inpardict)
 
     with pytest.raises(GM_ex.GmapValueError, match="MD_SU_1$"):
-        _ = GM_sr.gen_universe(RunPars)
+        _ = GM_sr.gen_universe(run_pars)
 
     # ----- Other (AttributeError?) ------------------------------------
 
@@ -426,12 +426,12 @@ def test_MD_SU_1():
     }
 
     (
-        RunPars, RefPars, DefPars, InPars,
-        CmdPars, mapdict, pairs_mapdict
+        run_pars, ref_pars, def_pars, in_pars,
+        cmd_pars, mapdict, pairs_mapdict
     ) = parameter_getter(mapname, inpardict=inpardict)
 
     with pytest.raises(GM_ex.GmapMDFileError, match="MD_SU_1$"):
-        _ = GM_sr.gen_universe(RunPars)
+        _ = GM_sr.gen_universe(run_pars)
 
 
 def test_MD_SU_3(capsys):
@@ -440,8 +440,8 @@ def test_MD_SU_3(capsys):
     inpardict = {"neutral_charge_threshold": ["0.001"]}
 
     (
-        RunPars, RefPars, DefPars, InPars,
-        CmdPars, mapdict, pairs_mapdict
+        run_pars, ref_pars, def_pars, in_pars,
+        cmd_pars, mapdict, pairs_mapdict
     ) = parameter_getter(mapname, inpardict=inpardict)
 
     # First, the total charge is larger than threshold
@@ -452,7 +452,7 @@ def test_MD_SU_3(capsys):
     ])
 
     with pytest.raises(GM_ex.GmapParameterError, match="MD_SU_3$"):
-        _ = GM_sr.check_box_charge(RunPars, charges)
+        _ = GM_sr.check_box_charge(run_pars, charges)
 
     # Then, total charge is larger than threshold, but only because
     # there is a whole number involved. The decimal part still complies.
@@ -462,7 +462,7 @@ def test_MD_SU_3(capsys):
         0.2, 0.4, 0.3, 0.1
     ])
 
-    assert not GM_sr.check_box_charge(RunPars, charges)
+    assert not GM_sr.check_box_charge(run_pars, charges)
 
     captured = capsys.readouterr()
     assert captured.out.endswith("MD_SU_3\n")
@@ -487,7 +487,7 @@ def parameter_getter(mapname, cmdline=None, inpardict=None, load_clib=True):
 
     # generate parameter structures
     (
-        RunPars, RefPars, DefPars, InPars, CmdPars,
+        run_pars, ref_pars, def_pars, in_pars, cmd_pars,
         mapdict, pairs_mapdict
     ) = basic_setup(
         cmdline, inpardict, mapname=mapname, finish_before="extract_code")
@@ -497,26 +497,26 @@ def parameter_getter(mapname, cmdline=None, inpardict=None, load_clib=True):
     #     map_.initialize()
     # # Ditch all maps that contain problems/flaws/issues
     # mapdict = {map_.name: map_ for map_ in mapdict.values() if map_.success}
-    # for map_choice in RunPars.maps_to_use:
+    # for map_choice in run_pars.maps_to_use:
     #     if map_choice not in mapdict:
     #         assert False  # In main code, this is MI_MM_1
     # requested_mapdict = {
     #     map_.name: map_ for map_ in mapdict.values()
-    #     if map_.name in RunPars.maps_to_use
+    #     if map_.name in run_pars.maps_to_use
     # }
-    # RunPars.requested_mapdict = requested_mapdict
-    # if any(map_.Core.requires_bonds for map_ in requested_mapdict.values()):
-    #     RunPars.detected_requires_bonds = True
+    # run_pars.requested_mapdict = requested_mapdict
+    # if any(map_.core.requires_bonds for map_ in requested_mapdict.values()):
+    #     run_pars.detected_requires_bonds = True
     # else:
-    #     RunPars.detected_requires_bonds = False
+    #     run_pars.detected_requires_bonds = False
 
-    GM_mr.manage_maps_singles(RunPars, mapdict)
-    GM_mr.manage_maps_pairs(RunPars, pairs_mapdict)
+    GM_mr.manage_maps_singles(run_pars, mapdict)
+    GM_mr.manage_maps_pairs(run_pars, pairs_mapdict)
 
     if load_clib:
-        _ = GM_cl.VEG_CLib(RunPars)
+        _ = GM_cl.VEG_CLib(run_pars)
 
     return (
-        RunPars, RefPars, DefPars, InPars,
-        CmdPars, mapdict, pairs_mapdict
+        run_pars, ref_pars, def_pars, in_pars,
+        cmd_pars, mapdict, pairs_mapdict
     )

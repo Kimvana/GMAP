@@ -34,7 +34,7 @@ Now, we just need a way to define what point of the influencing Bchl-c molecules
     def GM_pre_frame(map_,system):
         mg_idx = 26  # in the current funcgroup file, Mg is at index 26.
         # read choice for treat_box parameter
-        boxtreat = map_.RunPars.MainRunPars.treat_box
+        boxtreat = map_.run_pars.main_run_pars.treat_box
 
         for oscillator in system.oscillators_ordered["BChl-c"]:
             resnum = system.resnums[oscillator.used_atoms[mg_idx]]
