@@ -1096,15 +1096,6 @@ class TestRunPars:
             curpath / "../../../sourcefiles/pdb_1AKI_50frame.xtc").resolve()
         assert run_pars.source_directory == Path(
             curpath / "../../../sourcefiles").resolve()
-        # TLC - this can be made more rigorous
-        # assert (run_pars.VEG_clib_file == Path(
-        #     curpath / "../../../sourcefiles/VEG_Win64bit.dll").resolve()) or
-        #     (run_pars.VEG_clib_file == Path(
-        #     curpath / "../../../sourcefiles/VEG_Win32bit.dll").resolve()) or
-        #     (run_pars.VEG_clib_file == Path(
-        #     curpath / "../../../sourcefiles/VEG_MacOS.dylib").resolve()) or
-        #     (run_pars.VEG_clib_file == Path(
-        #     curpath / "../../../sourcefiles/VEG_Linux.so").resolve())
         assert run_pars.VEG_clib_file in [
             Path(curpath / ("../../../sourcefiles/VEG_" + fname)).resolve()
             for fname in [
