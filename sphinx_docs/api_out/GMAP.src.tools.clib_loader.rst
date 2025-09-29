@@ -1,7 +1,7 @@
-GMAP.src.tools.color_schemes module
+GMAP.src.tools.clib\_loader module
 ==================================
 
-.. automodule:: GMAP.src.tools.color_schemes
+.. automodule:: GMAP.src.tools.clib_loader
    :members:
    :undoc-members:
    :show-inheritance:

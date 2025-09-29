@@ -1,5 +1,5 @@
-GMAP.src.tools.math_functions module
-===================================
+GMAP.src.tools.math\_functions module
+=====================================
 
 .. automodule:: GMAP.src.tools.math_functions
    :members:

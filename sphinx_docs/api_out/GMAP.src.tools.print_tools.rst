@@ -1,7 +1,7 @@
-GMAP.src.tools.cmd_interface module
+GMAP.src.tools.print\_tools module
 ==================================
 
-.. automodule:: GMAP.src.tools.cmd_interface
+.. automodule:: GMAP.src.tools.print_tools
    :members:
    :undoc-members:
    :show-inheritance:

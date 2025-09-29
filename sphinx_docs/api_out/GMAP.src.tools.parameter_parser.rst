@@ -1,5 +1,5 @@
-GMAP.src.tools.parameter_parser module
-=====================================
+GMAP.src.tools.parameter\_parser module
+=======================================
 
 .. automodule:: GMAP.src.tools.parameter_parser
    :members:

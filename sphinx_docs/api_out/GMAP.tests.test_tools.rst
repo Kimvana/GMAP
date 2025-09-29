@@ -9,7 +9,7 @@ Submodules
 
    GMAP.tests.test_tools.test_clib_loader
    GMAP.tests.test_tools.test_cmd_interface
-   GMAP.tests.test_tools.test_CodingTools
+   GMAP.tests.test_tools.test_coding_tools
    GMAP.tests.test_tools.test_color_schemes
    GMAP.tests.test_tools.test_default_map_functions
    GMAP.tests.test_tools.test_file_handler

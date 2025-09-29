@@ -1,5 +1,5 @@
-GMAP.src.tools.physics_functions module
-======================================
+GMAP.src.tools.physics\_functions module
+========================================
 
 .. automodule:: GMAP.src.tools.physics_functions
    :members:

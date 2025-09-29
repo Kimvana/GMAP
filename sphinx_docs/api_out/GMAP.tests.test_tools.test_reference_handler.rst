@@ -1,5 +1,5 @@
-GMAP.tests.test\_tools.test\_reference_handler module
-====================================================
+GMAP.tests.test\_tools.test\_reference\_handler module
+======================================================
 
 .. automodule:: GMAP.tests.test_tools.test_reference_handler
    :members:

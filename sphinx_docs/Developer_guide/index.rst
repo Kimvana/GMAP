@@ -218,3 +218,5 @@ These might become issues later.
     code_style
     print_colors
     VScode_setup
+    GMAP_and_parameters
+    estatic_methods

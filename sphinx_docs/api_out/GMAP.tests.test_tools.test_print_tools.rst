@@ -1,7 +1,7 @@
-GMAP.tests.test\_tools.test\_cmd_interface module
+GMAP.tests.test\_tools.test\_print\_tools module
 ================================================
 
-.. automodule:: GMAP.tests.test_tools.test_cmd_interface
+.. automodule:: GMAP.tests.test_tools.test_print_tools
    :members:
    :undoc-members:
    :show-inheritance:

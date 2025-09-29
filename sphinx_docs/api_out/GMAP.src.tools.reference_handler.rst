@@ -1,5 +1,5 @@
-GMAP.src.tools.reference_handler module
-======================================
+GMAP.src.tools.reference\_handler module
+========================================
 
 .. automodule:: GMAP.src.tools.reference_handler
    :members:

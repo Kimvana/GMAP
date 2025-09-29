@@ -1,5 +1,5 @@
-GMAP.tests.test\_tools.test\_map_reader module
-=============================================
+GMAP.tests.test\_tools.test\_map\_reader module
+===============================================
 
 .. automodule:: GMAP.tests.test_tools.test_map_reader
    :members:
