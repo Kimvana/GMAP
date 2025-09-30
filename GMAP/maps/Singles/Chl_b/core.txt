@@ -1,6 +1,6 @@
 can_output     ham   ene    dip    pos    dbp
 
-functional_group_file    funcgroup_ua.txt
+functional_group_file    chlb_funcgroup_UA.txt
 
 used_atoms 0-50  # Ring including C1, leaving out tail
 

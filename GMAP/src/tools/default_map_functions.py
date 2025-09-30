@@ -392,7 +392,8 @@ def interpret_position(map_, details, parname, center=None):
     codestring += "    return CoM"
 
     try:
-        exec(codestring)
+        locs = locals()
+        exec(codestring, globals(), locs)
     except Exception as ex:
         corefile = (map_.directory / 'core.txt').resolve()
         GM_pt.Printer.warning(
@@ -403,7 +404,7 @@ def interpret_position(map_, details, parname, center=None):
         return None
 
     # return GM_get_VEG_ref
-    return locals()["GM_get_position"]
+    return locs["GM_get_position"]
 
 
 def get_get_dipole_dir(map_):
@@ -447,7 +448,8 @@ def get_get_dipole_dir(map_):
     codestring += "    return r_vec, r_pos\n"
 
     try:
-        exec(codestring)
+        locs = locals()
+        exec(codestring, globals(), locs)
     except Exception as ex:
         corefile = (map_.directory / 'core.txt').resolve()
         GM_pt.Printer.warning(
@@ -457,7 +459,7 @@ def get_get_dipole_dir(map_):
         )
         return None
 
-    return locals()["GM_get_dipole_dir"]
+    return locs["GM_get_dipole_dir"]
 
 
 def get_get_dipole_mag():
@@ -546,7 +548,8 @@ def get_get_rotation_matrix(map_):
 
     try:
         # exec(codestring, globals(), locals())
-        exec(codestring)
+        locs = locals()
+        exec(codestring, globals(), locs)
     except Exception as ex:
         corefile = (map_.directory / 'core.txt').resolve()
         GM_pt.Printer.warning(
@@ -557,7 +560,7 @@ def get_get_rotation_matrix(map_):
         return None
 
     # return GM_get_dipole
-    return locals()["GM_get_rotation_matrix"]
+    return locs["GM_get_rotation_matrix"]
 
 
 def get_calculate_dipole(map_):

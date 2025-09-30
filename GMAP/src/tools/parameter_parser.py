@@ -3310,7 +3310,8 @@ def parse_influencerfile_line(line, groupdict, fname):
                 final_choice += "set(['" + curname + "'])"
 
     try:
-        exec(final_choice)
+        locs = locals()
+        exec(final_choice, globals(), locs)
     except Exception as ex:
         GM_pt.Printer.warning(
             f"\nThe file {fname} has a problem with one of the definitions "
@@ -3320,7 +3321,7 @@ def parse_influencerfile_line(line, groupdict, fname):
         )
 
     try:
-        newset = locals()["build_set"](groupdict)
+        newset = locs["build_set"](groupdict)
     except Exception as ex:
         GM_pt.Printer.warning(
             f"\nThe file {fname} has a problem with one of the definitions "

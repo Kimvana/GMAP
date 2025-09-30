@@ -1,6 +1,6 @@
 # core file for the bchlc map in GMAP
 
-functional_group_file    bchlc_functional_group.txt
+functional_group_file    bchlc_funcgroup_UA.txt
 
 used_atoms All 			# use all atoms in the BChl-c molecules for the electrostatic interactions
 
