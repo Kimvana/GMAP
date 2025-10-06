@@ -1,6 +1,6 @@
 # core file for the bchlc map in GMAP
 
-functional_group_file    bchlc_functional_group.txt
+functional_group_file    bchlc_funcgroup_UA.txt
 
 used_atoms All 			# use all atoms in the BChl-c molecules for the electrostatic interactions
 
@@ -9,10 +9,9 @@ electrostatic_choice V   	# the potential
 
 local_atoms All
 
-frequency_gas_phase 15390 	# Qy from Eric et al. 2023, page 1100 
-# frequency_data_file_linear freq_fluct_file_BChlc_units_angstrom_per_cm.txt
-frequency_data_file_linear freq_fluct_file_BChlc_units_elem_charge.txt
-multiply_freq 116140.9733 # now in units of Angstrom per cm
+frequency_gas_phase 15390 	     # Qy from Eric et al. 2023, page 1100, 10.1021/acs.jpcb.2c07143
+frequency_data_file_linear   diff_charges_CHELPG.txt
+multiply_freq     GM_con.e2i4pieps_angcm
 
 dipole_gas_phase  5.48
 
@@ -24,6 +23,6 @@ position 26 			# write positions to file. The position of the molecule is set at
 doublepos_0 16 			# Nitrogen atoms A and C
 doublepos_1 2			# In case the extended dipole is required
 
-VEG_reference position 26  	# position of Mg
+VEG_reference position   26  	# position of Mg
 
-can_output pos dip ene ham dbp
+can_output      pos dip ene ham dbp

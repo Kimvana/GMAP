@@ -58,7 +58,7 @@ couplings_to_use[list_str]                        DipDip :All
 couplings_scale[list_str]                         :All  1
 dielectric_constant[float]                        1
 output_data[list_str]                             [ham] [dip] ene [pos] dbp ram
-estatics_method[str]                              [perres] perres_nocut
+estatics_method[str]                              perres [perres_nocut]
 neutral_charge_threshold[float]                   0.0001
 guess_bonds[bool]                                 False
 treat_box[str]                                    [auto] orthorhombic triclinic
@@ -69,7 +69,7 @@ treat_box[str]                                    [auto] orthorhombic triclinic
 # (estatic_range + (estatic_smooth_range/2)), where no charges are considered
 # anymore.
 estatic_range[float]                              20  # this is in angstrom
-estatic_smooth_range[float]                       5  # this is in angstrom
+estatic_smooth_range[float]                       0  # this is in angstrom
 
 # in order to allow start+number=stop, stop is exclusive.
 start_frame[int]                                  0

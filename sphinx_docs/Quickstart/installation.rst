@@ -26,12 +26,13 @@ How to install (general users):
 
    - (Unix)  ``source env_GMAP/bin/activate``
    - (Windows) ``env_GMAP\Scripts\activate.bat`` (doesn't work in powershell)
-4. Install GEMAIM:
+4. | (optional) Don't forget to compile the GMAP C library! There are also some maps that might need to have their C libraries installed, they will mention this in their README. Compilation instructions are system dependent, and given lower down in this file. After this installation, the program is ready for use.
+   | This step is optional, because compiled versions of all files come with the program. If you'd rather compile yourself than using ours, this is the time to do so!
+5. Install GMAP:
 
    - (general users) run ``python3 -m pip install .``
    - (developers) run ``python3 -m pip install -e ".[testing]"``
-5. now, from anywhere, typing ``GMAP`` will start the program. If not, something has gone wrong. However, we're not done yet.
-6. Don't forget to compile the GMAP C library! There are also some maps that might need to have their C libraries installed, they will mention this in their README. Compilation instructions are system dependent, and given lower down in this file. After this installation, the program is ready for use.
+6. now, from anywhere, typing ``GMAP`` will start the program. If not, something has gone wrong. However, we're not done yet.
 7. Once you're done using the program, you can deactivate the environment again by typing 'deactivate' (without the quotation marks in the terminal/command line).
 
 

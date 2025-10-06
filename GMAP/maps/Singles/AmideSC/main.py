@@ -11,16 +11,10 @@ import numpy as np
 
 # GMAP imports
 import GMAP.src.tools.constants as GM_con
-# import GMAP.src.tools.MathFunctions as GM_MF
-# import GMAP.src.tools.PhysicsFunctions as GM_PF
-# import GMAP.src.tools.DefaultMapFunctions as GM_DMF
-# import GMAP.src.tools.PrintTools as GM_PT
 
 # own module imports
-import AmideSC_code.calculation_methods as MC_CM
-import AmideSC_code.parameter_changer as MC_PC
-# from .MapCode import parameter_changer as MC_PC
-# from .MapCode import calculation_methods as MC_CM
+import AmideSC_code.calculation_methods as MC_cm
+import AmideSC_code.parameter_changer as MC_pc
 
 
 # A function to adjust the choices made in core.txt. Perhaps, based on
@@ -32,7 +26,7 @@ def GM_adjust_map_core_raw(map_):
 
     Is expected to not return anything - return value is not caught.
 
-    The core.txt file is stored in Map.rawcore. It has not yet been
+    The core.txt file is stored in map_.rawcore. It has not yet been
     parsed, just loaded into a dictionary. In this dictionary, each
     keyword is its own dictionary key. Most keywords can only occur once
     in the file - those have a list of the 'words' on the line as
@@ -46,7 +40,7 @@ def GM_adjust_map_core_raw(map_):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
     """
@@ -57,7 +51,7 @@ def GM_adjust_map_core_raw(map_):
     # still to do:
     # dipoles, doublepos, xyz?? (or fixed across all maps?)
 
-    MC_PC.adjust_map_core_raw(map_)
+    MC_pc.adjust_map_core_raw(map_)
 
 
 def GM_adjust_oscillators(map_, system, oscillator_list):
@@ -83,23 +77,23 @@ def GM_adjust_oscillators(map_, system, oscillator_list):
 
     Parameters
     ----------
-    Map : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    Syst : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    oscillator_list : list of :class:`~GMAP.src.tools.system_reader.Oscillator`
         All oscillators belonging to a single struct of this map.
 
     Returns
     -------
-    oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    oscillator_list : list of :class:`~GMAP.src.tools.system_reader.Oscillator`
         All oscillators belonging to a single struct of this map.
     """
 
-    if map_.RunPars.residue_order == "resname":
+    if map_.run_pars.residue_order == "resname":
         return oscillator_list
 
     # now, choice is 'resnum'. To change order to AIM order:
@@ -124,7 +118,7 @@ def GM_post_init(map_, system):
     calculation starts.
 
     Checks include:
-    - comparing RunPars of this map to that of AmideSC, if the latter is
+    - comparing run_pars of this map to that of AmideSC, if the latter is
       present and active
     - initializing the prepro properties/files
     - Assigning the correct functions based on the parameter choices
@@ -133,24 +127,24 @@ def GM_post_init(map_, system):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
     """
 
-    if map_.RunPars.dipole_map_choice == "Torii":
-        map_.code.GM_calculate_dipole = MC_CM.calc_dipole_Torii
-        map_.Core.dipole_gas_phase = np.float32(map_.Core.dipole_gas_phase)
-        map_.Core.dipole_Torii_angle = np.float32(
-            1 / np.tan(GM_con.deg2rad * map_.RunPars.Torii_dipole_angle))
+    if map_.run_pars.dipole_map_choice == "Torii":
+        map_.code.GM_calculate_dipole = MC_cm.calc_dipole_Torii
+        map_.core.dipole_gas_phase = np.float32(map_.core.dipole_gas_phase)
+        map_.core.dipole_Torii_angle = np.float32(
+            1 / np.tan(GM_con.deg2rad * map_.run_pars.Torii_dipole_angle))
 
-    if map_.RunPars.legacy_mode == "AIM":
+    if map_.run_pars.legacy_mode == "AIM":
         map_.code.GM_get_position_DMF = map_.code.GM_get_position
-        map_.code.GM_get_position = MC_CM.get_position
+        map_.code.GM_get_position = MC_cm.get_position
 
 
 def GM_str_osc(map_, system, oscillator):
@@ -160,14 +154,14 @@ def GM_str_osc(map_, system, oscillator):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    oscillator : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    oscillator : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The specific oscillator for which the string is required.
 
     Returns
@@ -183,7 +177,7 @@ def GM_str_osc(map_, system, oscillator):
     )
 
 
-def GM_calculate_raman(Map, Syst, osc):
+def GM_calculate_raman(map_, system, osc):
     """Returns the raman tensor as a length-6 vector: (xx, xy, xz, yy, yz, zz)
 
     This method can easily be adapted by other maps for working with raman
@@ -275,10 +269,10 @@ def GM_report_references(map_, system):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -295,7 +289,7 @@ def GM_report_references(map_, system):
         dictionary, once for each key.
 
         Associated with each key is a list of
-        :class:`~GMAP.src.tools.ReferenceHandler.Reference` objects,
+        :class:`~GMAP.src.tools.reference_handler.Reference` objects,
         each of which corresponds to a single entry in the .bib file.
     """
 
@@ -306,13 +300,13 @@ def GM_report_references(map_, system):
     report_these.append("RamanAmide")
 
     # freq map used:
-    report_these.append(f"Emap{map_.RunPars.frequency_map_choice}SC")
+    report_these.append(f"Emap{map_.run_pars.frequency_map_choice}SC")
 
     report_dict = {key: map_.references[key] for key in report_these}
     report_dict["CP_DipDip"] = []
 
     # dip map used:
-    if map_.RunPars.dipole_map_choice == "Torii":
+    if map_.run_pars.dipole_map_choice == "Torii":
         report_dict["CP_DipDip"].extend(map_.references["DmapTorii"])
     else:
         report_dict["CP_DipDip"].extend(map_.references["DmapJansenSC"])

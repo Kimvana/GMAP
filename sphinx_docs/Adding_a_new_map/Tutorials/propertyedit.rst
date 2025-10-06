@@ -34,7 +34,7 @@ Now, we just need a way to define what point of the influencing Bchl-c molecules
     def GM_pre_frame(map_,system):
         mg_idx = 26  # in the current funcgroup file, Mg is at index 26.
         # read choice for treat_box parameter
-        boxtreat = map_.RunPars.MainRunPars.treat_box
+        boxtreat = map_.run_pars.main_run_pars.treat_box
 
         for oscillator in system.oscillators_ordered["BChl-c"]:
             resnum = system.resnums[oscillator.used_atoms[mg_idx]]
@@ -52,5 +52,5 @@ The next step is to find out what the residue number of this specific Bchl-c mol
 
 The last step is to use the found residue number to find the location where that residue's center of mass is saved. ``system.residues`` contains information on a per-residue basis, so ``system.residues.CoM_box`` has all centers of mass in box coordinates (CoM has them in cartesian). This molecule of Bchl-c's center of mass is therefore ``system.residues.CoM_box[resnum]``. We overwrite the current saved center of mass with the current position of the magnesium atom (in box coordinates), which we can find in ``oscillator.positions_box[mg_idx]``. We do the same with the cartesian-coordinate version of the center of mass and position, but only if they are actually used by the program (which is only the case for orthorhombic mode - we expect to actually use this mode a lot).
 
-Why do we have to define both separately? The program uses both, and only does the conversion once. At the beginning of each frame, GMAP calculates the centers of mass once (see GEM.py, trj_loop(), call to System.update_properties(), which is defined in SystemReader.py, which has a call to clib.calc_CoM_box()), but does this in box coordinates, as that's the cheaper way of calculating them. After they've been calculated, if the program runs in orthorhombic mode, the box CoMs are converted to cartesian coordinates once, and the program never changes them, so doesn't update this conversion in between steps. We therefore have to do both to make sure we always use the correct values for things!
+Why do we have to define both separately? The program uses both, and only does the conversion once. At the beginning of each frame, GMAP calculates the centers of mass once (see GEM.py, trj_loop(), call to System.update_properties(), which is defined in system_reader.py, which has a call to clib.calc_CoM_box()), but does this in box coordinates, as that's the cheaper way of calculating them. After they've been calculated, if the program runs in orthorhombic mode, the box CoMs are converted to cartesian coordinates once, and the program never changes them, so doesn't update this conversion in between steps. We therefore have to do both to make sure we always use the correct values for things!
 

@@ -839,7 +839,10 @@ Specifying groups here is very similar to how it is done in influencer files, se
 
     influencer_group   protein_cannonical    :prot_charged | :prot_polar | :prot_special_can | :prot_hydrophobic
 
-    influencer_group   protein_extended   :protein_cannonical | (LYSH | HSD | HIE)
+    influencer_group   protein_extcann    ARN | ASH | GLH | HID | HIE | HIP | HSD | LYN | LYSH   # extension of the cannonicals - different protonation states.
+    influencer_group   protein_extended   :protein_cannonical | :protein_extcann
+
+
 
 
 ************

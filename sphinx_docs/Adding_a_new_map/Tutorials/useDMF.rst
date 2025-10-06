@@ -27,21 +27,21 @@ The solution for this map is to define a new function that is basically a wrappe
 
 .. code-block:: python
 
-    import GMAP.src.tools.DefaultMapFunctions as GM_DMF
+    import GMAP.src.tools.default_map_functions as GM_dmf
 
-    def GM_post_init(Map, Syst):
-        def calculate_frequency(Map, Syst, osc):
-            freq = calc_frequency(Map, Syst, osc)
+    def GM_post_init(map_, system):
+        def calculate_frequency(map_, system, osc):
+            freq = calc_frequency(map_, system, osc)
             osc.freq = freq
             return freq
 
-        calc_frequency = GM_DMF.get_calculate_frequency(Map)
-        Map.code.GM_calculate_frequency = calculate_frequency
+        calc_frequency = GM_dmf.get_calculate_frequency(map_)
+        map_.code.GM_calculate_frequency = calculate_frequency
         return
 
 The new function ``calculate_frequency`` defined here should be pretty clear. The two interesting things to explain here are the two lines outside it. Pay attention to not confuse the ``calc_frequency`` and ``calculate_frequency`` objects here, they are (and need to be) different!
 
-Firstly, the module GM_DMF contains all the logic for generating all functions a map needs. Any function GMAP will attempt to call from a map (see :ref:`the singles main.py <AddMap_FileStruct_SingMainPy>` or :ref:`the pairs main.py <AddMap_FileStruct_PairMainPy>` for a complete overview) actually needs to be present for GMAP to function. So, when first interpreting a map, GMAP will check if all are present, and if some are missing, build default versions  of them based on the map's core.txt file.
+Firstly, the module GM_dmf contains all the logic for generating all functions a map needs. Any function GMAP will attempt to call from a map (see :ref:`the singles main.py <AddMap_FileStruct_SingMainPy>` or :ref:`the pairs main.py <AddMap_FileStruct_PairMainPy>` for a complete overview) actually needs to be present for GMAP to function. So, when first interpreting a map, GMAP will check if all are present, and if some are missing, build default versions  of them based on the map's core.txt file.
 
 This map uses that same logic - it calls the generator of the function ``GM_calculate_frequency``, the generator is named ``get_calculate frequency``. The generator uses the ``Map`` object to base a frequency function on, and returns the result, which is saved here as ``calc_frequency`` so the newly defined function ``calculate_frequency`` can use it.
 

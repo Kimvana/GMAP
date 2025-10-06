@@ -8,10 +8,10 @@ def GM_calc_coupling(map_, system, hamiltonian):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everyting the program currently knows
         about the MD system.
     hamiltonian : `np.ndarray`
@@ -33,10 +33,10 @@ def calc_coupling(oscix1, oscix2, map_, system):
     oscix1, oscix2 : int
         The oscillator index of each of the oscillators in this pair
         that should be calculated.
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everyting the program currently knows
         about the MD system.
 

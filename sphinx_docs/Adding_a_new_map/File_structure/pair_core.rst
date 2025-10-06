@@ -1,7 +1,7 @@
 .. _AddMap_FileStruct_PairCore:
 
 #############
-Core.txt file
+core.txt file
 #############
 
 (this applies to pairs maps. If you are looking for singles maps instead, go to :ref:`the singles version of this page.<AddMap_FileStruct_SingCore>`)

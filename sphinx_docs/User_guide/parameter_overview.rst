@@ -771,7 +771,7 @@ estatics_method
 | (options: perres, perres_nocut)
 | (used by: GEM)
 
-How the electrostatics should be calculated. For perres_nocut, if an influencing residue is within range of the oscillating residue, all its atoms can influence all oscillating atoms. This is the way AIM calculated the electrostatic properties. This method ignores any choices made for estatic_smooth_range. 
+How the electrostatics should be calculated. For perres_nocut, if the centre of mass of an influencing residue is within range of the oscillating residue, all its atoms can influence all oscillating atoms. This is the way AIM calculated the electrostatic properties. This method ignores any choices made for estatic_smooth_range. 
 For perres, if an influencer is within range of the oscillating residues, its individual atoms are considered. Only the atoms that are within range of the oscillating residue will actually be considered, the others are ignored.
 
 

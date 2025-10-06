@@ -4,7 +4,7 @@ from numba import njit
 import numpy as np
 
 # GMAP imports
-import GMAP.src.tools.MathFunctions as GM_MF
+import GMAP.src.tools.math_functions as GM_mf
 
 
 def calc_dipole_Torii(map_, system, osc):
@@ -12,12 +12,12 @@ def calc_dipole_Torii(map_, system, osc):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map instance which this function will belong to.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The class containing all the information on the system of the
         MD trajectory.
-    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osc : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The specific oscillator for which the transformation is required.
 
     Returns
@@ -33,17 +33,17 @@ def calc_dipole_Torii(map_, system, osc):
     pos_C_box = osc.positions_box[0]
     pos_O_box = osc.positions_box[1]
     pos_N_box = osc.positions_box[3]
-    COvec = GM_MF.PBC_boxdiff_triclin(pos_O_box, pos_C_box, system.boxvects)
-    COvec /= GM_MF.vec3_len(COvec)
-    CNvec = GM_MF.PBC_boxdiff_triclin(pos_N_box, pos_C_box, system.boxvects)
-    CNvec /= GM_MF.vec3_len(CNvec)
+    COvec = GM_mf.PBC_boxdiff_triclin(pos_O_box, pos_C_box, system.boxvects)
+    COvec /= GM_mf.vec3_len(COvec)
+    CNvec = GM_mf.PBC_boxdiff_triclin(pos_N_box, pos_C_box, system.boxvects)
+    CNvec /= GM_mf.vec3_len(CNvec)
 
     # position of dipole vector
     r_pos = osc.positions[0] + 0.665*COvec + 0.258*CNvec
 
     # dipole moment vector itself
     r_vec = dipole_Torii(
-        COvec, CNvec, map_.Core.dipole_Torii_angle, map_.Core.dipole_gas_phase)
+        COvec, CNvec, map_.core.dipole_Torii_angle, map_.core.dipole_gas_phase)
 
     return r_vec, r_pos
 
@@ -75,11 +75,11 @@ def dipole_Torii(COvec, CNvec, itheta, magnitude):
 
     dri = 0.665*COvec + 0.258*CNvec
 
-    dridri = GM_MF.dotprod(dri, dri)
-    COvecdri = GM_MF.dotprod(COvec, dri)
+    dridri = GM_mf.dotprod(dri, dri)
+    COvecdri = GM_mf.dotprod(COvec, dri)
     mi = dri - (COvecdri + np.sqrt(dridri - COvecdri*COvecdri)*itheta)*COvec
 
-    mi /= GM_MF.vec3_len(mi)
+    mi /= GM_mf.vec3_len(mi)
     mi *= magnitude
 
     return mi
@@ -90,12 +90,12 @@ def get_position(map_, system, osc):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map instance which this function will belong to.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The class containing all the information on the system of the
         MD trajectory.
-    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osc : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The specific oscillator for which the transformation is required.
 
     Returns

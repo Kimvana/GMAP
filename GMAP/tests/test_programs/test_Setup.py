@@ -1,16 +1,13 @@
-# # standard library imports
-# from pathlib import Path
 
 # 3rd party imports
 import pytest
 from pathlib import Path
 
 # local imports
-import GMAP.src.programs.Setup as GM_Setup
-# from GMAP.src.programs import Setup as GM_Setup
-import GMAP.src.tools.Exceptions as GM_Ex
-from GMAP.src.tools import FileHandler as GM_FH
-from GMAP.src.tools import PrintTools as GM_PT
+import GMAP.src.programs.Setup as GM_setup
+import GMAP.src.tools.exceptions as GM_ex
+import GMAP.src.tools.file_handler as GM_fh
+import GMAP.src.tools.print_tools as GM_pt
 
 # The tests below test error codes!
 
@@ -21,8 +18,8 @@ def test_Setup_1(tmp_path):
 
     not_a_directory = tmp_path / "not_a_directory"
 
-    with pytest.raises(GM_Ex.GmapNotADirectoryError, match="Setup_1$"):
-        GM_Setup.verify_target(
+    with pytest.raises(GM_ex.GmapNotADirectoryError, match="Setup_1$"):
+        GM_setup.verify_target(
             not_a_directory, sourcefiles_dir, mapfiles_dir)
 
 
@@ -31,8 +28,8 @@ def test_Setup_2(tmp_path):  # Tests if sourcedir doesn't exist yet
 
     sourcefiles_dir.mkdir()
 
-    with pytest.raises(GM_Ex.GmapIsADirectoryError, match="Setup_2$"):
-        GM_Setup.verify_target(
+    with pytest.raises(GM_ex.GmapIsADirectoryError, match="Setup_2$"):
+        GM_setup.verify_target(
             tmp_path, sourcefiles_dir, mapfiles_dir)
 
 
@@ -41,8 +38,8 @@ def test_Setup_3(tmp_path):   # Tests if mapdir doesn't exist yet
 
     mapfiles_dir.mkdir()
 
-    with pytest.raises(GM_Ex.GmapIsADirectoryError, match="Setup_3$"):
-        GM_Setup.verify_target(
+    with pytest.raises(GM_ex.GmapIsADirectoryError, match="Setup_3$"):
+        GM_setup.verify_target(
             tmp_path, sourcefiles_dir, mapfiles_dir)
 
 
@@ -52,7 +49,7 @@ def test_Setup_3(tmp_path):   # Tests if mapdir doesn't exist yet
 def test_verify_target(tmp_path):
     sourcefiles_dir, mapfiles_dir = base_tests(tmp_path)
 
-    assert GM_Setup.verify_target(
+    assert GM_setup.verify_target(
         tmp_path, sourcefiles_dir, mapfiles_dir
     ) is None
 
@@ -60,17 +57,17 @@ def test_verify_target(tmp_path):
 def test_Setup(tmp_path, capsys):
     callcommand = ["Setup", tmp_path]
 
-    src_dir = GM_FH.FileLocations.sourcedir_hc
-    map_dir = GM_FH.FileLocations.mapdir_hc
+    src_dir = GM_fh.FileLocations.sourcedir_hc
+    map_dir = GM_fh.FileLocations.mapdir_hc
 
     sourcefiles_original = [file.name for file in Path(src_dir).iterdir()]
     map_original = [file.name for file in Path(map_dir).iterdir()]
 
-    GM_Setup.Setup(callcommand)
+    GM_setup.Setup(callcommand)
 
     captured = capsys.readouterr()
     assert captured.out.endswith(
-        GM_PT.word_wrap(f"Copied folders to {tmp_path} successfully!\n"))
+        GM_pt.word_wrap(f"Copied folders to {tmp_path} successfully!\n"))
 
     target_srcdir = tmp_path / "sourcefiles_copy"
     target_mapdir = tmp_path / "maps_copy"

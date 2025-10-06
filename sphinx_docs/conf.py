@@ -28,11 +28,11 @@ sys.path.append(str(Path(__file__).parent.parent.resolve()))
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-# html_theme = 'alabaster'
-# html_theme = 'classic'
 html_theme = 'pydata_sphinx_theme'
-html_static_path = ['_static']
+# html_static_path = ['_static']
 html_favicon = "Figures/temp_logo.ico"
+
+suppress_warnings = ["docutils"]
 
 # -- Other options -----------------------------------------------------------
 numpydoc_class_members_toctree = False

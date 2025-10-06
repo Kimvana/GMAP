@@ -39,7 +39,7 @@ So, lets use this parameter in a function! As the code for AmideBB is rather com
 
 .. code-block:: python
 
-    import GMAP.src.tools.SystemReader as GM_SR
+    import GMAP.src.tools.system_reader as GM_sr
 
     def GM_calculate_dipole(map_, system, osc):  # actually, MC_CM.calc_dipole_torii
         # COvec is the vector pointing from central carbon to oxygen
@@ -49,22 +49,22 @@ So, lets use this parameter in a function! As the code for AmideBB is rather com
 
 
         dri = 0.665*COvec + 0.258*CNvec
-        dridri = GM_MF.dotprod(dri, dri)
-        COvecdri = GM_MF.dotprod(COvec, dri)
+        dridri = GM_mf.dotprod(dri, dri)
+        COvecdri = GM_mf.dotprod(COvec, dri)
         # direction of the dipole moment
         itheta = np.float32(
-            1 / np.tan(GM_con.deg2rad * map_.RunPars.Torii_dipole_angle))
+            1 / np.tan(GM_con.deg2rad * map_.run_pars.Torii_dipole_angle))
         r_vec = dri - (COvecdri + np.sqrt(dridri - COvecdri*COvecdri)*itheta)*COvec
 
         # giving the dipole moment the correct magnitude
-        r_vec /= GM_MF.vec3_len(r_vec)
-        r_vec *= map_.Core.dipole_gas_phase
+        r_vec /= GM_mf.vec3_len(r_vec)
+        r_vec *= map_.core.dipole_gas_phase
 
         return r_vec, r_pos
 
 
-Yes, the example is still quite mathy, but we can ignore most of that. It is here because vector addition/multiplication is a lot cheaper than the sines/cosines this code otherwise needs. Our focus is mainly on the line defining the factor itheta (inverse theta - although that's not important for us). In that line, we can see where the GMAP parameters are stored: in the ``RunPars`` object stored as an attribute of the ``map_`` object. Within that RunPars, we just look for the name that we chose in the parameters file, and we get the specified datatype back: in this case a float.
+Yes, the example is still quite mathy, but we can ignore most of that. It is here because vector addition/multiplication is a lot cheaper than the sines/cosines this code otherwise needs. Our focus is mainly on the line defining the factor itheta (inverse theta - although that's not important for us). In that line, we can see where the GMAP parameters are stored: in the ``RunPars`` object stored as an attribute of the ``map_`` object. Within that run_pars, we just look for the name that we chose in the parameters file, and we get the specified datatype back: in this case a float.
 
-A brief note on this ``map_.RunPars`` object - it stores all parameters of the map it is an attribute of. It also contains a link to the main RunPars object of GMAP - the one that contains the choices for the main program (like verbose and trajectory_file). Both have the same structure and way of use. That main runpars object can be accessed using ``map_.RunPars.MainRunPars``, but **changes to it should never be made!**
+A brief note on this ``map_.run_pars`` object - it stores all parameters of the map it is an attribute of. It also contains a link to the main RunPars object of GMAP - the one that contains the choices for the main program (like verbose and trajectory_file). Both have the same structure and way of use. That main runpars object can be accessed using ``map_.run_pars.main_run_pars``, but **changes to it should never be made!**
 
-Small bonus: this map also shows an example on how to read values from the core.txt file. Know that there are two versions in the code. One is called rawcore - it is the most crude direct parse from the text file. The other is the ``map_.Core`` object: it contains more parsed/checked information of more usable formats. Unless abslutely needed, this ``map_.Core`` version should be used over the other one!
+Small bonus: this map also shows an example on how to read values from the core.txt file. Know that there are two versions in the code. One is called rawcore - it is the most crude direct parse from the text file. The other is the ``map_.core`` object: it contains more parsed/checked information of more usable formats. Unless abslutely needed, this ``map_.core`` version should be used over the other one!

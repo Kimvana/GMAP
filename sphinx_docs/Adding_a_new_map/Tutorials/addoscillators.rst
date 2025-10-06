@@ -25,43 +25,43 @@ Conveniently enough, GMAP already gives the option to confirm the chromophores (
 
 .. code-block:: python
 
-    import GMAP.src.tools.SystemReader as GM_SR
+    import GMAP.src.tools.system_reader as GM_sr
 
-    def GM_adjust_oscillators(Map, Syst, oscillator_list):
+    def GM_adjust_oscillators(map_, system, oscillator_list):
         oscillator_list_adjusted = []
         for oscillator in oscillator_list:
             # add the one found by GMAP (the first bond of this molecule)
             oscillator_list_adjusted.append(oscillator)
             # add the oscillator representing the other bond of this molecule
-            oscillator_list_adjusted.append(GM_SR.Oscillator(
-                Syst,
+            oscillator_list_adjusted.append(GM_sr.Oscillator(
+                system,
                 [oscillator.used_atoms[0], *oscillator.used_atoms[2:0:-1]],
-                Map))
+                map_))
 
         return oscillator_list_adjusted
 
 That's a lot to take in, lets take it step by step.
 
-This function is designed to pass us a list of :class:`~GMAP.src.tools.SystemReader.Oscillator` objects, and expects us to return the 'correct' one based on the one we were given. What happens here is that we create a new list to store oscillators. Then, for every oscillator we encounter in the list provided, we add both it, and a second one for this molecule to the new list. After we've done this for all oscillators in the provided list, we return our new one.
+This function is designed to pass us a list of :class:`~GMAP.src.tools.system_reader.Oscillator` objects, and expects us to return the 'correct' one based on the one we were given. What happens here is that we create a new list to store oscillators. Then, for every oscillator we encounter in the list provided, we add both it, and a second one for this molecule to the new list. After we've done this for all oscillators in the provided list, we return our new one.
 
-But, how do we add that second oscillator? What's happening with that ``GM_SR.Oscillator`` call? Well, we're making smart use of the original definition of the Oscillator objects. The oscillators in the provided oscillator list were also created with a call to that same function. If you were to go to the source code and look at the docstring of the oscillator object constructor (or look it up in the documentation of :class:`~GMAP.src.tools.SystemReader.Oscillator`), you find the following information::
+But, how do we add that second oscillator? What's happening with that ``GM_sr.Oscillator`` call? Well, we're making smart use of the original definition of the Oscillator objects. The oscillators in the provided oscillator list were also created with a call to that same function. If you were to go to the source code and look at the docstring of the oscillator object constructor (or look it up in the documentation of :class:`~GMAP.src.tools.system_reader.Oscillator`), you find the following information::
 
     Stores all information on a single oscillator.
 
     Parameters
     ----------
-    System : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The class containing all the information on the system of the
         MD trajectory.
     atoms : list of int
         The indices of the atoms that make up this oscillator. All atoms
         specified in functional_group are in here.
-    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map that this oscillator belongs to.
 
 So, if we want to make our own oscillator object, we need to pass it 3 things. The first and last are not a problem, they were provided to us as arguments to this function. The second is where the trick is. If we look at the core.txt file of the water map, or the definition of it's dipole function, we see that it almost exclusively only uses it's 0th (oxygen) and 1th (HW1) atoms for calculations. Therefore, we want to create another oscillator, but for it, swap the oneth and twoeth atom.
 
-For the second argument, we have to provide a list of atom indices. Conveniently, these indices are already stored in our current oscillator's used_atoms, so we just have to reorder them into a new list provided to the ``GM_SR.Oscillator`` constructor. 
+For the second argument, we have to provide a list of atom indices. Conveniently, these indices are already stored in our current oscillator's used_atoms, so we just have to reorder them into a new list provided to the ``GM_sr.Oscillator`` constructor. 
 
 
 

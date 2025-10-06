@@ -10,13 +10,13 @@ sections:
 intended use
 ------------
 
-This map is intended to calculate the dipole-dipole coupling of two singles. There are no restrictions on the singles apart from them having a dipole moment.
+This map is intended to calculate the dipole-dipole coupling of two singles. There are no restrictions on the singles apart from them having assigned a transition-dipole moment and a position.
 
 
 how to use
 ----------
 
-This map needs to know the dipole moment of any single it couples. If a singles map does not do anything special, it will use the dipole moment that has already been calculated for that oscillator, with it's standard dipole method.
+This map needs to know the transition-dipole moment and its position of any single it couples. If a singles map does not do anything special, it will use the dipole moment that has already been calculated for that oscillator, with it's standard dipole method.
 
 If, however, a singles map doesn't want that default behaviour and instead give a specific dipole moment for this map to use, it can do this by defining a function of the name CP_DipDip_calc_dipole. This function is expected to have the same types/amounts of inputs/outputs as GM_calc_dipole, but allows for a different choice.
 

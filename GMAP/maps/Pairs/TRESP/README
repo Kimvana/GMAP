@@ -31,6 +31,9 @@ This map needs some installation before it can be used:
   - Linux:
     - You are already in the correct directory (TRESP/src) to run the install command. Run the following command, making sure to point to the path of the sourcefiles directory of your installation (that we looked up earlier):
       g++ -fPIC -shared -o TRESP_clib_Linux.so -I/your/GMAP/location/sourcefiles TRESP_clib.cpp
+  - MacOS:
+   - You are already in the correct directory (TRESP/src) to run the install command. Run the following command, making sure to point to the path of the sourcefiles directory of your installation (that we looked up earlier):
+      g++ -fPIC -shared -o TRESP_clib_MacOS.dylib -I/your/GMAP/location/sourcefiles TRESP_clib.cpp
 
 
 how to use
@@ -39,6 +42,8 @@ how to use
 This map can (and must) be directly requested in the input file using 'couplings_to_use'. Any type of single this map is requested for must have a partial charges file declared. You can check whether this is the case by seeing if the keyword 'TRESP.charges_filename' is present in the map's core.txt file.
 
 If that keyword is present, the coupling can just be requested. If not, that singles map should be coupled by a map different from this one.
+
+This map should never be applied to calculate the coupling between two groups that share a common (set of) atom(s). This would result in a distance of 0, which means infinite coupling. If the code detects a distance smaller than 0.01 angstrom, a distance of 1 angstrom will be assumed instead. This assumption is not physically meaningful, however! Therefore, these zero-valued distances should always be avoided.
 
 
 Available parameters
