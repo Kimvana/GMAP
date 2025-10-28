@@ -9,7 +9,7 @@ import scipy.constants as sp_con
 
 
 # local imports
-import GMAP.src.tools.CodingTools as GM_CT
+import GMAP.src.tools.coding_tools as GM_ct
 
 
 # constants
@@ -50,7 +50,7 @@ Debye2ea0 = Debye/ea0
 # Using frozendicts here so information cannot be overwritten
 
 # For converting 24bit colors into 4bit colors:
-printed_colors = GM_CT.FrozenDict({
+printed_colors = GM_ct.FrozenDict({
         (0, 0, 0): (0, False),
         (128, 128, 128): (0, True),
         (192, 192, 192): (7, False),
@@ -68,11 +68,11 @@ printed_colors = GM_CT.FrozenDict({
         (128, 0, 128): (5, False),
         (255, 0, 255): (5, True)
     })
-printed_colors_r = GM_CT.FrozenDict({v: k for k, v in printed_colors.items()})
+printed_colors_r = GM_ct.FrozenDict({v: k for k, v in printed_colors.items()})
 
 
 # For determining c-library extension:
-clib_ext_dict = GM_CT.FrozenDict({
+clib_ext_dict = GM_ct.FrozenDict({
     "Linux": "_Linux.so",
     "Win32bit": "_Win32bit.dll",
     "Win64bit": "_Win64bit.dll",

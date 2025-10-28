@@ -29,7 +29,7 @@ def makeham(fname, n_singles):
 
 callargs = sys.argv
 
-if len(callargs) < 2:
+if len(callargs) < 2 or callargs[1] == ".":
     fname1 = Path("../../hamiltonian.txt")
 else:
     fname1 = Path(callargs[1])
@@ -38,9 +38,14 @@ if len(callargs) < 3:
     # This default path should be determined by the user of this script.
     # If it doesn't exist, you get a filenotfound error later down the
     # line.
-    fname2 = Path(
-        "D:/Data/PhD/AIM installable/AIM-version-1.0-installable/"
-        "2024-10-18_16-50-03_AIM_V1-0-2_Hamiltonian.txt")
+    print(
+        "Please supply two hamiltonian files in the command calling this file."
+        " If the first one is defined as '.' (a period only), the default "
+        "output location '../../hamiltonian.txt' will be used instead. For the"
+        " second one, however, you must provide a file.\n"
+        "Please note that this script can only deal with .txt files, not .bin."
+    )
+    sys.exit()
 else:
     fname2 = Path(callargs[2])
 

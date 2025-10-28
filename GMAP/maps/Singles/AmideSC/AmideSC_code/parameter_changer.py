@@ -1,6 +1,6 @@
 
 # GMAP imports
-import GMAP.src.tools.PrintTools as GM_PT
+import GMAP.src.tools.print_tools as GM_pt
 
 
 def adjust_map_core_raw(map_):
@@ -8,7 +8,7 @@ def adjust_map_core_raw(map_):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
     """
@@ -27,7 +27,7 @@ def adjust_map_core_raw(map_):
         "dp2_choice": "doublepos_1"
     }
     for parameter in ("pos_choice", "dp1_choice", "dp2_choice"):
-        choice = getattr(map_.RunPars, parameter)
+        choice = getattr(map_.run_pars, parameter)
         rawpar = pardict[parameter]
         match choice:
             case "C":  # the default
@@ -42,13 +42,13 @@ def adjust_map_core_raw(map_):
                 # map_.rawcore[rawpar] = ["(0+0.665*1+0.258*3)/1.923"]
                 map_.rawcore[rawpar] = ["0.077*0+0.665*1+0.258*3"]
 
-    match map_.RunPars.dipole_map_choice:
+    match map_.run_pars.dipole_map_choice:
         case "Torii":
             map_.rawcore["dipole_data_file"] = ["[N/A]"]
             map_.rawcore["dipole_gas_phase"] = ["0.276"]
         case "Jansen":
-            if not map_.RunPars.frequency_map_choice == "Jansen":
-                GM_PT.Printer.warning(  # no exitbool - error is not fatal.
+            if not map_.run_pars.frequency_map_choice == "Jansen":
+                GM_pt.Printer.warning(  # no exitbool - error is not fatal.
                     "Error in the map AmideSC: The Jansen dipole map was "
                     "requested without using the Jansen frequency map. Either "
                     "change your frequency map choice to Jansen, or "
@@ -66,14 +66,14 @@ def adjust_mcr_freqchoice(map_):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
     """
 
     # atom order: CG  OD1  CB  ND2  HD21  HD22
 
-    choice = map_.RunPars.frequency_map_choice
+    choice = map_.run_pars.frequency_map_choice
     parname = "frequency_data_file_linear"
     match choice:
         case "Skinner":  # the default
@@ -101,3 +101,13 @@ def adjust_mcr_freqchoice(map_):
             map_.rawcore["electrostatic_choice"] = ["V"]
             map_.rawcore["frequency_gas_phase"] = ["1747"]
             map_.rawcore[parname] = ["frequency_maps/Hirst.txt"]
+        case "Reppert_4PN-4":
+            map_.rawcore["electrostatic_atoms"] = ["0", "1", "3", "4"]
+            map_.rawcore["electrostatic_choice"] = ["V"]
+            map_.rawcore["frequency_gas_phase"] = ["1746.6"]
+            map_.rawcore[parname] = ["frequency_maps/Reppert_4PN-4.txt"]
+        case "Reppert_4PN-150":
+            map_.rawcore["electrostatic_atoms"] = ["0", "1", "3", "4"]
+            map_.rawcore["electrostatic_choice"] = ["V"]
+            map_.rawcore["frequency_gas_phase"] = ["1776.4"]
+            map_.rawcore[parname] = ["frequency_maps/Reppert_4PN-150.txt"]

@@ -3,13 +3,13 @@
 import numpy as np
 
 # gmap imports
-from GMAP.src.tools import constants as GM_con
-from GMAP.src.tools import FileHandler as GM_FH
-from GMAP.src.tools import ParameterParser as GM_PP
-from GMAP.src.tools import PrintTools as GM_PT
+import GMAP.src.tools.constants as GM_con
+import GMAP.src.tools.file_handler as GM_fh
+import GMAP.src.tools.parameter_parser as GM_pp
+import GMAP.src.tools.print_tools as GM_pt
 
 # own module imports
-import TRESP_code.TRESPclib as MC_TC
+import TRESP_code.TRESPclib as MC_tc
 
 _ = GM_con.bohr  # to validify the import. The import is needed for exec.
 
@@ -30,18 +30,16 @@ def GM_post_init(map_, system):
         # If a map has a dedicated function, use that instead of interpreting
         # the provided file.
 
-        if hasattr(osc.Map.code, "CP_TRESP_get_charges"):
-            map_.charges[osc.oscix] = osc.Map.code.CP_TRESP_get_charges(
-                    osc.Map, system, osc)
+        if hasattr(osc.map.code, "CP_TRESP_get_charges"):
+            map_.charges[osc.oscix] = osc.map.code.CP_TRESP_get_charges(
+                    osc.map, system, osc)
         # only look for each type of singles once.
-        elif osc.Map.name in map_charges:
-            map_.charges[osc.oscix] = map_charges[osc.Map.name]
+        elif osc.map.name in map_charges:
+            map_.charges[osc.oscix] = map_charges[osc.map.name]
         else:
-            map_charges[osc.Map.name] = get_charges(map_, osc.Map)
-            print(map_charges[osc.Map.name])
-            map_.charges[osc.oscix] = map_charges[osc.Map.name]
+            map_charges[osc.map.name] = get_charges(map_, osc.map)
 
-    MC_TC.init_map_for_clib(map_, system)
+    MC_tc.init_map_for_clib(map_, system)
 
 
 def GM_pre_run(map_, system):
@@ -79,7 +77,6 @@ def GM_calc_coupling(map_, system, hamiltonian):
 
 
 def get_charges(map_, oscmap):
-
     # This map contains the keyword for the TRESP charges file, obtain
     # that file's name
     fname = gc_get_filename(map_, oscmap)
@@ -107,9 +104,9 @@ def gc_get_filename(map_, oscmap):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.PairMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.PairMap`
         The TRESP map object
-    oscmap: :class:`~GMAP.src.tools.MapReader.SingleMap`
+    oscmap: :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map object of the map for which we'd like to obtain TRESP
         charges.
 
@@ -122,8 +119,8 @@ def gc_get_filename(map_, oscmap):
 
     fnameraw = oscmap.rawcore[f"{map_.name}.charges_filename"][0]
     fname = (oscmap.directory / fnameraw).resolve()
-    if GM_FH.try_file(fname) is None:
-        GM_PT.Printer.warning(
+    if GM_fh.try_file(fname) is None:
+        GM_pt.Printer.warning(
             f"\nThe map {oscmap.name} provided the following file to the "
             f"{map_.name} coupling map, but that file doesn't exist:\n"
             f"{fname}\nPlease make sure the map is installed correctly. If "
@@ -134,8 +131,8 @@ def gc_get_filename(map_, oscmap):
         map_.success = False
         return None
 
-    if not GM_FH.check_file_readability(fname, False, False):
-        GM_PT.Printer.warning(
+    if not GM_fh.check_file_readability(fname, False, False):
+        GM_pt.Printer.warning(
             f"\nThe map {oscmap.name} provided the following file to the "
             f"{map_.name} coupling map, but that file is of the wrong format:"
             f"\n{fname}\nPlease make sure the map is installed correctly. If "
@@ -156,9 +153,9 @@ def gc_get_file_contents(fname, map_, oscmap):
     ----------
     fname : pathlib.Path
         The path to the file that stores the TRESP charges.
-    map_ : :class:`~GMAP.src.tools.MapReader.PairMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.PairMap`
         The TRESP map object
-    oscmap: :class:`~GMAP.src.tools.MapReader.SingleMap`
+    oscmap: :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map object of the map for which we'd like to obtain TRESP
         charges.
 
@@ -174,14 +171,14 @@ def gc_get_file_contents(fname, map_, oscmap):
     contents = []
     with open(fname, encoding="utf-8") as fhand:
         for line in fhand:
-            line = GM_PP.cleanline(line).strip()
+            line = GM_pp.cleanline(line).strip()
             if line:
                 contents.append(line)
 
     try:
         contents = [float(item) for item in contents]
     except Exception:
-        GM_PT.Printer.warning(
+        GM_pt.Printer.warning(
             f"\nThe map {oscmap.name} provided the following file to the "
             f"{map_.name} coupling map, but that file has the wrong contents:"
             f"\n{fname}\nPlease make sure the map is installed correctly. If "
@@ -192,8 +189,8 @@ def gc_get_file_contents(fname, map_, oscmap):
         map_.success = False
         return None
 
-    if len(contents) > len(oscmap.Core.used_atoms):
-        GM_PT.Printer.warning(
+    if len(contents) > len(oscmap.core.used_atoms):
+        GM_pt.Printer.warning(
             f"\nThe map {oscmap.name} provided the following file to the "
             f"{map_.name} coupling map, but that file has too many contents:"
             f"\n{fname}\nPlease make sure the map is installed correctly. If "
@@ -217,9 +214,9 @@ def gc_get_multiplier(keyword, map_, oscmap):
     keyword : str
         The name of the parameter used in oscmap's core.txt file to
         store the multiplication factor.
-    map_ : :class:`~GMAP.src.tools.MapReader.PairMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.PairMap`
         The TRESP map object
-    oscmap: :class:`~GMAP.src.tools.MapReader.SingleMap`
+    oscmap: :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map object of the map for which we'd like to obtain TRESP
         charges.
 
@@ -236,7 +233,7 @@ def gc_get_multiplier(keyword, map_, oscmap):
     try:
         exec(cmdstr, globals(), pars)
     except Exception:
-        GM_PT.Printer.warning(
+        GM_pt.Printer.warning(
             "\nCould not interpret the choice for the keyword "
             f"'{keyword}' in the file {mapdir / 'core.txt'}. "
             "Please make sure the choice only contains numbers (and "
@@ -250,7 +247,7 @@ def gc_get_multiplier(keyword, map_, oscmap):
     try:
         multiplier = float(pars["multiplier"])
     except Exception:
-        GM_PT.Printer.warning(
+        GM_pt.Printer.warning(
             "\nCould not interpret the choice for the keyword "
             f"'multiply_freq' in the file {mapdir / 'core.txt'}. "
             "Please make sure the choice only contains numbers (and "

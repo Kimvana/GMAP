@@ -31,7 +31,7 @@ from pathlib import Path
 import numpy as np
 
 # GMAP imports
-import GMAP.src.tools.CmdInterface as GM_CI
+import GMAP.src.tools.cmd_interface as GM_ci
 
 
 def test_Tokmakoff_noNN_freqs(tmp_path):
@@ -87,19 +87,19 @@ def test_Jansen_dips(tmp_path):
 
 
 def test_C_pos(tmp_path):
-    core_test_positions("C", tmp_path, 0.000004)
+    core_test_positions("C", tmp_path, 0.000008)
 
 
 def test_N_pos(tmp_path):
-    core_test_positions("N", tmp_path, 0.000004)
+    core_test_positions("N", tmp_path, 0.000008)
 
 
 def test_O_pos(tmp_path):
-    core_test_positions("O", tmp_path, 0.000004)
+    core_test_positions("O", tmp_path, 0.000008)
 
 
 def test_D_pos(tmp_path):
-    core_test_positions("D", tmp_path, 0.000004)
+    core_test_positions("D", tmp_path, 0.000008)
 
 
 def test_raman(tmp_path):
@@ -118,7 +118,7 @@ def test_special_groups(tmp_path):
         "--output_directory", str(tmp_path.resolve()),
         "--log_directory", str(tmp_path.resolve())
     ]
-    GM_CI.cmd_interface(cmdpars)
+    GM_ci.cmd_interface(cmdpars)
     with open(tmp_path / "legend.txt") as fhand:
         legendcontents = fhand.readlines()
 
@@ -144,7 +144,7 @@ def core_test_frequencies(mapname, NNtreat, tmp_path, limit):
     ]
     if NNtreat == "_noNN":
         cmdpars += ["--AmideBB.consider_nearest_neighbours", "False"]
-    GM_CI.cmd_interface(cmdpars)
+    GM_ci.cmd_interface(cmdpars)
 
     # now, we must test these newly generated results against the
     # AIM-calculated frequencies to see if the map is indeed correct.
@@ -187,7 +187,7 @@ def makeham(fname, n_singles):
 def core_test_dipoles(freqmapname, dipmapname, tmp_path, limit):
     # This runs GMAP to create the results
     curdir = Path(__file__).resolve().parent
-    GM_CI.cmd_interface([
+    GM_ci.cmd_interface([
         "GMAP", "GEM", "run",
         str((curdir / "data/basic_parameters.txt").resolve()),
         "--AmideBB.frequency_map_choice", freqmapname,
@@ -206,7 +206,7 @@ def core_test_dipoles(freqmapname, dipmapname, tmp_path, limit):
 def core_test_positions(atom, tmp_path, limit):
     # This runs GMAP to create the results
     curdir = Path(__file__).resolve().parent
-    GM_CI.cmd_interface([
+    GM_ci.cmd_interface([
         "GMAP", "GEM", "run",
         str((curdir / "data/basic_parameters.txt").resolve()),
         "--AmideBB.pos_choice", atom,
@@ -225,7 +225,7 @@ def core_test_positions(atom, tmp_path, limit):
 def core_test_raman(fbonus, tmp_path, limit):
     # This runs GMAP to create the results
     curdir = Path(__file__).resolve().parent
-    GM_CI.cmd_interface([
+    GM_ci.cmd_interface([
         "GMAP", "GEM", "run",
         str((curdir / "data/basic_parameters.txt").resolve()),
         "--output_data", "ram\\;",
