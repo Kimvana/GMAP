@@ -388,7 +388,7 @@ def GM_calculate_frequency(map_, system, osc):
         freq += MC_cm.neighbor_influence(map_, system, osc)
 
     # paper says D2O = 0.791 * H2O + 340 -> inverting this gives the below.
-    if map_.RunPars.solvent == "H2O":
+    if map_.run_pars.solvent == "H2O":
         freq = (freq - 340) / 0.791
 
     return freq
@@ -532,7 +532,7 @@ def GM_report_references(map_, system):
     report_these.append("RamanAmide")
 
     # Report the paper used for converting from D2O to H2O
-    if map_.RunPars.solvent == "H2O":
+    if map_.run_pars.solvent == "H2O":
         report_these.append("H20conv")
 
     # do we have any pros?
