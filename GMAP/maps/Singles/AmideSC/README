@@ -34,11 +34,11 @@ When using this map, the following parameters become available to use in any inp
 
 AmideSC.frequency_map_choice
     shorthand: AmideSC.fmc
-    options: Tokmakoff, Skinner, Jansen, Cho, Hirst (default = Skinner)
+    options: Tokmakoff, Skinner, Jansen, Cho, Hirst, Reppert_4PN-4, Reppert_4PN-150 (default = Skinner)
 
     Indicate the program which frequency map should be used. Skinner is the default as it gives the best result for 2-dimensional IR absorption spectra, while being fairly cheap. It is also the only map which has a separately-developed map for sidechains, instead of using the backbone maps with a fixed shift.  (https://doi.org/10.1021/acs.jctc.6b00420)
 
-    Tokmakoff, Cho and Hirst maps are cheaper than Skinner, but still provide decent results. Jansen is more expensive than Skinner, but gives results closer to experiment when predicting linear IR spectra. (same reference)
+    Tokmakoff, Cho, Hirst and Reppert maps are cheaper than Skinner, but still provide decent results. Jansen is more expensive than Skinner, but gives results closer to experiment when predicting linear IR spectra. (same reference)
 
 AmideSC.dipole_map_choice
     shorthand: AmideSC.dmc
@@ -83,9 +83,12 @@ AmideSC.legacy_mode
 
     Whether to recreate the results as produced by the precursors of this package. All options create results of the same format and magnitude, making all of them valid for use with software like NISE.
 
-    There are some small differences between the different programs. For this map, the differences are very small: in the case this parameter is set to AIM, the positions are slightly different. Imagine the MD calculations returning a cubic box with all sides of length 100. When GMAP returns the positions, all components will lie between -50 and 50. However, when AIM returns the positions, all components will fall between 0 and 100.
+    There are some small differences between the different programs. For this map, the differences are very small: in the case this parameter is set to AIM, the positions are slightly different. Imagine the MD calculations returning a cubic box with all sides of length 100. When GMAP returns the positions, all components will lie between -50 and +50 of the provided mid point using the 'treat_box' parameter. However, when AIM returns the positions, all components will fall between 0 and 100.
 
     Which should you use? If you just want to compute spectra, stick with 'none'. It gives the most recent, detailed version, with any known bugs fixed. The main reason for changing to a legacy mode is for re-creating results from previous versions, so comparison between different results or packages can be made.
+
+    Warning!
+    When using the legacy_mode set to AIM, the treat_box parameter is ignored by this map!
 
 AmideSC.solvent
     no shorthand

@@ -6,8 +6,8 @@ A basis for all tests. Things here are available to all tests!
 import pytest
 
 # local imports
-import GMAP.src.tools.CodingTools as GM_CT
-import GMAP.src.tools.FileHandler as GM_FH
+import GMAP.src.tools.coding_tools as GM_ct
+import GMAP.src.tools.file_handler as GM_fh
 
 
 # To report to the user that this file is present and active
@@ -36,10 +36,10 @@ def my_fixture(request):
 
 @pytest.fixture(autouse=True)
 def pre_test(request):
-    GM_CT.Singleton._instances = {}
+    GM_ct.Singleton._instances = {}
     if "nofiles" in request.keywords:
         return
-    GM_FH.FileLocations()
+    GM_fh.FileLocations()
 
 
 def pytest_configure(config):

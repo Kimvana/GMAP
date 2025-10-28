@@ -22,9 +22,9 @@ Basic structure
 
 There are a few objects that occur quite often as an argument for these functions. Here is a quick overview of them:
 
-Map
+map\_
 =====
-An instance of :class:`~GMAP.src.tools.MapReader.PairMap`. Stores all information of this class. This is the most important object, as it stores everything related to this class. As functions of the map can change how the map is registered, this object will look different during the different functions. Here is an overview of all attributes the class can have, at each function it will be explained/highlighted what attributes are available at that point.
+An instance of :class:`~GMAP.src.tools.map_reader.PairMap`. Stores all information of this class. This is the most important object, as it stores everything related to this class. As functions of the map can change how the map is registered, this object will look different during the different functions. Here is an overview of all attributes the class can have, at each function it will be explained/highlighted what attributes are available at that point.
 
 It is probable that the map wants to save information between functions, too, just like the main program. These data structures must be saved as an attribute to the instance of the class, as per good coding practices. This overview of attributes should help indicate what names are and aren't available.
 
@@ -34,26 +34,26 @@ It is probable that the map wants to save information between functions, too, ju
 - self.type (type str) is the type of the map - either Singles or Pairs. Singles maps operate on a single oscillator (think of maps giving an oscillator frequency), Pairs maps operate on a pair of oscillators (think of maps giving a coupling value).
 - self.success (type bool) denotes whether the map has (until this point) been read successfully. An unsuccessful map will not trigger the program to quit, as long as the user does not want to use this map.
 - self.avail_files (type list of pathlib.Path) is a list of all files that are in the same map directory in this map (or in its parent directory). These are the files that can be used for appending using 'add_corefile' in the core file.
-- self.RefPars (type :class:`~GMAP.src.tools.ParameterParser.RefPars`) contains all information from the map-specific reference parameters file.
-- self.DefPars (type :class:`~GMAP.src.tools.ParameterParser.RawPars`) contains all choices for parameters for this map that were found in the default parameter file. Either all parameters are present, or none, depending on the default parameter file.
-- self.InPars (type :class:`~GMAP.src.tools.ParameterParser.RawPars`) contains all choices for parameters for this map that were found in the input parameter file. May be empty.
-- self.CmdPars (type :class:`~GMAP.src.tools.ParameterParser.RawPars`) contains all choices for parameters for this map that were found on the command line. May be empty.
-- self.RunPars (type :class:`~GMAP.src.tools.ParameterParser.RunPars` or None) contains the combination of all parameter sources, where self.CmdPars \> self.InPars \> self.DefPars \> self.RefPars. If this behaviour is too naive, the contents can be changed with the function GM_adjust_RunPars listed below. This is where other functions should retrieve parameter choices from.
+- self.ref_pars (type :class:`~GMAP.src.tools.parameter_parser.RefPars`) contains all information from the map-specific reference parameters file.
+- self.def_pars (type :class:`~GMAP.src.tools.parameter_parser.RawPars`) contains all choices for parameters for this map that were found in the default parameter file. Either all parameters are present, or none, depending on the default parameter file.
+- self.in_pars (type :class:`~GMAP.src.tools.parameter_parser.RawPars`) contains all choices for parameters for this map that were found in the input parameter file. May be empty.
+- self.cmd_pars (type :class:`~GMAP.src.tools.parameter_parser.RawPars`) contains all choices for parameters for this map that were found on the command line. May be empty.
+- self.run_pars (type :class:`~GMAP.src.tools.parameter_parser.RunPars` or None) contains the combination of all parameter sources, where self.cmd_pars \> self.in_pars \> self.def_pars \> self.ref_pars. If this behaviour is too naive, the contents can be changed with the function GM_adjust_run_pars listed below. This is where other functions should retrieve parameter choices from.
 
-  .. tip:: self.RunPars also has a reference to the main-program RunPars - it is stored as self.RunPars.MainRunPars.
+  .. tip:: self.run_pars also has a reference to the main-program RunPars - it is stored as self.run_pars.main_run_pars.
 - self.code (type module) contains all functions defined in main.py. Any functions that the program needs, but are not specified in main.py are automatically filled in. Any object that the program does not require, but is still there, is also available.
 - self.rawcore (type dict of str-list pairs) contains the information from core.txt, before parsing. The function GM_adjust_map_core_raw can change this simple structure before it is being parsed into more complex structures and functions later.
-- self.Core (type :class:`~GMAP.src.tools.MapReader.PairCore`) contains the information from core.txt, after parsing.
+- self.core (type :class:`~GMAP.src.tools.map_reader.PairCore`) contains the information from core.txt, after parsing.
 - self.allpairs (type numpy array, dtype int32, shape (npairs, 2) ) contains all pairs that should be coupled using this pair map. This array has already taken into account any changes due to the function change_coup_type. Looping over a numpy array isn't fast, so map developers are encouraged to use these arrays wisely.
 
 
-Syst
-====
-An instance of :class:`~GMAP.src.tools.SystemReader.System`. Stores all available information about the MD system used. Think atom-based information on it's name, element, type, the name and number of its residue, molecule, segment. Also charges, positions, masses and such are in here. 
+system
+======
+An instance of :class:`~GMAP.src.tools.system_reader.System`. Stores all available information about the MD system used. Think atom-based information on it's name, element, type, the name and number of its residue, molecule, segment. Also charges, positions, masses and such are in here. 
 
 
 .. important:: 
-    When your functions should report/print anything, **do not** use the python build-in function print. Instead, import the GMAP PrintTools module (``from GMAP.src.tools import PrintTools as GM_PT``), from which you can call an instance of the Printer class. This instance is a singleton (so all print settings for that run are already set), so don't change it! But you can have it print (``GM_PT.Printer.print``), or even trigger an error (``GM_PT.Printer.warning``). See :class:`~GMAP.src.tools.PrintTools.Printer` for detailed information on using these functions.
+    When your functions should report/print anything, **do not** use the python build-in function print. Instead, import the GMAP print_tools module (``from GMAP.src.tools import print_tools as GM_pt``), from which you can call an instance of the Printer class. This instance is a singleton (so all print settings for that run are already set), so don't change it! But you can have it print (``GM_pt.Printer.print``), or even trigger an error (``GM_pt.Printer.warning``). See :class:`~GMAP.src.tools.print_tools.Printer` for detailed information on using these functions.
 
 
 *************************
@@ -64,11 +64,11 @@ The function are in the order at which they're called by the program. This means
 
 
 
-.. #region GM_adjust_RunPars
+.. #region GM_adjust_run_pars
 
-GM_adjust_RunPars
+GM_adjust_run_pars
 ======================================
-Makes the necessary changes to Map.RunPar.
+Makes the necessary changes to map\_.run\_pars.
 
 Is expected to not return anything - return value is not caught.
 
@@ -78,7 +78,7 @@ Example uses
 
 interlinked parameters
 ^^^^^^^^^^^^^^^^^^^^^^
-Take the three parameters start_frame, end_frame and frames_tocalc. In the default file, these may be set to 0, 100 and 100 respectively. This makes sense, as if you start on frame 0 and end at frame 100 (exclusive), you will see 100 frames. But if in the input file the choice to start at frame 10 was given, the default RunPars creation will select the numbers 10, 100, 100, which doesn't make sense (there is not 100 frames to treat between frames 10 and 100). Custom code can change these to 10, 100, 90.
+Take the three parameters start_frame, end_frame and frames_tocalc. In the default file, these may be set to 0, 100 and 100 respectively. This makes sense, as if you start on frame 0 and end at frame 100 (exclusive), you will see 100 frames. But if in the input file the choice to start at frame 10 was given, the default run_pars creation will select the numbers 10, 100, 100, which doesn't make sense (there is not 100 frames to treat between frames 10 and 100). Custom code can change these to 10, 100, 90.
 
 dependent parameters
 ^^^^^^^^^^^^^^^^^^^^
@@ -95,16 +95,16 @@ Available attributes of map\_
     * self.type
     * self.success
     * self.avail_files
-    * self.RefPars
-    * self.DefPars
-    * self.InPars
-    * self.CmdPars
-    * self.RunPars
+    * self.ref_pars
+    * self.def_pars
+    * self.in_pars
+    * self.cmd_pars
+    * self.run_pars
     * self.code
 
 Parameters
 ----------
-map\_ : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.map_reader.Map`
     The object that stores everything the program currently knows
     about this map.
 
@@ -117,7 +117,7 @@ Default implementation
 
 .. code-block:: python
 
-    def GM_adjust_RunPars(map_):
+    def GM_adjust_run_pars(map_):
         pass
 .. #endregion
 
@@ -132,9 +132,9 @@ Makes the necessary changes to the 'raw' input read from core.txt.
 
 Is expected to not return anything - return value is not caught.
 
-The core.txt file is stored in Map.rawcore. It has not yet been parsed, just loaded into a dictionary. In this dictionary, each keyword is its own dictionary key. Most keywords can only occur once in the file - those have a list of the 'words' on the line as their value. The parameters that are allowed to occur more than once have a list as value, in which other lists appear - one for each line.
+The core.txt file is stored in map\_.rawcore. It has not yet been parsed, just loaded into a dictionary. In this dictionary, each keyword is its own dictionary key. Most keywords can only occur once in the file - those have a list of the 'words' on the line as their value. The parameters that are allowed to occur more than once have a list as value, in which other lists appear - one for each line.
 
-The purpose of this function is to change this dictionary. Perhaps, a rule in core.txt is dependent on a parameter of the map. This function can make a decision based on those parameters (stored in Map.RunPars).
+The purpose of this function is to change this dictionary. Perhaps, a rule in core.txt is dependent on a parameter of the map. This function can make a decision based on those parameters (stored in map\_.run_pars).
 
 
 Example uses
@@ -157,18 +157,18 @@ Available attributes of map\_
     * self.type
     * self.success
     * self.avail_files
-    * self.RefPars
-    * self.DefPars
-    * self.InPars
-    * self.CmdPars
-    * self.RunPars
+    * self.ref_pars
+    * self.def_pars
+    * self.in_pars
+    * self.cmd_pars
+    * self.run_pars
     * self.code
     * self.rawcore
 
 
 Parameters
 ----------
-map\_ : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.map_reader.Map`
     The object that stores everything the program currently knows
     about this map.
 
@@ -225,29 +225,29 @@ Available attributes of map\_
     * self.type
     * self.success
     * self.avail_files
-    * self.RefPars
-    * self.DefPars
-    * self.InPars
-    * self.CmdPars
-    * self.RunPars
+    * self.ref_pars
+    * self.def_pars
+    * self.in_pars
+    * self.cmd_pars
+    * self.run_pars
     * self.code
     * self.rawcore
 
 
 Parameters
 ----------
-map\_ : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.map_reader.Map`
     The object that stores everything the program currently knows
     about this map.
-system : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.system_reader.System`
     The object that stores everyting the program currently knows about the MD system.
 oscix1 : int
     The oscillator index of the first oscillator of this pair. This is its index in output structures, like the hamiltonian or dipoles file.
-osc1 : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+osc1 : :class:`~GMAP.src.tools.system_reader.Oscillator`
     The first oscillator in this pair.
 oscix2 : int
     The oscillator index of the second oscillator of this pair. This is its index in output structures, like the hamiltonian or dipoles file.
-osc2 : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+osc2 : :class:`~GMAP.src.tools.system_reader.Oscillator`
     The second oscillator in this pair.
 
 Returns
@@ -302,25 +302,25 @@ Available attributes of map\_
     * self.type
     * self.success
     * self.avail_files
-    * self.RefPars
-    * self.DefPars
-    * self.InPars
-    * self.CmdPars
-    * self.RunPars
+    * self.ref_pars
+    * self.def_pars
+    * self.in_pars
+    * self.cmd_pars
+    * self.run_pars
     * self.code
     * self.rawcore
 
 
 Parameters
 ----------
-map\_ : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.map_reader.Map`
     The object that stores everything the program currently knows
     about this map.
-system : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.system_reader.System`
     The object that stores everyting the program currently knows about the MD system.
 oscixlist : list of int
     The oscillator indices of all oscillators that are treated by this map. Some might be only in a single pair, others in many.
-osclist : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+osclist : list of :class:`~GMAP.src.tools.system_reader.Oscillator`
     All oscillators treated by this map.
 
 Returns
@@ -378,21 +378,21 @@ Available attributes of map\_
     * self.type
     * self.success
     * self.avail_files
-    * self.RefPars
-    * self.DefPars
-    * self.InPars
-    * self.CmdPars
-    * self.RunPars
+    * self.ref_pars
+    * self.def_pars
+    * self.in_pars
+    * self.cmd_pars
+    * self.run_pars
     * self.code
     * self.rawcore
 
 
 Parameters
 ----------
-map\_ : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.map_reader.Map`
     The object that stores everything the program currently knows
     about this map.
-system : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.system_reader.System`
     The object that stores everyting the program currently knows about the MD system.
 hamiltonian : `np.ndarray`
     The hamiltonian of the full system. Consists of float32, has a column and a row for each oscillator.
@@ -442,7 +442,7 @@ Changing units
 ^^^^^^^^^^^^^^
 The main purpose of a map is to provide constants to calculate spectroscopic properties. These constants assume that the properties they are combined with are provided in certain units (see the :ref:`units page<AddMap_units>` for more information). However, these assumptions might not always match this program. 
 
-One could either do the conversion first, and save the converted constants with the correct assumptions in the files supplied to GMAP, or let GMAP do this conversion. The latter might be preferred if one wants the files to match the original publication of the map. In that case, this function here is the best place for a map to do the conversion. To make the conversion easy, use the function Map.Core.change_map_units().
+One could either do the conversion first, and save the converted constants with the correct assumptions in the files supplied to GMAP, or let GMAP do this conversion. The latter might be preferred if one wants the files to match the original publication of the map. In that case, this function here is the best place for a map to do the conversion. To make the conversion easy, use the function map\_.core.change_map_units().
 
 
 Available attributes of map\_
@@ -457,22 +457,22 @@ Available attributes of map\_
     * self.type
     * self.success
     * self.avail_files
-    * self.RefPars
-    * self.DefPars
-    * self.InPars
-    * self.CmdPars
-    * self.RunPars
+    * self.ref_pars
+    * self.def_pars
+    * self.in_pars
+    * self.cmd_pars
+    * self.run_pars
     * self.code
     * self.rawcore
-    * self.Core
+    * self.core
 
 
 Parameters
 ----------
-map\_ : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.map_reader.Map`
     The object that stores everything the program currently knows
     about this map.
-system : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.system_reader.System`
     The object that stores everyting the program currently knows about the MD system.
 
 Returns
@@ -520,22 +520,22 @@ Available attributes of map\_
     * self.type
     * self.success
     * self.avail_files
-    * self.RefPars
-    * self.DefPars
-    * self.InPars
-    * self.CmdPars
-    * self.RunPars
+    * self.ref_pars
+    * self.def_pars
+    * self.in_pars
+    * self.cmd_pars
+    * self.run_pars
     * self.code
     * self.rawcore
-    * self.Core
+    * self.core
 
 
 Parameters
 ----------
-map\_ : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.map_reader.Map`
     The object that stores everything the program currently knows
     about this map.
-system : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.system_reader.System`
     The object that stores everyting the program currently knows about the MD system.
 
 Returns
@@ -585,22 +585,22 @@ Available attributes of map\_
     * self.type
     * self.success
     * self.avail_files
-    * self.RefPars
-    * self.DefPars
-    * self.InPars
-    * self.CmdPars
-    * self.RunPars
+    * self.ref_pars
+    * self.def_pars
+    * self.in_pars
+    * self.cmd_pars
+    * self.run_pars
     * self.code
     * self.rawcore
-    * self.Core
+    * self.core
 
 
 Parameters
 ----------
-map\_ : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.map_reader.Map`
     The object that stores everything the program currently knows
     about this map.
-system : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.system_reader.System`
     The object that stores everyting the program currently knows about the MD system.
 
 Returns
@@ -648,22 +648,22 @@ Available attributes of map\_
     * self.type
     * self.success
     * self.avail_files
-    * self.RefPars
-    * self.DefPars
-    * self.InPars
-    * self.CmdPars
-    * self.RunPars
+    * self.ref_pars
+    * self.def_pars
+    * self.in_pars
+    * self.cmd_pars
+    * self.run_pars
     * self.code
     * self.rawcore
-    * self.Core
+    * self.core
 
 
 Parameters
 ----------
-map\_ : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.map_reader.Map`
     The object that stores everything the program currently knows
     about this map.
-system : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.system_reader.System`
     The object that stores everyting the program currently knows about the MD system.
 
 Returns
@@ -711,22 +711,22 @@ Available attributes of map\_
     * self.type
     * self.success
     * self.avail_files
-    * self.RefPars
-    * self.DefPars
-    * self.InPars
-    * self.CmdPars
-    * self.RunPars
+    * self.ref_pars
+    * self.def_pars
+    * self.in_pars
+    * self.cmd_pars
+    * self.run_pars
     * self.code
     * self.rawcore
-    * self.Core
+    * self.core
 
 
 Parameters
 ----------
-map\_ : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.map_reader.Map`
     The object that stores everything the program currently knows
     about this map.
-system : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.system_reader.System`
     The object that stores everyting the program currently knows about the MD system.
 
 Returns
@@ -758,7 +758,7 @@ All references present in the references file are saved as ``map_.references``, 
 
 The keys in this dictionary are the separate keys listed in the reference.bib file's 'mapkey' field. If the reference has multiple keys in that field, it will occur multiple times in the dictionary, once for each key.
 
-Associated with each key is a list of :class:`~GMAP.src.tools.ReferenceHandler.Reference` objects, each of which corresponds to a single entry in the .bib file.
+Associated with each key is a list of :class:`~GMAP.src.tools.reference_handler.Reference` objects, each of which corresponds to a single entry in the .bib file.
 
 
 Example uses
@@ -781,23 +781,23 @@ Available attributes of map\_
     * self.type
     * self.success
     * self.avail_files
-    * self.RefPars
-    * self.DefPars
-    * self.InPars
-    * self.CmdPars
-    * self.RunPars
+    * self.ref_pars
+    * self.def_pars
+    * self.in_pars
+    * self.cmd_pars
+    * self.run_pars
     * self.code
     * self.rawcore
-    * self.Core
+    * self.core
     * self.references
 
 
 Parameters
 ----------
-map\_ : :class:`~GMAP.src.tools.MapReader.Map`
+map\_ : :class:`~GMAP.src.tools.map_reader.Map`
     The object that stores everything the program currently knows
     about this map.
-system : :class:`~GMAP.src.tools.SystemReader.System`
+system : :class:`~GMAP.src.tools.system_reader.System`
     The object that stores everyting the program currently knows about the MD system.
 
 
@@ -815,7 +815,7 @@ The default is to just return the entire ``map_.references`` dictionary, without
 
 .. code-block:: python
 
-    import GMAP.src.tools.PhysicsFunctions as GM_PF
+    import GMAP.src.tools.physics_functions as GM_pf
 
     def GM_report_references(map_, system):
         return map_.references

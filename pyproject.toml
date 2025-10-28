@@ -41,7 +41,7 @@ GMAP = ["sourcefiles/**", "maps/**", "logo.txt"]
 
 
 [project.scripts]
-GMAP = "GMAP.src.tools.CmdInterface:main"
+GMAP = "GMAP.src.tools.cmd_interface:main"
 
 
 [tool.setuptools]

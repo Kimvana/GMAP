@@ -36,7 +36,7 @@ When creating a map, the program wants to know quite a few values from you. This
 Maps in the Singles directory
 =============================
 
-Core.txt
+core.txt
 --------
 
 frequency_gas_phase

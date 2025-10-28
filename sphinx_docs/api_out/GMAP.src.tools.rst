@@ -7,23 +7,23 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   GMAP.src.tools.CLibLoader
-   GMAP.src.tools.CmdInterface
-   GMAP.src.tools.CodingTools
-   GMAP.src.tools.ColorSchemes
-   GMAP.src.tools.DefaultMapFunctions
-   GMAP.src.tools.Exceptions
-   GMAP.src.tools.FileHandler
-   GMAP.src.tools.MapReader
-   GMAP.src.tools.MathFunctions
-   GMAP.src.tools.ParameterParser
-   GMAP.src.tools.PhysicsFunctions
-   GMAP.src.tools.Plotter
-   GMAP.src.tools.PrintTools
-   GMAP.src.tools.ReferenceHandler
-   GMAP.src.tools.StringClasses
-   GMAP.src.tools.SystemReader
+   GMAP.src.tools.clib_loader
+   GMAP.src.tools.cmd_interface
+   GMAP.src.tools.coding_tools
+   GMAP.src.tools.color_schemes
    GMAP.src.tools.constants
+   GMAP.src.tools.default_map_functions
+   GMAP.src.tools.exceptions
+   GMAP.src.tools.file_handler
+   GMAP.src.tools.map_reader
+   GMAP.src.tools.math_functions
+   GMAP.src.tools.parameter_parser
+   GMAP.src.tools.physics_functions
+   GMAP.src.tools.plotter
+   GMAP.src.tools.print_tools
+   GMAP.src.tools.reference_handler
+   GMAP.src.tools.string_classes
+   GMAP.src.tools.system_reader
 
 Module contents
 ---------------

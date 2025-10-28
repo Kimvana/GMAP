@@ -4,8 +4,8 @@ import numpy as np
 
 # GMAP imports
 import GMAP.src.tools.constants as GM_con
-import GMAP.src.tools.MathFunctions as GM_MF
-import GMAP.src.tools.PrintTools as GM_PT
+import GMAP.src.tools.math_functions as GM_mf
+import GMAP.src.tools.print_tools as GM_pt
 
 
 class NeighborMap:
@@ -21,7 +21,7 @@ class NeighborMap:
     ----------
     fname : str or `pathlib.Path`
         the name of the file that contains the map information
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
 
@@ -43,7 +43,7 @@ class NeighborMap:
         try:
             self.data = np.loadtxt(fname)
         except Exception as ex:
-            GM_PT.Printer.warning(
+            GM_pt.Printer.warning(
                 "\nCould not interpret the data "
                 f" in the file {fname}. Please make sure "
                 "the file was not changed since downloading, contains "
@@ -54,7 +54,7 @@ class NeighborMap:
             map_.success = False
             return
         if self.data.shape != (13, 13):
-            GM_PT.Printer.warning(
+            GM_pt.Printer.warning(
                 "\nCould not interpret the data "
                 f" in the file {fname}. Please make sure "
                 "the file was not changed since downloading, and contains "
@@ -92,9 +92,9 @@ class NeighborMap:
 
         Parameters
         ----------
-        Nosc, Cosc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+        Nosc, Cosc : :class:`~GMAP.src.tools.system_reader.Oscillator`
             The oscillators for which the shift should be calculated.
-        system : :class:`~GMAP.src.tools.SystemReader.System`
+        system : :class:`~GMAP.src.tools.system_reader.System`
             The object that stores everything the program currently
             knows about the system being treated (names, numbers, types,
             masses, charges of all atoms, for example)
@@ -109,10 +109,10 @@ class NeighborMap:
         # calculate the ramachandran angles
         Nbpos = Nosc.positions_box
         Cbpos = Cosc.positions_box
-        phi_ang = GM_MF.dihedral_boxcoords(  # around NCA, angle of two Cs
+        phi_ang = GM_mf.dihedral_boxcoords(  # around NCA, angle of two Cs
             Nbpos[0], Nbpos[3], Nbpos[5], Cbpos[0], system.boxvects)
         phi_ang, phi_N = self.process_angle(phi_ang)
-        psi_ang = GM_MF.dihedral_boxcoords(  # around CAC, angle of two Ns
+        psi_ang = GM_mf.dihedral_boxcoords(  # around CAC, angle of two Ns
             Nbpos[3], Nbpos[5], Cbpos[0], Cbpos[3], system.boxvects)
         psi_ang, psi_N = self.process_angle(psi_ang)
 
@@ -129,7 +129,7 @@ class NeighborMap:
             delta = (1-u)*(1-t)*y1 + (1-u)*t*y2 + u*t*y3 + u*(1-t)*y4
 
         else:
-            GM_PT.Printer.warning(
+            GM_pt.Printer.warning(
                 "Ill defined ramachandran angles found for residue "
                 f"{Nosc.resnames[1]}{Nosc.resnums[1]}. The nearest "
                 "neighbour shift will be set to zero.", "map_AmideBB_5"
@@ -145,7 +145,7 @@ def read_maps(map_):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
     """

@@ -3,11 +3,11 @@
 import ctypes as ct
 
 # gmap imports
-import GMAP.src.tools.CodingTools as GM_CT
-import GMAP.src.tools.FileHandler as GM_FH
+import GMAP.src.tools.coding_tools as GM_ct
+import GMAP.src.tools.file_handler as GM_fh
 
 
-class TCC_Clib(metaclass=GM_CT.Singleton):
+class TCC_Clib(metaclass=GM_ct.Singleton):
     """Stores and manages all c functions for this map.
 
     Each (external) function in the library has it's own associated
@@ -19,7 +19,7 @@ class TCC_Clib(metaclass=GM_CT.Singleton):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.PairMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.PairMap`
         The TCC map object in the code - this will be the object that
         gains the new c-library attribute.
 
@@ -46,6 +46,7 @@ class TCC_Clib(metaclass=GM_CT.Singleton):
     def __init__(self, map_):
         self.clib = ct.CDLL(str(map_.clibfile))
 
+        self.clib.prep_coupling.restype = None
         self.clib.prep_coupling.argtypes = [
             ct.c_int,  # nosc
             ct.c_int,  # noscats
@@ -60,8 +61,8 @@ class TCC_Clib(metaclass=GM_CT.Singleton):
             ct.POINTER(ct.c_float),  # v_pro
             ct.POINTER(ct.c_float)  # tcc_v
         ]
-        self.clib.prep_coupling.restype = None
 
+        self.clib.calc_coupling.restype = None
         self.clib.calc_coupling.argtypes = [
             ct.c_int,  # npairs
             ct.POINTER(ct.c_int),  # allpairs
@@ -80,7 +81,6 @@ class TCC_Clib(metaclass=GM_CT.Singleton):
             ct.c_int,  # totosc
             ct.POINTER(ct.c_float)  # hamiltonian
         ]
-        self.clib.calc_coupling.restype = None
 
     def prep_coupling(self, map_, system):
         """Prepare all couplings for this map, this frame.
@@ -92,10 +92,10 @@ class TCC_Clib(metaclass=GM_CT.Singleton):
 
         Parameters
         ----------
-        map_ : :class:`~GMAP.src.tools.MapReader.PairMap`
+        map_ : :class:`~GMAP.src.tools.map_reader.PairMap`
             The TRESP map object in the code - this will be the object
             that gains the new c-library attribute.
-        system : :class:`~GMAP.src.tools.SystemReader.System`
+        system : :class:`~GMAP.src.tools.system_reader.System`
             The object that stores everything the program currently
             knows about the system being treated (names, numbers, types,
             masses, charges of all atoms, for example)
@@ -124,10 +124,10 @@ class TCC_Clib(metaclass=GM_CT.Singleton):
 
         Parameters
         ----------
-        map_ : :class:`~GMAP.src.tools.MapReader.PairMap`
+        map_ : :class:`~GMAP.src.tools.map_reader.PairMap`
             The TCC map object in the code - this will be the object
             that gains the new c-library attribute.
-        system : :class:`~GMAP.src.tools.SystemReader.System`
+        system : :class:`~GMAP.src.tools.system_reader.System`
             The object that stores everything the program currently
             knows about the system being treated (names, numbers, types,
             masses, charges of all atoms, for example)
@@ -165,15 +165,15 @@ def init_map_for_clib(map_, system):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.PairMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.PairMap`
         The TCC map object in the code - this will be the object that
         gains the new c-library attribute.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
     """
 
     map_.clibfile = map_.directory / "src"
-    map_.clibfile /= "TCC_clib" + GM_FH.FileLocations.clib_extension
+    map_.clibfile /= "TCC_clib" + GM_fh.FileLocations.clib_extension
     map_.clib = TCC_Clib(map_)

@@ -31,56 +31,56 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # local imports
-import GMAP.src.tools.CLibLoader as GM_CL
-import GMAP.src.tools.MapReader as GM_MR
-import GMAP.src.tools.ParameterParser as GM_PP
-import GMAP.src.tools.PrintTools as GM_PT
-import GMAP.src.tools.SystemReader as GM_SR
+import GMAP.src.tools.clib_loader as GM_cl
+import GMAP.src.tools.map_reader as GM_mr
+import GMAP.src.tools.parameter_parser as GM_pp
+import GMAP.src.tools.print_tools as GM_pt
+import GMAP.src.tools.system_reader as GM_sr
 
 
-def calc_data(Printer, RunPars, System):
+def calc_data(printer, run_pars, system):
     # GEM is now done - let maps initialize as well
-    for mapname in System.oscillators_ordered.keys():
-        map_ = RunPars.requested_mapdict[mapname]
-        map_.code.GM_pre_run(Printer, map_, System)
+    for mapname in system.oscillators_ordered.keys():
+        map_ = run_pars.requested_mapdict[mapname]
+        map_.code.GM_pre_run(printer, map_, system)
 
     # And in case maps did anything weird...
-    RunPars.manage_dtypes()
-    Printer.add_time(3, "Starting on calculation", "ms")
+    run_pars.manage_dtypes()
+    printer.add_time(3, "Starting on calculation", "ms")
 
-    System.update_properties(RunPars)
-    Printer.add_time(4, "done system updates. next: osc updates", "ms")
+    system.update_properties(run_pars)
+    printer.add_time(4, "done system updates. next: osc updates", "ms")
 
     # only consider a single oscillator
-    System.oscillators = [System.oscillators[0]]
-    System.nosc = np.int32(1)
-    for oscillator in System.oscillators:
-        oscillator.frame_update(System)
+    system.oscillators = [system.oscillators[0]]
+    system.nosc = np.int32(1)
+    for oscillator in system.oscillators:
+        oscillator.frame_update(system)
 
-    Printer.add_time(4, "updates done. next: initialize", "ms")
+    printer.add_time(4, "updates done. next: initialize", "ms")
 
-    VEGlib = GM_CL.VEG_CLib()
+    VEGlib = GM_cl.VEG_CLib()
     # call pre-frame funcs of maps
-    for mapname in System.oscillators_ordered.keys():
-        map_ = RunPars.requested_mapdict[mapname]
-        map_.code.GM_pre_frame(Printer, map_, System)
+    for mapname in system.oscillators_ordered.keys():
+        map_ = run_pars.requested_mapdict[mapname]
+        map_.code.GM_pre_frame(printer, map_, system)
 
-    Printer.add_time(4, "map init done. next: calculation", "ms")
+    printer.add_time(4, "map init done. next: calculation", "ms")
 
-    estatics = np.zeros((RunPars.number_frames, 4))
-    startsize = RunPars.estatic_range
-    for add_r_sphere in range(RunPars.number_frames):
+    estatics = np.zeros((run_pars.number_frames, 4))
+    startsize = run_pars.estatic_range
+    for add_r_sphere in range(run_pars.number_frames):
         newsize = startsize + add_r_sphere
-        RunPars.estatic_range = np.float32(newsize)
-        VEGlib.calcPot_perres_mm(System, RunPars, oscillator)
+        run_pars.estatic_range = np.float32(newsize)
+        VEGlib.calcPot_perres_mm(system, run_pars, oscillator)
         estatics[add_r_sphere, 0] = newsize
         estatics[add_r_sphere, 1:] = oscillator.VEGout[:3, 0]
-    with open(RunPars.output_estatics_filename, "w") as fhand:
+    with open(run_pars.output_estatics_filename, "w") as fhand:
         np.savetxt(fhand, estatics)
 
 
-def show_data(Printer, RunPars):
-    with open(RunPars.output_estatics_filename, "r") as fhand:
+def show_data(printer, run_pars):
+    with open(run_pars.output_estatics_filename, "r") as fhand:
         data = np.loadtxt(fhand)
 
     plt.plot(data[:, 0], data[:, 2] - data[:, 1])
@@ -89,43 +89,43 @@ def show_data(Printer, RunPars):
 
 
 def DEPICT(callcommand):
-    Printer = GM_PT.Printer
+    printer = GM_pt.Printer
     alljobs = [
         "calculate",
         "show",
         "calcshow"
     ]
 
-    job, in_parfile, argslist = GM_PP.parse_commandline(
+    job, in_parfile, argslist = GM_pp.parse_commandline(
         callcommand, alljobs, "GMAP DEPICT", True, True
     )
 
-    RunPars, mapdict, _, _, _, _ = GM_PP.get_parameters(
+    run_pars, mapdict, _, _, _, _ = GM_pp.get_parameters(
         in_parfile, argslist
     )
-    Printer.add_time(3, "Parsed GMAP parameters", "ms")
+    printer.add_time(3, "Parsed GMAP parameters", "ms")
 
     # end of SU errors
 
     if job in ("calculate", "calcshow"):
         # do the thing
-        GM_MR.manage_maps_singles(RunPars, mapdict)
-        Printer.add_time(3, "Added all maps", "ms")
+        GM_mr.manage_maps_singles(run_pars, mapdict)
+        printer.add_time(3, "Added all maps", "ms")
 
         # next - MD system!
-        System = GM_SR.System(RunPars)
-        Printer.add_time(3, "Initialized MD system", "ms")
+        system = GM_sr.System(run_pars)
+        printer.add_time(3, "Initialized MD system", "ms")
 
         # GEM is now done - let maps initialize as well
-        for mapname in System.oscillators_ordered.keys():
-            map_ = RunPars.requested_mapdict[mapname]
-            map_.code.GM_post_init(Printer, map_, System)
-        Printer.add_time(2, "Initialization complete", "ms")
+        for mapname in system.oscillators_ordered.keys():
+            map_ = run_pars.requested_mapdict[mapname]
+            map_.code.GM_post_init(printer, map_, system)
+        printer.add_time(2, "Initialization complete", "ms")
 
         # initialize C library
-        GM_CL.VEG_CLib(RunPars)
-        calc_data(Printer, RunPars, System)
+        GM_cl.VEG_CLib(run_pars)
+        calc_data(printer, run_pars, system)
 
     if job in ("show", "calcshow"):
         # show the thing
-        show_data(Printer, RunPars)
+        show_data(printer, run_pars)

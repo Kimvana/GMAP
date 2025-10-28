@@ -636,7 +636,7 @@ def get_size(fname, file_type, line_length):
     return size
 
 
-def HamVis(input):
+def hamvis(input):
     """Takes frames of Hamiltonians and saves them as a pdf image.
 
     It doesn't do much itself, it merely functions as a body to connect
@@ -692,11 +692,16 @@ def HamVis(input):
         ham_saver(ham_average, frames, outname, scale, cut)
 
     totaltime = (time.time() - start_time)
-    print(f"totaltime : {totaltime} \n convert_time : {convert_time} \n loadtime : {loadtime} \n verify_time : {verify_time} \n format_time : {format_time}")
+    print(
+        f"totaltime : {totaltime} \n "
+        f"convert_time : {convert_time} \n "
+        f"loadtime : {loadtime} \n "
+        f"verify_time : {verify_time} \n "
+        f"format_time : {format_time}")
 
 
 if __name__ == "__main__":
     warnings.simplefilter("ignore")
 
     input = sys.argv[1:]
-    HamVis(input)
+    hamvis(input)

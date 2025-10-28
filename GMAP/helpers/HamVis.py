@@ -646,7 +646,7 @@ def get_size(fname, file_type, line_length):
     return size
 
 
-def HamVis(input):
+def hamvis(input):
     """Takes frames of Hamiltonians and saves them as a pdf image.
 
     It doesn't do much itself, it merely functions as a body to connect
@@ -709,4 +709,4 @@ if __name__ == "__main__":
     warnings.simplefilter("ignore")
 
     input = sys.argv[1:]
-    HamVis(input)
+    hamvis(input)

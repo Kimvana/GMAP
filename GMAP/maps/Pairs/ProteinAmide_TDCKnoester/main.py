@@ -4,8 +4,7 @@ from numba import njit
 import numpy as np
 
 # gmap imports
-import GMAP.src.tools.MathFunctions as GM_MF
-# from GMAP.src.tools.PrintTools import devprint as dpr
+import GMAP.src.tools.math_functions as GM_mf
 
 
 def GM_prep_coupling(map_, system, oscixlist, osclist):
@@ -19,36 +18,36 @@ def GM_prep_coupling(map_, system, oscixlist, osclist):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everyting the program currently knows
         about the MD system.
     oscixlist : list of int
         The oscillator indices of all oscillators that are treated by
         this map. Some might be only in a single pair, others in many.
-    osclist : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osclist : list of :class:`~GMAP.src.tools.system_reader.Oscillator`
         All oscillators treated by this map.
     """
 
-    displace = map_.RunPars.displace
-    tanangle = map_.RunPars.tanangle
+    displace = map_.run_pars.displace
+    tanangle = map_.run_pars.tanangle
 
     for oscix, osc in zip(oscixlist, osclist):
-        COvec = GM_MF.PBC_boxdiff_triclin(
+        COvec = GM_mf.PBC_boxdiff_triclin(
             osc.positions_box[1], osc.positions_box[0], system.boxvects)
-        COvec /= GM_MF.vec3_len(COvec)
+        COvec /= GM_mf.vec3_len(COvec)
         map_.dipole_pos_arr[oscix] = (
             osc.positions[0] + displace * COvec)
 
-        CNvec = GM_MF.PBC_boxdiff_triclin(
+        CNvec = GM_mf.PBC_boxdiff_triclin(
             osc.positions_box[3], osc.positions_box[0], system.boxvects)
-        CNvec = GM_MF.project(COvec, CNvec)
-        CNvec /= GM_MF.vec3_len(CNvec)
+        CNvec = GM_mf.project(COvec, CNvec)
+        CNvec /= GM_mf.vec3_len(CNvec)
 
         dip_vec = COvec + tanangle * CNvec
-        dip_vec /= GM_MF.vec3_len(dip_vec)
+        dip_vec /= GM_mf.vec3_len(dip_vec)
         map_.dipole_vec_arr[oscix] = dip_vec
 
     map_.dipole_pos_arr = map_.dipole_pos_arr @ system.boxvects_inv
@@ -59,10 +58,10 @@ def GM_calc_coupling(map_, system, hamiltonian):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everyting the program currently knows
         about the MD system.
     hamiltonian : `np.ndarray`
@@ -109,16 +108,16 @@ def calc_coupling(oscix1, oscix2, pos_arr, vec_arr, boxvects):
     fourPiEps_inv = np.float32(580)
     # the positions array is in box-coordinates -> easy subtraction, then
     # move back into cartesian
-    d = GM_MF.PBC_back2box(pos_arr[oscix1, :] - pos_arr[oscix2, :], boxvects)
-    ir2 = 1/GM_MF.dotprod(d, d)
+    d = GM_mf.PBC_back2box(pos_arr[oscix1, :] - pos_arr[oscix2, :], boxvects)
+    ir2 = 1/GM_mf.dotprod(d, d)
     ir = np.sqrt(ir2)
     ir3 = ir*ir2
     ir5 = ir3*ir2
 
     return fourPiEps_inv * (
-        GM_MF.dotprod(vec_arr[oscix1], vec_arr[oscix2]) * ir3
-        - 3.0 * GM_MF.dotprod(vec_arr[oscix1], d)
-        * GM_MF.dotprod(vec_arr[oscix2], d) * ir5)
+        GM_mf.dotprod(vec_arr[oscix1], vec_arr[oscix2]) * ir3
+        - 3.0 * GM_mf.dotprod(vec_arr[oscix1], d)
+        * GM_mf.dotprod(vec_arr[oscix2], d) * ir5)
 
 
 def GM_pre_run(map_, system):
@@ -129,10 +128,10 @@ def GM_pre_run(map_, system):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everyting the program currently knows
         about the MD system.
     """

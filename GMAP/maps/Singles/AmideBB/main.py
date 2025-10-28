@@ -4,16 +4,15 @@ import numpy as np
 
 # GMAP imports
 import GMAP.src.tools.constants as GM_con
-import GMAP.src.tools.DefaultMapFunctions as GM_DMF
-import GMAP.src.tools.Exceptions as GM_ex
-import GMAP.src.tools.PrintTools as GM_PT
-# from GMAP.src.tools.PrintTools import devprint as dpr
+import GMAP.src.tools.default_map_functions as GM_dmf
+import GMAP.src.tools.exceptions as GM_ex
+import GMAP.src.tools.print_tools as GM_pt
 
 # own module imports
-import AmideBB_code.calculation_methods as MC_CM
-import AmideBB_code.local_atoms_finder as MC_LAF
-import AmideBB_code.neighbor_manager as MC_NM
-import AmideBB_code.parameter_changer as MC_PC
+import AmideBB_code.calculation_methods as MC_cm
+import AmideBB_code.local_atoms_finder as MC_laf
+import AmideBB_code.neighbor_manager as MC_nm
+import AmideBB_code.parameter_changer as MC_pc
 
 
 def GM_adjust_map_core_raw(map_):
@@ -21,7 +20,7 @@ def GM_adjust_map_core_raw(map_):
 
     Is expected to not return anything - return value is not caught.
 
-    The core.txt file is stored in Map.rawcore. It has not yet been
+    The core.txt file is stored in map_.rawcore. It has not yet been
     parsed, just loaded into a dictionary. In this dictionary, each
     keyword is its own dictionary key. Most keywords can only occur once
     in the file - those have a list of the 'words' on the line as
@@ -35,7 +34,7 @@ def GM_adjust_map_core_raw(map_):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
     """
@@ -47,7 +46,7 @@ def GM_adjust_map_core_raw(map_):
         "TYR", "TRP"
     ]
 
-    extended = set(map_.RunPars.include_protein_residues)
+    extended = set(map_.run_pars.include_protein_residues)
     extended.discard("None")
     if len(extended) > 0:
         extended = list(extended)
@@ -65,7 +64,7 @@ def GM_adjust_map_core_raw(map_):
         ] for struct in oldentry
     ]
 
-    MC_PC.adjust_map_core_raw(map_)
+    MC_pc.adjust_map_core_raw(map_)
 
 
 def GM_adjust_oscillators(map_, system, oscillator_list):
@@ -91,24 +90,24 @@ def GM_adjust_oscillators(map_, system, oscillator_list):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    oscillator_list : list of :class:`~GMAP.src.tools.system_reader.Oscillator`
         All oscillators belonging to a single struct of this map.
 
     Returns
     -------
-    oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    oscillator_list : list of :class:`~GMAP.src.tools.system_reader.Oscillator`
         All oscillators belonging to a single struct of this map.
     """
 
     # Sort oscillators into the correct order
-    oscillator_list = MC_PC.oscillator_sorter(map_, system, oscillator_list)
+    oscillator_list = MC_pc.oscillator_sorter(map_, system, oscillator_list)
 
     # tell each oscillator what/who it's neighbors are.
     # N term is first, C term is last
@@ -130,7 +129,7 @@ def GM_filter_oscillators(map_, system, oscillator_list):
     """Filter through the found oscillators based on the black- and
     whitelist settings.
 
-    For this map specific, we just use the code provided by GM_DMF, but
+    For this map specific, we just use the code provided by GM_dmf, but
     we use this custom function to intercept the results from the
     default version - we need to see whether the selected oscillators
     have any neighbours that are not in the selection.
@@ -145,23 +144,23 @@ def GM_filter_oscillators(map_, system, oscillator_list):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    oscillator_list : list of :class:`~GMAP.src.tools.system_reader.Oscillator`
         All oscillators belonging to this map.
 
     Returns
     -------
-    filtered_oscs : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    filtered_oscs : list of :class:`~GMAP.src.tools.system_reader.Oscillator`
         All oscillators belonging to a single struct of this map.
     """
 
-    filterfunc = GM_DMF.get_filter_oscillators()
+    filterfunc = GM_dmf.get_filter_oscillators()
     filtered_oscs = filterfunc(map_, system, oscillator_list)
 
     CtermNBs = {osc.CtermNB for osc in filtered_oscs}
@@ -183,7 +182,7 @@ def GM_post_init(map_, system):
     calculation starts.
 
     Checks include:
-    - comparing RunPars of this map to that of AmideSC, if the latter is
+    - comparing run_pars of this map to that of AmideSC, if the latter is
       present and active
     - initializing the prepro properties/files
     - Assigning the correct functions based on the parameter choices
@@ -192,26 +191,26 @@ def GM_post_init(map_, system):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
     """
 
     # verify that both dipole maps (if applicable) have the same map choices
-    rps = map_.RunPars
-    main_runpars = map_.RunPars.MainRunPars
+    rps = map_.run_pars
+    main_runpars = map_.run_pars.main_run_pars
     # is other map present?
     if "AmideSC" in main_runpars.requested_mapdict.keys():
-        amSC_rps = main_runpars.requested_mapdict["AmideSC"].RunPars
+        amSC_rps = main_runpars.requested_mapdict["AmideSC"].run_pars
         if (  # the maps do not match, and they're not allowed to mismatch.
             amSC_rps.frequency_map_choice != rps.frequency_map_choice
             and not rps.allow_map_mismatch
         ):
-            GM_PT.Printer.warning(
+            GM_pt.Printer.warning(
                 "Warning! The current calculation makes use of both the "
                 "AmideBB and AmideSC maps, but they make use of different "
                 "frequency maps. For most physical applications, this does "
@@ -225,7 +224,7 @@ def GM_post_init(map_, system):
             amSC_rps.dipole_map_choice != rps.dipole_map_choice
             and not rps.allow_map_mismatch
         ):
-            GM_PT.Printer.warning(
+            GM_pt.Printer.warning(
                 "Warning! The current calculation makes use of both the "
                 "AmideBB and AmideSC maps, but they make use of different "
                 "dipole maps. For most physical applications, this does "
@@ -239,7 +238,7 @@ def GM_post_init(map_, system):
             amSC_rps.legacy_mode != rps.legacy_mode
             and not rps.allow_map_mismatch
         ):
-            GM_PT.Printer.warning(
+            GM_pt.Printer.warning(
                 "Warning! The current calculation makes use of both the "
                 "AmideBB and AmideSC maps, but they try to emulate different "
                 "versions. For most physical applications, this does "
@@ -252,37 +251,37 @@ def GM_post_init(map_, system):
 
     # Initialize the prepro data structures (those that GMAP did for
     # non-prepro groups)
-    MC_PC.initialize_prepro_properties(map_)
+    MC_pc.initialize_prepro_properties(map_)
 
     # assign correct dipole function
-    if map_.RunPars.dipole_map_choice == "Torii":
-        map_.code.GM_calculate_dipole = MC_CM.calc_dipole_Torii
-        map_.Core.dipole_gas_phase = np.float32(map_.Core.dipole_gas_phase)
-        map_.Core.dipole_Torii_angle = np.float32(
-            1 / np.tan(GM_con.deg2rad * map_.RunPars.Torii_dipole_angle))
+    if map_.run_pars.dipole_map_choice == "Torii":
+        map_.code.GM_calculate_dipole = MC_cm.calc_dipole_Torii
+        map_.core.dipole_gas_phase = np.float32(map_.core.dipole_gas_phase)
+        map_.core.dipole_Torii_angle = np.float32(
+            1 / np.tan(GM_con.deg2rad * map_.run_pars.Torii_dipole_angle))
     else:
-        map_.code.GM_calculate_dipole = MC_CM.calc_dipole_Jansen
+        map_.code.GM_calculate_dipole = MC_cm.calc_dipole_Jansen
 
-    if map_.RunPars.legacy_mode == "AIM":
+    if map_.run_pars.legacy_mode == "AIM":
         map_.code.GM_get_position_DMF = map_.code.GM_get_position
-        map_.code.GM_get_position = MC_CM.get_position
+        map_.code.GM_get_position = MC_cm.get_position
 
     # now, knowing neighbors, we can determine the local atoms.
     oscillator_list = system.oscillators_ordered["AmideBB"]
-    MC_LAF.find_local_atoms(map_, system, oscillator_list)
+    MC_laf.find_local_atoms(map_, system, oscillator_list)
 
-    MC_NM.read_maps(map_)
-    MC_CM.determine_maps(oscillator_list, map_, system)
+    MC_nm.read_maps(map_)
+    MC_cm.determine_maps(oscillator_list, map_, system)
 
     if "TRESP" in main_runpars.requested_pairmapdict.keys():
         trespmap = main_runpars.requested_pairmapdict["TRESP"]
         map_.rawcore["TRESP.charges_filename"] = ["TRESP_gen.txt"]
-        map_.Core.TRESP_gen_charges = trespmap.code.get_charges(trespmap, map_)
+        map_.core.TRESP_gen_charges = trespmap.code.get_charges(trespmap, map_)
         map_.rawcore["TRESP.charges_filename"] = ["TRESP_pro.txt"]
-        map_.Core.TRESP_pro_charges = trespmap.code.get_charges(trespmap, map_)
+        map_.core.TRESP_pro_charges = trespmap.code.get_charges(trespmap, map_)
 
     if not map_.success:
-        GM_PT.Printer.warning(
+        GM_pt.Printer.warning(
             "An issue occurred while initializing the AmideBB map stored at "
             f"{map_.directory}. Please first try restarting, then "
             "reinstalling, then contacting the map developer, as this map "
@@ -372,10 +371,10 @@ def GM_pre_frame(map_, system):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -392,14 +391,14 @@ def GM_str_osc(map_, system, oscillator):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    oscillator : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    oscillator : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The specific oscillator for which the string is required.
 
     Returns
@@ -419,9 +418,9 @@ def GM_str_osc(map_, system, oscillator):
 
 def CP_TRESP_get_charges(map_, system, osc):
     if osc.resnames[1] == "PRO":
-        return map_.Core.TRESP_pro_charges
+        return map_.core.TRESP_pro_charges
     else:
-        return map_.Core.TRESP_gen_charges
+        return map_.core.TRESP_gen_charges
 
 
 def GM_calculate_frequency(map_, system, osc):
@@ -429,14 +428,14 @@ def GM_calculate_frequency(map_, system, osc):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osc : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The specific oscillator for which the frequency is required.
 
     Returns
@@ -446,29 +445,19 @@ def GM_calculate_frequency(map_, system, osc):
     """
 
     if osc.resnames[1] == "PRO":
-        gasfreq = map_.Core.frequency_gas_phase_prepro
-        freqarr = map_.Core.frequency_data_array_linear_prepro
+        gasfreq = map_.core.frequency_gas_phase_prepro
+        freqarr = map_.core.frequency_data_array_linear_prepro
     else:
-        gasfreq = map_.Core.frequency_gas_phase
-        freqarr = map_.Core.frequency_data_array_linear
+        gasfreq = map_.core.frequency_gas_phase
+        freqarr = map_.core.frequency_data_array_linear
 
-    # np.seterr(all='raise')
-    # try:
     freq = gasfreq + np.sum(np.multiply(osc.VEGout, freqarr))
-    # except Exception as ex:
-    #     dpr(osc.oscix)
-    #     dpr(osc.VEGout)
-    #     dpr(freqarr)
-    #     if osc.oscix > 10:
-    #         raise ex
-    #     else:
-    #         freq = gasfreq
 
     if (
-        map_.RunPars.frequency_map_choice != "Tokmakoff"
-        and map_.RunPars.consider_nearest_neighbours
+        map_.run_pars.frequency_map_choice != "Tokmakoff"
+        and map_.run_pars.consider_nearest_neighbours
     ):
-        freq += MC_CM.neighbor_influence(map_, system, osc)
+        freq += MC_cm.neighbor_influence(map_, system, osc)
 
     # paper says D2O = 0.791 * H2O + 340 -> inverting this gives the below.
     if map_.RunPars.solvent == "H2O":
@@ -497,14 +486,14 @@ def GM_calculate_raman(map_, system, osc):
     created. Maybe, they won't stay of fixed magnitude in local coordinates
     forever, but depend on sth like VEG or atomic distances in the future.
 
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
-    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osc : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The specific oscillator for which the transformation is required.
 
     Returns
@@ -589,10 +578,10 @@ def GM_report_references(map_, system):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -609,7 +598,7 @@ def GM_report_references(map_, system):
         dictionary, once for each key.
 
         Associated with each key is a list of
-        :class:`~GMAP.src.tools.ReferenceHandler.Reference` objects,
+        :class:`~GMAP.src.tools.reference_handler.Reference` objects,
         each of which corresponds to a single entry in the .bib file.
     """
 
@@ -636,9 +625,9 @@ def GM_report_references(map_, system):
 
     # freq map used:
     if gen_present:
-        report_these.append(f"Emap{map_.RunPars.frequency_map_choice}Gen")
+        report_these.append(f"Emap{map_.run_pars.frequency_map_choice}Gen")
     if pro_present:
-        report_these.append(f"Emap{map_.RunPars.frequency_map_choice}Pro")
+        report_these.append(f"Emap{map_.run_pars.frequency_map_choice}Pro")
 
     report_dict = {key: map_.references[key] for key in report_these}
 
@@ -647,7 +636,7 @@ def GM_report_references(map_, system):
     # references should be cited, we add them to the correct mapkey entry
     # in the dict.
     report_dict["CP_DipDip"] = []
-    if map_.RunPars.dipole_map_choice == "Torii":
+    if map_.run_pars.dipole_map_choice == "Torii":
         report_dict["CP_DipDip"].extend(map_.references["DmapTorii"])
     else:
         if gen_present:
