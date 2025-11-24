@@ -26,7 +26,6 @@ filelock==3.19.1
 flake8==7.3.0
 fonttools==4.59.2
 frozenlist==1.7.0
--e git+https://github.com/Kimvana/GMAP.git@1dc285b71946c47e944fa8237be8176e603c634a#egg=GMAP
 gprof2dot==2025.4.14
 greenlet==3.2.4
 GridDataFormats==1.0.2
