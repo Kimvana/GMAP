@@ -4,6 +4,7 @@ import ctypes as ct
 from dataclasses import dataclass, InitVar
 import datetime
 from pathlib import Path
+import shutil
 import sys
 import time
 
@@ -18,6 +19,7 @@ import GMAP.src.tools.constants as GM_con
 import GMAP.src.tools.exceptions as GM_ex
 import GMAP.src.tools.print_tools as GM_pt
 import GMAP.src.tools.string_classes as GM_sc
+from GMAP.src.tools.print_tools import devprint as dpr
 
 
 @dataclass(repr=False, frozen=True)
@@ -947,3 +949,50 @@ def write_parameter_intersect(
     # if no source mentions any influencers
     write_parameter_line(
         outfhand, prparname, def_pars.choices[prparname], linelist)
+
+
+def merge_files(run_pars):
+
+    data_to_fname = {
+        "ham": "output_hamiltonian_filename",
+        "dip": "output_dipole_filename",
+        "ene": "output_energies_filename",
+        "pos": "output_positions_filename",
+        "dbp": "output_doublepos_filename",
+        "ram": "output_raman_filename"
+    }
+
+    # merge log files
+    dest_fname = run_pars.log_filename
+    lognames = str(dest_fname).split(".", 1)
+    with open(dest_fname, "a", encoding='utf-8') as fdst:
+        for cpu_num in range(run_pars.number_cores):
+            source_fname = f"{lognames[0]}_CPU{cpu_num}.{lognames[1]}"
+            with open(source_fname, encoding='utf-8') as fsrc:
+                shutil.copyfileobj(fsrc, fdst)
+            Path(source_fname).unlink()
+
+    # remove parameter files
+    parnames = str(run_pars.output_parameter_filename).split(".", 1)
+    for cpu_num in range(run_pars.number_cores):
+        parfile = f"{parnames[0]}_CPU{cpu_num}.{parnames[1]}"
+        Path(parfile).unlink()
+
+    # merge all requested data output files
+    for output_type in run_pars.output_format:
+        mode = "b" if output_type == "bin" else ""
+        suff = ".bin" if output_type == "bin" else ".txt"
+        encoding = None if output_type == "bin" else "utf-8"
+        for treat_data in run_pars.output_data:
+            dest_fname = getattr(run_pars, data_to_fname[treat_data])
+            with open(
+                str(dest_fname) + suff, "w" + mode, encoding=encoding
+            ) as fdst:
+                for cpu_num in range(run_pars.number_cores):
+                    source_fname = f"{dest_fname}_CPU{cpu_num}{suff}"
+                    with open(
+                        source_fname, "r" + mode, encoding=encoding
+                    ) as fsrc:
+                        shutil.copyfileobj(fsrc, fdst)
+                    Path(source_fname).unlink()
+    dpr(run_pars.output_data)

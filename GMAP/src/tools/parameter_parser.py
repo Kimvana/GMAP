@@ -2660,6 +2660,22 @@ class RunPars:
         self.estatic_range = np.float32(self.estatic_range)
         self.estatic_smooth_range = np.float32(self.estatic_smooth_range)
 
+    def parallel_dict(self):
+        outdict = {k: getattr(self, k) for k in [
+            "number_cores",
+            "output_parameter_filename",
+            "number_frames",
+            "start_frame",
+            "output_hamiltonian_filename",
+            "output_energies_filename",
+            "output_dipole_filename",
+            "output_raman_filename",
+            "output_positions_filename",
+            "output_doublepos_filename",
+            "log_filename",
+        ]}
+        return outdict
+
 
 def get_parameters(in_parfile, argslist):
     """Collect all provided parameters, and store them.
