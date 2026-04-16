@@ -10,4 +10,4 @@ couplings_to_use     ProteinAmide   :All
 verbose              4
 
 number_frames        10
-number_cores         4
+number_cores         2

@@ -31,6 +31,7 @@ import concurrent.futures as cf
 import cProfile
 import datetime
 import gc
+import math
 import subprocess
 import sys
 
@@ -39,6 +40,7 @@ import sys
 
 # local imports
 import GMAP.src.tools.clib_loader as GM_cl
+import GMAP.src.tools.coding_tools as GM_ct
 import GMAP.src.tools.exceptions as GM_ex
 import GMAP.src.tools.file_handler as GM_fh
 import GMAP.src.tools.map_reader as GM_mr
@@ -395,7 +397,7 @@ def trj_loop(run_pars, system):
     # (profiler?)
 
 
-def print_calculation_summary(run_pars, system):
+def print_calculation_summary(run_pars, system, parallel=False):
     """Reports how the calculation went, and some details users might
     want to know.
 
@@ -407,6 +409,8 @@ def print_calculation_summary(run_pars, system):
     system : :class:`~GMAP.src.tools.system_reader.System`
         The class containing all the information on the system of the
         MD trajectory.
+    parallel : bool, default=False
+        Whether this function should report on a parallel run.
     """
 
     # making sure the last 'split' is saved in timer.totals()
@@ -417,13 +421,18 @@ def print_calculation_summary(run_pars, system):
         1, "Calculation\nsummary", "doublebox_bare", detailed_instructions=[1])
     GM_pt.header(2, "\n  Calculation  \nsummary\n", "doublebox_bare")
 
-    print_time_splits(run_pars)
+    print_time_splits(run_pars, parallel=parallel)
 
     print_treated_avail_frames(run_pars, system)
 
     print_in_output_filenames(run_pars)
 
-    print_relevant_references(run_pars, system)
+    if not parallel:
+        print_relevant_references(run_pars, system)
+    else:
+        GM_pt.Printer.print(
+            1, "\nFor references to cite, please look at the run above!"
+        )
 
     end = " ██▓▓▒▒░░"
     start = end[::-1]
@@ -431,7 +440,7 @@ def print_calculation_summary(run_pars, system):
     pr.print(1, f"\n  {start}{msg}{end}")
 
 
-def print_time_splits(run_pars):
+def print_time_splits(run_pars, parallel=False):
     """Report how much time was spent on what parts of the calculation
 
     Parameters
@@ -439,6 +448,8 @@ def print_time_splits(run_pars):
     run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
         The 'main' RunPars instance containing all the basic
         run-defining parameters.
+    parallel : bool, default=False
+        Whether this function should report on a parallel run.
     """
 
     def sumavg(*args):
@@ -465,6 +476,23 @@ def print_time_splits(run_pars):
     perframe = f_init + f_calc + f_post + f_load
     post_labels = ["MapPost"]
     all_labels = init_labels + perframe + post_labels
+
+    if parallel:
+        # for parallel jobs, there's far fewer labels available.
+
+        init_labels = ["ParParse", "AddMaps"]
+        all_labels = init_labels + ["ParJobs", "MergeFiles"]
+
+        pr.print(1, f"Total time:                   {sum_(*all_labels): >12}")
+        pr.print(2, f"  Initialization:             {sum_(*init_labels): >12}")
+        pr.print(3, f"    Parsing parameters:       {sum_('ParParse'): >12}")
+        pr.print(3, f"    Collecting maps:          {sum_('AddMaps'): >12}")
+        pr.print(2, f"  Performing parallel runs:   {sum_('ParJobs'): >12}")
+        pr.print(2, f"  Merging parallel files:     {sum_('MergeFiles'): >12}")
+
+        return
+
+    # The 'real', 'original' GEM print.
 
     pr.print(1, f"Total time:                   {sum_(*all_labels): >12}")
     pr.print(2, f"  Initialization:             {sum_(*init_labels): >12}")
@@ -735,7 +763,6 @@ def run(
 
 
 def par_single_job(inputpar):
-    dpr("in par_single_job")
     run_pars_dict, core_num = inputpar
     n_cores = run_pars_dict["number_cores"]
 
@@ -745,11 +772,16 @@ def par_single_job(inputpar):
     # find an alternative way to store the cmdline args.
     cmd = ["GMAP", "GEM", "run", run_pars_dict["output_parameter_filename"]]
 
-    # we want to spawn single-core processes now.
+    # we want to spawn single-core processes now. Lets build up the required
+    # process-specific parameters
+
+    # verbose, cores
     if core_num != 0:
         cmd.extend(["--verbose", "0"])
     cmd.extend(["--number_cores", "1"])
-    batch_size = (run_pars_dict["number_frames"] // n_cores)
+
+    # frame numbers
+    batch_size = math.ceil(run_pars_dict["number_frames"] / n_cores)
     cmd.extend([
         "--start_frame",
         str(run_pars_dict["start_frame"] + batch_size * core_num)])
@@ -757,6 +789,8 @@ def par_single_job(inputpar):
     cmd.extend([
         "--stop_frame",
         str(run_pars_dict["start_frame"] + batch_size * (core_num + 1))])
+
+    # parameter names
     parnames = str(run_pars_dict['output_parameter_filename']).split(".", 1)
     cmd.extend([
         "--output_parameter_filename",
@@ -780,6 +814,7 @@ def par_single_job(inputpar):
         "--log_filename",
         f"{lognames[0]}_CPU{core_num}.{lognames[1]}"])
 
+    # lets go!
     subprocess.run(cmd)
 
 
@@ -808,6 +843,19 @@ def parallel(
     GM_fh.write_parameter_file(
         ref_pars, run_pars, system, cmd_pars, in_pars, def_pars)
 
+    # Creating a duck type for system, to use in printing the calculation
+    # summary report.
+    trajlength = len(system.universe.trajectory)
+    system_dummy = GM_ct.CustomClass(**{
+        "dt": system.dt,
+        "universe": GM_ct.CustomClass(**{
+            "trajectory": type(
+                "CustomLenClass", (), {
+                    "__len__": lambda self: trajlength}
+            )()
+        })
+    })
+
     # free the memory (mainly from the MDA universe)
     del system
     gc.collect()
@@ -821,27 +869,28 @@ def parallel(
     runpardict = run_pars.parallel_dict()
 
     GM_pt.Printer.add_time(
-        1, 
-        "Starting parallel jobs."
+        1,
+        "Starting parallel jobs.",
+        "ParJobs", "ms")
+    GM_pt.Printer.print(
+        1,
         "\nOnly job 0 will report output from here on out, all others are "
-        "running silently in the background.",
-        "AddMaps", "ms")
+        "running silently in the background.",)
 
     # actually set up and run the parallel calculations
     with cf.ProcessPoolExecutor() as executor:
         jobs = list(zip([runpardict] * n_cores, list(range(n_cores))))
-        results = executor.map(par_single_job, jobs)
-        dpr(list(results))
-    dpr("test")
+        _ = executor.map(par_single_job, jobs)
+
+    GM_pt.Printer.add_time(
+        1,
+        "Done running jobs, merging output files.",
+        "MergeFiles", "ms")
 
     # merge the files (= make sure data looks like that from standard run)
     GM_fh.merge_files(run_pars)
 
-    # TODO: continue here!!!
-    # - (done) all runs give same verbose output. Maybe silence all but one?
-    # - (done) runs are performed - outputs still need to be concatenated and temp outputs removed
-    # - write test(s?) (call/run GMAP with 1 and with 2 CPU - then compare outputs to be equal)
-    # - move to cluster - try a (or more?) run using 1, 2, 3 and 4 cpu. Then, compare memory usage between them - goal is to know how much memory the parent process still uses.
+    print_calculation_summary(run_pars, system_dummy, parallel=True)
 
 
 # still a placeholder - this function still has to grow. Should in the
