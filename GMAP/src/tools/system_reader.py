@@ -117,11 +117,17 @@ class System:
         instead of oscillator objects.
     """
 
-    def __init__(self, run_pars):
+    def __init__(self, run_pars, read_only=False):
         self.universe = gen_universe(run_pars)  # MDA universe creation
-        self.set_properties()  # Extract numpy arrays from MDA universe
+        # Extract numpy arrays from MDA universe
+        self.set_properties(read_only=read_only)
         # see if box has correct size and charge
         self.basic_boxchecks(run_pars)
+
+        # we only want to know basic parameters of the MD system, and don't
+        # want to spend time/effort/resources looking for oscillators.
+        if read_only:
+            return
 
         self.find_influencers(run_pars)  # Find all influencing atoms
 
@@ -184,7 +190,7 @@ class System:
                 )
 
     # TO DO inside!
-    def set_properties(self):
+    def set_properties(self, read_only=False):
         """Sets the basic properties of the system.
 
         Extracts them from self.universe.atoms, and saves them in self.
@@ -213,6 +219,10 @@ class System:
 
         # analogue of AIMs ResidueFinder and IXFinder
         self.residues = Residues(self)
+
+        # Next is for c calc, which we won't run this round.
+        if read_only:
+            return
 
         # C array preparation
         self.positions_c = np.ctypeslib.as_ctypes(np.ravel(self.positions))

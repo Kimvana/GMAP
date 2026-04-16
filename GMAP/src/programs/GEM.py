@@ -27,8 +27,10 @@ For more information, check the manual on N/A.
 
 
 # standard lib imports
+import concurrent.futures as cf
 import cProfile
 import datetime
+import gc
 import subprocess
 import sys
 
@@ -640,28 +642,10 @@ def print_relevant_references(run_pars, system):
     GM_rh.report_references(run_pars, all_references)
 
 
-# still a placeholder - this function still has to grow. Should in the
-# end manage the different run modes, and probably do nothing else?
-# This means, a big decision tree: match job, case x: call func_x,
-# case y: call func_y, etc. Now, we're basically only doing 1 kind of job.
-def GEM(callcommand):
-    GM_pt.Printer.add_time(
-        3, "Start Parsing GMAP parameters", "ParParse", "ms")
-    # step 1 (is GEM in demo mode? to become: What job do we need to do?)
-    if callcommand[1] in ("demo"):
-        exp_inpfile = False
-    else:
-        exp_inpfile = True
-    # step 2 (very basic cmd line parse)
-    job, in_parfile, argslist = GM_pp.parse_commandline(
-        callcommand, alljobs, "GMAP GEM", exp_inpfile, True
-    )
-
-    # Parameter parsing
-    (
-        run_pars, singles_mapdict, pairs_mapdict, cmd_pars, in_pars, def_pars,
-        ref_pars
-    ) = GM_pp.get_parameters(in_parfile, argslist)
+def run(
+    in_parfile, argslist, run_pars, singles_mapdict, pairs_mapdict,
+    cmd_pars, in_pars, def_pars, ref_pars
+):
 
     # If requested, profile the run.
     if run_pars.profiler:
@@ -748,6 +732,151 @@ def GEM(callcommand):
         run_pars.log_profiling_tempfile.unlink()
 
     print_calculation_summary(run_pars, system)
+
+
+def par_single_job(inputpar):
+    dpr("in par_single_job")
+    run_pars_dict, core_num = inputpar
+    n_cores = run_pars_dict["number_cores"]
+
+    # this does not work - there could be cmdline args used here that are
+    # not conserved. But just putting the cmd line args here also doesn't
+    # work - they might be the ones we'd like to use, too. So we need to
+    # find an alternative way to store the cmdline args.
+    cmd = ["GMAP", "GEM", "run", run_pars_dict["output_parameter_filename"]]
+
+    # we want to spawn single-core processes now.
+    if core_num != 0:
+        cmd.extend(["--verbose", "0"])
+    cmd.extend(["--number_cores", "1"])
+    batch_size = (run_pars_dict["number_frames"] // n_cores)
+    cmd.extend([
+        "--start_frame",
+        str(run_pars_dict["start_frame"] + batch_size * core_num)])
+    cmd.extend(["--number_frames", str(batch_size)])
+    cmd.extend([
+        "--stop_frame",
+        str(run_pars_dict["start_frame"] + batch_size * (core_num + 1))])
+    parnames = str(run_pars_dict['output_parameter_filename']).split(".", 1)
+    cmd.extend([
+        "--output_parameter_filename",
+        f"{parnames[0]}_CPU{core_num}.{parnames[1]}"])
+    cmd.extend([
+        "-ohf",
+        f"{run_pars_dict['output_hamiltonian_filename']}_CPU{core_num}"])
+    cmd.extend([
+        "-oef", f"{run_pars_dict['output_energies_filename']}_CPU{core_num}"])
+    cmd.extend([
+        "-odf", f"{run_pars_dict['output_dipole_filename']}_CPU{core_num}"])
+    cmd.extend([
+        "-orf", f"{run_pars_dict['output_raman_filename']}_CPU{core_num}"])
+    cmd.extend([
+        "-opf", f"{run_pars_dict['output_positions_filename']}_CPU{core_num}"])
+    cmd.extend([
+        "--output_doublepos_filename",
+        f"{run_pars_dict['output_doublepos_filename']}_CPU{core_num}"])
+    lognames = str(run_pars_dict['log_filename']).split(".", 1)
+    cmd.extend([
+        "--log_filename",
+        f"{lognames[0]}_CPU{core_num}.{lognames[1]}"])
+
+    subprocess.run(cmd)
+
+
+def parallel(
+    in_parfile, argslist, run_pars, singles_mapdict, pairs_mapdict,
+    cmd_pars, in_pars, def_pars, ref_pars
+):
+
+    # first, some bookkeeping to figure out basics
+
+    GM_pt.Printer.add_time(
+        3, "Finished GMAP parameters, start adding maps", "AddMaps", "ms")
+
+    # Map initialization (needed for correctly saving used parameters)
+    GM_mr.manage_maps_singles(run_pars, singles_mapdict)
+    GM_mr.manage_maps_pairs(run_pars, pairs_mapdict)
+    GM_pt.Printer.add_time(2, "Added all maps", "AddMaps", "ms")
+
+    # Looking at MD system to figure out trajectory length.
+    system = GM_sr.System(run_pars, read_only=True)
+    # compare runpar endframe to mda nframes - adjust endframe
+    if run_pars.stop_frame >= len(system.universe.trajectory):
+        run_pars.stop_frame = len(system.universe.trajectory)
+        run_pars.number_frames = run_pars.stop_frame - run_pars.start_frame
+
+    GM_fh.write_parameter_file(
+        ref_pars, run_pars, system, cmd_pars, in_pars, def_pars)
+
+    # free the memory (mainly from the MDA universe)
+    del system
+    gc.collect()
+
+    # now, time for actually doing the parallel runs!
+
+    n_cores = run_pars.number_cores
+    # we need access to (part of) runpars for setting up the parallel runs.
+    # But, concurrent futures does not allow custom classes (easily?), so,
+    # all required info is taken from run_pars, and put into a dictionary.
+    runpardict = run_pars.parallel_dict()
+
+    GM_pt.Printer.add_time(
+        1, 
+        "Starting parallel jobs."
+        "\nOnly job 0 will report output from here on out, all others are "
+        "running silently in the background.",
+        "AddMaps", "ms")
+
+    # actually set up and run the parallel calculations
+    with cf.ProcessPoolExecutor() as executor:
+        jobs = list(zip([runpardict] * n_cores, list(range(n_cores))))
+        results = executor.map(par_single_job, jobs)
+        dpr(list(results))
+    dpr("test")
+
+    # merge the files (= make sure data looks like that from standard run)
+    GM_fh.merge_files(run_pars)
+
+    # TODO: continue here!!!
+    # - (done) all runs give same verbose output. Maybe silence all but one?
+    # - (done) runs are performed - outputs still need to be concatenated and temp outputs removed
+    # - write test(s?) (call/run GMAP with 1 and with 2 CPU - then compare outputs to be equal)
+    # - move to cluster - try a (or more?) run using 1, 2, 3 and 4 cpu. Then, compare memory usage between them - goal is to know how much memory the parent process still uses.
+
+
+# still a placeholder - this function still has to grow. Should in the
+# end manage the different run modes, and probably do nothing else?
+# This means, a big decision tree: match job, case x: call func_x,
+# case y: call func_y, etc. Now, we're basically only doing 1 kind of job.
+def GEM(callcommand):
+    GM_pt.Printer.add_time(
+        3, "Start Parsing GMAP parameters", "ParParse", "ms")
+    # step 1 (is GEM in demo mode? to become: What job do we need to do?)
+    if callcommand[1] in ("demo"):
+        exp_inpfile = False
+    else:
+        exp_inpfile = True
+    # step 2 (very basic cmd line parse)
+    job, in_parfile, argslist = GM_pp.parse_commandline(
+        callcommand, alljobs, "GMAP GEM", exp_inpfile, True
+    )
+
+    # Parameter parsing
+    (
+        run_pars, singles_mapdict, pairs_mapdict, cmd_pars, in_pars, def_pars,
+        ref_pars
+    ) = GM_pp.get_parameters(in_parfile, argslist)
+
+    if run_pars.number_cores > 1:
+        parallel(
+            in_parfile, argslist, run_pars, singles_mapdict, pairs_mapdict,
+            cmd_pars, in_pars, def_pars, ref_pars
+        )
+    else:
+        run(
+            in_parfile, argslist, run_pars, singles_mapdict, pairs_mapdict,
+            cmd_pars, in_pars, def_pars, ref_pars
+        )
 
 
 # The jobs that GEM can currently execute.
