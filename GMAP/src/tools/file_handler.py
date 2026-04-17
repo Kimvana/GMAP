@@ -19,7 +19,6 @@ import GMAP.src.tools.constants as GM_con
 import GMAP.src.tools.exceptions as GM_ex
 import GMAP.src.tools.print_tools as GM_pt
 import GMAP.src.tools.string_classes as GM_sc
-from GMAP.src.tools.print_tools import devprint as dpr
 
 
 @dataclass(repr=False, frozen=True)
@@ -952,6 +951,19 @@ def write_parameter_intersect(
 
 
 def merge_files(run_pars):
+    """Merge output files from multiple runs.
+
+    Log files from child-runs are pasted to the end of the one of the
+    original run (and the originals removed). Parameter files from child
+    runs are just removed. Output files are, just as log files, copied
+    to the end of the corresponding parent-run file.
+
+    Parameters
+    ----------
+    run_pars : :class:`~GMAP.src.tools.parameter_parser.RunPars`
+        The 'main' RunPars instance containing all the basic
+        run-defining parameters.
+    """
 
     data_to_fname = {
         "ham": "output_hamiltonian_filename",
@@ -995,4 +1007,3 @@ def merge_files(run_pars):
                     ) as fsrc:
                         shutil.copyfileobj(fsrc, fdst)
                     Path(source_fname).unlink()
-    dpr(run_pars.output_data)

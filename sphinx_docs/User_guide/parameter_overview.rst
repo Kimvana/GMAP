@@ -27,6 +27,7 @@ You are likely to be looking for these:
 - :ref:`safe_mode <UserGuide_page_parameter_overview_safemode>` can be useful if your command line software cannot deal with some things printed.
 - :ref:`topology_file <UserGuide_page_parameter_overview_topfile>` is used to indicate what file the topology should be read from.
 - :ref:`trajectory_file <UserGuide_page_parameter_overview_trjfile>` is used to indicate what file the trajectory should be read from.
+- :ref:`number_cores <UserGuide_page_parameter_overview_numcores>` is used to run GMAP (embarrassingly) parallel.
 - :ref:`prevent_overwrite <UserGuide_page_parameter_overview_prevoverwr>` indicates what the program should do if the requested filename is already used.
 - :ref:`output_format <UserGuide_page_parameter_overview_outform>` indicates whether you'd like a binary output, text output, or both.
 - :ref:`maps_to_use <UserGuide_page_parameter_overview_usemaps>` indicates what kind of singles/oscillators/molecules GMAP should perfrom the calculation on.
@@ -906,4 +907,17 @@ batch_size
 | (used by: GEM)
 
 Every how many frames the program should reconsider the time limit. Counting happens relative to the start frame, so if start_frame is set to 3, and batch_size to 10, the program will check if it can continue the calculation before starting frame 13, 23, 33, etc.
+
+.. _UserGuide_page_parameter_overview_numcores:
+
+number_cores
+============
+| (shorthand: -nc)
+| (used by: GEM)
+
+How many cores GMAP should use for the calculation. Note that not all calculations make use of additional cores!
+When using this option, make sure you have enough memory available. Memory usage roughly scales linearly with amount of cores used.
+
+These GMAP features can currently support parallel computations:
+- GMAP GEM run
 

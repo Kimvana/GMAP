@@ -450,7 +450,7 @@ class RefPars:
         if usetype is bool:
             if any(
                 x.lower() not in trueicators and x.lower() not in falseicators
-                for x in options+choices
+                for x in options + choices
             ):
                 raise ValueError
             options = [1 if x.lower() in trueicators else 0 for x in options]
@@ -2666,6 +2666,7 @@ class RunPars:
             "output_parameter_filename",
             "number_frames",
             "start_frame",
+            "stop_frame",
             "output_hamiltonian_filename",
             "output_energies_filename",
             "output_dipole_filename",

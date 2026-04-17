@@ -1375,7 +1375,8 @@ def gen_universe(run_pars):
 
     try:
         universe = MDA.Universe(
-            run_pars.topology_file.resolve(), run_pars.trajectory_file.resolve(),
+            run_pars.topology_file.resolve(),
+            run_pars.trajectory_file.resolve(),
             guess_bonds=run_pars.guess_bonds
             # run_pars.topology_file, run_pars.trajectory_file,
             # guess_bonds=run_pars.guess_bonds
