@@ -790,29 +790,26 @@ def par_single_job(inputpar):
         "--stop_frame",
         str(run_pars_dict["start_frame"] + batch_size * (core_num + 1))])
 
-    # parameter names
-    parnames = str(run_pars_dict['output_parameter_filename']).split(".", 1)
+    # file names
     cmd.extend([
         "--output_parameter_filename",
-        f"{parnames[0]}_CPU{core_num}.{parnames[1]}"])
+        GM_fh.fname_to_tempname("parfile", run_pars_dict, core_num)])
     cmd.extend([
-        "-ohf",
-        f"{run_pars_dict['output_hamiltonian_filename']}_CPU{core_num}"])
+        "-ohf", GM_fh.fname_to_tempname("ham", run_pars_dict, core_num)])
     cmd.extend([
-        "-oef", f"{run_pars_dict['output_energies_filename']}_CPU{core_num}"])
+        "-oef", GM_fh.fname_to_tempname("ene", run_pars_dict, core_num)])
     cmd.extend([
-        "-odf", f"{run_pars_dict['output_dipole_filename']}_CPU{core_num}"])
+        "-odf", GM_fh.fname_to_tempname("dip", run_pars_dict, core_num)])
     cmd.extend([
-        "-orf", f"{run_pars_dict['output_raman_filename']}_CPU{core_num}"])
+        "-orf", GM_fh.fname_to_tempname("ram", run_pars_dict, core_num)])
     cmd.extend([
-        "-opf", f"{run_pars_dict['output_positions_filename']}_CPU{core_num}"])
+        "-opf", GM_fh.fname_to_tempname("pos", run_pars_dict, core_num)])
     cmd.extend([
         "--output_doublepos_filename",
-        f"{run_pars_dict['output_doublepos_filename']}_CPU{core_num}"])
-    lognames = str(run_pars_dict['log_filename']).split(".", 1)
+        GM_fh.fname_to_tempname("dbp", run_pars_dict, core_num)])
     cmd.extend([
         "--log_filename",
-        f"{lognames[0]}_CPU{core_num}.{lognames[1]}"])
+        GM_fh.fname_to_tempname("logfile", run_pars_dict, core_num)])
 
     # lets go!
     subprocess.run(cmd)
@@ -861,8 +858,20 @@ def parallel(
     gc.collect()
 
     # now, time for actually doing the parallel runs!
-
     n_cores = run_pars.number_cores
+
+    # create temp dir
+    files = GM_fh.FileLocations
+    tempdir = files.cwd / ("tmp_" + files.now_str)
+    counter = 0
+    while tempdir.exists():
+        tempdir = files.cwd / f"tmp_{files.now_str}_{counter}"
+        counter += 1
+
+    # now, tempdir stores name of a non-existent directory. create it!
+    tempdir.mkdir()
+    run_pars.parrun_directory = tempdir
+
     # we need access to (part of) runpars for setting up the parallel runs.
     # But, concurrent futures does not allow custom classes (easily?), so,
     # all required info is taken from run_pars, and put into a dictionary.

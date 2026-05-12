@@ -18,6 +18,7 @@ import GMAP.src.tools.coding_tools as GM_ct
 import GMAP.src.tools.constants as GM_con
 import GMAP.src.tools.exceptions as GM_ex
 import GMAP.src.tools.print_tools as GM_pt
+# from GMAP.src.tools.print_tools import devprint as dpr
 import GMAP.src.tools.string_classes as GM_sc
 
 
@@ -976,18 +977,16 @@ def merge_files(run_pars):
 
     # merge log files
     dest_fname = run_pars.log_filename
-    lognames = str(dest_fname).split(".", 1)
     with open(dest_fname, "a", encoding='utf-8') as fdst:
         for cpu_num in range(run_pars.number_cores):
-            source_fname = f"{lognames[0]}_CPU{cpu_num}.{lognames[1]}"
+            source_fname = fname_to_tempname("logfile", run_pars, cpu_num)
             with open(source_fname, encoding='utf-8') as fsrc:
                 shutil.copyfileobj(fsrc, fdst)
             Path(source_fname).unlink()
 
     # remove parameter files
-    parnames = str(run_pars.output_parameter_filename).split(".", 1)
     for cpu_num in range(run_pars.number_cores):
-        parfile = f"{parnames[0]}_CPU{cpu_num}.{parnames[1]}"
+        parfile = fname_to_tempname("parfile", run_pars, cpu_num)
         Path(parfile).unlink()
 
     # merge all requested data output files
@@ -1001,9 +1000,64 @@ def merge_files(run_pars):
                 str(dest_fname) + suff, "w" + mode, encoding=encoding
             ) as fdst:
                 for cpu_num in range(run_pars.number_cores):
-                    source_fname = f"{dest_fname}_CPU{cpu_num}{suff}"
+                    source_fname = str(fname_to_tempname(
+                        treat_data, run_pars, cpu_num)) + suff
                     with open(
                         source_fname, "r" + mode, encoding=encoding
                     ) as fsrc:
                         shutil.copyfileobj(fsrc, fdst)
                     Path(source_fname).unlink()
+
+    # after deleting all files, make sure to delete tempdir!
+    if any(run_pars.parrun_directory.iterdir()):
+        GM_pt.Printer.warning(
+            f"The directory {run_pars.parrun_directory} was temporarily made "
+            "by GMAP. However, it can now not safely be removed. Please take "
+            "a look at this directory yourself.",
+            "PF_MD_1", GMAPerrclass=GM_ex.GmapValueError)
+    else:  # directory is empty, it can safely be removed
+        run_pars.parrun_directory.rmdir()
+
+
+def fname_to_tempname(output_data, run_pars, CPU):
+    """Generate the temporary file names used for parallel threads based
+    on required file type, a run_pars instance, and CPU number.
+
+    Parameters
+    ----------
+    output_data : str
+        ham/dip/ene/etc
+    run_pars : dict or :class:`~GMAP.src.tools.parameter_parser.RunPars`
+        The 'main' RunPars instance containing all the basic
+        run-defining parameters. If this is not available (due to
+        certain module functions not allowing custom classes), this
+        parameter should contain the output of run_pars.parallel_dict.
+    CPU : int
+        The number of the CPU responsible for the file location created
+        by this function.
+
+    Returns
+    -------
+    fpath : `pathlib.Path`
+        The filename that should be used for the requested function.
+    """
+
+    data_to_fname = {
+        "ham": "output_hamiltonian_filename",
+        "dip": "output_dipole_filename",
+        "ene": "output_energies_filename",
+        "pos": "output_positions_filename",
+        "dbp": "output_doublepos_filename",
+        "ram": "output_raman_filename",
+        "parfile": "output_parameter_filename",
+        "logfile": "log_filename"
+    }
+
+    if isinstance(run_pars, dict):
+        parent = run_pars["parrun_directory"]
+        path = run_pars[data_to_fname[output_data]]
+    else:
+        parent = run_pars.parrun_directory
+        path = getattr(run_pars, data_to_fname[output_data])
+
+    return parent / f"{path.stem}_CPU{CPU}{path.suffix}"

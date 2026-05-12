@@ -7,7 +7,7 @@
 
 maps_to_use          AmideBB AmideSC
 couplings_to_use     ProteinAmide   :All
-verbose              4
+verbose              2
 
 number_frames        10
 number_cores         2

@@ -2663,6 +2663,7 @@ class RunPars:
     def parallel_dict(self):
         outdict = {k: getattr(self, k) for k in [
             "number_cores",
+            "parrun_directory",
             "output_parameter_filename",
             "number_frames",
             "start_frame",
