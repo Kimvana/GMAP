@@ -918,6 +918,16 @@ number_cores
 How many cores GMAP should use for the calculation. Note that not all calculations make use of additional cores!
 When using this option, make sure you have enough memory available. Memory usage roughly scales linearly with amount of cores used.
 
+Please note that the parallellization of GMAP is fully embarrassingly - so the initialization of the calculation and reading of the MD output files is done by each core. This means that the parallellization is not infinitely scaleable. Please perform a short test to confirm the requested cores function as expected on your system!
+
+.. tip::
+    The first time GMAP encounters your MD files, they will be indexed. This process takes a (relatively) long time. It is therefore recommended to first let GMAP get to know these files through a single-core run treating a single frame. After that run finishes, you can do the proper calculation with multiple cores.
+
+    If you later want to treat those same MD files with a different GMAP calculation, this 1-core, 1-frame step is not needed.
+
+    Bonus tip for computing cluster users:
+    The extra step is necessary for creating the "_offsets.npz" file that is stored along with your MD trajectory file. To get the full advantage of the parallellization, make sure that this file is available for your computation!
+
 These GMAP features can currently support parallel computations:
 - GMAP GEM run
 

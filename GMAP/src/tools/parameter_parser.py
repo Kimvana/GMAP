@@ -640,7 +640,7 @@ class RawPars:
     gets its own instance of this class, storing the choices specified
     in that source.
 
-    .. warning ::
+    .. warning::
         The basic __init__ of this class is not meant to be used
         standalone. Instead, this class is supposed to be used through
         any of the following constructing classmethods:
