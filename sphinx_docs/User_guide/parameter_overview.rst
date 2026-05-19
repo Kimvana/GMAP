@@ -27,7 +27,7 @@ You are likely to be looking for these:
 - :ref:`safe_mode <UserGuide_page_parameter_overview_safemode>` can be useful if your command line software cannot deal with some things printed.
 - :ref:`topology_file <UserGuide_page_parameter_overview_topfile>` is used to indicate what file the topology should be read from.
 - :ref:`trajectory_file <UserGuide_page_parameter_overview_trjfile>` is used to indicate what file the trajectory should be read from.
-- :ref:`number_cores <UserGuide_page_parameter_overview_numcores>` is used to run GMAP (embarrassingly) parallel.
+- :ref:`number_cores <UserGuide_page_parameter_overview_numcores>` is used to run GMAP parallel.
 - :ref:`prevent_overwrite <UserGuide_page_parameter_overview_prevoverwr>` indicates what the program should do if the requested filename is already used.
 - :ref:`output_format <UserGuide_page_parameter_overview_outform>` indicates whether you'd like a binary output, text output, or both.
 - :ref:`maps_to_use <UserGuide_page_parameter_overview_usemaps>` indicates what kind of singles/oscillators/molecules GMAP should perfrom the calculation on.
@@ -918,14 +918,14 @@ number_cores
 How many cores GMAP should use for the calculation. Note that not all calculations make use of additional cores!
 When using this option, make sure you have enough memory available. Memory usage roughly scales linearly with amount of cores used.
 
-Please note that the parallellization of GMAP is fully embarrassingly - so the initialization of the calculation and reading of the MD output files is done by each core. This means that the parallellization is not infinitely scaleable. Please perform a short test to confirm the requested cores function as expected on your system!
+Please note that the parallellization of GMAP utilizes calls to itself - so the initialization of the calculation and reading of the MD output files is done by each core. This means that the parallellization is not infinitely scaleable. Please perform a short test to confirm the requested cores function as expected on your system!
 
 .. tip::
-    The first time GMAP encounters your MD files, they will be indexed. This process takes a (relatively) long time. It is therefore recommended to first let GMAP get to know these files through a single-core run treating a single frame. After that run finishes, you can do the proper calculation with multiple cores.
+    The first time GMAP encounters your MD files, they will be indexed. This process takes a (relatively) long time. It is therefore recommended to first let GMAP get to know these files through a single-core run treating a single frame. After that run finishes, you can do the proper (full) calculation with multiple cores.
 
     If you later want to treat those same MD files with a different GMAP calculation, this 1-core, 1-frame step is not needed.
 
-    Bonus tip for computing cluster users:
+    **Bonus tip for computing cluster users:**
     The extra step is necessary for creating the "_offsets.npz" file that is stored along with your MD trajectory file. To get the full advantage of the parallellization, make sure that this file is available for your computation!
 
 These GMAP features can currently support parallel computations:

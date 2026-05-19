@@ -766,10 +766,16 @@ def par_single_job(inputpar):
     run_pars_dict, core_num = inputpar
     n_cores = run_pars_dict["number_cores"]
 
-    # this does not work - there could be cmdline args used here that are
-    # not conserved. But just putting the cmd line args here also doesn't
+    # Just reusing the input file of the parallel run does not work - there
+    # could be cmdline args used during the parallel run that would not be
+    # conserved. But just putting the cmd line args here also doesn't
     # work - they might be the ones we'd like to use, too. So we need to
     # find an alternative way to store the cmdline args.
+    # The found alternative? Have GMAP parse all parameters into runpars, and
+    # write that to file (there's functionality for that anyways). Now, we
+    # supply each of the single runs with that file as input. That leaves all
+    # command line arguments free to overwrite the parts of the original that
+    # don't make sense for each of the threads.
     cmd = ["GMAP", "GEM", "run", run_pars_dict["output_parameter_filename"]]
 
     # we want to spawn single-core processes now. Lets build up the required
