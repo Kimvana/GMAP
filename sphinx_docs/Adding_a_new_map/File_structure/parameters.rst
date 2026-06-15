@@ -1,4 +1,4 @@
-.. _UserGuide_page_map_parameters:
+.. _AddMap_page_map_parameters:
 
 ##############
 parameters.ref
@@ -10,7 +10,7 @@ This is an optional file containing all keyword parameters the map needs. The fi
 
 Any parameter specified here can be set/supplied by the user, so choices can vary for each calculation.
 
-In the program, the contents of this file are stored in the map-specific instance of a :class:`~GMAP.src.tools.MapReader.Map` object, as the `RefPars` attribute.
+In the program, the contents of this file are stored in the map-specific instance of a :class:`~GMAP.src.tools.map_reader.Map` object, as the `ref_pars` attribute.
 
 For a good example, you can look at the file 'reference_parameters.ref' in the sourcefiles directory. It contains all the parameters used by the program.
 
@@ -25,13 +25,13 @@ A reference parameter file consists of many lines, most of which are independent
 parameter_name(shorthand)[parameter_type] parameter_choice
 In this format, notice how there is only one whitespace - in between the closing square bracket and the parameter choice. In between these two, there can be an arbitrary amount of whitespaces, but they cannot be anywhere else (except within parameter_choice, see below). Now, to explain each section:
 
-parameter_name is the name of the parameter. It is case-sensitive, and the text used here is how you can access it in the code. So, (the choice for) a parameter named MyPar will be accessible as MyMapInstance.RunPars.MyPar, while a parameter named mypar will be accessible as MyMapInstance.RunPars.mypar. Note that within this parameter file, parameter names must be unique. They can be reused between maps and the main program.
+parameter_name is the name of the parameter. It is case-sensitive, and the text used here is how you can access it in the code. So, (the choice for) a parameter named MyPar will be accessible as MyMapInstance.run_pars.MyPar, while a parameter named mypar will be accessible as MyMapInstance.run_pars.mypar. Note that within this parameter file, parameter names must be unique. They can be reused between maps and the main program.
 
 shorthand is the (optional!) shorthand that can be used when specifying a choice on the command line. Assuming the parameter is called mypar, a shorthand of mp is chosen, and the map is called mymap, then, the shorthand allows the user to specify the parameter on the command line using '-mymap.mp' instead of '--mymap.mypar'. As for these parameters you should use the same PEP8 guidelines as for python variable names, they can get uncomfortably long to type in the command line; thats why the shorthand might be preferred.
 Notice that the shorthand does not influence the map name itself. This means that multiple maps can safely share the same shorthand. They can consist of multiple characters, but may also consist of a single letter.
 The shorthand is fully optional. If you don't want to specify one, leave it out, and don't add the parentheses. 
 
-.. _UserGuide_page_map_parameters_types:
+.. _AddMap_page_map_parameters_types:
 
 parameter_type denotes what the python datatype of the parameter choice should be. Currently, the options are 'path' (for pathlib.Path type - file names), 'str' (for strings), 'bool' (for booleans), 'int' (for integers), and 'float'.
 If a parameter should be allowed (but still not required) to take more than one argument, the type should be prepended with 'list\_'. So, if the desired type is multiple strings, the type should be 'list_str'.

@@ -9,6 +9,10 @@ VEG_clib_file[path_rel_sd]                        VEG
 log_directory[path_dir_lg]                        [N/A]
 log_filename[path_rel_lg_c]                       log.log
 
+log_profiling_filename[path_rel_lg_c]             prof.out
+log_profiling_tempfile[path_rel_lg_c]             prof.temp
+log_profiling_graph_filename[path_rel_lg_c]       profout.png
+
 output_directory[path_dir_op]                     [N/A]
 output_parameter_filename[path_rel_op_c]          parameters.txt
 output_legend_filename[path_rel_op_c]             legend.txt
@@ -21,14 +25,11 @@ output_raman_filename(orf)[path_rel_op_c]         raman_tensor
 output_positions_filename(opf)[path_rel_op_c]     positions
 output_doublepos_filename[path_rel_op_c]          doublepos
 
-output_profiling_filename[path_rel_op_c]          prof.out
-output_profiling_tempfile[path_rel_op_c]          prof.temp
-output_profiling_graph_filename[path_rel_op_c]    profout.png
-
-
 map_directory(md)[list_path_sep]               ../../../maps
 maps_to_use(um)[list_str]                         AmideSC
 couplings_to_use[list_str]                        DipDip :All
+couplings_scale[list_str]                         :All  1
+dielectric_constant[float]                        1
 singles_whitelist[list_str]                       :All :All
 singles_blacklist[list_str]                       :All :None
 influencers_whitelist[list_str]                   :All
@@ -50,6 +51,7 @@ estatics_method[str]                              [perres] perres_nocut
 
 neutral_charge_threshold[float]                   0.0001
 guess_bonds[bool]                                 False
+treat_box[str]                                    [auto] orthorhombic triclinic
 
 estatic_range[float]                              20  # this is in angstrom
 estatic_smooth_range[float]                       5  # this is in angstrom
@@ -60,6 +62,7 @@ number_frames[int]                                999999999
 stop_frame[int]                                   999999999
 time_limit[int]                                   999999  # 2y in minutes
 batch_size[int]                                   25  # frames before time appl
+number_cores(nc)[int]                             1
 
 profiler[bool]                                    False
 profiler_graph[bool]                              False
@@ -78,6 +81,8 @@ positions_multiplier[float]                        1
 doublepos_units[str]                               [Ang] Bohr nm
 doublepos_multiplier[float]                        1 
 # polarizabilities -> ang^3, bohr^3
+
+positions_center[list_float]                       0.5 0.5 0.5
 
 couplingvis_figsize[float]                         8  # width of figure in inches
 couplingvis_dpi[int]                               100
@@ -111,14 +116,14 @@ float_test_choice_list(tf4)[list_float]      [99.9] [71.5] 43 88.4
 float_test_choice_list2(tf5)[list_float]     44.5 [33] 12.8 [42.7]
 
 # test paths
-path_test_free(tp1)[path_sep]                ../test_MathFunctions.py
+path_test_free(tp1)[path_sep]                ../test_math_functions.py
 path_test_free_new(tp2)[path_sep_c]          test_outfile.txt
-# path_test_choice(tp3)[path_sep]              [../test_ParameterParser.py] ../test_MathFunctions.py
+# path_test_choice(tp3)[path_sep]              [../test_parameter_parser.py] ../test_math_functions.py
 path_test_free_new_list[list_path_sep_c]     test_outfile_0_1.txt test_outfile_0_2.txt
 path_test_dir1(tp4)[path_dir_t1]             ../../test_tools
 path_test_dir2(tp5)[path_dir_t2]             ../Data
-path_test_rel11(tp6)[path_rel_t1]            test_MathFunctions.py
-# path_test_rel12_choice(tp7)[path_rel_t1]     [test_ParameterParser.py] test_MathFunctions.py
+path_test_rel11(tp6)[path_rel_t1]            test_math_functions.py
+# path_test_rel12_choice(tp7)[path_rel_t1]     [test_parameter_parser.py] test_math_functions.py
 path_test_rel21_new(tp8)[path_rel_t2_c]      test_outfile_2_1.txt
 path_test_rel22_new_list(tp9)[list_path_rel_t2_c]  test_outfile_2_2_1.txt test_outfile_2_2_2.txt
 # path_test_rel23_new_choice(tp10)[path_rel_t2_c]  test_outfile_2_3_1.txt [test_outfile_2_3_2.txt]

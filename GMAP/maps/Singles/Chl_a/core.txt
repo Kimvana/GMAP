@@ -1,0 +1,31 @@
+# first attempt at the core.txt file for the bchlc map in GMAP
+functional_group_file   chla_funcgroup_UA.txt
+
+# all specified
+used_atoms 0-48
+
+# probably at least the magnesium atom, which is 0, zero based
+electrostatic_atoms 0-45
+electrostatic_choice V   # V E or G?
+
+local_atoms All
+#Influence of environment
+add_corefile proteincore.txt
+ 
+
+frequency_gas_phase 14900  # Qy 680 nm
+frequency_data_file_linear diff_charges_B3LYP.txt   ##charge obtain from this ref: https://doi-org.proxy-ub.rug.nl/10.1021/jp106323e
+
+dipole_gas_phase  4.61##5.47 # 4.49 was found in Phys. Chem. Chem. Phys., 2017, 19, 18311--18320   # 5.47 obtained from doi:10.1021/jp106323e
+
+r_vec 16 - 32    # the position of the third N atom minus the first N atom
+r_pos 0        # The position of the Magnesium atom
+multiply_freq  GM_con.e2i4pieps_angcm  # 116140.9733/2=58070.48665 #This is the unit conversion of the frequency prefactor, 1161409.733,  with a further factor 0.5 from the reference (1).
+VEG_reference position 0  # position of Mg
+
+# This is the position where the transition dipole is placed for TDC following
+position               0
+can_output        ham   ene    dip     pos  dbp
+doublepos_0 16
+doublepos_1 32
+TRESP.charges_filename   TRESP_chla.txt

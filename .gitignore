@@ -10,17 +10,28 @@ env_**
 sphinx_docs/_build/**
 **.png
 **#
+build/**
+
+inpar_development.txt
+ZZ_for_reference/**
 
 GMAP/.coverage**
 GMAP/crash*.log
-GMAP/log.log
+GMAP/couplingvisualization.pdf
 GMAP/dipoles.txt
 GMAP/doublepos.txt
 GMAP/energies.txt
 GMAP/hamiltonian.txt
+GMAP/legend.txt
+GMAP/log.log
+GMAP/parameters.txt
 GMAP/positions.txt
+GMAP/prof.out
+GMAP/prof.temp
 GMAP/raman_tensor.txt
 log.log
 GMAP/tests/test_tools/Data/log.log
 
 
+sphinx_docs/_build.zip
+parGMAP.py

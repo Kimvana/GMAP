@@ -19,11 +19,14 @@ Strictly speaking, amide I' is used for the deuterated vibrations as found when 
 how to use
 ----------
 
+When you want to calculate a full hamiltonian for a protein, you'll most likely want to use this map in combination with two others. Besides this map, consider using the AmideSC map (for amide groups in the side chains), and the ProteinAmide map (for calculating couplings between protein amides). Please note that while the AmideBB and AmideSC maps are singles maps, the ProteinAmide is a pairs map.
+
 Be aware that the maps used in this overarching map have been designed to be used in combination with specific other maps, or with specific force fields. While a map should still work with a different forcefield, it is still highly recommended to use the intended/tested combinations or validate the alternative choice before using it. 
 - In general, the OPLS-AA forcefield is recommended, except for the Tokmakoff map, which has been designed for the CHARMM-27 forcefield.
 - The Jansen dipole map should always be used together with the Jansen frequency map (this is enforced by this map).
 - It is common to also calculate couplings when working with amides. This should be done with one of the specially-designed amide coupling maps. See (https://doi.org/10.1021/acs.jctc.6b00420) to find out what coupling map is best for your usecase.
 - The peaks for these systems take up the same spectral space as sidechain amides, so to get better agreement with experiment, you'll probably want to use the sidechain map along this one.
+- The map has been confirmed to work with GROMACs, CHARMM, NAMD and Amber. If you use the map on MD files from any software with GROMACS (or just any system with non-cannonical amino acids), make sure to use the parameter AmideBB.include_protein_residues (more information below) in your runs.
 
 
 
@@ -34,17 +37,29 @@ When using this map, the following parameters become available to use in any inp
 
 AmideBB.frequency_map_choice
     shorthand: AmideBB.fmc
-    options: Tokmakoff, Skinner, Jansen, Cho, Hirst (default = Skinner)
+    options: Tokmakoff, Skinner, Jansen, Cho, Hirst, Reppert_4PN-4, Reppert_4PN-150 (default = Skinner)
 
     Indicate the program which frequency map should be used. Skinner is the default as it gives the best result for 2-dimensional IR absorption spectra, while being fairly cheap. It is also the only map which has a separately-developed map for sidechains, instead of using the backbone maps with a fixed shift.  (https://doi.org/10.1021/acs.jctc.6b00420)
 
-    Tokmakoff, Cho and Hirst maps are cheaper than Skinner, but still provide decent results. Jansen is more expensive than Skinner, but gives results closer to experiment when predicting linear IR spectra. (same reference)
+    Tokmakoff, Cho, Hirst and Reppert maps are cheaper than Skinner, but still provide decent results. Jansen is more expensive than Skinner, but gives results closer to experiment when predicting linear IR spectra. (same reference)
+
+    Similar to how Skinner is the only map with a special sidechain map, the Jansen map is the only map with a special variant for amide groups with a proline residue on the C-terminal side (called a 'prepro(line)' in GMAP). All other mappings use a fixed shift on the 'general' amide map to account for the prepro shift. (https://doi.org/10.1063/1.3665417)
 
 AmideBB.dipole_map_choice
     shorthand: AmideBB.dmc
     options: Torii, Jansen (default = Torii)
 
     Indicates which dipole map should be used. Torii is the default as the Skinner frequency map assumes it, and is more general. Jansen should only be used when using the Jansen frequency map, too.
+
+AmideBB.include_protein_residues
+    no shorthand
+    default: ARN ASH GLH HID HIE HIP HSD LYN LYSH
+
+    To turn this off, use 'None' (without the quotation marks) as the only choice.
+
+    Which residue names exist in the simulation that are a part of the protein, but not cannonical amino acids. Any residues mentioned here are expected to contain the amide-backbone of N, CA, and C atoms. If a middle-chain residue, it also must have an 'O' atom (the double-bounded one to C), and H/HN (depending on software, HN for CHARMM, H for GROMACS/amber) atom on the nitrogen. A chain-ending residue needs only one of these two.
+
+    If a special residue does not make these requirements, a separate line in the core.txt file needs to be created for it instead.
 
 AmideBB.residue_order
     no shorthand
@@ -88,16 +103,30 @@ AmideBB.legacy_mode
     no shorthand
     options: None, AIM, AmideImaps (default = None)
 
-    Whether to recreate the results as produced by the precursors of this package. These are the differences:
+    Whether to recreate the results as produced by the precursors of this package. All options create results of the same format and magnitude, making all of them valid for use with software like NISE.
+    
+    These are the differences:
 
-    - All positions lie between 0 and the box size for AIM, while None and AmideImaps have them lie between -0.5 and 0.5 times the box size.
+    - All positions lie between 0 and the box size for AIM, while None and AmideImaps have them lie in the range set using the GMAP parameter treat_box. By default, this is now also between 0 and the box size.
     - When there are two prolines back to back, what map is used changes a little bit between modes. AmideImaps assigned a Gly-Pro map for those cases, while AIM and None assign a Pro-Gly map.
+
+    Which should you use? If you just want to compute spectra, stick with 'none'. It gives the most recent, detailed version, with any known bugs fixed. The main reason for changing to a legacy mode is for re-creating results from previous versions, so comparison between different results or packages can be made.
+
+    Warning!
+    When using the legacy_mode set to AIM, the treat_box parameter is ignored by this map!
 
 AmideBB.allow_map_mismatch
     no shorthand
     options: true, false (default = false)
 
     When using this map in conjunction with the AmideSC map (developed for protein sidechain amides), it makes most physical sense to use the same frequency and dipole methods for both maps. By default, this map forces users to use the same methods for both maps (in order to avoid user error). If it is truly intended to have different methods active, this parameter can be used to have the map allow that.
+
+AmideBB.Torii_dipole_angle
+    no shorthand
+    options: any float (default = 10)
+
+    When using the Torii dipole method, the angle at which the dipole is placed can be varied by changing this parameter. The value is assumed in degrees angle to the C=O bond.
+
 
 
 warnings that can be raised by this map

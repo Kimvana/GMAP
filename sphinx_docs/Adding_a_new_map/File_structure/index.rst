@@ -28,19 +28,130 @@ but also in regards to its digital structure in the program. For singles maps on
 For pairs maps, the core file is optional, while the main.py file is mandatory. Pairs can also make use of a parameter file, just like singles, and any other required files can be accessed by the map itself through the code file. Information on each of the possible files can be found in the pages linked below.
 
 
+***************************************
+pages for singles maps
+***************************************
+
+.. grid:: 1 2 2 3
+
+    .. grid-item-card::
+        :margin: 0 3 0 0
+        :link: single_core
+        :link-type: doc
+
+        **core.txt (singles)**
+        ^^^^^^^^^^^^^^^^
+        How to make a core.txt file for singles maps.
+
+    .. grid-item-card::
+        :margin: 0 3 0 0
+        :link: parameters
+        :link-type: doc
+
+        **Parameters**
+        ^^^^^^^^^^^^^^
+        How to add map-specific parameters to your map.
+    
+    .. grid-item-card::
+        :margin: 0 3 0 0
+        :link: single_main_py
+        :link-type: doc
+
+        **main.py (singles)**
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+        How to make a core.txt file for singles maps.
+    
+    .. grid-item-card::
+        :margin: 0 3 0 0
+        :link: references_bib
+        :link-type: doc
+
+        **references**
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+        How to make a references file for your map.
+    
+    
+    .. grid-item-card::
+        :margin: 0 3 0 0
+        :link: GMAPconstants
+        :link-type: doc
+
+        **GMAP constants file**
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+        All the constants available for use while creating your map.
+
+
+
+***************************************
+pages for pairs maps
+***************************************
+
+.. grid:: 1 2 2 3
+
+    .. grid-item-card::
+        :margin: 0 3 0 0
+        :link: pair_core
+        :link-type: doc
+
+        **core.txt (pairs)**
+        ^^^^^^^^^^^^^^^^
+        How to make a core.txt file for pairs maps.
+
+    .. grid-item-card::
+        :margin: 0 3 0 0
+        :link: parameters
+        :link-type: doc
+
+        **Parameters**
+        ^^^^^^^^^^^^^^
+        How to add map-specific parameters to your map.
+    
+    .. grid-item-card::
+        :margin: 0 3 0 0
+        :link: pair_main_py
+        :link-type: doc
+
+        **main.py (pairs)**
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+        How to make a core.txt file for pairs maps.
+    
+    .. grid-item-card::
+        :margin: 0 3 0 0
+        :link: references_bib
+        :link-type: doc
+
+        **references**
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+        How to make a references file for your map.
+
+    
+    .. grid-item-card::
+        :margin: 0 3 0 0
+        :link: GMAPconstants
+        :link-type: doc
+
+        **GMAP constants file**
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+        All the constants available for use while creating your map.
+
+
+
+
 .. toctree::
-    :caption: Singles maps:
+    :hidden:
 
     single_core
     parameters
     single_main_py
     references_bib
+    GMAPconstants
 
 .. toctree::
-    :caption: Pairs maps:
+    :hidden:
 
     pair_core
     parameters
     pair_main_py
     references_bib
+    GMAPconstants
 

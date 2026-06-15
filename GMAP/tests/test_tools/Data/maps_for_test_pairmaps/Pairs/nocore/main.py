@@ -1,6 +1,6 @@
 
-def GM_calc_coupling(Map, Syst, hamiltonian):
-    for pair in Map.allpairs:
+def GM_calc_coupling(map_, system, hamiltonian):
+    for pair in map_.allpairs:
         oscix1, oscix2 = pair
         J = 1.234
         hamiltonian[oscix1, oscix2] = J

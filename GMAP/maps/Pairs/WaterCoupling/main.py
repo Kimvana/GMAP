@@ -12,9 +12,9 @@ def GM_change_coup_type(map_, system, oscix1, osc1, oscix2, osc2):
     # unless we do not want coupling
     # Check if the OH stretches share the same oxygen
     if osc1.used_atoms[0] == osc2.used_atoms[0]:
-        return mapnames[map_.RunPars.intra_coupling_choice]
+        return mapnames[map_.run_pars.intra_coupling_choice]
 
     # The OH stretches are in different molecules. If the user specified to use
     # intramolecular couplings we force them to use the dipole dipole instead
     else:
-        return mapnames[map_.RunPars.inter_coupling_choice]
+        return mapnames[map_.run_pars.inter_coupling_choice]

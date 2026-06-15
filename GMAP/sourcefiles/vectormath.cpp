@@ -130,57 +130,10 @@ inline float posmodf(float divident, float divisor) {
 }
 
 
-// modulo implementation (is noticably slower than orig)
-// void VM_PBC_diff_cubic(
-//     float *vect1, float *vect2, float *halfbox, float *boxdims, float *vectout
-// ) {
-//     // printf("hi, im running! -0.2 mod 1 = %f, -0.2 ownmod 1 = %f\n", fmodf(-0.2, 1.0), posmodf(-0.2, 1));
-//     for (int i = 0; i < 3; i++) {
-//         // printf("((%f - %f + %f) mod %f) - %f = ", vect1[i], vect2[i], halfbox[i], boxdims[i], halfbox[i]);
-//         vectout[i] = posmodf(vect1[i] - vect2[i] + halfbox[i], boxdims[i]);
-//         // vectout[i] -= fmodf(vectout[i], boxdims[i]);
-//         vectout[i] -= halfbox[i];
-//         // printf("%f\n", vectout[i]);
-//     }
-// }
-
-
-// remainder implementation (is slightly slower than orig)
-// void VM_PBC_diff_cubic(
-//     float *vect1, float *vect2, float *halfbox, float *boxdims, float *vectout
-// ) {
-//     // printf("hi, im running! -0.2 mod 1 = %f, -0.2 ownmod 1 = %f\n", fmodf(-0.2, 1.0), posmodf(-0.2, 1));
-//     for (int i = 0; i < 3; i++) {
-//         // printf("((%f - %f + %f) mod %f) - %f = ", vect1[i], vect2[i], halfbox[i], boxdims[i], halfbox[i]);
-//         vectout[i] = remainderf(vect1[i] - vect2[i], boxdims[i]);
-//         // vectout[i] -= fmodf(vectout[i], boxdims[i]);
-//         // vectout[i] -= halfbox[i];
-//         // printf("%f\n", vectout[i]);
-//     }
-// }
-
-// set divisor == 1 implementation (slightly slower than orig)
-// void VM_PBC_diff_mod1(
-//     float *vect1, float *vect2, float *halfbox, float *boxdims, float *vectout
-// ) {
-//     for (int i = 0; i < 3; i++){
-//         vectout[i] = remainderf(vect1[i] - vect2[i], 1);
-//     }
-// }
-
-
-// set divisor == 1 implementation (slightly slower than orig)
-// void VM_PBC_diff_mod1(
-//     float *vect1, float *vect2, float *halfbox, float *boxdims, float *vectout
-// ) {
-//     for (int i = 0; i < 3; i++){
-//         vectout[i] = vect1[i] - vect2[i] + 0.5;
-//         vectout[i] -= floorf(vectout[i]) + 0.5;
-//     }
-// }
-
-
-// a mod 1 version of the original PBCdiff - same speed.
+// a mod 1 version of the original PBCdiff - same speed. Have had a lot of
+// tests to see what is the fastest method. Removed them as part of cleanup
+// (#177, sept 17th 2025), they were first implemented in commit
+// 59d72f530589228cfb3ce950a3e8214cb0f5a380, jan 16th 2025.
 void VM_PBC_diff_mod1(
     float *vect1, float *vect2, float *halfbox, float *boxdims,
     float *vectout

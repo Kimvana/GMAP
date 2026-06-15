@@ -10,10 +10,12 @@ GMAP documentation
 
     .. grid-item-card::
         :margin: 0 3 0 0
+        :link: Quickstart/index
+        :link-type: doc
 
-        **Installation**
+        **Quickstart guide**
         ^^^^^^^^^^^^^^^^
-        It would be really nice to have some instructions on how to install GMAP!
+        Here you can find instructions on how to install and get going with GMAP quickly!
 
     .. grid-item-card::
         :margin: 0 3 0 0
@@ -67,6 +69,7 @@ GMAP documentation
     :maxdepth: 4
     :hidden:
 
+    Quickstart/index
     User_guide/index
     Theory/index
     Adding_a_new_map/index
@@ -93,22 +96,16 @@ The figure on the right shows the general workflow for computing a spectrum when
 3. The last step of converting the hamiltonian trajectory into a spectrum can be done by solving the schrödinger equation for the hamiltonian trajectory, for example using NISE.
 
 
-Goal of AIM
------------
-
-Previously released as a standalone program, AIM is included here for convenience. The program can treat any functional group, as long as the map describing it does not require more than 6 atoms. This means that it is intended for (and limited to) vibrational groups, and therefore vibrational spectra, like FTIR, 2D-IR, Raman, 2D-IR-Raman, SFG and CD. While originally created for the amide-I stretch of proteins, it has evolved to also accept maps for other types of groups and different systems. 
-
-
 Goal of GEM
 -----------
 
-GEM is intended to be the more generalist successor of AIM - no longer aimed specifically at proteins, no longer limited to vibrational spectroscopy.
+GEM is intended to be the more generalist successor of `AIM <github.com/kimvana/AIM>`__ - no longer aimed specifically at proteins, no longer limited to vibrational spectroscopy.
 
 
 Concept of maps
 ---------------
 
-Both AIM and GEM make use of maps. A map basically encodes a relationship. Usually between one or more electrostatic properties, and a spectroscopic one. A simple example is the Tokmakoff map - it relates the strength of the electric field at a given point in a given direction to the frequency at which an amide group is expected to oscillate.
+GEM makes use of maps. A map basically encodes a relationship. Usually between one or more electrostatic properties, and a spectroscopic one. A simple example is the Tokmakoff map - it relates the strength of the electric field at a given point in a given direction to the frequency at which an amide group is expected to oscillate.
 
 Maps allow to combine ab initio methods and advantages with that of molecular dynamics. Again using the Tokmakoff map as an example, a protein would be too large to calculate the different frequencies of using ab initio methods, but the frequencies have too much quantum nature to be treated classically. The relationship encoded in a map, luckily, does not require an entire protein, but a smaller model system that can be treated using ab initio methods. The map can then be applied to the classically-generated MD trajectory, resulting in much faster computation times, but still considering the quantum nature.
 

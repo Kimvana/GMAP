@@ -12,12 +12,12 @@ version = "0.0.1"
 classifiers = [
     "Programming Language :: Python :: 3"
 ]
-requires-python = ">= 3.10"
+requires-python = ">= 3.10, < 3.14"
 dependencies = [
   "colorama >= 0.4.6",
   "MDAnalysis >= 0.20",
   "numba >= 0.58",
-  "numpy >= 1.22, <= 1.26",
+  "numpy >= 1.22",
 ]
 
 [project.optional-dependencies]
@@ -37,11 +37,11 @@ testing = [
 
 
 [tool.setuptools.package-data]
-GMAP = ["sourcefiles/*", "maps/*", "logo.txt"]
+GMAP = ["sourcefiles/**", "maps/**", "logo.txt"]
 
 
 [project.scripts]
-GMAP = "GMAP.src.tools.CmdInterface:main"
+GMAP = "GMAP.src.tools.cmd_interface:main"
 
 
 [tool.setuptools]

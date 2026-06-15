@@ -21,6 +21,8 @@ The reason for this, is that GMAP cannot distinguish between groups any further 
 
 Please note, this map is specifically designed for coupling AmideI singles map. It has been tested to work with the AmideBB and AmideSC singles maps, so we recommend to only couple those types of oscillators with this map. Any MD-system requirements for those maps automatically apply here as well.
 
+Another note: the TCC map should never be applied to calculate the coupling between two groups that share a common (set of) atom(s). This would result in a distance of 0, which means infinite coupling. If the code detects a distance smaller than 0.01 angstrom, a distance of 1 angstrom will be assumed instead. This assumption is not physically meaningful, however! Therefore, these zero-valued distances should always be avoided. This is done by not choosing this method for the nearest-neighbour couplings.
+
 
 Available parameters
 --------------------
@@ -29,24 +31,33 @@ When using this map, the following parameters become available to use in any inp
 
 ProteinAmide.coupling_choice
     no shorthand
-    options: None, DipDip, TDCTasumi, TDCKrimm, TCC (default = TDCTasumi)
+    options: None, DipDip, TDCTasumi, TDCKnoester, TCC (default = TDCTasumi)
 
     What coupling method should be applied to couple two groups that are not direct neighbours. If one or both of them is a sidechain amide, it will automatically be assigned this choice.
 
+    Note: in earlier versions (AIM, AmideImaps), TDCKnoester was named TDCKrimm.
+
 ProteinAmide.NN_coupling_choice
     no shorthand
-    options: None, DipDip, TDCTasumi, TDCKrimm, TCC, Tasumi, GLDP (default = GLDP)
+    options: None, DipDip, TDCTasumi, TDCKnoester, TCC, Tasumi, GLDP (default = GLDP)
 
     What coupling method should be applied to couple two groups that are direct neighbours. If one or both of the groups is a sidechain amide, this option will never be used, but assigned the choice for coupling_choice instead. 
+    
+    Note: in earlier versions (AIM, AmideImaps), TDCKnoester was named TDCKrimm.
 
 ProteinAmide.legacy_mode
     no shorthand
     options: None, AIM, AmideImaps (default = None)
 
-    Whether to recreate the results as produced by the precursors of this package. These are the differences:
+    Whether to recreate the results as produced by the precursors of this package. All options create results of the same format and magnitude, making all of them valid for use with software like NISE.
+    
+    These are the differences:
+
     - (method selection) AmideImaps always assigned GLDP for two backbone neighbours that had non-bordering residue numbers - i.e. opposite 'ends' of a cyclic chain. AIM (and GMAP default) apply the requested nearest-neighbour choice to this case.
     - (method selection) AmideImaps always assigned a TDC method to the coupling between two sidechains, instead of also allowing for TCC coupling. So, if TCC coupling is requested during this legacy mode, any two sidechains will be coupled by TDCTasumi instead.
     - (GLDP model only) When there are two prolines back to back, what map is used changes a little bit between modes. AmideImaps assigned a Gly-Pro map for those cases, while AIM and None assign a Pro-Gly map.
+
+    Which should you use? If you just want to compute spectra, stick with 'none'. It gives the most recent, detailed version, with any known bugs fixed. The main reason for changing to a legacy mode is for re-creating results from previous versions, so comparison between different results or packages can be made.
 
 
 warnings that can be raised by this map

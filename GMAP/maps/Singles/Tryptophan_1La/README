@@ -1,0 +1,24 @@
+sections:
+- intended use
+- how to use
+- available parameters
+- warnings that can be raised by this map
+
+Intended use
+------------
+This map is intended to use for the tryptophan 1La transition in proteins. This is especially useful for examining the dynamics of the protein using fluorescence spectroscopy. 
+
+How to use
+----------
+This map is intended to be used with the dipole-dipole coupling should the protein have multiple tryptophans. More advanced coupling maps are not implemented.
+The map merges the minor charges on HB1 and HB2 into CB to allow treatment of united atom models.
+
+Available parameters
+--------------------
+At this point the frequency map has no options or parameters.
+The file for all atom charges is included in the repository, but not used.
+This may allow adding a parameter for this in the future.
+
+Warnings that can be raised by this map
+---------------------------------------
+At this point none

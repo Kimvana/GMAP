@@ -1,7 +1,7 @@
-GMAP.src.tools.Exceptions module
+GMAP.src.tools.exceptions module
 ================================
 
-.. automodule:: GMAP.src.tools.Exceptions
+.. automodule:: GMAP.src.tools.exceptions
    :members:
    :undoc-members:
    :show-inheritance:

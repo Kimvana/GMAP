@@ -1,6 +1,6 @@
 
 # gmap imports
-import GMAP.src.tools.constants as GM_Con
+import GMAP.src.tools.constants as GM_con
 
 
 def GM_calc_coupling(map_, system, hamiltonian):
@@ -8,10 +8,10 @@ def GM_calc_coupling(map_, system, hamiltonian):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everyting the program currently knows
         about the MD system.
     hamiltonian : `np.ndarray`
@@ -33,10 +33,10 @@ def calc_coupling(oscix1, oscix2, map_, system):
     oscix1, oscix2 : int
         The oscillator index of each of the oscillators in this pair
         that should be calculated.
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everyting the program currently knows
         about the MD system.
 
@@ -56,7 +56,7 @@ def calc_coupling(oscix1, oscix2, map_, system):
     p1 = 1.611 + 5.893e-4 * osc1.freq
     p2 = 1.611 + 5.893e-4 * osc2.freq
     # Find the sum of the fields in atomic units
-    sumE = (osc1.VEGout[0, 1] + osc2.VEGout[0, 1]) * GM_Con.bohr2ang ** 2
+    sumE = (osc1.VEGout[0, 1] + osc2.VEGout[0, 1]) * GM_con.bohr2ang ** 2
     J = (-1789 + 23852 * sumE) * x1 * x2 - 1.966 * p1 * p2
 
     return J

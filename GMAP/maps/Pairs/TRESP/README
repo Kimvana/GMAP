@@ -31,6 +31,9 @@ This map needs some installation before it can be used:
   - Linux:
     - You are already in the correct directory (TRESP/src) to run the install command. Run the following command, making sure to point to the path of the sourcefiles directory of your installation (that we looked up earlier):
       g++ -fPIC -shared -o TRESP_clib_Linux.so -I/your/GMAP/location/sourcefiles TRESP_clib.cpp
+  - MacOS:
+   - You are already in the correct directory (TRESP/src) to run the install command. Run the following command, making sure to point to the path of the sourcefiles directory of your installation (that we looked up earlier):
+      g++ -fPIC -shared -o TRESP_clib_MacOS.dylib -I/your/GMAP/location/sourcefiles TRESP_clib.cpp
 
 
 how to use
@@ -39,6 +42,8 @@ how to use
 This map can (and must) be directly requested in the input file using 'couplings_to_use'. Any type of single this map is requested for must have a partial charges file declared. You can check whether this is the case by seeing if the keyword 'TRESP.charges_filename' is present in the map's core.txt file.
 
 If that keyword is present, the coupling can just be requested. If not, that singles map should be coupled by a map different from this one.
+
+This map should never be applied to calculate the coupling between two groups that share a common (set of) atom(s). This would result in a distance of 0, which means infinite coupling. If the code detects a distance smaller than 0.01 angstrom, a distance of 1 angstrom will be assumed instead. This assumption is not physically meaningful, however! Therefore, these zero-valued distances should always be avoided.
 
 
 Available parameters
@@ -64,6 +69,9 @@ map_TRESP_3
 map_TRESP_4
     The file supplied contains too many values. There should at most be as many values (= filled lines) in the file as there are atoms specified in the map's core.txt file under 'used_atoms'.
 
+map_TRESP_5
+    The parameter TRESP.charges_multiply couldn't be converted to a simple number. map_TRESP_5 is this map's version of MI_MC_13.
+
 
 important notes for singles-map developers
 ------------------------------------------
@@ -75,6 +83,8 @@ To make your map ready for TRESP, you have to have difference charges supplied. 
 There can at most be a charge for every atom declared under 'used_atoms'. If there are fewer charges (just N in total), only the first N atoms of those specified under used_atoms will be used. You cannot truly 'skip' an atom in used charges, but by adding a '0' (zero) in the partial charges file for the 'skipped' atom will produce results as if it was skipped. This will harm performance, though, so try to avoid doing so!
 
 The difference charges go in a separate file declared using the keyword 'TRESP.charges_filename' in the core.txt file. Each charge should go on a separate line. The file can contain comments indicated using a '#'.
+
+The contents of the file mentioned using the keyword 'TRESP.charges_filename' in the core.txt file, can be multiplied with any given value provided using the keyword 'TRESP.charges_filename'. Specifying a value for this keyword happens in the same way as for the singles-keyword multiply_freq.
 
 If your singles map is more complex, it might happen that not all singles found for your map should get the same set of difference charges. One example of this is the AmideBB map. If that is the case, you can specify the following function (signature) in your main.py file:
 CP_TRESP_get_charges(map_, system, osc)

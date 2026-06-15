@@ -8,6 +8,10 @@ VEG_clib_file                   VEG
 log_directory
 log_filename                    log.log
 
+log_profiling_filename          prof.out
+log_profiling_tempfile          prof.temp
+log_profiling_graph_filename    profout.png
+
 output_parameter_filename       parameters.txt
 output_legend_filename          legend.txt
 output_couplingvis_filename     couplingvisualization.pdf
@@ -19,14 +23,11 @@ output_raman_filename           raman_tensor
 output_positions_filename       positions
 output_doublepos_filename       doublepos
 
-output_profiling_filename       prof.out
-output_profiling_tempfile       prof.temp
-output_profiling_graph_filename profout.png
-
-
 map_directory                   ../../../maps
 maps_to_use                     AmideSC
 couplings_to_use                DipDip :All
+couplings_scale                 :All  1
+dielectric_constant             1
 singles_whitelist               :All :All
 singles_blacklist               :All :None
 influencers_whitelist           :All
@@ -48,6 +49,7 @@ estatics_method                 perres
 
 neutral_charge_threshold        0.0001
 guess_bonds                     False
+treat_box                       auto
 
 estatic_range                   20  # this is in angstrom
 estatic_smooth_range            5  # this is in angstrom
@@ -57,6 +59,7 @@ number_frames                   999999999
 stop_frame                      999999999
 time_limit                      999999  # 2y in minutes
 batch_size                      25  # frames before time appl
+number_cores                    1
 
 profiler                        False
 profiler_graph                  False
@@ -73,6 +76,8 @@ positions_units                 Ang
 positions_multiplier            1
 doublepos_units                 Ang
 doublepos_multiplier            1
+
+positions_center                0.5 0.5 0.5
 
 couplingvis_figsize             8  # width of figure in inches
 couplingvis_dpi                 100
@@ -114,14 +119,14 @@ testmap1.float_test_choice_list          99.9
 testmap1.float_test_choice_list2         44.5 33
 
 # test paths
-testmap1.path_test_free                   ../test_MathFunctions.py
+testmap1.path_test_free                   ../test_math_functions.py
 testmap1.path_test_free_new               tost_outfile.txt
-# testmap1.path_test_choice                 ../../../../test_MathFunctions.py
+# testmap1.path_test_choice                 ../../../../test_math_functions.py
 testmap1.path_test_free_new_list          test_outfile_0_1.txt test_outfile_0_2.txt
 testmap1.path_test_dir1                   ../../test_tools
 testmap1.path_test_dir2                   ../Data/testout
-testmap1.path_test_rel11                  test_ParameterParser.py
-# testmap1.path_test_rel12_choice           test_MathFunctions.py
+testmap1.path_test_rel11                  test_parameter_parser.py
+# testmap1.path_test_rel12_choice           test_math_functions.py
 testmap1.path_test_rel21_new              tost_outfile_2_1.txt
 testmap1.path_test_rel22_new_list         test_outfile_2_2_1.txt tost_outfile_2_2_2.txt
 # testmap1.path_test_rel23_new_choice       test_outfile_2_3_1.txt

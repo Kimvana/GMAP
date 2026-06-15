@@ -4,8 +4,8 @@ from numba import njit
 import numpy as np
 
 # gmap imports
-import GMAP.src.tools.MathFunctions as GM_MF
-import GMAP.src.tools.PrintTools as GM_PT
+import GMAP.src.tools.math_functions as GM_mf
+import GMAP.src.tools.print_tools as GM_pt
 
 
 def calc_dipole_Torii(map_, system, osc):
@@ -13,12 +13,12 @@ def calc_dipole_Torii(map_, system, osc):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map instance which this function will belong to.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The class containing all the information on the system of the
         MD trajectory.
-    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osc : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The specific oscillator for which the transformation is required.
 
     Returns
@@ -34,17 +34,17 @@ def calc_dipole_Torii(map_, system, osc):
     pos_C_box = osc.positions_box[0]
     pos_O_box = osc.positions_box[1]
     pos_N_box = osc.positions_box[3]
-    COvec = GM_MF.PBC_boxdiff_triclin(pos_O_box, pos_C_box, system.boxvects)
-    COvec /= GM_MF.vec3_len(COvec)
-    CNvec = GM_MF.PBC_boxdiff_triclin(pos_N_box, pos_C_box, system.boxvects)
-    CNvec /= GM_MF.vec3_len(CNvec)
+    COvec = GM_mf.PBC_boxdiff_triclin(pos_O_box, pos_C_box, system.boxvects)
+    COvec /= GM_mf.vec3_len(COvec)
+    CNvec = GM_mf.PBC_boxdiff_triclin(pos_N_box, pos_C_box, system.boxvects)
+    CNvec /= GM_mf.vec3_len(CNvec)
 
     # position of dipole vector
     r_pos = osc.positions[0] + 0.665*COvec + 0.258*CNvec
 
     # dipole moment vector itself
     r_vec = dipole_Torii(
-        COvec, CNvec, map_.Core.dipole_Torii_angle, map_.Core.dipole_gas_phase)
+        COvec, CNvec, map_.core.dipole_Torii_angle, map_.core.dipole_gas_phase)
 
     return r_vec, r_pos
 
@@ -77,11 +77,11 @@ def dipole_Torii(COvec, CNvec, itheta, magnitude):
 
     dri = 0.665*COvec + 0.258*CNvec
 
-    dridri = GM_MF.dotprod(dri, dri)
-    COvecdri = GM_MF.dotprod(COvec, dri)
+    dridri = GM_mf.dotprod(dri, dri)
+    COvecdri = GM_mf.dotprod(COvec, dri)
     mi = dri - (COvecdri + np.sqrt(dridri - COvecdri*COvecdri)*itheta)*COvec
 
-    mi /= GM_MF.vec3_len(mi)
+    mi /= GM_mf.vec3_len(mi)
     mi *= magnitude
 
     return mi
@@ -92,12 +92,12 @@ def calc_dipole_Jansen(map_, system, osc):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map instance which this function will belong to.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The class containing all the information on the system of the
         MD trajectory.
-    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osc : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The specific oscillator for which the transformation is required.
 
     Returns
@@ -112,11 +112,11 @@ def calc_dipole_Jansen(map_, system, osc):
 
     _, r_pos = map_.code.GM_get_dipole_dir(map_, system, osc)
     if osc.resnames[1] == "PRO":
-        gasdip = map_.Core.dipole_gas_phase_array_prepro
-        diparr = map_.Core.dipole_data_array_prepro
+        gasdip = map_.core.dipole_gas_phase_array_prepro
+        diparr = map_.core.dipole_data_array_prepro
     else:
-        gasdip = map_.Core.dipole_gas_phase_array
-        diparr = map_.Core.dipole_data_array
+        gasdip = map_.core.dipole_gas_phase_array
+        diparr = map_.core.dipole_data_array
     xyz_local = gasdip + np.sum(
         np.multiply(osc.VEGout[None, :, :], diparr), axis=(1, 2))
     xyz_cartesian = np.dot(xyz_local, osc.rotation_matrix)
@@ -128,12 +128,12 @@ def get_position(map_, system, osc):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map instance which this function will belong to.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The class containing all the information on the system of the
         MD trajectory.
-    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osc : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The specific oscillator for which the transformation is required.
 
     Returns
@@ -157,12 +157,12 @@ def neighbor_influence(map_, system, osc):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.SingleMap`
+    map_ : :class:`~GMAP.src.tools.map_reader.SingleMap`
         The map instance which this function will belong to.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The class containing all the information on the system of the
         MD trajectory.
-    osc : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osc : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The specific oscillator for which the transformation is required.
 
     Returns
@@ -190,12 +190,12 @@ def determine_maps(oscillator_list, map_, system):
 
     Parameters
     ----------
-    oscillator_list : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    oscillator_list : list of :class:`~GMAP.src.tools.system_reader.Oscillator`
         All oscillators belonging to a single struct of this map.
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -216,13 +216,13 @@ def determine_map(osc1, osc2, map_, system):
 
     Parameters
     ----------
-    osc1, osc2 : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osc1, osc2 : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The specific oscillators for which the neighbour mapping is
         determined.
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -242,15 +242,15 @@ def determine_map(osc1, osc2, map_, system):
     # a pro-pro map should be made!
 
     boxpos = osc1.positions_box
-    COvec = GM_MF.PBC_boxdiff_triclin(boxpos[1], boxpos[0], system.boxvects)
-    NHvec = GM_MF.PBC_boxdiff_triclin(boxpos[4], boxpos[3], system.boxvects)
+    COvec = GM_mf.PBC_boxdiff_triclin(boxpos[1], boxpos[0], system.boxvects)
+    NHvec = GM_mf.PBC_boxdiff_triclin(boxpos[4], boxpos[3], system.boxvects)
 
     # (both pro-pro(should for now be treated as pro-gly) and pro-gly)
     if osc1.resnames[1] == "PRO":
         # In the original code, Pro-Pro is actually treated as Gly-Pro
         if (
             osc2.resnames[1] == "PRO"
-            and map_.RunPars.legacy_mode == "AmideImaps"
+            and map_.run_pars.legacy_mode == "AmideImaps"
         ):
             bondtype = "GP"
         else:
@@ -259,13 +259,13 @@ def determine_map(osc1, osc2, map_, system):
         bondtype = "GP"
 
     if bondtype == "GP":
-        if GM_MF.dotprod(COvec, NHvec) < 0:
+        if GM_mf.dotprod(COvec, NHvec) < 0:
             return "_transGly_transPro"
         else:
             return "_cisGly_transPro"
 
     LorD = DLcheck(osc1, osc2, map_, system)  # -1 for D, 1 for L, 0 for nodir
-    if GM_MF.dotprod(COvec, NHvec) < 0:
+    if GM_mf.dotprod(COvec, NHvec) < 0:
         if LorD < 0:
             return "_transDPro_transGly"
         else:
@@ -281,12 +281,12 @@ def DLcheck(osc1, osc2, map_, system):
 
     Parameters
     ----------
-    osc1, osc2 : :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osc1, osc2 : :class:`~GMAP.src.tools.system_reader.Oscillator`
         The oscillators surrounding the amino acid in question
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everything the program currently knows
         about the system being treated (names, numbers, types, masses,
         charges of all atoms, for example)
@@ -303,7 +303,7 @@ def DLcheck(osc1, osc2, map_, system):
     # checks whether the amino acid between two oscillators is in L or D
     # configuration
 
-    if osc2.resnames[0] in ("GLY", "FOR", "ETA", "GL2"):
+    if osc2.resnames[0] in ("GLY", "FOR", "ETA", "GL2", "ACE", "NME"):
         return 0
 
     atomCA = osc2.positions_box[2]
@@ -320,7 +320,7 @@ def DLcheck(osc1, osc2, map_, system):
             atomCBix = atix
             break
     else:
-        GM_PT.Printer.warning(
+        GM_pt.Printer.warning(
             "Warning! The residue between the following two oscillators "
             "does not have a CB atom, and thus its chirality cannot be "
             f"determined:\n{osc1}\n{osc2}\nPlease make sure you're applying "
@@ -336,12 +336,12 @@ def DLcheck(osc1, osc2, map_, system):
 
     # used ats order:    res0{C O CA} res1{N H CA} ({N CD CA} for prepro)
     # osc1 is first, osc2 is last
-    CACvec = GM_MF.PBC_boxdiff_triclin(atomC, atomCA, system.boxvects)
-    CANvec = GM_MF.PBC_boxdiff_triclin(atomN, atomCA, system.boxvects)
-    CACBvec = GM_MF.PBC_boxdiff_triclin(atomCB, atomCA, system.boxvects)
+    CACvec = GM_mf.PBC_boxdiff_triclin(atomC, atomCA, system.boxvects)
+    CANvec = GM_mf.PBC_boxdiff_triclin(atomN, atomCA, system.boxvects)
+    CACBvec = GM_mf.PBC_boxdiff_triclin(atomCB, atomCA, system.boxvects)
 
-    CxN = GM_MF.crossprod(CACvec, CANvec)
-    if GM_MF.dotprod(CxN, CACBvec) > 0:
+    CxN = GM_mf.crossprod(CACvec, CANvec)
+    if GM_mf.dotprod(CxN, CACBvec) > 0:
         return -1
     else:
         return 1

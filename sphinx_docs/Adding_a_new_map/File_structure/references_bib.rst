@@ -86,15 +86,15 @@ In this example, I will be using some references from the AmideBB map, with a fe
 
         # Selecting the right frequency/energy map reference depending on
         # the model used
-        if map_.RunPars.frequency_map_choice == "Tokmakoff":
+        if map_.run_pars.frequency_map_choice == "Tokmakoff":
             return_these.append("EmapTokmakoff")
-        elif map_.RunPars.frequency_map_choice == "Jansen":
+        elif map_.run_pars.frequency_map_choice == "Jansen":
             return_these.append("EmapJansen")
         
         # Selecting the right dipole map reference depending on the model used.
-        if map_.RunPars.dipole_map_choice == "Torii":
+        if map_.run_pars.dipole_map_choice == "Torii":
             return_these.append("DmapTorii")
-        elif map_.RunPars.dipole_map_choice == "Jansen":
+        elif map_.run_pars.dipole_map_choice == "Jansen":
             return_these.append("DmapJansen")
 
         # only one choice for Raman map

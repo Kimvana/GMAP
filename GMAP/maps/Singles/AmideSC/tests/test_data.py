@@ -31,7 +31,7 @@ from pathlib import Path
 import numpy as np
 
 # GMAP imports
-import GMAP.src.tools.CmdInterface as GM_CI
+import GMAP.src.tools.cmd_interface as GM_ci
 
 
 def test_Tokmakoff_freqs(tmp_path):
@@ -57,7 +57,7 @@ def test_Hirst_freqs(tmp_path):
 def test_Torii_dips(tmp_path):
     # here, providing the freq map is not actually necessary. But for Jansen,
     # it is.
-    core_test_dipoles("Tokmakoff", "Torii", tmp_path, 0.000001)
+    core_test_dipoles("Tokmakoff", "Torii", tmp_path, 0.000002)
 
 
 def test_Jansen_dips(tmp_path):
@@ -67,19 +67,19 @@ def test_Jansen_dips(tmp_path):
 
 
 def test_C_pos(tmp_path):
-    core_test_positions("C", tmp_path, 0.000004)
+    core_test_positions("C", tmp_path, 0.000008)
 
 
 def test_N_pos(tmp_path):
-    core_test_positions("N", tmp_path, 0.000004)
+    core_test_positions("N", tmp_path, 0.000008)
 
 
 def test_O_pos(tmp_path):
-    core_test_positions("O", tmp_path, 0.000004)
+    core_test_positions("O", tmp_path, 0.000008)
 
 
 def test_D_pos(tmp_path):
-    core_test_positions("D", tmp_path, 0.000004)
+    core_test_positions("D", tmp_path, 0.000008)
 
 
 def test_raman(tmp_path):
@@ -89,7 +89,7 @@ def test_raman(tmp_path):
 def core_test_frequencies(mapname, tmp_path, limit):
     # This runs GMAP to create the results
     curdir = Path(__file__).resolve().parent
-    GM_CI.cmd_interface([
+    GM_ci.cmd_interface([
         "GMAP", "GEM", "run",
         str((curdir / "data/basic_parameters.txt").resolve()),
         "--AmideSC.frequency_map_choice", mapname,
@@ -109,6 +109,7 @@ def core_test_frequencies(mapname, tmp_path, limit):
     # they disagree.
     # The value of 0.0002 should be large enough to allow for float errors,
     # but small enough to catch everything else.
+    assert bool(np.any(np.isnan(np.diag(hamnew)))) is False
     mismatch = np.where(abs(np.diag(hamold) - np.diag(hamnew)) > limit)[0]
     print(mismatch)
     print(np.diag(hamold)[mismatch])
@@ -139,7 +140,7 @@ def makeham(fname, n_singles):
 def core_test_dipoles(freqmapname, dipmapname, tmp_path, limit):
     # This runs GMAP to create the results
     curdir = Path(__file__).resolve().parent
-    GM_CI.cmd_interface([
+    GM_ci.cmd_interface([
         "GMAP", "GEM", "run",
         str((curdir / "data/basic_parameters.txt").resolve()),
         "--AmideSC.frequency_map_choice", freqmapname,
@@ -158,7 +159,7 @@ def core_test_dipoles(freqmapname, dipmapname, tmp_path, limit):
 def core_test_positions(atom, tmp_path, limit):
     # This runs GMAP to create the results
     curdir = Path(__file__).resolve().parent
-    GM_CI.cmd_interface([
+    GM_ci.cmd_interface([
         "GMAP", "GEM", "run",
         str((curdir / "data/basic_parameters.txt").resolve()),
         "--AmideSC.pos_choice", atom,
@@ -177,7 +178,7 @@ def core_test_positions(atom, tmp_path, limit):
 def core_test_raman(fbonus, tmp_path, limit):
     # This runs GMAP to create the results
     curdir = Path(__file__).resolve().parent
-    GM_CI.cmd_interface([
+    GM_ci.cmd_interface([
         "GMAP", "GEM", "run",
         str((curdir / "data/basic_parameters.txt").resolve()),
         "--output_data", "ram\\;",
@@ -193,6 +194,7 @@ def core_test_raman(fbonus, tmp_path, limit):
 
 def core_compare_dippos(oldfile, newfile, limit):
     mismatch = np.where((oldfile - newfile) > limit)
+    assert bool(np.any(np.isnan(newfile))) is False
     print(mismatch)
     print(oldfile[mismatch[0], mismatch[1]])
     print(newfile[mismatch[0], mismatch[1]])

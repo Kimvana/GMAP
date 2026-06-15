@@ -1,4 +1,4 @@
-frequency_map_choice(fmc)[str]           Tokmakoff [Skinner] Jansen Cho Hirst
+frequency_map_choice(fmc)[str]           Tokmakoff [Skinner] Jansen Cho Hirst Reppert_4PN-4 Reppert_4PN-150
 dipole_map_choice(dmc)[str]              [Torii] Jansen
 residue_order[str]                       resname [resnum]
 pos_choice[str]                          [C] O N D Torii
@@ -10,3 +10,5 @@ legacy_mode[str]                         [None] AIM AmideImaps
 Torii_dipole_angle[float]                10   # in degrees
 
 allow_map_mismatch[bool]                 False
+
+include_protein_residues[list_str]       ARN ASH GLH HID HIE HIP HSD LYN LYSH

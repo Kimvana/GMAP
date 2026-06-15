@@ -4,8 +4,8 @@ from numba import njit
 import numpy as np
 
 # gmap imports
-import GMAP.src.tools.constants as GM_Con
-import GMAP.src.tools.MathFunctions as GM_MF
+import GMAP.src.tools.constants as GM_con
+import GMAP.src.tools.math_functions as GM_mf
 
 
 def GM_prep_coupling(map_, system, oscixlist, osclist):
@@ -19,38 +19,38 @@ def GM_prep_coupling(map_, system, oscixlist, osclist):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everyting the program currently knows
         about the MD system.
     oscixlist : list of int
         The oscillator indices of all oscillators that are treated by
         this map. Some might be only in a single pair, others in many.
-    osclist : list of :class:`~GMAP.src.tools.SystemReader.Oscillator`
+    osclist : list of :class:`~GMAP.src.tools.system_reader.Oscillator`
         All oscillators treated by this map.
     """
 
-    itheta = map_.Core.dipole_Torii_angle
-    magnitude = map_.RunPars.Torii_dipole_magnitude
+    itheta = map_.core.dipole_Torii_angle
+    magnitude = map_.run_pars.Torii_dipole_magnitude
 
     for oscix, osc in zip(oscixlist, osclist):
-        COvec = GM_MF.PBC_boxdiff_triclin(
+        COvec = GM_mf.PBC_boxdiff_triclin(
             osc.positions_box[1], osc.positions_box[0], system.boxvects)
-        COvec /= GM_MF.vec3_len(COvec)
-        CNvec = GM_MF.PBC_boxdiff_triclin(
+        COvec /= GM_mf.vec3_len(COvec)
+        CNvec = GM_mf.PBC_boxdiff_triclin(
             osc.positions_box[3], osc.positions_box[0], system.boxvects)
-        CNvec /= GM_MF.vec3_len(CNvec)
+        CNvec /= GM_mf.vec3_len(CNvec)
         dri = 0.665 * COvec + 0.258 * CNvec
 
         map_.dipole_pos_arr[oscix] = osc.positions[0] + dri
 
-        COvecDri = GM_MF.dotprod(COvec, dri)
+        COvecDri = GM_mf.dotprod(COvec, dri)
         dip_vec = dri - COvec * (COvecDri + itheta * np.sqrt(
-            GM_MF.dotprod(dri, dri) - COvecDri * COvecDri))
+            GM_mf.dotprod(dri, dri) - COvecDri * COvecDri))
         map_.dipole_vec_arr[oscix] = (
-            dip_vec / GM_MF.vec3_len(dip_vec) * magnitude)
+            dip_vec / GM_mf.vec3_len(dip_vec) * magnitude)
 
     map_.dipole_pos_arr = map_.dipole_pos_arr @ system.boxvects_inv
 
@@ -60,10 +60,10 @@ def GM_calc_coupling(map_, system, hamiltonian):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everyting the program currently knows
         about the MD system.
     hamiltonian : `np.ndarray`
@@ -71,16 +71,21 @@ def GM_calc_coupling(map_, system, hamiltonian):
         column and a row for each oscillator.
     """
 
+    # We'll use this value a lot. It is the same as GM_con.e2i4pieps_angcm,
+    # but now in units of cm^-1 * ang^3 Deb^-2
+    i4pieps = np.float32(
+        GM_con.i4pieps * GM_con.Debye**2 * GM_con.J2cm / GM_con.angstrom**3)
     for pair in map_.allpairs:
         J = calc_coupling(
-            *pair, map_.dipole_pos_arr, map_.dipole_vec_arr, system.boxvects)
+            *pair, map_.dipole_pos_arr, map_.dipole_vec_arr, system.boxvects,
+            i4pieps)
         hamiltonian[pair[0], pair[1]] = J
         hamiltonian[pair[1], pair[0]] = J
 
 
 @njit
 # same as DipDip map, as this is just DipDip map with Torii dipoles
-def calc_coupling(oscix1, oscix2, pos_arr, vec_arr, boxvects):
+def calc_coupling(oscix1, oscix2, pos_arr, vec_arr, boxvects, i4pieps):
     """Calculates the coupling value for the spcific provided pair.
 
     njit'ted for extra speed.
@@ -119,19 +124,18 @@ def calc_coupling(oscix1, oscix2, pos_arr, vec_arr, boxvects):
     # 4piEinv = 1/(4 * pi * eps_0) Jm/C^2
     # Gives 5034.11656 cm^-1 * ang^3 Deb^-2
 
-    fourPiEps_inv = np.float32(5034.11656)
     # the positions array is in box-coordinates -> easy subtraction, then
     # move back into cartesian
-    d = GM_MF.PBC_back2box(pos_arr[oscix1, :] - pos_arr[oscix2, :], boxvects)
-    ir2 = 1/GM_MF.dotprod(d, d)
+    d = GM_mf.PBC_back2box(pos_arr[oscix1, :] - pos_arr[oscix2, :], boxvects)
+    ir2 = 1/GM_mf.dotprod(d, d)
     ir = np.sqrt(ir2)
     ir3 = ir*ir2
     ir5 = ir3*ir2
 
-    return fourPiEps_inv * (
-        GM_MF.dotprod(vec_arr[oscix1], vec_arr[oscix2]) * ir3
-        - 3.0 * GM_MF.dotprod(vec_arr[oscix1], d)
-        * GM_MF.dotprod(vec_arr[oscix2], d) * ir5)
+    return i4pieps * (
+        GM_mf.dotprod(vec_arr[oscix1], vec_arr[oscix2]) * ir3
+        - 3.0 * GM_mf.dotprod(vec_arr[oscix1], d)
+        * GM_mf.dotprod(vec_arr[oscix2], d) * ir5)
 
 
 def GM_pre_run(map_, system):
@@ -142,15 +146,15 @@ def GM_pre_run(map_, system):
 
     Parameters
     ----------
-    map_ : :class:`~GMAP.src.tools.MapReader.Map`
+    map_ : :class:`~GMAP.src.tools.map_reader.Map`
         The object that stores everything the program currently knows
         about this map.
-    system : :class:`~GMAP.src.tools.SystemReader.System`
+    system : :class:`~GMAP.src.tools.system_reader.System`
         The object that stores everyting the program currently knows
         about the MD system.
     """
 
     map_.dipole_vec_arr = np.zeros((system.nosc, 3), dtype="float32")
     map_.dipole_pos_arr = np.zeros((system.nosc, 3), dtype="float32")
-    map_.Core.dipole_Torii_angle = np.float32(
-        1 / np.tan(GM_Con.deg2rad * map_.RunPars.Torii_dipole_angle))
+    map_.core.dipole_Torii_angle = np.float32(
+        1 / np.tan(GM_con.deg2rad * map_.run_pars.Torii_dipole_angle))

@@ -280,6 +280,9 @@ used_atoms
 
 *Mandatory parameter*
 
+.. attention::
+    This parameter uses indices. It filters through the 'functional_group' information, so the zeroeth atom of that line is selected here by index 0. All other indexing parameters take from the information presented here.
+
 The purpose of any map is to define how to calculate certain properties for certain oscillators. For this, it is important that it is very clear what the oscillator is (or looks like), as defined by functional_group. However, not all atoms required for uniquely identifying an oscillator are actually needed for calculating its properties. This parameter defines what atoms are actually needed for the further calculations. For every oscillator, the atoms listed here are saved, so they can be used/accessed later for calculations. That means that if you need any property of any atom at any point, that atom should be part of this list.
 
 Common reasons for adding an atom here might include:
@@ -346,9 +349,12 @@ electrostatic_atoms
 
 *Half-mandatory parameter*
 
+.. attention::
+    This parameter uses indices. It filters through the 'used_atoms' information, so the zeroeth atom of that line is selected here by index 0.
+
 This parameter is not needed if electrostatic_choice is set to None.
 
-Many maps need to know what the electrostatic potential, electric field, and/or electric gradient values are at the position of certain atoms. For example, based on the potential felt by different atoms in an oscillator, you can deduce at what frequency it absorbs light. This parameter defines at which atom's positions the electrostatic properties should be calculated. The atoms are selected from used_atoms. Lets look at the amide sidechain example::
+Many maps need to know what the electrostatic potential, electric field, and/or electric gradient values are at the position of certain atoms. For example, based on the potential felt by different atoms in an oscillator, you can deduce at what frequency it absorbs light. This parameter defines at which atom's positions the electrostatic properties should be calculated. **The atoms are selected from used_atoms.** Lets look at the amide sidechain example::
     
     functional_group        [ASN]    CG  OD1  CB  ND2  HD21  HD22
     used_atoms              0 1 3 4   # CG OD1 ND2 HD21
@@ -371,6 +377,9 @@ local_atoms
 ***********
 
 *Half-mandatory parameter*
+
+.. attention::
+    This parameter uses indices. It filters through the 'used_atoms' information, so the zeroeth atom of that line is selected here by index 0.
 
 This parameter is not needed if electrostatic_choice is set to None.
 
@@ -395,6 +404,9 @@ type and xyz_uvec
 *****************
 
 *Mandatory if electrostatic_choice is set to E or G*
+
+.. attention::
+    These parameters use indices. They filter through the 'used_atoms' information, so the zeroeth atom of that line is selected here by index 0.
 
 When applying maps, symmetry must be taken into consideration - If we rotate all atoms in the simulation such that (in cartesian coordinates) x becomes y, y becomes z, and z becomes x, the frequency of any oscillator shouldn't change. If the oscillator is flat and lies in the xy plane, mirroring through this plane (z becomes -z) shouldn't change anything either.
 
@@ -467,6 +479,9 @@ r_pos and r_vec
 
 *Mandatory if can_output includes any of the following: ham, ene, dip*
 
+.. attention::
+    These parameters use indices. They filter through the 'used_atoms' information, so the zeroeth atom of that line is selected here by index 0.
+
 When calculating the frequency at which an oscillator absorbs, we're usually building a hamiltonian. Such a hamiltonian is used for further spectroscopic calculations, which usually involve coupling. Regardless of whether the coupling between oscillators is explicitly calculated by GMAP, or whether it is done by a follow-up program, these calculations usually rely on dipoles. There are two important components to a dipole. First are the magnitude and direction of a dipole - the dipole vector. The second is the location of the dipole.
 
 These two are specified using the parameters r_vec (the dipole vector) and r_pos (the position of the dipole). Specifying them works the same as specifying xyz_uvec::
@@ -491,6 +506,9 @@ VEG_reference
 *************
 
 *Mandatory if electrostatic_choice is* **not** *set to None*
+
+.. attention::
+    This parameter uses indices. It filters through the 'used_atoms' information, so the zeroeth atom of that line is selected here by index 0.
 
 Most mappings depend on some electrostatic property on some position(s). These properties are calculated by the program. While these electrostatic properties are dependent on all atoms around, the atoms closest by have the largest impact. Therefore, a lot of computational time is saved by only considering the atoms within a certain radius. But, within a certain radius of what? Thats what this parameter encodes. Of course, the center of this sphere of charges is very likely to be somewhere within the molecule considered, but exactly where can differ. This keyword lets you specify the exact point where the sphere should be centered. There are three different ways of doing so:
 
@@ -584,9 +602,18 @@ multiply_freq
 
 | *optional parameter*
 
+.. warning::
+    This parameter should only be used for unit conversions, not for other additional factors, like the dielectric constant. When a system contains a dielectric constant different from 1, users running the calculation should use the parameter 'dielectric_constant' in the input parameters file instead of a map implementing it itself.
+
 There might be some unit conversions that can't be covered by the keyword 'assume_length_units'. In some of those cases, this parameter could help:
 
 The value supplied here (a whole or decimal number) will be multiplied with all the values in the files specified using 'frequency_data_file_linear'  and 'frequency_data_file_quadratic'. This could be useful for a factor like 1/(4 pi epsilon).
+
+If preferred, this keyword also accepts certain constants. All constants available in the numpy and scipy constants library (e.g. np.pi and sp_con.pi) are available, as well as all constants in the GMAP constants module. When using constants from sp_con, please be aware of the difference between the basic constants (e.g. ``sp_con.hbar``) and the 'physical_constants' dictionary (e.g. ``sp_con.physical_constants["Bohr radius"][0]``). The latter requires the additional ``[0]`` to have a number. An overview of all available constants:
+
+- `Constants available in numpy <https://numpy.org/doc/stable/reference/constants.html>`__ . Please note that numpy is available as ``np``.
+- `Constants available in scipy constants <https://docs.scipy.org/doc/scipy/reference/constants.html>`__ . Please note that scipy constants is available as ``sp_con``.
+- `Constants available in GMAP constants <AddMap_FileStruct_GMAPconstants>`. Please note that this module is available as ``GM_con``.
 
 
 
@@ -595,7 +622,7 @@ ham_first
 *********
 
 | *optional parameter*
-| *(options: true, false)
+| *(options: true, false)*
 
 .. tip::
     This keyword only makes a difference when you have custom code in the main.py file. To be even more precise: if any custom code in the main.py file makes active changes to the ``map_`` or ``oscillator`` objects during either ``GM_calculate_frequency`` or ``GM_calculate_dipole``.
@@ -754,6 +781,9 @@ position
 
 *Mandatory if can_output includes any of the following: pos, dbp*
 
+.. attention::
+    This parameter uses indices. It filters through the 'used_atoms' information, so the zeroeth atom of that line is selected here by index 0.
+
 One of the available outputs of the program is positions. For each oscillator, (for each frame) a position is written to a file. This parameter allows to specify what position should be written for this oscillator to the positions file. It has no influence on the doublepos file. The syntax is the same as for defining ``r_pos`` and ``VEG_reference position``::
 
     functional_group        [ASN]    CG  OD1  CB  ND2  HD21  HD22
@@ -772,6 +802,9 @@ doublepos_0 and doublepos_1
 ***************************
 
 *Mandatory if can_output includes any of the following: pos, dbp*
+
+.. attention::
+    These parameters use indices. They filter through the 'used_atoms' information, so the zeroeth atom of that line is selected here by index 0.
 
 One of the available outputs of the program is doublepos. It is very similar to positions, except that for each oscillator, two separate positions are written to a file. These parameters allow to specify which positions should be written for this oscillator to the doublepos file. It has no influence on the positions file. The syntax is the same as for defining ``r_pos`` and ``VEG_reference position``::
 
@@ -806,7 +839,10 @@ Specifying groups here is very similar to how it is done in influencer files, se
 
     influencer_group   protein_cannonical    :prot_charged | :prot_polar | :prot_special_can | :prot_hydrophobic
 
-    influencer_group   protein_extended   :protein_cannonical | (LYSH | HSD | HIE)
+    influencer_group   protein_extcann    ARN | ASH | GLH | HID | HIE | HIP | HSD | LYN | LYSH   # extension of the cannonicals - different protonation states.
+    influencer_group   protein_extended   :protein_cannonical | :protein_extcann
+
+
 
 
 ************
