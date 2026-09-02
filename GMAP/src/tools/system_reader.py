@@ -12,6 +12,8 @@ import GMAP.src.tools.exceptions as GM_ex
 import GMAP.src.tools.parameter_parser as GM_pp
 import GMAP.src.tools.print_tools as GM_pt
 
+from GMAP.src.tools.print_tools import devprint as dpr
+
 
 class System:
     """Stores all information on the MD system and objects therein
@@ -538,8 +540,21 @@ class System:
                 self.find_oscillators_residue(residue)
                 for residue in struct.residues
             ]
+
             # stick the different residues together, using the bonds.
-            all_oscillators = self.match_residues(all_oscillators, struct)
+            if map_.core.allow_nonbonded_funcgroup:
+                all_oscillators = self.temp_match_residues(
+                    all_oscillators, struct)
+            else:
+                all_oscillators = self.match_residues(all_oscillators, struct)
+
+            # only keep the oscillators which confirm to bond rules
+            all_oscillators = [
+                osc for osc in all_oscillators if all(
+                    self.confirm_internal_bond(osc, bond)
+                    for bond in struct.bonds
+                )
+            ]
 
         all_oscillators = [
             Oscillator(self, osc, map_) for osc in all_oscillators]
@@ -661,6 +676,18 @@ class System:
             self.universe.atoms[ix1] in
             self.universe.atoms[ix2].bonded_atoms
         )
+
+    def temp_match_residues(self, all_oscillators, struct):
+        # make all possible combinations
+        all_combinations = all_oscillators[0].copy()
+        for residue in all_oscillators[1:]:
+            all_combinations = [
+                combination + item.copy()
+                for combination in all_combinations
+                for item in residue
+            ]
+
+        return all_combinations
 
     def match_residues(self, all_oscillators, struct):
         """Finds the full oscillator from component residues
@@ -1301,10 +1328,11 @@ class Oscillator:
         self.positions_box -= shift
         self.positions_box -= np.floor(self.positions_box + 0.5) - shift
 
-        self.VEG_refpos = self.get_VEG_ref(system)
-        self.VEG_refpos_c = np.ctypeslib.as_ctypes(self.VEG_refpos)
-        if self.map.core.electrostatic_choice in ("E", "G"):
-            self.rotation_matrix = self.get_rotation_matrix(system)
+        if self.map.core.electrostatic_choice:
+            self.VEG_refpos = self.get_VEG_ref(system)
+            self.VEG_refpos_c = np.ctypeslib.as_ctypes(self.VEG_refpos)
+            if self.map.core.electrostatic_choice in ("E", "G"):
+                self.rotation_matrix = self.get_rotation_matrix(system)
 
     def get_VEG_ref(self, system):
         """Obtain the VEG point for the current system. Must be repeated

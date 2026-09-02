@@ -1097,7 +1097,11 @@ class SingleCore:
         self.can_output = self.parse_can_output(
             rawcore, map_.run_pars, map_.directory)
 
-        self.ham_first = self.parse_ham_first(rawcore, map_.directory)
+        self.ham_first = self.parse_boolkey(
+            "ham_first", rawcore, map_.directory, True)
+
+        self.allow_nonbonded_funcgroup = self.parse_boolkey(
+            "allow_nonbonded_funcgroup", rawcore, map_.directory, False)
 
         self.parse_functional_group(rawcore, map_.directory)
         if not self.success:
@@ -1218,12 +1222,12 @@ class SingleCore:
 
         return set(map_can_do)
 
-    def parse_ham_first(self, rawcore, mapdir):
-        if "ham_first" not in rawcore:
-            return True
+    def parse_boolkey(self, keyword, rawcore, mapdir, default):
+        if keyword not in rawcore:
+            return default
 
-        ham_first = rawcore["ham_first"][0]
-        match ham_first.lower():
+        choice = rawcore[keyword][0]
+        match choice.lower():
             case "true" | "t":
                 return True
             case "false" | "f":
@@ -1231,7 +1235,7 @@ class SingleCore:
 
         # no true or false
         GM_pt.Printer.warning(
-            "\nThe parameter 'ham_first' in the file"
+            f"\nThe parameter '{keyword}' in the file"
             f"{mapdir / 'core.txt'} can only take specific options. These "
             "are: 'True' and 'False'. Please make sure to have one of these.",
             "MI_MC_12"
@@ -1343,8 +1347,9 @@ class SingleCore:
             if rawcore["requires_bonds"][0].lower() in ("t", "true"):
                 self.requires_bonds = True
 
+        nonbond = self.allow_nonbonded_funcgroup
         self.functional_group = [
-            Structure(struct, bonds) for struct, bonds in zip(
+            Structure(struct, bonds, nonbond) for struct, bonds in zip(
                 self.functional_group, self.bonds
             )
         ]
@@ -1514,7 +1519,6 @@ class SingleCore:
                 return None, None, (5, len(all_opts), ix_count)
 
             bondslist = []
-
             for id, bond in bonds.items():
                 if len(bond) != 2:
                     return None, None, (6, len(all_opts), id)
@@ -2894,7 +2898,7 @@ class Structure:
         that the map the instance belongs to cannot be used.
     """
 
-    def __init__(self, struct, bonds):
+    def __init__(self, struct, bonds, nonbonded):
         self.residues = [Residue(res) for res in struct]
         self.bonds = bonds
 
@@ -2911,7 +2915,7 @@ class Structure:
                 ix += 1
         self.indices_inv = {val: key for key, val in self.indices.items()}
 
-        if len(self.residues) > 1:
+        if len(self.residues) > 1 and not nonbonded:
             self.check_bonds()
         else:
             self.success = True

@@ -1,0 +1,13 @@
+
+can_output pos
+functional_group [PHE] N CA O [GLU] N CA O
+# functional_group [PHE] N CA O
+# functional_group [GLU] N CA O
+allow_nonbonded_funcgroup True
+
+used_atoms All
+electrostatic_choice None
+
+position 0
+doublepos_0 0
+doublepos_1 2

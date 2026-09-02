@@ -282,7 +282,7 @@ This function is expected to return a list of oscillators, preferably in the sam
 .. tip::
     At first, this function might feel very similar to GM_adjust_oscillators. They are even called back-to-back by the program, with the output of GM_adjust_oscillators being the input for this one.
 
-    It therefore, in theory, is possible to have one of these two do the work of both, but this is adviced against. While GM_adjust_oscillators is meant to find all oscillators present in the system exactly once, GM_filter_oscillators is meant to take a subset of all available onces based on user choice.
+    It therefore, in theory, is possible to have one of these two do the work of both, but this is adviced against. While GM_adjust_oscillators is meant to find all oscillators present in the system exactly once, GM_filter_oscillators is meant to take a subset of all available ones based on user choice.
 
 
 Example uses
