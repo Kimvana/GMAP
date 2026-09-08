@@ -250,6 +250,12 @@ def project(vect1: np.ndarray, vect2: np.ndarray) -> np.ndarray:
 
 
 @njit
+def angle(v1, v2):
+    cos_theta = dotprod(v1, v2) / (vec3_len(v1) * vec3_len(v2))
+    return np.arccos(cos_theta)
+
+
+@njit
 def dihedral_base(b0, b1, b2):
     """Calculates the actual dihedral angle for 3 vectors.
 
