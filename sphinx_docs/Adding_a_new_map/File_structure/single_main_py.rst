@@ -475,7 +475,7 @@ Default implementation
 
 .. code-block:: python
 
-    def GM_post_init(map_, system)
+    def GM_post_init(map_, system):
         pass
 .. #endregion
 
@@ -538,7 +538,7 @@ Default implementation
 
 .. code-block:: python
 
-    def GM_pre_run(map_, system)
+    def GM_pre_run(map_, system):
         pass
 .. #endregion
 
@@ -603,7 +603,7 @@ Default implementation
 
 .. code-block:: python
 
-    def GM_pre_frame(map_, system)
+    def GM_pre_frame(map_, system):
         pass
 .. #endregion
 
@@ -666,7 +666,7 @@ Default implementation
 
 .. code-block:: python
 
-    def GM_post_frame(map_, system)
+    def GM_post_frame(map_, system):
         pass
 .. #endregion
 
@@ -729,7 +729,7 @@ Default implementation
 
 .. code-block:: python
 
-    def GM_post_run(map_, system)
+    def GM_post_run(map_, system):
         pass
 .. #endregion
 
