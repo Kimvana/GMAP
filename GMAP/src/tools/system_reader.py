@@ -424,6 +424,11 @@ class System:
             run-defining parameters.
         """
 
+        # TODO:
+        # why do all this based on all oscillators? Why not do it one
+        # map at a time? Then, you can raise errors/warnings based on
+        # a single map, and explain more, and code would be cleaner, too?
+
         # If only single-residue oscillators:
         # - Double for-loop! For each residue in system, for each map
         #   (or each struct?)
