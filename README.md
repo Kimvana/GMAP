@@ -99,7 +99,7 @@ When you've made some choices to the code, and would like to rebuild the docs, n
 
 * (always) GMAP/sourcefiles/VEG.cpp (see instructions below)
 * (optional) GMAP/maps/Pairs/ProteinAmide_TCC/src/TCC_clib.cpp (modified command, see TCC map README). This is only needed if the map is used.
-* (optional) GMAP/maps/Pairs/TRESP/src/TRESP_clib.cpp (modified command, see TRESP map README). This is only needed if the map is used.
+* (optional) GMAP/maps/Pairs/TrEsp/src/TrEsp_clib.cpp (modified command, see TrEsp map README). This is only needed if the map is used.
 
 ### windows
 
