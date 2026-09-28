@@ -11,7 +11,7 @@ sections:
 intended use
 ------------
 
-This map is intended to calculate the TrEsp (transition charges from electrostatic potentials) coupling between two singles. Any single can be coupled, but it does need to have partial charges declared/known. This map should not be used to couple two singles that share an atom. While map will not throw any error, the results computed might not make sense.
+This map is intended to calculate the TrEsp (Transition charges from Electrostatic potentials) coupling between two singles. Any single can be coupled, but it does need to have partial charges declared/known. This map should not be used to couple two singles that share an atom. While map will not throw any error, the results computed might not make sense.
 
 
 how to install
