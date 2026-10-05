@@ -6,6 +6,7 @@ on:
 jobs:
   build-main:
     runs-on: ubuntu-latest
+    name: building documentation
     steps:
     - uses: tuftsrt/sphinx-to-branch@v1.2.2
       with:
