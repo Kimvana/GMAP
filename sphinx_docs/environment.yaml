@@ -1,0 +1,8 @@
+name: sphinx-env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.13
+  - sphinx
+  - sphinx-design
+  - pydata-sphinx-theme
