@@ -30,7 +30,7 @@ sys.path.append(str(Path(__file__).parent.parent.resolve()))
 
 html_theme = 'pydata_sphinx_theme'
 # html_static_path = ['_static']
-html_favicon = "Figures/temp_logo.ico"
+html_favicon = "Figures/GMAP_ico.ico"
 
 suppress_warnings = ["docutils"]
 
