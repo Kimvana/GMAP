@@ -8,5 +8,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: tuftsrt/sphinx-to-branch@v1.2.2
-        with:
-          source-directory: sphinx_docs
+      with:
+        source-directory: sphinx_docs
