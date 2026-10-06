@@ -41,7 +41,14 @@ html_theme_options = {
         "image_light": "Figures/GMAP_banner_light.png",
         "image_dark": "Figures/GMAP_banner_dark.png",
     },
+    "github_url": "https://github.com/Kimvana/GMAP",
     # "use_edit_page_button": True,
+    "navbar_end": [
+        "search-button",
+        "theme-switcher",
+        "navbar-icon-links",
+    ],
+    "navbar_persistent": [],
 }
 # html_context = {
 #     "github_user": "Kimvana",
