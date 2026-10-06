@@ -48,7 +48,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="GMAP.src.tools.reference_handler module" href="GMAP.src.tools.reference_handler.html" />
-    <link rel="prev" title="GMAP.src.tools.physics_functions module" href="GMAP.src.tools.physics_functions.html" />
+    <link rel="prev" title="GMAP.src.tools.plotter module" href="GMAP.src.tools.plotter.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -353,11 +353,13 @@
 <li class="toctree-l4"><a class="reference internal" href="GMAP.src.tools.color_schemes.html">GMAP.src.tools.color_schemes module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="GMAP.src.tools.constants.html">GMAP.src.tools.constants module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="GMAP.src.tools.default_map_functions.html">GMAP.src.tools.default_map_functions module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="GMAP.src.tools.exceptions.html">GMAP.src.tools.exceptions module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="GMAP.src.tools.file_handler.html">GMAP.src.tools.file_handler module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="GMAP.src.tools.map_reader.html">GMAP.src.tools.map_reader module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="GMAP.src.tools.math_functions.html">GMAP.src.tools.math_functions module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="GMAP.src.tools.parameter_parser.html">GMAP.src.tools.parameter_parser module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="GMAP.src.tools.physics_functions.html">GMAP.src.tools.physics_functions module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="GMAP.src.tools.plotter.html">GMAP.src.tools.plotter module</a></li>
 <li class="toctree-l4 current active"><a aria-current="page" class="current reference internal" href="#">GMAP.src.tools.print_tools module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="GMAP.src.tools.reference_handler.html">GMAP.src.tools.reference_handler module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="GMAP.src.tools.string_classes.html">GMAP.src.tools.string_classes module</a></li>
@@ -378,6 +380,7 @@
 <li class="toctree-l4"><a class="reference internal" href="GMAP.tests.test_tools.test_math_functions.html">GMAP.tests.test_tools.test_math_functions module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="GMAP.tests.test_tools.test_parameter_parser.html">GMAP.tests.test_tools.test_parameter_parser module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="GMAP.tests.test_tools.test_physics_functions.html">GMAP.tests.test_tools.test_physics_functions module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="GMAP.tests.test_tools.test_plotter.html">GMAP.tests.test_tools.test_plotter module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="GMAP.tests.test_tools.test_print_tools.html">GMAP.tests.test_tools.test_print_tools module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="GMAP.tests.test_tools.test_reference_handler.html">GMAP.tests.test_tools.test_reference_handler module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="GMAP.tests.test_tools.test_string_classes.html">GMAP.tests.test_tools.test_string_classes module</a></li>
@@ -654,7 +657,7 @@ It is also used for retrieving information later.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="GMAP.src.tools.print_tools.Printer.logfile">
-<span class="sig-name descname"><span class="pre">logfile</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">PosixPath('/home/runner/work/GMAP/GMAP/crash_2026-10-06_07-49-27.log')</span></span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.logfile" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">logfile</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">PosixPath('/home/runner/work/GMAP/GMAP/crash_2026-10-06_07-53-03.log')</span></span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.logfile" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -985,7 +988,7 @@ with their 4bit counteparts.</p>
 <p class="admonition-title">Important</p>
 <p>This function is no longer used, and just here for testing/
 development purposes. There is now a more fancy version:
-<a class="reference internal" href="GMAP.src.tools.Plotter.html#GMAP.src.tools.plotter.plot_color_conv" title="GMAP.src.tools.plotter.plot_color_conv"><code class="xref py py-func docutils literal notranslate"><span class="pre">GMAP.src.tools.plotter.plot_color_conv()</span></code></a>.</p>
+<a class="reference internal" href="GMAP.src.tools.plotter.html#GMAP.src.tools.plotter.plot_color_conv" title="GMAP.src.tools.plotter.plot_color_conv"><code class="xref py py-func docutils literal notranslate"><span class="pre">GMAP.src.tools.plotter.plot_color_conv()</span></code></a>.</p>
 <p>Only when pandas is an issue, or when the commandline
 specifically is desired to generate the output, this function
 should still be used.</p>
@@ -1292,12 +1295,12 @@ wrapper to make things line up nicely.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="GMAP.src.tools.physics_functions.html"
+       href="GMAP.src.tools.plotter.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">GMAP.src.tools.physics_functions module</p>
+        <p class="prev-next-title">GMAP.src.tools.plotter module</p>
       </div>
     </a>
     <a class="right-next"
