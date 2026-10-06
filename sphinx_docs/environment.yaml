@@ -7,4 +7,5 @@ dependencies:
   - sphinx-design
   - pydata-sphinx-theme
   - numpydoc
+  - matplotlib
   - numpy
