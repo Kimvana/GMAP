@@ -458,8 +458,68 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="gmap-src-programs-setup-module">
-<h1>GMAP.src.programs.Setup module<a class="headerlink" href="#gmap-src-programs-setup-module" title="Link to this heading">#</a></h1>
+  <section id="module-GMAP.src.programs.Setup">
+<span id="gmap-src-programs-setup-module"></span><h1>GMAP.src.programs.Setup module<a class="headerlink" href="#module-GMAP.src.programs.Setup" title="Link to this heading">#</a></h1>
+<p>Usage:</p>
+<dl class="simple">
+<dt>GMAP Setup [target directory]</dt><dd><p>Copies GMAPsourcefiles and GMAPmaps and places them in the target
+directory under the names sourcefiles_copy and maps_copy.</p>
+</dd>
+</dl>
+<p>The purpose of Setup is to simplify editing of these files.</p>
+<p>Future functions may include a force flag and the abillity to create new
+folders.</p>
+<p>For more information, check the manual on N/A.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.src.programs.Setup.Setup">
+<span class="sig-prename descclassname"><span class="pre">GMAP.src.programs.Setup.</span></span><span class="sig-name descname"><span class="pre">Setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callcommand</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.programs.Setup.Setup" title="Link to this definition">#</a></dt>
+<dd><p>Copies the maps and src dirs and copies them to a new map.</p>
+<p>Setup copies the maps folder and the src folder and copies them to
+a new folder that is specified by the user with an absolute path.
+src and maps will both go into the same folder.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>callcommand</strong><span class="classifier">list of str</span></dt><dd><p>This is the user input into the terminal.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.src.programs.Setup.main">
+<span class="sig-prename descclassname"><span class="pre">GMAP.src.programs.Setup.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.programs.Setup.main" title="Link to this definition">#</a></dt>
+<dd><p>Fakes behaviour as if called from __main__.</p>
+<p>During normal operation (user types ‘GMAP …’ in the command line),
+this function should never be called. This function replicates the
+‘normal’ behaviour so partial tests are possible.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.src.programs.Setup.verify_target">
+<span class="sig-prename descclassname"><span class="pre">GMAP.src.programs.Setup.</span></span><span class="sig-name descname"><span class="pre">verify_target</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_srcdir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_mapdir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.programs.Setup.verify_target" title="Link to this definition">#</a></dt>
+<dd><p>Verifies that it is possible to copy the folders to target.</p>
+<p>The target directory should exist and should not contain files named
+sourcefiles_copy or maps_copy. Then the GMAPsourcefiles directory
+and the GMAPmaps directory will be copied into the target
+directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>target</strong><span class="classifier">‘pathlib.Path’</span></dt><dd><p>The object that is the path leading to the target folder.</p>
+</dd>
+<dt><strong>target_srcdir</strong><span class="classifier">‘pathlib.Path’</span></dt><dd><p>The object that is the path that will be the location where the
+sourcefiles folder copy will reside.</p>
+</dd>
+<dt><strong>target_mapdir</strong><span class="classifier">‘pathlib.Path’</span></dt><dd><p>The object that is the path that will be the location where the
+maps folder copy will reside.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
@@ -500,6 +560,20 @@
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.src.programs.Setup.Setup"><code class="docutils literal notranslate"><span class="pre">Setup()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.src.programs.Setup.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.src.programs.Setup.verify_target"><code class="docutils literal notranslate"><span class="pre">verify_target()</span></code></a></li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
 

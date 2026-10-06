@@ -458,8 +458,267 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="gmap-src-programs-gem-module">
-<h1>GMAP.src.programs.GEM module<a class="headerlink" href="#gmap-src-programs-gem-module" title="Link to this heading">#</a></h1>
+  <section id="module-GMAP.src.programs.GEM">
+<span id="gmap-src-programs-gem-module"></span><h1>GMAP.src.programs.GEM module<a class="headerlink" href="#module-GMAP.src.programs.GEM" title="Link to this heading">#</a></h1>
+<p>Usage:</p>
+<p>GMAP GEM
+GMAP GEM help</p>
+<blockquote>
+<div><p>Prints this help.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>GMAP GEM demo</dt><dd><p>Launches GEM in demo-mode. Performs a basic calculation to
+demonstrate basic use and to verify the program is installed
+correctly.</p>
+</dd>
+<dt>GMAP GEM run [name of input file] [optional parameters]</dt><dd><p>Performs a run of GEM using the parameters specified in the included
+file.</p>
+</dd>
+</dl>
+<p>Groningen Electrostatic Maps</p>
+<p>The purpose of GEM is to take an MD trajectory and compute the
+time-dependent Hamiltonian to be used in electronic spectral calculations.
+Instructions on how to deal with specific chromophores have to be included
+in the corresponding .emap file.</p>
+<p>For more information, check the manual on N/A.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.src.programs.GEM.GEM">
+<span class="sig-prename descclassname"><span class="pre">GMAP.src.programs.GEM.</span></span><span class="sig-name descname"><span class="pre">GEM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callcommand</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.programs.GEM.GEM" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.src.programs.GEM.early_stop">
+<span class="sig-prename descclassname"><span class="pre">GMAP.src.programs.GEM.</span></span><span class="sig-name descname"><span class="pre">early_stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">framenum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_pars</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.programs.GEM.early_stop" title="Link to this definition">#</a></dt>
+<dd><p>Determines whether to stop the calculation early, or to continue.</p>
+<p>This decision is based on the amount of remaining time, used time,
+and frame batch size. Basically, the program divides all frames to
+calculate in batches of a size determined by the user. Every first
+frame of a batch (except the very first batch), the program sees how
+long batches have taken until now, and whether there is enough time
+to finish another.
+If there is not enough time to finish two more, the next batch will
+not start. This is done to ensure that there is also enough time for
+the program to finish things off after the last batch.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.src.programs.GEM.main">
+<span class="sig-prename descclassname"><span class="pre">GMAP.src.programs.GEM.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callcommand</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.programs.GEM.main" title="Link to this definition">#</a></dt>
+<dd><p>Fakes behaviour as if called from __main__.</p>
+<p>During normal operation (user types ‘GMAP …’ in the command line),
+this function should never be called. This function replicates the
+‘normal’ behaviour so partial tests are possible.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.src.programs.GEM.manage_frame">
+<span class="sig-prename descclassname"><span class="pre">GMAP.src.programs.GEM.</span></span><span class="sig-name descname"><span class="pre">manage_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_pars</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.programs.GEM.manage_frame" title="Link to this definition">#</a></dt>
+<dd><p>Performs all the checks involved with starting a new frame.</p>
+<p>Future/TODO:
+Checks if the new frame should be treated (or is out of range).
+Prints the new frame number, along with an ETA (to know how much
+longer the calculation will take). Also confirms whether there is
+enough time to start on the next batch of frames before time runs
+out.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>frame</strong><span class="classifier"><cite>MDA.Timestep</cite></span></dt><dd><p>The frame that will be treated next.</p>
+</dd>
+<dt><strong>run_pars</strong><span class="classifier"><a class="reference internal" href="GMAP.src.tools.parameter_parser.html#GMAP.src.tools.parameter_parser.RunPars" title="GMAP.src.tools.parameter_parser.RunPars"><code class="xref py py-class docutils literal notranslate"><span class="pre">RunPars</span></code></a></span></dt><dd><p>The ‘main’ RunPars instance containing all the basic
+run-defining parameters.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.src.programs.GEM.par_single_job">
+<span class="sig-prename descclassname"><span class="pre">GMAP.src.programs.GEM.</span></span><span class="sig-name descname"><span class="pre">par_single_job</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputpar</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.programs.GEM.par_single_job" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.src.programs.GEM.parallel">
+<span class="sig-prename descclassname"><span class="pre">GMAP.src.programs.GEM.</span></span><span class="sig-name descname"><span class="pre">parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_parfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argslist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">singles_mapdict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pairs_mapdict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmd_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">def_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_pars</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.programs.GEM.parallel" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.src.programs.GEM.print_calculation_summary">
+<span class="sig-prename descclassname"><span class="pre">GMAP.src.programs.GEM.</span></span><span class="sig-name descname"><span class="pre">print_calculation_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.programs.GEM.print_calculation_summary" title="Link to this definition">#</a></dt>
+<dd><p>Reports how the calculation went, and some details users might
+want to know.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>run_pars</strong><span class="classifier"><a class="reference internal" href="GMAP.src.tools.parameter_parser.html#GMAP.src.tools.parameter_parser.RunPars" title="GMAP.src.tools.parameter_parser.RunPars"><code class="xref py py-class docutils literal notranslate"><span class="pre">RunPars</span></code></a></span></dt><dd><p>The ‘main’ RunPars instance containing all the basic
+run-defining parameters.</p>
+</dd>
+<dt><strong>system</strong><span class="classifier"><a class="reference internal" href="GMAP.src.tools.system_reader.html#GMAP.src.tools.system_reader.System" title="GMAP.src.tools.system_reader.System"><code class="xref py py-class docutils literal notranslate"><span class="pre">System</span></code></a></span></dt><dd><p>The class containing all the information on the system of the
+MD trajectory.</p>
+</dd>
+<dt><strong>parallel</strong><span class="classifier">bool, default=False</span></dt><dd><p>Whether this function should report on a parallel run.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.src.programs.GEM.print_frame_ETA">
+<span class="sig-prename descclassname"><span class="pre">GMAP.src.programs.GEM.</span></span><span class="sig-name descname"><span class="pre">print_frame_ETA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">framenum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endframe</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.programs.GEM.print_frame_ETA" title="Link to this definition">#</a></dt>
+<dd><p>Prints some time information about this frame.</p>
+<p>Will report on the time at which the report takes place, the current
+frame, time elapsed, an estimate of the time remaining, and an
+estimate when the program will be done. The following format is
+used:</p>
+<p>Provided format:
+Current time | current frame | time elapsed | time to go   | end time
+Fri 13 HH:MM | xxxyyyzzz     | xxx-xx:xx:xx | xxx-xx:xx:xx | Fri 13 HH:MM</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>These estimates will improve when more frames have already been
+treated. For small systems (proteins, a speed of frames per
+second) any estimate below 10 frames is worthless, after 100
+frames they get usable. For large systems (assemblies, a speed
+of minutes per frame), this estimate will most likely converge
+much faster, but testing is required to know how fast.</p>
+<p>This difference is caused by the contribution of numba jitting.
+This usually takes a few seconds, which is a significant amount
+of time for small systems, but not for larger ones.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The weekdays will be reported in the installation(? System?)
+language of the user. As different languages have a shorthand
+for weekdays of a different amount of characters, the program
+has 14 characters reserved (so a few spaces are missing in the
+example above).</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The estimated time to go (and end time) are based on how long
+earlier frames took. That means that during the first frame
+treated, no estimate can be provided, and wont. The last two
+columns will not be used/filled in on the first frame.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>verbose</strong><span class="classifier">int</span></dt><dd><p>The verbose level at which the print of this function should be
+performed</p>
+</dd>
+<dt><strong>framenum</strong><span class="classifier">int</span></dt><dd><p>The frame number at which this function is called</p>
+</dd>
+<dt><strong>startframe</strong><span class="classifier">int</span></dt><dd><p>The first frame that is treated during the calculation, as
+specified by the user using the parameter start_frame.</p>
+</dd>
+<dt><strong>endframe</strong><span class="classifier">int</span></dt><dd><p>The (excusive) end point of the calculation, so the first frame
+that won’t be treated anymore. As specified by the user using
+the parameter end_frame.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.src.programs.GEM.print_in_output_filenames">
+<span class="sig-prename descclassname"><span class="pre">GMAP.src.programs.GEM.</span></span><span class="sig-name descname"><span class="pre">print_in_output_filenames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_pars</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.programs.GEM.print_in_output_filenames" title="Link to this definition">#</a></dt>
+<dd><p>report which files were used during the calculation</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>run_pars</strong><span class="classifier"><a class="reference internal" href="GMAP.src.tools.parameter_parser.html#GMAP.src.tools.parameter_parser.RunPars" title="GMAP.src.tools.parameter_parser.RunPars"><code class="xref py py-class docutils literal notranslate"><span class="pre">RunPars</span></code></a></span></dt><dd><p>The ‘main’ RunPars instance containing all the basic
+run-defining parameters.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.src.programs.GEM.print_relevant_references">
+<span class="sig-prename descclassname"><span class="pre">GMAP.src.programs.GEM.</span></span><span class="sig-name descname"><span class="pre">print_relevant_references</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.programs.GEM.print_relevant_references" title="Link to this definition">#</a></dt>
+<dd><p>report which references should be cited for this calculation</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>run_pars</strong><span class="classifier"><a class="reference internal" href="GMAP.src.tools.parameter_parser.html#GMAP.src.tools.parameter_parser.RunPars" title="GMAP.src.tools.parameter_parser.RunPars"><code class="xref py py-class docutils literal notranslate"><span class="pre">RunPars</span></code></a></span></dt><dd><p>The ‘main’ RunPars instance containing all the basic
+run-defining parameters.</p>
+</dd>
+<dt><strong>system</strong><span class="classifier"><a class="reference internal" href="GMAP.src.tools.system_reader.html#GMAP.src.tools.system_reader.System" title="GMAP.src.tools.system_reader.System"><code class="xref py py-class docutils literal notranslate"><span class="pre">System</span></code></a></span></dt><dd><p>The class containing all the information on the system of the
+MD trajectory.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.src.programs.GEM.print_time_splits">
+<span class="sig-prename descclassname"><span class="pre">GMAP.src.programs.GEM.</span></span><span class="sig-name descname"><span class="pre">print_time_splits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.programs.GEM.print_time_splits" title="Link to this definition">#</a></dt>
+<dd><p>Report how much time was spent on what parts of the calculation</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>run_pars</strong><span class="classifier"><a class="reference internal" href="GMAP.src.tools.parameter_parser.html#GMAP.src.tools.parameter_parser.RunPars" title="GMAP.src.tools.parameter_parser.RunPars"><code class="xref py py-class docutils literal notranslate"><span class="pre">RunPars</span></code></a></span></dt><dd><p>The ‘main’ RunPars instance containing all the basic
+run-defining parameters.</p>
+</dd>
+<dt><strong>parallel</strong><span class="classifier">bool, default=False</span></dt><dd><p>Whether this function should report on a parallel run.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.src.programs.GEM.print_treated_avail_frames">
+<span class="sig-prename descclassname"><span class="pre">GMAP.src.programs.GEM.</span></span><span class="sig-name descname"><span class="pre">print_treated_avail_frames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.programs.GEM.print_treated_avail_frames" title="Link to this definition">#</a></dt>
+<dd><p>Report what frames from MD are available, which were requested,
+and which actually calculated.</p>
+<p>For now, there is no difference between the requested and calculated
+frames. This will become relevant when the program can stop early
+due to time constraints.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>run_pars</strong><span class="classifier"><a class="reference internal" href="GMAP.src.tools.parameter_parser.html#GMAP.src.tools.parameter_parser.RunPars" title="GMAP.src.tools.parameter_parser.RunPars"><code class="xref py py-class docutils literal notranslate"><span class="pre">RunPars</span></code></a></span></dt><dd><p>The ‘main’ RunPars instance containing all the basic
+run-defining parameters.</p>
+</dd>
+<dt><strong>system</strong><span class="classifier"><a class="reference internal" href="GMAP.src.tools.system_reader.html#GMAP.src.tools.system_reader.System" title="GMAP.src.tools.system_reader.System"><code class="xref py py-class docutils literal notranslate"><span class="pre">System</span></code></a></span></dt><dd><p>The class containing all the information on the system of the
+MD trajectory.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.src.programs.GEM.run">
+<span class="sig-prename descclassname"><span class="pre">GMAP.src.programs.GEM.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_parfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argslist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">singles_mapdict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pairs_mapdict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmd_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">def_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_pars</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.programs.GEM.run" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.src.programs.GEM.trj_loop">
+<span class="sig-prename descclassname"><span class="pre">GMAP.src.programs.GEM.</span></span><span class="sig-name descname"><span class="pre">trj_loop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.programs.GEM.trj_loop" title="Link to this definition">#</a></dt>
+<dd><p>Performs the main per-frame loop for GEM.</p>
+<p>Does the last bit of initialization that needs to happen, and then
+treats each frame.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>run_pars</strong><span class="classifier"><a class="reference internal" href="GMAP.src.tools.parameter_parser.html#GMAP.src.tools.parameter_parser.RunPars" title="GMAP.src.tools.parameter_parser.RunPars"><code class="xref py py-class docutils literal notranslate"><span class="pre">RunPars</span></code></a></span></dt><dd><p>The ‘main’ RunPars instance containing all the basic
+run-defining parameters.</p>
+</dd>
+<dt><strong>system</strong><span class="classifier"><a class="reference internal" href="GMAP.src.tools.system_reader.html#GMAP.src.tools.system_reader.System" title="GMAP.src.tools.system_reader.System"><code class="xref py py-class docutils literal notranslate"><span class="pre">System</span></code></a></span></dt><dd><p>The class containing all the information on the system of the
+MD trajectory.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
@@ -500,6 +759,31 @@
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.src.programs.GEM.GEM"><code class="docutils literal notranslate"><span class="pre">GEM()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.src.programs.GEM.early_stop"><code class="docutils literal notranslate"><span class="pre">early_stop()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.src.programs.GEM.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.src.programs.GEM.manage_frame"><code class="docutils literal notranslate"><span class="pre">manage_frame()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.src.programs.GEM.par_single_job"><code class="docutils literal notranslate"><span class="pre">par_single_job()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.src.programs.GEM.parallel"><code class="docutils literal notranslate"><span class="pre">parallel()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.src.programs.GEM.print_calculation_summary"><code class="docutils literal notranslate"><span class="pre">print_calculation_summary()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.src.programs.GEM.print_frame_ETA"><code class="docutils literal notranslate"><span class="pre">print_frame_ETA()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.src.programs.GEM.print_in_output_filenames"><code class="docutils literal notranslate"><span class="pre">print_in_output_filenames()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.src.programs.GEM.print_relevant_references"><code class="docutils literal notranslate"><span class="pre">print_relevant_references()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.src.programs.GEM.print_time_splits"><code class="docutils literal notranslate"><span class="pre">print_time_splits()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.src.programs.GEM.print_treated_avail_frames"><code class="docutils literal notranslate"><span class="pre">print_treated_avail_frames()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.src.programs.GEM.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.src.programs.GEM.trj_loop"><code class="docutils literal notranslate"><span class="pre">trj_loop()</span></code></a></li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
 
