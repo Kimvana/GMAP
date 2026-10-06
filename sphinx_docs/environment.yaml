@@ -3,7 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - python=3.13
-  - sphinx
+  - sphinx=8.2
   - sphinx-design
   - pydata-sphinx-theme
   - numpydoc
