@@ -22,6 +22,7 @@ from .src.programs import DEPICT
 from .src.programs import GEM
 from .src.programs import Setup
 
+__version__ = 1.0
 
 alltools = {
     "GEM": GEM,
