@@ -458,8 +458,249 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="gmap-src-tools-clib-loader-module">
-<h1>GMAP.src.tools.clib_loader module<a class="headerlink" href="#gmap-src-tools-clib-loader-module" title="Link to this heading">#</a></h1>
+  <section id="module-GMAP.src.tools.clib_loader">
+<span id="gmap-src-tools-clib-loader-module"></span><h1>GMAP.src.tools.clib_loader module<a class="headerlink" href="#module-GMAP.src.tools.clib_loader" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="GMAP.src.tools.clib_loader.VEG_CLib">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.clib_loader.</span></span><span class="sig-name descname"><span class="pre">VEG_CLib</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.clib_loader.VEG_CLib" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Stores and manages all c functions regarding electrostatics.</p>
+<p>Each (external) function in the library has it’s own associated
+method on this class. The calls to C are ugly and convoluted due
+to c functions needing so many parameters (either single values
+or numpy arrays), so these methods make their calls more pythonic.
+They each require just the relevant classes, and unpack the required
+attributes themselves.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>run_pars</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">RunPars</span></code></span></dt><dd><p>The ‘main’ RunPars instance containing all the basic run-defining
+parameters.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>clib</strong><span class="classifier"><cite>ctypes.CDLL</cite></span></dt><dd><p>The actual compiled c-code. Must be compiled to be a library,
+so a .dll (windows), .so (linux) or .dylib (macOS) file.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#GMAP.src.tools.clib_loader.VEG_CLib.calcVEG_perres_mm_rhombic" title="GMAP.src.tools.clib_loader.VEG_CLib.calcVEG_perres_mm_rhombic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calcVEG_perres_mm_rhombic</span></code></a>(system, run_pars, ...)</p></td>
+<td><p>Calculate the potential on each of the requested points.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#GMAP.src.tools.clib_loader.VEG_CLib.calcVEG_perres_mm_rhombic_nocut" title="GMAP.src.tools.clib_loader.VEG_CLib.calcVEG_perres_mm_rhombic_nocut"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calcVEG_perres_mm_rhombic_nocut</span></code></a>(system, ...)</p></td>
+<td><p>Calculate the potential on each of the requested points.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#GMAP.src.tools.clib_loader.VEG_CLib.calcVEG_perres_mm_triclin" title="GMAP.src.tools.clib_loader.VEG_CLib.calcVEG_perres_mm_triclin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calcVEG_perres_mm_triclin</span></code></a>(system, run_pars, ...)</p></td>
+<td><p>Calculate the potential on each of the requested points.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#GMAP.src.tools.clib_loader.VEG_CLib.calcVEG_perres_mm_triclin_nocut" title="GMAP.src.tools.clib_loader.VEG_CLib.calcVEG_perres_mm_triclin_nocut"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calcVEG_perres_mm_triclin_nocut</span></code></a>(system, ...)</p></td>
+<td><p>Calculate the potential on each of the requested points.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="table">
+<tbody>
+<tr class="row-odd"><td><p><strong>CoM_frombox</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>calcVEG_perres_main</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>calc_CoM_box</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>positions_to_box</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Notes</p>
+<p>C functions cannot return more than a single value. Therefore, most
+will write their output into an array provided as an input. This
+array must be of a c-friendly datatype, use
+<code class="docutils literal notranslate"><span class="pre">np.ctypeslib.as_ctypes()</span></code>
+for creating these. This version must be saved along with the
+original, so, for example, you have both <code class="docutils literal notranslate"><span class="pre">my_arr</span></code> and
+<code class="docutils literal notranslate"><span class="pre">my_arr_c</span></code>, where <code class="docutils literal notranslate"><span class="pre">my_arr_c</span></code> is defined as
+<code class="docutils literal notranslate"><span class="pre">np.ctypeslib.as_ctypes(my_arr)</span></code>. This results in two views of the
+same array, meaning that any changes to any values made in
+<code class="docutils literal notranslate"><span class="pre">my_arr</span></code> will also apply to <code class="docutils literal notranslate"><span class="pre">my_arr_c</span></code>, and vice versa.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="GMAP.src.tools.clib_loader.VEG_CLib.CoM_frombox">
+<span class="sig-name descname"><span class="pre">CoM_frombox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">system</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.clib_loader.VEG_CLib.CoM_frombox" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="GMAP.src.tools.clib_loader.VEG_CLib.calcVEG_perres_main">
+<span class="sig-name descname"><span class="pre">calcVEG_perres_main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oscillator</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.clib_loader.VEG_CLib.calcVEG_perres_main" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="GMAP.src.tools.clib_loader.VEG_CLib.calcVEG_perres_mm_rhombic">
+<span class="sig-name descname"><span class="pre">calcVEG_perres_mm_rhombic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oscillator</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.clib_loader.VEG_CLib.calcVEG_perres_mm_rhombic" title="Link to this definition">#</a></dt>
+<dd><p>Calculate the potential on each of the requested points.</p>
+<p>This is basically a wrapper for the c function of the same
+name. As c cannot return arrays, the output is instead written
+into the provided input array of the name <code class="docutils literal notranslate"><span class="pre">VEGout_c</span></code> (in
+python; in c it is called <code class="docutils literal notranslate"><span class="pre">out</span></code>), which is an attribute of
+<code class="docutils literal notranslate"><span class="pre">oscillator</span></code>. If you want to retrieve these values, read them
+from <code class="docutils literal notranslate"><span class="pre">oscillator.VEGout</span></code>.</p>
+<p>In this function, an atom only counts towards the electrostatics
+if the centre of mass of its residue is in range, AND the atom
+itself is also in range.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>system</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">System</span></code></span></dt><dd><p>The object that stores everything the program currently knows
+about the system being treated (names, numbers, types, masses,
+charges of all atoms, for example)</p>
+</dd>
+<dt><strong>run_pars</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">RunPars</span></code></span></dt><dd><p>The ‘main’ RunPars instance containing all the basic
+run-defining parameters.</p>
+</dd>
+<dt><strong>oscillator</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">Oscillator</span></code></span></dt><dd><p>The specific oscillator for which the potentials are required.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">calcVEG_perres_mm_nocut</span></code></dt><dd><p>This function recreates the method of AIM: if a residue’s centre of mass is in range, all atoms in that residue count towards the total electrostatics.</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="GMAP.src.tools.clib_loader.VEG_CLib.calcVEG_perres_mm_rhombic_nocut">
+<span class="sig-name descname"><span class="pre">calcVEG_perres_mm_rhombic_nocut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oscillator</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.clib_loader.VEG_CLib.calcVEG_perres_mm_rhombic_nocut" title="Link to this definition">#</a></dt>
+<dd><p>Calculate the potential on each of the requested points.</p>
+<p>This is basically a wrapper for the c function of the same
+name. As c cannot return arrays, the output is instead written
+into the provided input array of the name <code class="docutils literal notranslate"><span class="pre">VEGout_c</span></code> (in
+python; in c it is called <code class="docutils literal notranslate"><span class="pre">out</span></code>), which is an attribute of
+<code class="docutils literal notranslate"><span class="pre">oscillator</span></code>. If you want to retrieve these values, read them
+from <code class="docutils literal notranslate"><span class="pre">oscillator.VEGout</span></code>.</p>
+<p>In this function, an atom only counts towards the electrostatics
+if the centre of mass of its residue is in range.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>system</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">System</span></code></span></dt><dd><p>The object that stores everything the program currently knows
+about the system being treated (names, numbers, types, masses,
+charges of all atoms, for example)</p>
+</dd>
+<dt><strong>run_pars</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">RunPars</span></code></span></dt><dd><p>The ‘main’ RunPars instance containing all the basic
+run-defining parameters.</p>
+</dd>
+<dt><strong>oscillator</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">Oscillator</span></code></span></dt><dd><p>The specific oscillator for which the potentials are required.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">calcVEG_perres_mm</span></code></dt><dd><p>This function is the intended improved method by GEM: an atom only counts towards the electrostatics if the centre of mass of its residue is in range, AND the atom itself is also in range.</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="GMAP.src.tools.clib_loader.VEG_CLib.calcVEG_perres_mm_triclin">
+<span class="sig-name descname"><span class="pre">calcVEG_perres_mm_triclin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oscillator</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.clib_loader.VEG_CLib.calcVEG_perres_mm_triclin" title="Link to this definition">#</a></dt>
+<dd><p>Calculate the potential on each of the requested points.</p>
+<p>This is basically a wrapper for the c function of the same
+name. As c cannot return arrays, the output is instead written
+into the provided input array of the name <code class="docutils literal notranslate"><span class="pre">VEGout_c</span></code> (in
+python; in c it is called <code class="docutils literal notranslate"><span class="pre">out</span></code>), which is an attribute of
+<code class="docutils literal notranslate"><span class="pre">oscillator</span></code>. If you want to retrieve these values, read them
+from <code class="docutils literal notranslate"><span class="pre">oscillator.VEGout</span></code>.</p>
+<p>In this function, an atom only counts towards the electrostatics
+if the centre of mass of its residue is in range, AND the atom
+itself is also in range.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>system</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">System</span></code></span></dt><dd><p>The object that stores everything the program currently knows
+about the system being treated (names, numbers, types, masses,
+charges of all atoms, for example)</p>
+</dd>
+<dt><strong>run_pars</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">RunPars</span></code></span></dt><dd><p>The ‘main’ RunPars instance containing all the basic
+run-defining parameters.</p>
+</dd>
+<dt><strong>oscillator</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">Oscillator</span></code></span></dt><dd><p>The specific oscillator for which the potentials are required.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">calcVEG_perres_mm_nocut</span></code></dt><dd><p>This function recreates the method of AIM: if a residue’s centre of mass is in range, all atoms in that residue count towards the total electrostatics.</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="GMAP.src.tools.clib_loader.VEG_CLib.calcVEG_perres_mm_triclin_nocut">
+<span class="sig-name descname"><span class="pre">calcVEG_perres_mm_triclin_nocut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oscillator</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.clib_loader.VEG_CLib.calcVEG_perres_mm_triclin_nocut" title="Link to this definition">#</a></dt>
+<dd><p>Calculate the potential on each of the requested points.</p>
+<p>This is basically a wrapper for the c function of the same
+name. As c cannot return arrays, the output is instead written
+into the provided input array of the name <code class="docutils literal notranslate"><span class="pre">VEGout_c</span></code> (in
+python; in c it is called <code class="docutils literal notranslate"><span class="pre">out</span></code>), which is an attribute of
+<code class="docutils literal notranslate"><span class="pre">oscillator</span></code>. If you want to retrieve these values, read them
+from <code class="docutils literal notranslate"><span class="pre">oscillator.VEGout</span></code>.</p>
+<p>In this function, an atom only counts towards the electrostatics
+if the centre of mass of its residue is in range.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>system</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">System</span></code></span></dt><dd><p>The object that stores everything the program currently knows
+about the system being treated (names, numbers, types, masses,
+charges of all atoms, for example)</p>
+</dd>
+<dt><strong>run_pars</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">RunPars</span></code></span></dt><dd><p>The ‘main’ RunPars instance containing all the basic
+run-defining parameters.</p>
+</dd>
+<dt><strong>oscillator</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">Oscillator</span></code></span></dt><dd><p>The specific oscillator for which the potentials are required.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">calcVEG_perres_mm</span></code></dt><dd><p>This function is the intended improved method by GEM: an atom only counts towards the electrostatics if the centre of mass of its residue is in range, AND the atom itself is also in range.</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="GMAP.src.tools.clib_loader.VEG_CLib.calc_CoM_box">
+<span class="sig-name descname"><span class="pre">calc_CoM_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">system</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.clib_loader.VEG_CLib.calc_CoM_box" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="GMAP.src.tools.clib_loader.VEG_CLib.positions_to_box">
+<span class="sig-name descname"><span class="pre">positions_to_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">system</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.clib_loader.VEG_CLib.positions_to_box" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 
 
@@ -500,6 +741,28 @@
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.src.tools.clib_loader.VEG_CLib"><code class="docutils literal notranslate"><span class="pre">VEG_CLib</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.src.tools.clib_loader.VEG_CLib.CoM_frombox"><code class="docutils literal notranslate"><span class="pre">VEG_CLib.CoM_frombox()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.src.tools.clib_loader.VEG_CLib.calcVEG_perres_main"><code class="docutils literal notranslate"><span class="pre">VEG_CLib.calcVEG_perres_main()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.src.tools.clib_loader.VEG_CLib.calcVEG_perres_mm_rhombic"><code class="docutils literal notranslate"><span class="pre">VEG_CLib.calcVEG_perres_mm_rhombic()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.src.tools.clib_loader.VEG_CLib.calcVEG_perres_mm_rhombic_nocut"><code class="docutils literal notranslate"><span class="pre">VEG_CLib.calcVEG_perres_mm_rhombic_nocut()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.src.tools.clib_loader.VEG_CLib.calcVEG_perres_mm_triclin"><code class="docutils literal notranslate"><span class="pre">VEG_CLib.calcVEG_perres_mm_triclin()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.src.tools.clib_loader.VEG_CLib.calcVEG_perres_mm_triclin_nocut"><code class="docutils literal notranslate"><span class="pre">VEG_CLib.calcVEG_perres_mm_triclin_nocut()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.src.tools.clib_loader.VEG_CLib.calc_CoM_box"><code class="docutils literal notranslate"><span class="pre">VEG_CLib.calc_CoM_box()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.src.tools.clib_loader.VEG_CLib.positions_to_box"><code class="docutils literal notranslate"><span class="pre">VEG_CLib.positions_to_box()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
 
