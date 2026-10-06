@@ -439,7 +439,7 @@
 <p>There are a few objects that occur quite often as an argument for these functions. Here is a quick overview of them:</p>
 <section id="map">
 <h3>map_<a class="headerlink" href="#map" title="Link to this heading">#</a></h3>
-<p>An instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">PairMap</span></code>. Stores all information of this class. This is the most important object, as it stores everything related to this class. As functions of the map can change how the map is registered, this object will look different during the different functions. Here is an overview of all attributes the class can have, at each function it will be explained/highlighted what attributes are available at that point.</p>
+<p>An instance of <a class="reference internal" href="../../api_out/GMAP.src.tools.map_reader.html#GMAP.src.tools.map_reader.PairMap" title="GMAP.src.tools.map_reader.PairMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairMap</span></code></a>. Stores all information of this class. This is the most important object, as it stores everything related to this class. As functions of the map can change how the map is registered, this object will look different during the different functions. Here is an overview of all attributes the class can have, at each function it will be explained/highlighted what attributes are available at that point.</p>
 <p>It is probable that the map wants to save information between functions, too, just like the main program. These data structures must be saved as an attribute to the instance of the class, as per good coding practices. This overview of attributes should help indicate what names are and aren’t available.</p>
 <ul>
 <li><p>self.directory (type pathlib.Path) is the path to the directory the map is saved in on the current machine.</p></li>
@@ -448,11 +448,11 @@
 <li><p>self.type (type str) is the type of the map - either Singles or Pairs. Singles maps operate on a single oscillator (think of maps giving an oscillator frequency), Pairs maps operate on a pair of oscillators (think of maps giving a coupling value).</p></li>
 <li><p>self.success (type bool) denotes whether the map has (until this point) been read successfully. An unsuccessful map will not trigger the program to quit, as long as the user does not want to use this map.</p></li>
 <li><p>self.avail_files (type list of pathlib.Path) is a list of all files that are in the same map directory in this map (or in its parent directory). These are the files that can be used for appending using ‘add_corefile’ in the core file.</p></li>
-<li><p>self.ref_pars (type <code class="xref py py-class docutils literal notranslate"><span class="pre">RefPars</span></code>) contains all information from the map-specific reference parameters file.</p></li>
-<li><p>self.def_pars (type <code class="xref py py-class docutils literal notranslate"><span class="pre">RawPars</span></code>) contains all choices for parameters for this map that were found in the default parameter file. Either all parameters are present, or none, depending on the default parameter file.</p></li>
-<li><p>self.in_pars (type <code class="xref py py-class docutils literal notranslate"><span class="pre">RawPars</span></code>) contains all choices for parameters for this map that were found in the input parameter file. May be empty.</p></li>
-<li><p>self.cmd_pars (type <code class="xref py py-class docutils literal notranslate"><span class="pre">RawPars</span></code>) contains all choices for parameters for this map that were found on the command line. May be empty.</p></li>
-<li><p>self.run_pars (type <code class="xref py py-class docutils literal notranslate"><span class="pre">RunPars</span></code> or None) contains the combination of all parameter sources, where self.cmd_pars &gt; self.in_pars &gt; self.def_pars &gt; self.ref_pars. If this behaviour is too naive, the contents can be changed with the function GM_adjust_run_pars listed below. This is where other functions should retrieve parameter choices from.</p>
+<li><p>self.ref_pars (type <a class="reference internal" href="../../api_out/GMAP.src.tools.parameter_parser.html#GMAP.src.tools.parameter_parser.RefPars" title="GMAP.src.tools.parameter_parser.RefPars"><code class="xref py py-class docutils literal notranslate"><span class="pre">RefPars</span></code></a>) contains all information from the map-specific reference parameters file.</p></li>
+<li><p>self.def_pars (type <a class="reference internal" href="../../api_out/GMAP.src.tools.parameter_parser.html#GMAP.src.tools.parameter_parser.RawPars" title="GMAP.src.tools.parameter_parser.RawPars"><code class="xref py py-class docutils literal notranslate"><span class="pre">RawPars</span></code></a>) contains all choices for parameters for this map that were found in the default parameter file. Either all parameters are present, or none, depending on the default parameter file.</p></li>
+<li><p>self.in_pars (type <a class="reference internal" href="../../api_out/GMAP.src.tools.parameter_parser.html#GMAP.src.tools.parameter_parser.RawPars" title="GMAP.src.tools.parameter_parser.RawPars"><code class="xref py py-class docutils literal notranslate"><span class="pre">RawPars</span></code></a>) contains all choices for parameters for this map that were found in the input parameter file. May be empty.</p></li>
+<li><p>self.cmd_pars (type <a class="reference internal" href="../../api_out/GMAP.src.tools.parameter_parser.html#GMAP.src.tools.parameter_parser.RawPars" title="GMAP.src.tools.parameter_parser.RawPars"><code class="xref py py-class docutils literal notranslate"><span class="pre">RawPars</span></code></a>) contains all choices for parameters for this map that were found on the command line. May be empty.</p></li>
+<li><p>self.run_pars (type <a class="reference internal" href="../../api_out/GMAP.src.tools.parameter_parser.html#GMAP.src.tools.parameter_parser.RunPars" title="GMAP.src.tools.parameter_parser.RunPars"><code class="xref py py-class docutils literal notranslate"><span class="pre">RunPars</span></code></a> or None) contains the combination of all parameter sources, where self.cmd_pars &gt; self.in_pars &gt; self.def_pars &gt; self.ref_pars. If this behaviour is too naive, the contents can be changed with the function GM_adjust_run_pars listed below. This is where other functions should retrieve parameter choices from.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>self.run_pars also has a reference to the main-program RunPars - it is stored as self.run_pars.main_run_pars.</p>
@@ -460,7 +460,7 @@
 </li>
 <li><p>self.code (type module) contains all functions defined in main.py. Any functions that the program needs, but are not specified in main.py are automatically filled in. Any object that the program does not require, but is still there, is also available.</p></li>
 <li><p>self.rawcore (type dict of str-list pairs) contains the information from core.txt, before parsing. The function GM_adjust_map_core_raw can change this simple structure before it is being parsed into more complex structures and functions later.</p></li>
-<li><p>self.core (type <code class="xref py py-class docutils literal notranslate"><span class="pre">PairCore</span></code>) contains the information from core.txt, after parsing.</p></li>
+<li><p>self.core (type <a class="reference internal" href="../../api_out/GMAP.src.tools.map_reader.html#GMAP.src.tools.map_reader.PairCore" title="GMAP.src.tools.map_reader.PairCore"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairCore</span></code></a>) contains the information from core.txt, after parsing.</p></li>
 <li><p>self.allpairs (type numpy array, dtype int32, shape (npairs, 2) ) contains all pairs that should be coupled using this pair map. This array has already taken into account any changes due to the function change_coup_type. Looping over a numpy array isn’t fast, so map developers are encouraged to use these arrays wisely.</p></li>
 </ul>
 </section>
@@ -469,7 +469,7 @@
 <p>An instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">System</span></code>. Stores all available information about the MD system used. Think atom-based information on it’s name, element, type, the name and number of its residue, molecule, segment. Also charges, positions, masses and such are in here.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>When your functions should report/print anything, <strong>do not</strong> use the python build-in function print. Instead, import the GMAP print_tools module (<code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">GMAP.src.tools</span> <span class="pre">import</span> <span class="pre">print_tools</span> <span class="pre">as</span> <span class="pre">GM_pt</span></code>), from which you can call an instance of the Printer class. This instance is a singleton (so all print settings for that run are already set), so don’t change it! But you can have it print (<code class="docutils literal notranslate"><span class="pre">GM_pt.Printer.print</span></code>), or even trigger an error (<code class="docutils literal notranslate"><span class="pre">GM_pt.Printer.warning</span></code>). See <code class="xref py py-class docutils literal notranslate"><span class="pre">Printer</span></code> for detailed information on using these functions.</p>
+<p>When your functions should report/print anything, <strong>do not</strong> use the python build-in function print. Instead, import the GMAP print_tools module (<code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">GMAP.src.tools</span> <span class="pre">import</span> <span class="pre">print_tools</span> <span class="pre">as</span> <span class="pre">GM_pt</span></code>), from which you can call an instance of the Printer class. This instance is a singleton (so all print settings for that run are already set), so don’t change it! But you can have it print (<code class="docutils literal notranslate"><span class="pre">GM_pt.Printer.print</span></code>), or even trigger an error (<code class="docutils literal notranslate"><span class="pre">GM_pt.Printer.warning</span></code>). See <a class="reference internal" href="../../api_out/GMAP.src.tools.print_tools.html#GMAP.src.tools.print_tools.Printer" title="GMAP.src.tools.print_tools.Printer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Printer</span></code></a> for detailed information on using these functions.</p>
 </div>
 </section>
 </section>
@@ -517,7 +517,7 @@
 <section id="parameters">
 <h4>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">#</a></h4>
 <dl>
-<dt>map_<span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></span></dt><dd><p>The object that stores everything the program currently knows
+<dt>map_<span class="classifier"><a class="reference internal" href="../../api_out/GMAP.src.tools.map_reader.html#GMAP.src.tools.map_reader.Map" title="GMAP.src.tools.map_reader.Map"><code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></a></span></dt><dd><p>The object that stores everything the program currently knows
 about this map.</p>
 </dd>
 </dl>
@@ -575,7 +575,7 @@ about this map.</p>
 <section id="id3">
 <h4>Parameters<a class="headerlink" href="#id3" title="Link to this heading">#</a></h4>
 <dl>
-<dt>map_<span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></span></dt><dd><p>The object that stores everything the program currently knows
+<dt>map_<span class="classifier"><a class="reference internal" href="../../api_out/GMAP.src.tools.map_reader.html#GMAP.src.tools.map_reader.Map" title="GMAP.src.tools.map_reader.Map"><code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></a></span></dt><dd><p>The object that stores everything the program currently knows
 about this map.</p>
 </dd>
 </dl>
@@ -636,7 +636,7 @@ about this map.</p>
 <section id="id8">
 <h4>Parameters<a class="headerlink" href="#id8" title="Link to this heading">#</a></h4>
 <dl>
-<dt>map_<span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></span></dt><dd><p>The object that stores everything the program currently knows
+<dt>map_<span class="classifier"><a class="reference internal" href="../../api_out/GMAP.src.tools.map_reader.html#GMAP.src.tools.map_reader.Map" title="GMAP.src.tools.map_reader.Map"><code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></a></span></dt><dd><p>The object that stores everything the program currently knows
 about this map.</p>
 </dd>
 <dt>system<span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">System</span></code></span></dt><dd><p>The object that stores everyting the program currently knows about the MD system.</p>
@@ -708,7 +708,7 @@ about this map.</p>
 <section id="id13">
 <h4>Parameters<a class="headerlink" href="#id13" title="Link to this heading">#</a></h4>
 <dl>
-<dt>map_<span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></span></dt><dd><p>The object that stores everything the program currently knows
+<dt>map_<span class="classifier"><a class="reference internal" href="../../api_out/GMAP.src.tools.map_reader.html#GMAP.src.tools.map_reader.Map" title="GMAP.src.tools.map_reader.Map"><code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></a></span></dt><dd><p>The object that stores everything the program currently knows
 about this map.</p>
 </dd>
 <dt>system<span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">System</span></code></span></dt><dd><p>The object that stores everyting the program currently knows about the MD system.</p>
@@ -780,7 +780,7 @@ about this map.</p>
 <section id="id19">
 <h4>Parameters<a class="headerlink" href="#id19" title="Link to this heading">#</a></h4>
 <dl>
-<dt>map_<span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></span></dt><dd><p>The object that stores everything the program currently knows
+<dt>map_<span class="classifier"><a class="reference internal" href="../../api_out/GMAP.src.tools.map_reader.html#GMAP.src.tools.map_reader.Map" title="GMAP.src.tools.map_reader.Map"><code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></a></span></dt><dd><p>The object that stores everything the program currently knows
 about this map.</p>
 </dd>
 <dt>system<span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">System</span></code></span></dt><dd><p>The object that stores everyting the program currently knows about the MD system.</p>
@@ -852,7 +852,7 @@ about this map.</p>
 <section id="id24">
 <h4>Parameters<a class="headerlink" href="#id24" title="Link to this heading">#</a></h4>
 <dl>
-<dt>map_<span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></span></dt><dd><p>The object that stores everything the program currently knows
+<dt>map_<span class="classifier"><a class="reference internal" href="../../api_out/GMAP.src.tools.map_reader.html#GMAP.src.tools.map_reader.Map" title="GMAP.src.tools.map_reader.Map"><code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></a></span></dt><dd><p>The object that stores everything the program currently knows
 about this map.</p>
 </dd>
 <dt>system<span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">System</span></code></span></dt><dd><p>The object that stores everyting the program currently knows about the MD system.</p>
@@ -911,7 +911,7 @@ about this map.</p>
 <section id="id29">
 <h4>Parameters<a class="headerlink" href="#id29" title="Link to this heading">#</a></h4>
 <dl>
-<dt>map_<span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></span></dt><dd><p>The object that stores everything the program currently knows
+<dt>map_<span class="classifier"><a class="reference internal" href="../../api_out/GMAP.src.tools.map_reader.html#GMAP.src.tools.map_reader.Map" title="GMAP.src.tools.map_reader.Map"><code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></a></span></dt><dd><p>The object that stores everything the program currently knows
 about this map.</p>
 </dd>
 <dt>system<span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">System</span></code></span></dt><dd><p>The object that stores everyting the program currently knows about the MD system.</p>
@@ -971,7 +971,7 @@ about this map.</p>
 <section id="id34">
 <h4>Parameters<a class="headerlink" href="#id34" title="Link to this heading">#</a></h4>
 <dl>
-<dt>map_<span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></span></dt><dd><p>The object that stores everything the program currently knows
+<dt>map_<span class="classifier"><a class="reference internal" href="../../api_out/GMAP.src.tools.map_reader.html#GMAP.src.tools.map_reader.Map" title="GMAP.src.tools.map_reader.Map"><code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></a></span></dt><dd><p>The object that stores everything the program currently knows
 about this map.</p>
 </dd>
 <dt>system<span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">System</span></code></span></dt><dd><p>The object that stores everyting the program currently knows about the MD system.</p>
@@ -1030,7 +1030,7 @@ about this map.</p>
 <section id="id40">
 <h4>Parameters<a class="headerlink" href="#id40" title="Link to this heading">#</a></h4>
 <dl>
-<dt>map_<span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></span></dt><dd><p>The object that stores everything the program currently knows
+<dt>map_<span class="classifier"><a class="reference internal" href="../../api_out/GMAP.src.tools.map_reader.html#GMAP.src.tools.map_reader.Map" title="GMAP.src.tools.map_reader.Map"><code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></a></span></dt><dd><p>The object that stores everything the program currently knows
 about this map.</p>
 </dd>
 <dt>system<span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">System</span></code></span></dt><dd><p>The object that stores everyting the program currently knows about the MD system.</p>
@@ -1089,7 +1089,7 @@ about this map.</p>
 <section id="id45">
 <h4>Parameters<a class="headerlink" href="#id45" title="Link to this heading">#</a></h4>
 <dl>
-<dt>map_<span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></span></dt><dd><p>The object that stores everything the program currently knows
+<dt>map_<span class="classifier"><a class="reference internal" href="../../api_out/GMAP.src.tools.map_reader.html#GMAP.src.tools.map_reader.Map" title="GMAP.src.tools.map_reader.Map"><code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></a></span></dt><dd><p>The object that stores everything the program currently knows
 about this map.</p>
 </dd>
 <dt>system<span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">System</span></code></span></dt><dd><p>The object that stores everyting the program currently knows about the MD system.</p>
@@ -1117,7 +1117,7 @@ about this map.</p>
 </div>
 <p>All references present in the references file are saved as <code class="docutils literal notranslate"><span class="pre">map_.references</span></code>, this function is intended to only return a subset of that dictionary. The structure of the dictionary is as follows:</p>
 <p>The keys in this dictionary are the separate keys listed in the reference.bib file’s ‘mapkey’ field. If the reference has multiple keys in that field, it will occur multiple times in the dictionary, once for each key.</p>
-<p>Associated with each key is a list of <code class="xref py py-class docutils literal notranslate"><span class="pre">Reference</span></code> objects, each of which corresponds to a single entry in the .bib file.</p>
+<p>Associated with each key is a list of <a class="reference internal" href="../../api_out/GMAP.src.tools.reference_handler.html#GMAP.src.tools.reference_handler.Reference" title="GMAP.src.tools.reference_handler.Reference"><code class="xref py py-class docutils literal notranslate"><span class="pre">Reference</span></code></a> objects, each of which corresponds to a single entry in the .bib file.</p>
 <section id="id48">
 <h4>Example uses<a class="headerlink" href="#id48" title="Link to this heading">#</a></h4>
 <section id="the-map-allows-the-application-of-multiple-models">
@@ -1155,7 +1155,7 @@ about this map.</p>
 <section id="id50">
 <h4>Parameters<a class="headerlink" href="#id50" title="Link to this heading">#</a></h4>
 <dl>
-<dt>map_<span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></span></dt><dd><p>The object that stores everything the program currently knows
+<dt>map_<span class="classifier"><a class="reference internal" href="../../api_out/GMAP.src.tools.map_reader.html#GMAP.src.tools.map_reader.Map" title="GMAP.src.tools.map_reader.Map"><code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></a></span></dt><dd><p>The object that stores everything the program currently knows
 about this map.</p>
 </dd>
 <dt>system<span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">System</span></code></span></dt><dd><p>The object that stores everyting the program currently knows about the MD system.</p>
