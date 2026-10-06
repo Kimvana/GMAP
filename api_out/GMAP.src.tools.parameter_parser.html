@@ -39,8 +39,8 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
     <script src="../_static/documentation_options.js?v=8dde47fa"></script>
-    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api_out/GMAP.src.tools.parameter_parser';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
@@ -465,7 +465,7 @@
 <span id="gmap-src-tools-parameter-parser-module"></span><h1>GMAP.src.tools.parameter_parser module<a class="headerlink" href="#module-GMAP.src.tools.parameter_parser" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="GMAP.src.tools.parameter_parser.RawPars">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.parameter_parser.</span></span><span class="sig-name descname"><span class="pre">RawPars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_default</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">given_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_pars</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.parameter_parser.RawPars" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.parameter_parser.</span></span><span class="sig-name descname"><span class="pre">RawPars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_default</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">given_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_pars</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.parameter_parser.RawPars" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Stores a set of choices from a single source</p>
 <p>Choices can be specified in multiple places. Command line, input
@@ -642,7 +642,7 @@ in this output.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="GMAP.src.tools.parameter_parser.RawPars.create_empty">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">create_empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.parameter_parser.RawPars.create_empty" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.parameter_parser.RawPars.create_empty" title="Link to this definition">#</a></dt>
 <dd><p>Create an instance of this class without any data</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -697,7 +697,7 @@ case.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="GMAP.src.tools.parameter_parser.RawPars.from_cmdline">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_cmdline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmdargs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maprefpars_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_default</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.parameter_parser.RawPars.from_cmdline" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_cmdline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmdargs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maprefpars_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_default</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.parameter_parser.RawPars.from_cmdline" title="Link to this definition">#</a></dt>
 <dd><p>Create an instance of this class for parameters in the
 command line</p>
 <p>A method more different from the others, as it has to do some
@@ -736,7 +736,7 @@ stored.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="GMAP.src.tools.parameter_parser.RawPars.from_dict">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">given_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_default</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.parameter_parser.RawPars.from_dict" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">given_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_default</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.parameter_parser.RawPars.from_dict" title="Link to this definition">#</a></dt>
 <dd><p>Create an instance of this class for parameters stored in a dict.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -772,7 +772,7 @@ stored.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="GMAP.src.tools.parameter_parser.RawPars.from_file">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_default</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.parameter_parser.RawPars.from_file" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_default</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.parameter_parser.RawPars.from_file" title="Link to this definition">#</a></dt>
 <dd><p>Create an instance of this class for parameters stored in a file.</p>
 <p>First obtains a dict from the file, then uses <a class="reference internal" href="#GMAP.src.tools.parameter_parser.RawPars.from_dict" title="GMAP.src.tools.parameter_parser.RawPars.from_dict"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_dict()</span></code></a></p>
 <div class="admonition seealso">
@@ -804,7 +804,7 @@ stored.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="GMAP.src.tools.parameter_parser.RawPars.parse_cmd_choice">
-<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">parse_cmd_choice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmdargs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">curpar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">curpar_tocheck</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_pars_to_use</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.parameter_parser.RawPars.parse_cmd_choice" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_cmd_choice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmdargs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">curpar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">curpar_tocheck</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_pars_to_use</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.parameter_parser.RawPars.parse_cmd_choice" title="Link to this definition">#</a></dt>
 <dd><p>Extracts the choice from the command line</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -836,7 +836,7 @@ file.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="GMAP.src.tools.parameter_parser.RawPars.parse_cmd_parname">
-<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">parse_cmd_parname</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">curparraw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maprefpars_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.parameter_parser.RawPars.parse_cmd_parname" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_cmd_parname</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">curparraw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maprefpars_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.parameter_parser.RawPars.parse_cmd_parname" title="Link to this definition">#</a></dt>
 <dd><p>Identifies a parameter name specified on the command line</p>
 <p>Removes hyphens, figures out whether the name is shorthand or
 not, whether it belongs to the base program, or one of the maps,
@@ -919,7 +919,7 @@ correct datatype.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="GMAP.src.tools.parameter_parser.RefPars">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.parameter_parser.</span></span><span class="sig-name descname"><span class="pre">RefPars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_main</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.parameter_parser.RefPars" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.parameter_parser.</span></span><span class="sig-name descname"><span class="pre">RefPars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_main</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.parameter_parser.RefPars" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Deals with reference parameters</p>
 <p>To allow for easier use of the program, users are not required to
@@ -1064,7 +1064,7 @@ the generated attributes, see <a class="reference internal" href="#GMAP.src.tool
 
 <dl class="py method">
 <dt class="sig sig-object py" id="GMAP.src.tools.parameter_parser.RefPars.add_reffile">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">add_reffile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_ref_pars</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.parameter_parser.RefPars.add_reffile" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_reffile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_ref_pars</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.parameter_parser.RefPars.add_reffile" title="Link to this definition">#</a></dt>
 <dd><p>When the default parameter file given by the user is of .ref
 format instead of .txt, it ends up here. How are .ref files
 treated different?</p>
@@ -1083,7 +1083,7 @@ users to impose stricter limits. Is this actually useful???</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="GMAP.src.tools.parameter_parser.RefPars.parse_key">
-<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">parse_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.parameter_parser.RefPars.parse_key" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.parameter_parser.RefPars.parse_key" title="Link to this definition">#</a></dt>
 <dd><p>Extracts parameter name, shorthand and type from key in file</p>
 <p>The key (first part of a line) in the file storing the reference
 parameters has a more complex shape, so it can also encode a
@@ -1219,7 +1219,7 @@ cleaning that line)</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="GMAP.src.tools.parameter_parser.RunPars">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.parameter_parser.</span></span><span class="sig-name descname"><span class="pre">RunPars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmd_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">def_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_main</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">main_run_pars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.parameter_parser.RunPars" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.parameter_parser.</span></span><span class="sig-name descname"><span class="pre">RunPars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmd_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">def_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_main</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">main_run_pars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.parameter_parser.RunPars" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Stores the final choices used for the calculation</p>
 <p>Choices can be specified in multiple places. In the end, they have
@@ -2217,7 +2217,7 @@ used/assigned.</p>
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
   </p>
 </div>
       

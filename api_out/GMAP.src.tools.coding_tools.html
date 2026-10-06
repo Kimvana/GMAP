@@ -39,8 +39,8 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
     <script src="../_static/documentation_options.js?v=8dde47fa"></script>
-    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api_out/GMAP.src.tools.coding_tools';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
@@ -465,7 +465,7 @@
 <span id="gmap-src-tools-coding-tools-module"></span><h1>GMAP.src.tools.coding_tools module<a class="headerlink" href="#module-GMAP.src.tools.coding_tools" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="GMAP.src.tools.coding_tools.CustomClass">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.coding_tools.</span></span><span class="sig-name descname"><span class="pre">CustomClass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.coding_tools.CustomClass" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.coding_tools.</span></span><span class="sig-name descname"><span class="pre">CustomClass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.coding_tools.CustomClass" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Creates a new class with attributes equallying given dict entries</p>
 <p>Of the given dictionary, keys will become the attribute names, the
@@ -474,7 +474,7 @@ values will become the actual stored thing in that attribute.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="GMAP.src.tools.coding_tools.FrozenDict">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.coding_tools.</span></span><span class="sig-name descname"><span class="pre">FrozenDict</span></span><a class="headerlink" href="#GMAP.src.tools.coding_tools.FrozenDict" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.coding_tools.</span></span><span class="sig-name descname"><span class="pre">FrozenDict</span></span><a class="headerlink" href="#GMAP.src.tools.coding_tools.FrozenDict" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
 <p class="rubric">Methods</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
@@ -527,7 +527,7 @@ In either case, this is followed by: for k in F:  D[k] = F[k]</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="GMAP.src.tools.coding_tools.Singleton">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.coding_tools.</span></span><span class="sig-name descname"><span class="pre">Singleton</span></span><a class="headerlink" href="#GMAP.src.tools.coding_tools.Singleton" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.coding_tools.</span></span><span class="sig-name descname"><span class="pre">Singleton</span></span><a class="headerlink" href="#GMAP.src.tools.coding_tools.Singleton" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></p>
 <p>Metaclassing this class makes any class a singleton.</p>
 <p class="rubric">Methods</p>
@@ -583,14 +583,14 @@ autoused during the session (runs every function). It should be if
 the tests report they are using conftest.py.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="GMAP.src.tools.coding_tools.Singleton._instances">
-<span class="sig-name descname"><span class="pre">_instances</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></span><a class="headerlink" href="#GMAP.src.tools.coding_tools.Singleton._instances" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">_instances</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#GMAP.src.tools.coding_tools.Singleton._instances" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="GMAP.src.tools.coding_tools.SingletonProperty">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.coding_tools.</span></span><span class="sig-name descname"><span class="pre">SingletonProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.coding_tools.SingletonProperty" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.coding_tools.</span></span><span class="sig-name descname"><span class="pre">SingletonProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.coding_tools.SingletonProperty" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 </dd></dl>
 
@@ -699,7 +699,7 @@ the tests report they are using conftest.py.</p>
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
   </p>
 </div>
       

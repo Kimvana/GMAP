@@ -39,8 +39,8 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
     <script src="../_static/documentation_options.js?v=8dde47fa"></script>
-    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api_out/GMAP.src.tools.string_classes';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
@@ -465,7 +465,7 @@
 <span id="gmap-src-tools-string-classes-module"></span><h1>GMAP.src.tools.string_classes module<a class="headerlink" href="#module-GMAP.src.tools.string_classes" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="GMAP.src.tools.string_classes.ColStr">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.string_classes.</span></span><span class="sig-name descname"><span class="pre">ColStr</span></span><a class="headerlink" href="#GMAP.src.tools.string_classes.ColStr" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.string_classes.</span></span><span class="sig-name descname"><span class="pre">ColStr</span></span><a class="headerlink" href="#GMAP.src.tools.string_classes.ColStr" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
 <p>Just like normal strings, but additional methods for colors.</p>
 <p>If any string is added to this class (either from the left or from
@@ -521,20 +521,20 @@ it on github!</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#GMAP.src.tools.string_classes.ColStr.change_color" title="GMAP.src.tools.string_classes.ColStr.change_color"><code class="xref py py-obj docutils literal notranslate"><span class="pre">change_color</span></code></a>(target_mode)</p></td>
 <td><p>Changes its own color, returns a copy with changed color</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">count</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">count</span></code>(sub[, start[, end]], /)</p></td>
+<td><p>Return the number of non-overlapping occurrences of substring sub in string S[start:end].</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">encode</span></code>(/[, encoding, errors])</p></td>
 <td><p>Encode the string using the codec registered for encoding.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">endswith</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">endswith</span></code>(suffix[, start[, end]], /)</p></td>
+<td><p>Return True if the string ends with the specified suffix, False otherwise.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">expandtabs</span></code>(/[, tabsize])</p></td>
 <td><p>Return a copy where all tab characters are expanded using spaces.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">find</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">find</span></code>(sub[, start[, end]], /)</p></td>
+<td><p>Return the lowest index in S where substring sub is found, such that sub is contained within S[start:end].</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">format</span></code>(*args, **kwargs)</p></td>
 <td><p>Return a formatted version of the string, using substitutions from args and kwargs.</p></td>
@@ -542,8 +542,8 @@ it on github!</p>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_map</span></code>(mapping, /)</p></td>
 <td><p>Return a formatted version of the string, using substitutions from mapping.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code>(sub[, start[, end]], /)</p></td>
+<td><p>Return the lowest index in S where substring sub is found, such that sub is contained within S[start:end].</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">isalnum</span></code>(/)</p></td>
 <td><p>Return True if the string is an alpha-numeric string, False otherwise.</p></td>
@@ -593,8 +593,8 @@ it on github!</p>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">lstrip</span></code>([chars])</p></td>
 <td><p>Return a copy of the string with leading whitespace removed.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">maketrans</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">maketrans</span></code>(x[, y, z])</p></td>
+<td><p>Return a translation table usable for str.translate().</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">partition</span></code>(sep, /)</p></td>
 <td><p>Partition the string into three parts using the given separator.</p></td>
@@ -611,11 +611,11 @@ it on github!</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#GMAP.src.tools.string_classes.ColStr.replace" title="GMAP.src.tools.string_classes.ColStr.replace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace</span></code></a>(*args, **kwargs)</p></td>
 <td><p>A replacement for str.replace().</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">rfind</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">rfind</span></code>(sub[, start[, end]], /)</p></td>
+<td><p>Return the highest index in S where substring sub is found, such that sub is contained within S[start:end].</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">rindex</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">rindex</span></code>(sub[, start[, end]], /)</p></td>
+<td><p>Return the highest index in S where substring sub is found, such that sub is contained within S[start:end].</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">rjust</span></code>(width[, fillchar])</p></td>
 <td><p>Return a right-justified string of length width.</p></td>
@@ -635,8 +635,8 @@ it on github!</p>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">splitlines</span></code>(/[, keepends])</p></td>
 <td><p>Return a list of the lines in the string, breaking at line boundaries.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">startswith</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">startswith</span></code>(prefix[, start[, end]], /)</p></td>
+<td><p>Return True if the string starts with the specified prefix, False otherwise.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">strip</span></code>([chars])</p></td>
 <td><p>Return a copy of the string with leading and trailing whitespace removed.</p></td>
@@ -806,7 +806,7 @@ wrapper to make things line up nicely.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="GMAP.src.tools.string_classes.ErrCode">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.string_classes.</span></span><span class="sig-name descname"><span class="pre">ErrCode</span></span><a class="headerlink" href="#GMAP.src.tools.string_classes.ErrCode" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.string_classes.</span></span><span class="sig-name descname"><span class="pre">ErrCode</span></span><a class="headerlink" href="#GMAP.src.tools.string_classes.ErrCode" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
 <p>Allows for easy comparion of error codes.</p>
 <p>Each warning/error has its own error code. The goal of this class is
@@ -824,20 +824,20 @@ with wildcards!</p>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">center</span></code>(width[, fillchar])</p></td>
 <td><p>Return a centered string of length width.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">count</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">count</span></code>(sub[, start[, end]], /)</p></td>
+<td><p>Return the number of non-overlapping occurrences of substring sub in string S[start:end].</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">encode</span></code>(/[, encoding, errors])</p></td>
 <td><p>Encode the string using the codec registered for encoding.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">endswith</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">endswith</span></code>(suffix[, start[, end]], /)</p></td>
+<td><p>Return True if the string ends with the specified suffix, False otherwise.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">expandtabs</span></code>(/[, tabsize])</p></td>
 <td><p>Return a copy where all tab characters are expanded using spaces.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">find</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">find</span></code>(sub[, start[, end]], /)</p></td>
+<td><p>Return the lowest index in S where substring sub is found, such that sub is contained within S[start:end].</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">format</span></code>(*args, **kwargs)</p></td>
 <td><p>Return a formatted version of the string, using substitutions from args and kwargs.</p></td>
@@ -845,8 +845,8 @@ with wildcards!</p>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_map</span></code>(mapping, /)</p></td>
 <td><p>Return a formatted version of the string, using substitutions from mapping.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code>(sub[, start[, end]], /)</p></td>
+<td><p>Return the lowest index in S where substring sub is found, such that sub is contained within S[start:end].</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">isalnum</span></code>(/)</p></td>
 <td><p>Return True if the string is an alpha-numeric string, False otherwise.</p></td>
@@ -896,8 +896,8 @@ with wildcards!</p>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">lstrip</span></code>([chars])</p></td>
 <td><p>Return a copy of the string with leading whitespace removed.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">maketrans</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">maketrans</span></code>(x[, y, z])</p></td>
+<td><p>Return a translation table usable for str.translate().</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">partition</span></code>(sep, /)</p></td>
 <td><p>Partition the string into three parts using the given separator.</p></td>
@@ -911,11 +911,11 @@ with wildcards!</p>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace</span></code>(old, new, /[, count])</p></td>
 <td><p>Return a copy with all occurrences of substring old replaced by new.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">rfind</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">rfind</span></code>(sub[, start[, end]], /)</p></td>
+<td><p>Return the highest index in S where substring sub is found, such that sub is contained within S[start:end].</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">rindex</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">rindex</span></code>(sub[, start[, end]], /)</p></td>
+<td><p>Return the highest index in S where substring sub is found, such that sub is contained within S[start:end].</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">rjust</span></code>(width[, fillchar])</p></td>
 <td><p>Return a right-justified string of length width.</p></td>
@@ -935,8 +935,8 @@ with wildcards!</p>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">splitlines</span></code>(/[, keepends])</p></td>
 <td><p>Return a list of the lines in the string, breaking at line boundaries.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">startswith</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">startswith</span></code>(prefix[, start[, end]], /)</p></td>
+<td><p>Return True if the string starts with the specified prefix, False otherwise.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">strip</span></code>([chars])</p></td>
 <td><p>Return a copy of the string with leading and trailing whitespace removed.</p></td>
@@ -963,7 +963,7 @@ with wildcards!</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="GMAP.src.tools.string_classes.Header">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.string_classes.</span></span><span class="sig-name descname"><span class="pre">Header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">titletext</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding_char</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linemode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ou'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overline_char</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'-'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">underline_char</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'-'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left_char</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'|'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_char</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'|'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">corner_char</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'+'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alignment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'centered'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxwidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">79</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_border</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">special</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.string_classes.Header" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.string_classes.</span></span><span class="sig-name descname"><span class="pre">Header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">titletext</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding_char</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linemode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ou'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overline_char</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'-'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">underline_char</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'-'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left_char</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'|'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_char</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'|'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">corner_char</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'+'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alignment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'centered'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxwidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">79</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_border</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">special</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.string_classes.Header" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Returns a pretty header for distinguishing prints</p>
 <p>The header will be under and/or overlined with the character
@@ -1123,7 +1123,7 @@ them.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="GMAP.src.tools.string_classes.Header.cs">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">cs</span></span><a class="headerlink" href="#GMAP.src.tools.string_classes.Header.cs" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cs</span></span><a class="headerlink" href="#GMAP.src.tools.string_classes.Header.cs" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1314,7 +1314,7 @@ downleft, downright corner respectively.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="GMAP.src.tools.string_classes.Header.s">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">s</span></span><a class="headerlink" href="#GMAP.src.tools.string_classes.Header.s" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">s</span></span><a class="headerlink" href="#GMAP.src.tools.string_classes.Header.s" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1464,7 +1464,7 @@ the function - ‘o’, ‘u’, ‘l’, or ‘r’</p>
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
   </p>
 </div>
       

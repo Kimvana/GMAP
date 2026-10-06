@@ -39,8 +39,8 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
     <script src="../_static/documentation_options.js?v=8dde47fa"></script>
-    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api_out/GMAP.src.tools.print_tools';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
@@ -465,7 +465,7 @@
 <span id="gmap-src-tools-print-tools-module"></span><h1>GMAP.src.tools.print_tools module<a class="headerlink" href="#module-GMAP.src.tools.print_tools" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="GMAP.src.tools.print_tools.Printer">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.print_tools.</span></span><span class="sig-name descname"><span class="pre">Printer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.print_tools.</span></span><span class="sig-name descname"><span class="pre">Printer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Manages prints and logs during runtime.</p>
 <p>During runtime, the program can communicate many things, but the user
@@ -558,12 +558,12 @@ like those used for demo mode.</p>
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="GMAP.src.tools.print_tools.Printer._colors">
-<span class="sig-name descname"><span class="pre">_colors</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;GMAP.src.tools.color_schemes.PrinterColors</span> <span class="pre">object&gt;</span></span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer._colors" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">_colors</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;GMAP.src.tools.color_schemes.PrinterColors</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer._colors" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="GMAP.src.tools.print_tools.Printer._print_preparation">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">_print_preparation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrap_preline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer._print_preparation" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_print_preparation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrap_preline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer._print_preparation" title="Link to this definition">#</a></dt>
 <dd><p>Format prints so they can be shown.</p>
 <p>After cls.print() has decided that something should indeed be
 printed, this function is called. It does all the formatting
@@ -610,7 +610,7 @@ wrapper to make things line up nicely.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="GMAP.src.tools.print_tools.Printer.add_time">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">add_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose_level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'s'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.add_time" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose_level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'s'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.add_time" title="Link to this definition">#</a></dt>
 <dd><p>Adds a timestamp to the program output to track speed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -632,42 +632,42 @@ It is also used for retrieving information later.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="GMAP.src.tools.print_tools.Printer.backlog">
-<span class="sig-name descname"><span class="pre">backlog</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.backlog" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">backlog</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.backlog" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="GMAP.src.tools.print_tools.Printer.color_mode">
-<span class="sig-name descname"><span class="pre">color_mode</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'24bit'</span></span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.color_mode" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">color_mode</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'24bit'</span></em><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.color_mode" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="GMAP.src.tools.print_tools.Printer.colors">
-<span class="sig-name descname"><span class="pre">colors</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;GMAP.src.tools.color_schemes.PrinterColors</span> <span class="pre">object&gt;</span></span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.colors" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">colors</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;GMAP.src.tools.color_schemes.PrinterColors</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.colors" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="GMAP.src.tools.print_tools.Printer.dont_report_error">
-<span class="sig-name descname"><span class="pre">dont_report_error</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.dont_report_error" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">dont_report_error</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.dont_report_error" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="GMAP.src.tools.print_tools.Printer.line_length">
-<span class="sig-name descname"><span class="pre">line_length</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">79</span></span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.line_length" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">line_length</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">79</span></em><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.line_length" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="GMAP.src.tools.print_tools.Printer.logfile">
-<span class="sig-name descname"><span class="pre">logfile</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">PosixPath('/home/runner/work/GMAP/GMAP/crash_2026-10-06_07-53-03.log')</span></span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.logfile" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">logfile</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">PosixPath('/home/runner/work/GMAP/GMAP/crash_2026-10-06_08-16-42.log')</span></em><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.logfile" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="GMAP.src.tools.print_tools.Printer.preline">
-<span class="sig-name descname"><span class="pre">preline</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.preline" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">preline</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.preline" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="GMAP.src.tools.print_tools.Printer.print">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose_level</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">toprint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instruction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detailed_instructions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrap_preline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.print" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose_level</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">toprint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instruction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detailed_instructions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrap_preline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.print" title="Link to this definition">#</a></dt>
 <dd><p>Called when something needs to be printed.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -714,7 +714,7 @@ wrapper to make things line up nicely.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="GMAP.src.tools.print_tools.Printer.print_backlog">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">print_backlog</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.print_backlog" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">print_backlog</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.print_backlog" title="Link to this definition">#</a></dt>
 <dd><p>Prints the backlog so the program can stop.</p>
 <p>When called in startup mode, verbose and verbose_log are set to 3,
 the crash logfile is used, and the entire backlog is worked through.</p>
@@ -722,19 +722,19 @@ the crash logfile is used, and the entire backlog is worked through.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="GMAP.src.tools.print_tools.Printer.program_state">
-<span class="sig-name descname"><span class="pre">program_state</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'startup'</span></span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.program_state" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">program_state</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'startup'</span></em><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.program_state" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="GMAP.src.tools.print_tools.Printer.quit_early">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">quit_early</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.quit_early" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">quit_early</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.quit_early" title="Link to this definition">#</a></dt>
 <dd><p>Called when the program is quitted early</p>
 <p>Prints the backlog if there is any.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="GMAP.src.tools.print_tools.Printer.set_state">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">set_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose_logfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_logfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_dont_report_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.set_state" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose_logfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_logfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_dont_report_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.set_state" title="Link to this definition">#</a></dt>
 <dd><p>Change the current state of Printer</p>
 <p>Printer will always be initialized in startup mode, without a
 user-specified log file and verbose choices. This function allows
@@ -766,7 +766,7 @@ the existing value is kept.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="GMAP.src.tools.print_tools.Printer.setenv">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">setenv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">safe_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.setenv" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">setenv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">safe_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.setenv" title="Link to this definition">#</a></dt>
 <dd><p>Similar to set_state, set safe_mode and dark_mode</p>
 <p>The provided choices for safe mode and dark mode are stored in
 the Printer object for later use. These two have to be treated
@@ -788,27 +788,27 @@ mode. Influences the color palette used.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="GMAP.src.tools.print_tools.Printer.syspathcopy">
-<span class="sig-name descname"><span class="pre">syspathcopy</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('/home/runner/micromamba/envs/sphinx-env/bin',</span> <span class="pre">'/home/runner/micromamba/envs/sphinx-env/lib/python313.zip',</span> <span class="pre">'/home/runner/micromamba/envs/sphinx-env/lib/python3.13',</span> <span class="pre">'/home/runner/micromamba/envs/sphinx-env/lib/python3.13/lib-dynload',</span> <span class="pre">'/home/runner/micromamba/envs/sphinx-env/lib/python3.13/site-packages',</span> <span class="pre">'/home/runner/work/GMAP/GMAP/source')</span></span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.syspathcopy" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">syspathcopy</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('/home/runner/micromamba/envs/sphinx-env/bin',</span> <span class="pre">'/home/runner/micromamba/envs/sphinx-env/lib/python313.zip',</span> <span class="pre">'/home/runner/micromamba/envs/sphinx-env/lib/python3.13',</span> <span class="pre">'/home/runner/micromamba/envs/sphinx-env/lib/python3.13/lib-dynload',</span> <span class="pre">'/home/runner/micromamba/envs/sphinx-env/lib/python3.13/site-packages',</span> <span class="pre">'/home/runner/work/GMAP/GMAP/source')</span></em><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.syspathcopy" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="GMAP.src.tools.print_tools.Printer.timer">
-<span class="sig-name descname"><span class="pre">timer</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;GMAP.src.tools.print_tools.Timer</span> <span class="pre">object&gt;</span></span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.timer" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">timer</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;GMAP.src.tools.print_tools.Timer</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.timer" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="GMAP.src.tools.print_tools.Printer.verbose">
-<span class="sig-name descname"><span class="pre">verbose</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.verbose" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">verbose</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.verbose" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="GMAP.src.tools.print_tools.Printer.verbose_logfile">
-<span class="sig-name descname"><span class="pre">verbose_logfile</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.verbose_logfile" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">verbose_logfile</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.verbose_logfile" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="GMAP.src.tools.print_tools.Printer.warning">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">warning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exitbool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exception</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">GMAPerrclass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.warning" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">warning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exitbool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exception</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">GMAPerrclass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.print_tools.Printer.warning" title="Link to this definition">#</a></dt>
 <dd><p>Warning system. Prints the message, and allows to force-quit after.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -836,7 +836,7 @@ fatal. One should pick one from GMAP.src.tools.exceptions.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="GMAP.src.tools.print_tools.Timer">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.print_tools.</span></span><span class="sig-name descname"><span class="pre">Timer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.print_tools.Timer" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.print_tools.</span></span><span class="sig-name descname"><span class="pre">Timer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.print_tools.Timer" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Manages the timekeeping during runtime.</p>
 <p>Times can be either added, or read from here.</p>
@@ -1416,7 +1416,7 @@ wrapper to make things line up nicely.</p>
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
   </p>
 </div>
       

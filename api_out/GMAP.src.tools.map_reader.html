@@ -39,8 +39,8 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
     <script src="../_static/documentation_options.js?v=8dde47fa"></script>
-    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api_out/GMAP.src.tools.map_reader';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
@@ -465,7 +465,7 @@
 <span id="gmap-src-tools-map-reader-module"></span><h1>GMAP.src.tools.map_reader module<a class="headerlink" href="#module-GMAP.src.tools.map_reader" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="GMAP.src.tools.map_reader.Map">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.map_reader.</span></span><span class="sig-name descname"><span class="pre">Map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mapdir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avail_files</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.Map" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.map_reader.</span></span><span class="sig-name descname"><span class="pre">Map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mapdir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avail_files</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.Map" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Contains all information regarding a single map. Base to build
 upon.</p>
@@ -590,7 +590,7 @@ rely on files themselves, those dependencies are also added.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="GMAP.src.tools.map_reader.Map.cleanline">
-<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">cleanline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.Map.cleanline" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cleanline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.Map.cleanline" title="Link to this definition">#</a></dt>
 <dd><p>Cleans up a line from core.txt for parsing</p>
 <p>If there is a ‘#’ on the line, ignore it and everything after
 it. Interpret multiple whitespaces back-to-back as a single one.</p>
@@ -757,7 +757,7 @@ run-defining parameters.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="GMAP.src.tools.map_reader.Map.parse_core">
-<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">parse_core</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_contents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.Map.parse_core" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_core</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_contents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.Map.parse_core" title="Link to this definition">#</a></dt>
 <dd><p>Actually retrieves the information from core.txt.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -781,7 +781,7 @@ keyword, which in spirit concatenates file contents.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="GMAP.src.tools.map_reader.Map.parse_core_line">
-<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">parse_core_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_contents</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.Map.parse_core_line" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_core_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_contents</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.Map.parse_core_line" title="Link to this definition">#</a></dt>
 <dd><p>Parses a single line from core.txt</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -818,7 +818,7 @@ each iteration.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="GMAP.src.tools.map_reader.PairCore">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.map_reader.</span></span><span class="sig-name descname"><span class="pre">PairCore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">map_</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.PairCore" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.map_reader.</span></span><span class="sig-name descname"><span class="pre">PairCore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">map_</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.PairCore" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Contains all information regarding a single core.txt file.</p>
 <p>Such a core.txt file is assumed to belong to a pairs map.</p>
@@ -958,7 +958,7 @@ certain type of pair that can be coupled using this map.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="GMAP.src.tools.map_reader.PairMap">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.map_reader.</span></span><span class="sig-name descname"><span class="pre">PairMap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mapdir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avail_files</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.PairMap" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.map_reader.</span></span><span class="sig-name descname"><span class="pre">PairMap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mapdir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avail_files</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.PairMap" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#GMAP.src.tools.map_reader.Map" title="GMAP.src.tools.map_reader.Map"><code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></a></p>
 <p>The Pair-specialized version of Map.</p>
 <p>Any attributes listed for Map are not separately listed here.</p>
@@ -1181,7 +1181,7 @@ behaviour</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="GMAP.src.tools.map_reader.Residue">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.map_reader.</span></span><span class="sig-name descname"><span class="pre">Residue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.Residue" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.map_reader.</span></span><span class="sig-name descname"><span class="pre">Residue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.Residue" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>What a single residue of a structure (template) looks like.</p>
 <dl class="field-list simple">
@@ -1205,7 +1205,7 @@ to have.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="GMAP.src.tools.map_reader.SingleCore">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.map_reader.</span></span><span class="sig-name descname"><span class="pre">SingleCore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">map_</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.SingleCore" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.map_reader.</span></span><span class="sig-name descname"><span class="pre">SingleCore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">map_</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.SingleCore" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Contains all information regarding a single core.txt file.</p>
 <p>Such a core.txt file is assumed to belong to a singles map.</p>
@@ -1376,7 +1376,7 @@ result/influence of both will be added.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="GMAP.src.tools.map_reader.SingleCore.allow_ranges">
-<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">allow_ranges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ix_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lenlist</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.SingleCore.allow_ranges" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">allow_ranges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ix_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lenlist</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.SingleCore.allow_ranges" title="Link to this definition">#</a></dt>
 <dd><p>Allows the user to select a range of integers to be
 included in a map. Range of integers should be formatted
 with a hyphen between two integers of choice.
@@ -1490,7 +1490,7 @@ extra zeros.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="GMAP.src.tools.map_reader.SingleCore.funcgroup_parse_infile">
-<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">funcgroup_parse_infile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">funcgroup</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.SingleCore.funcgroup_parse_infile" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">funcgroup_parse_infile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">funcgroup</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.SingleCore.funcgroup_parse_infile" title="Link to this definition">#</a></dt>
 <dd><p>Parse the choice made for functional_groups</p>
 <p>This is the core of the parser. After catching blatant issues
 and enforcing a single format independent of source, this
@@ -1552,7 +1552,7 @@ for more information - look for code MI_MC_4.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="GMAP.src.tools.map_reader.SingleCore.funcgroupfile_to_infile">
-<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">funcgroupfile_to_infile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.SingleCore.funcgroupfile_to_infile" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">funcgroupfile_to_infile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.SingleCore.funcgroupfile_to_infile" title="Link to this definition">#</a></dt>
 <dd><p>Parses the functional_group_file from a map into infile
 format.</p>
 <dl class="field-list simple">
@@ -1958,7 +1958,7 @@ counting at 0.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="GMAP.src.tools.map_reader.SingleCore.report_array_size">
-<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">report_array_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">foundlen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deslen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.SingleCore.report_array_size" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">report_array_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">foundlen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deslen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.SingleCore.report_array_size" title="Link to this definition">#</a></dt>
 <dd><p>Reports on the size of the array, and cuts when necessary.</p>
 <p>This is a helper function for the method
 <a class="reference internal" href="#GMAP.src.tools.map_reader.SingleCore.confirm_array_size" title="GMAP.src.tools.map_reader.SingleCore.confirm_array_size"><code class="xref py py-meth docutils literal notranslate"><span class="pre">confirm_array_size()</span></code></a>.</p>
@@ -1995,7 +1995,7 @@ foundlen &gt; deslen.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="GMAP.src.tools.map_reader.SingleMap">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.map_reader.</span></span><span class="sig-name descname"><span class="pre">SingleMap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mapdir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avail_files</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.SingleMap" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.map_reader.</span></span><span class="sig-name descname"><span class="pre">SingleMap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mapdir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avail_files</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.SingleMap" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#GMAP.src.tools.map_reader.Map" title="GMAP.src.tools.map_reader.Map"><code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></a></p>
 <p class="rubric">Methods</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
@@ -2090,7 +2090,7 @@ GM_calculate_dipole and GM_get_rotation matrix based on core.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="GMAP.src.tools.map_reader.Structure">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.map_reader.</span></span><span class="sig-name descname"><span class="pre">Structure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">struct</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bonds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.Structure" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">GMAP.src.tools.map_reader.</span></span><span class="sig-name descname"><span class="pre">Structure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">struct</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bonds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.src.tools.map_reader.Structure" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>What an oscillator looks like</p>
 <p>output formats:</p>
@@ -2403,7 +2403,7 @@ either of type <a class="reference internal" href="#GMAP.src.tools.map_reader.Si
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
   </p>
 </div>
       
