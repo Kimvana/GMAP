@@ -11,4 +11,5 @@ dependencies:
   - MDAnalysis
   - numba
   - numpy
+  - pytest
   - scipy
