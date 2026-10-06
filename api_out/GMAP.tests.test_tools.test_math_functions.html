@@ -458,8 +458,78 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="gmap-tests-test-tools-test-math-functions-module">
-<h1>GMAP.tests.test_tools.test_math_functions module<a class="headerlink" href="#gmap-tests-test-tools-test-math-functions-module" title="Link to this heading">#</a></h1>
+  <section id="module-GMAP.tests.test_tools.test_math_functions">
+<span id="gmap-tests-test-tools-test-math-functions-module"></span><h1>GMAP.tests.test_tools.test_math_functions module<a class="headerlink" href="#module-GMAP.tests.test_tools.test_math_functions" title="Link to this heading">#</a></h1>
+<p>Tests all the functions/classes/methods in the file:
+src/tools/math_functions.py.</p>
+<dl class="simple">
+<dt>Missing tests:</dt><dd><p>None?</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.tests.test_tools.test_math_functions.test_PBC_back2box">
+<span class="sig-prename descclassname"><span class="pre">GMAP.tests.test_tools.test_math_functions.</span></span><span class="sig-name descname"><span class="pre">test_PBC_back2box</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.tests.test_tools.test_math_functions.test_PBC_back2box" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.tests.test_tools.test_math_functions.test_PBC_boxdiff_triclin">
+<span class="sig-prename descclassname"><span class="pre">GMAP.tests.test_tools.test_math_functions.</span></span><span class="sig-name descname"><span class="pre">test_PBC_boxdiff_triclin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxvect1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boxvect2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boxvects</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.tests.test_tools.test_math_functions.test_PBC_boxdiff_triclin" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.tests.test_tools.test_math_functions.test_PBC_triclinic">
+<span class="sig-prename descclassname"><span class="pre">GMAP.tests.test_tools.test_math_functions.</span></span><span class="sig-name descname"><span class="pre">test_PBC_triclinic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vect</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boxvects</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.tests.test_tools.test_math_functions.test_PBC_triclinic" title="Link to this definition">#</a></dt>
+<dd><p>See that vectors (points) are moved back into the box.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.tests.test_tools.test_math_functions.test_crossprod">
+<span class="sig-prename descclassname"><span class="pre">GMAP.tests.test_tools.test_math_functions.</span></span><span class="sig-name descname"><span class="pre">test_crossprod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.tests.test_tools.test_math_functions.test_crossprod" title="Link to this definition">#</a></dt>
+<dd><p>Test that the local version of the cross product gives the same results as
+the numpy one.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.tests.test_tools.test_math_functions.test_dihedral">
+<span class="sig-prename descclassname"><span class="pre">GMAP.tests.test_tools.test_math_functions.</span></span><span class="sig-name descname"><span class="pre">test_dihedral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boxvects</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.tests.test_tools.test_math_functions.test_dihedral" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.tests.test_tools.test_math_functions.test_dihedral_base">
+<span class="sig-prename descclassname"><span class="pre">GMAP.tests.test_tools.test_math_functions.</span></span><span class="sig-name descname"><span class="pre">test_dihedral_base</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.tests.test_tools.test_math_functions.test_dihedral_base" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.tests.test_tools.test_math_functions.test_dihedral_boxcoords">
+<span class="sig-prename descclassname"><span class="pre">GMAP.tests.test_tools.test_math_functions.</span></span><span class="sig-name descname"><span class="pre">test_dihedral_boxcoords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boxvects</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.tests.test_tools.test_math_functions.test_dihedral_boxcoords" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.tests.test_tools.test_math_functions.test_dotprod">
+<span class="sig-prename descclassname"><span class="pre">GMAP.tests.test_tools.test_math_functions.</span></span><span class="sig-name descname"><span class="pre">test_dotprod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.tests.test_tools.test_math_functions.test_dotprod" title="Link to this definition">#</a></dt>
+<dd><p>Test that the local version of the dot product gives the same results as
+the numpy one.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.tests.test_tools.test_math_functions.test_project">
+<span class="sig-prename descclassname"><span class="pre">GMAP.tests.test_tools.test_math_functions.</span></span><span class="sig-name descname"><span class="pre">test_project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.tests.test_tools.test_math_functions.test_project" title="Link to this definition">#</a></dt>
+<dd><p>The vector returned by project should be the component of vect2 that is
+perpendicular to vect1. Therefore, the projection and vect1 should be
+orthogonal -&gt; dot product should equal zero.
+As vect1 has infinitely many orthogonal vectors, we also need tocheck if
+the one found is the one corresponding to vect2. This is done by taking the
+cross product of the projection and vect2. Only if the two correspond, this
+cross product is also orthogonal to vect1.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GMAP.tests.test_tools.test_math_functions.test_vec3len">
+<span class="sig-prename descclassname"><span class="pre">GMAP.tests.test_tools.test_math_functions.</span></span><span class="sig-name descname"><span class="pre">test_vec3len</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GMAP.tests.test_tools.test_math_functions.test_vec3len" title="Link to this definition">#</a></dt>
+<dd><p>Test that the local version of calculating vector norm gives the same
+results as the numpy one.</p>
+</dd></dl>
+
 </section>
 
 
@@ -500,6 +570,27 @@
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.tests.test_tools.test_math_functions.test_PBC_back2box"><code class="docutils literal notranslate"><span class="pre">test_PBC_back2box()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.tests.test_tools.test_math_functions.test_PBC_boxdiff_triclin"><code class="docutils literal notranslate"><span class="pre">test_PBC_boxdiff_triclin()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.tests.test_tools.test_math_functions.test_PBC_triclinic"><code class="docutils literal notranslate"><span class="pre">test_PBC_triclinic()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.tests.test_tools.test_math_functions.test_crossprod"><code class="docutils literal notranslate"><span class="pre">test_crossprod()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.tests.test_tools.test_math_functions.test_dihedral"><code class="docutils literal notranslate"><span class="pre">test_dihedral()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.tests.test_tools.test_math_functions.test_dihedral_base"><code class="docutils literal notranslate"><span class="pre">test_dihedral_base()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.tests.test_tools.test_math_functions.test_dihedral_boxcoords"><code class="docutils literal notranslate"><span class="pre">test_dihedral_boxcoords()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.tests.test_tools.test_math_functions.test_dotprod"><code class="docutils literal notranslate"><span class="pre">test_dotprod()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.tests.test_tools.test_math_functions.test_project"><code class="docutils literal notranslate"><span class="pre">test_project()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMAP.tests.test_tools.test_math_functions.test_vec3len"><code class="docutils literal notranslate"><span class="pre">test_vec3len()</span></code></a></li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
 
