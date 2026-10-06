@@ -8,4 +8,6 @@ dependencies:
   - pydata-sphinx-theme
   - numpydoc
   - matplotlib
+  - numba
   - numpy
+  - scipy
